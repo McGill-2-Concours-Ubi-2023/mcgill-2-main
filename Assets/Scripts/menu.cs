@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
+using UnityEditor.SceneManagement;
 public class menu : MonoBehaviour
 {
     public bool cursor;
@@ -20,6 +20,9 @@ public class menu : MonoBehaviour
     public void SceneLoad(int i)
     {
         SceneManager.LoadScene(i);
+    }
+    public void SceneLoad(string path) {
+        EditorSceneManager.OpenScene(path, OpenSceneMode.Additive);
     }
     public void Shut()
     {
