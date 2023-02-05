@@ -31,7 +31,7 @@ public class MainCharacterGroundedStateBehaviour : GenericStateMachineMonoBehavi
     private void Update()
     {
         CharacterController controller = GetComponent<CharacterController>();
-        m_Animator.SetFloat(Speed, controller.velocity.magnitude);
+        m_Animator.SetFloat(Speed, controller.velocity.magnitude, 0.1f, Time.deltaTime);
         controller.Move(m_Input * Time.deltaTime);
         
         float forward = m_InputActionAsset["Forward"].ReadValue<float>();
