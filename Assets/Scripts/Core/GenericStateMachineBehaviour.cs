@@ -2,8 +2,7 @@ using UnityEngine;
 using UnityEngine.Animations;
 
 
-public class GenericStateMachineBehaviour<TState, TBehaviour> : StateMachineBehaviour
-    where TState : StateMachineBehaviour, new()
+public class GenericStateMachineBehaviour<TBehaviour> : StateMachineBehaviour
     where TBehaviour : GenericStateMachineMonoBehaviour, new()
 {
     private TBehaviour associatedBehaviour;
