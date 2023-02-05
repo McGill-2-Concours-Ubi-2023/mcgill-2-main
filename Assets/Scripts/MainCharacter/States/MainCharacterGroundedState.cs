@@ -55,6 +55,14 @@ public class MainCharacterGroundedStateBehaviour : GenericStateMachineMonoBehavi
                 angle = -angle;
             }
             transform.rotation = Quaternion.Euler(0, angle * Mathf.Rad2Deg, 0);
+            
+            MainCharacterJumpToPlatformAction jumpAction = new MainCharacterJumpToPlatformAction();
+            jumpAction.MaxDistance = 2.0f;
+            if (jumpAction.ShouldTransition(gameObject))
+            {
+                Vector3 jumpTarget = jumpAction.Hit.point;
+                controller.Move(jumpTarget - controller.transform.position);
+            }
         }
     }
     
