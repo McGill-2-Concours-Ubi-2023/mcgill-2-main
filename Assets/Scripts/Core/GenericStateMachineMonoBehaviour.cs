@@ -3,41 +3,41 @@ using UnityEngine.Animations;
 
 public class GenericStateMachineMonoBehaviour : MonoBehaviour
 {
-    public void OnStateEnter(
+    public virtual void OnStateEnter(
         Animator animator,
         AnimatorStateInfo stateInfo,
         int layerIndex)
     {
     }
 
-    public void OnStateUpdate(
+    public virtual void OnStateUpdate(
         Animator animator,
         AnimatorStateInfo stateInfo,
         int layerIndex)
     {
     }
 
-    public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    public virtual void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
     }
 
-    public void OnStateMove(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    public virtual void OnStateMove(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
     }
 
-    public void OnStateIK(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    public virtual void OnStateIK(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
     }
 
-    public void OnStateMachineEnter(Animator animator, int stateMachinePathHash)
+    public virtual void OnStateMachineEnter(Animator animator, int stateMachinePathHash)
     {
     }
 
-    public void OnStateMachineExit(Animator animator, int stateMachinePathHash)
+    public virtual void OnStateMachineExit(Animator animator, int stateMachinePathHash)
     {
     }
 
-    public void OnStateEnter(
+    public virtual void OnStateEnter(
         Animator animator,
         AnimatorStateInfo stateInfo,
         int layerIndex,
@@ -45,7 +45,7 @@ public class GenericStateMachineMonoBehaviour : MonoBehaviour
     {
     }
 
-    public void OnStateUpdate(
+    public virtual void OnStateUpdate(
         Animator animator,
         AnimatorStateInfo stateInfo,
         int layerIndex,
@@ -53,7 +53,7 @@ public class GenericStateMachineMonoBehaviour : MonoBehaviour
     {
     }
 
-    public void OnStateExit(
+    public virtual void OnStateExit(
         Animator animator,
         AnimatorStateInfo stateInfo,
         int layerIndex,
@@ -61,7 +61,7 @@ public class GenericStateMachineMonoBehaviour : MonoBehaviour
     {
     }
 
-    public void OnStateMove(
+    public virtual void OnStateMove(
         Animator animator,
         AnimatorStateInfo stateInfo,
         int layerIndex,
@@ -69,7 +69,7 @@ public class GenericStateMachineMonoBehaviour : MonoBehaviour
     {
     }
 
-    public void OnStateIK(
+    public virtual void OnStateIK(
         Animator animator,
         AnimatorStateInfo stateInfo,
         int layerIndex,
@@ -77,14 +77,14 @@ public class GenericStateMachineMonoBehaviour : MonoBehaviour
     {
     }
 
-    public void OnStateMachineEnter(
+    public virtual void OnStateMachineEnter(
         Animator animator,
         int stateMachinePathHash,
         AnimatorControllerPlayable controller)
     {
     }
 
-    public void OnStateMachineExit(
+    public virtual void OnStateMachineExit(
         Animator animator,
         int stateMachinePathHash,
         AnimatorControllerPlayable controller)
