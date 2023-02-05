@@ -38,13 +38,15 @@ public class MainCharacterGroundedStateBehaviour : GenericStateMachineMonoBehavi
         m_Input.z = forward;
         float left = m_InputActionAsset["Left"].ReadValue<float>();
         m_Input.x = left;
-        Debug.Log($"Forward: {forward} Left: {left}");
-        controller.Move(m_Input * Time.deltaTime * m_MainCharacterController.MovementSpeed);
+        float3 cameraForward = Vector3.ProjectOnPlane(m_MainCharacterController.Camera.transform.forward, Vector3.up);
+        float3 cameraRight = m_MainCharacterController.Camera.transform.right;
+        float3 adjustedDirection = m_Input.x * cameraRight + m_Input.z * cameraForward;
+        controller.Move(Time.deltaTime * m_MainCharacterController.MovementSpeed * adjustedDirection);
         
         // rotate player to face direction of movement
         if (m_Input.x != 0 || m_Input.z != 0)
         {
-            float3 direction = normalize(m_Input);
+            float3 direction = normalize(adjustedDirection);
             float3 forwardVector = new float3(0, 0, 1);
             float angle = -acos(dot(direction, forwardVector));
             float3 cross = math.cross(direction, forwardVector);
