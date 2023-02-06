@@ -20,6 +20,9 @@ public class MainCharacterGroundedStateBehaviour : GenericStateMachineMonoBehavi
     private InputActionAsset m_InputActionAsset;
     private MainCharacterController m_MainCharacterController;
     private readonly static int GroundedToFreeFall = Animator.StringToHash("GroundedToFreeFall");
+    private readonly static int GroundedToJumpAction = Animator.StringToHash("GroundedToJumpAction");
+    private readonly static int FreeFallShouldLand = Animator.StringToHash("FreeFallShouldLand");
+    private float m_TimeOnEnter;
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -27,10 +30,18 @@ public class MainCharacterGroundedStateBehaviour : GenericStateMachineMonoBehavi
         PlayerInput input = GetComponent<PlayerInput>();
         m_InputActionAsset = input.actions;
         m_MainCharacterController = GetComponent<MainCharacterController>();
+        animator.ResetTrigger(FreeFallShouldLand);
+        m_TimeOnEnter = Time.time;
     }
     
     private void Update()
     {
+        if (!shouldUpdate)
+        {
+            return;
+        }
+        
+        m_Animator.ResetTrigger(FreeFallShouldLand);
         CharacterController controller = GetComponent<CharacterController>();
         m_Animator.SetFloat(Speed, controller.velocity.magnitude, 0.1f, Time.deltaTime);
         controller.Move(m_Input * Time.deltaTime);
@@ -62,16 +73,22 @@ public class MainCharacterGroundedStateBehaviour : GenericStateMachineMonoBehavi
             if (jumpAction.ShouldTransition(gameObject))
             {
                 Vector3 jumpTarget = jumpAction.Hit.point;
-                controller.Move(jumpTarget - controller.transform.position);
+                //controller.Move(jumpTarget - controller.transform.position);
+                m_MainCharacterController.NavActionData = jumpTarget;
+                Transition(GroundedToJumpAction);
                 return;
             }
         }
-        
-        MainCharacterFreeFallCheckAction freeFallCheck = new MainCharacterFreeFallCheckAction();
-        if (freeFallCheck.ShouldTransition(gameObject))
+
+        // suppress free fall transition for a short time after entering this state
+        if (Time.time - m_TimeOnEnter > 0.3f)
         {
-            m_Animator.SetTrigger(GroundedToFreeFall);
-            return;
+            MainCharacterFreeFallCheckAction freeFallCheck = new MainCharacterFreeFallCheckAction();
+            if (freeFallCheck.ShouldTransition(gameObject))
+            {
+                Transition(GroundedToFreeFall);
+                return;
+            }
         }
     }
     
