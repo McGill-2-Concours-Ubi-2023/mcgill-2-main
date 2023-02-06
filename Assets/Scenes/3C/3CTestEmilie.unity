@@ -322,7 +322,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 946824644}
-  m_LocalRotation: {x: 0.089893244, y: 0.00000002070774, z: -0.000000001869053, w: 0.9959514}
+  m_LocalRotation: {x: 0.08989322, y: -0.000000016236468, z: 0.0000000014654816, w: 0.9959514}
   m_LocalPosition: {x: 0, y: 4.14, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -409,6 +409,7 @@ GameObject:
   - component: {fileID: 1165389848}
   - component: {fileID: 1165389847}
   - component: {fileID: 1165389846}
+  - component: {fileID: 1165389850}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -494,6 +495,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &1165389850
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1165389845}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!114 &1816627672 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6802649042709066299, guid: 62c5f7bf6283749bbb956738e090efac,
@@ -518,6 +535,7 @@ GameObject:
   - component: {fileID: 1926466026}
   - component: {fileID: 1926466025}
   - component: {fileID: 1926466024}
+  - component: {fileID: 1926466028}
   m_Layer: 0
   m_Name: Plane
   m_TagString: Untagged
@@ -604,6 +622,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &1926466028
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1926466023}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 2
+  m_Constraints: 0
+  m_CollisionDetection: 3
 --- !u!1001 &6545755567094183307
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -671,6 +705,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: MainCharacter
       objectReference: {fileID: 0}
+    - target: {fileID: 6545755567180361433, guid: a98ede08c13b146dc8929b2c126a9ea4,
+        type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 6545755567180361436, guid: a98ede08c13b146dc8929b2c126a9ea4,
         type: 3}
       propertyPath: Camera
@@ -723,17 +762,17 @@ PrefabInstance:
     - target: {fileID: 6802649042709066298, guid: 62c5f7bf6283749bbb956738e090efac,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.089893244
+      value: 0.08989322
       objectReference: {fileID: 0}
     - target: {fileID: 6802649042709066298, guid: 62c5f7bf6283749bbb956738e090efac,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.00000002070774
+      value: -0.000000016236468
       objectReference: {fileID: 0}
     - target: {fileID: 6802649042709066298, guid: 62c5f7bf6283749bbb956738e090efac,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.000000001869053
+      value: 0.0000000014654816
       objectReference: {fileID: 0}
     - target: {fileID: 6802649042709066298, guid: 62c5f7bf6283749bbb956738e090efac,
         type: 3}

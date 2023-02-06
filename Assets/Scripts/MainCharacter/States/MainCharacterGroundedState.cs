@@ -19,6 +19,7 @@ public class MainCharacterGroundedStateBehaviour : GenericStateMachineMonoBehavi
     private float3 m_Input;
     private InputActionAsset m_InputActionAsset;
     private MainCharacterController m_MainCharacterController;
+    private readonly static int GroundedToFreeFall = Animator.StringToHash("GroundedToFreeFall");
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -62,7 +63,15 @@ public class MainCharacterGroundedStateBehaviour : GenericStateMachineMonoBehavi
             {
                 Vector3 jumpTarget = jumpAction.Hit.point;
                 controller.Move(jumpTarget - controller.transform.position);
+                return;
             }
+        }
+        
+        MainCharacterFreeFallCheckAction freeFallCheck = new MainCharacterFreeFallCheckAction();
+        if (freeFallCheck.ShouldTransition(gameObject))
+        {
+            m_Animator.SetTrigger(GroundedToFreeFall);
+            return;
         }
     }
     
