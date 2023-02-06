@@ -34,7 +34,7 @@ public class CursorController : MonoBehaviour
     private void OnEnable()
     {
         scaleFactor = Screen.currentResolution.width / Screen.currentResolution.height;
-        mouseSize = 50 * scaleFactor; 
+        mouseSize = 100 * scaleFactor; 
         //ChangeCursor(defaultCursorTexture);
         Cursor.lockState = CursorLockMode.Confined;
         cursorTransform.gameObject.SetActive(false);
@@ -62,6 +62,11 @@ public class CursorController : MonoBehaviour
         GetComponent<PlayerInput>().onControlsChanged += OnControlsChanged;        
     }
 
+    private void Start()
+    {
+        ChangeCursor(defaultCursorTexture);
+    }
+
     private void OnDisable()
     {
         InputSystem.RemoveDevice(virtualMouse);
@@ -71,8 +76,12 @@ public class CursorController : MonoBehaviour
 
     public void ChangeCursor(Texture2D cursor)
     {
-        Texture2D scaledCursor = new Texture2D(Screen.currentResolution.width / mouseSize, Screen.currentResolution.height / mouseSize,
-            TextureFormat.ARGB32, false);
+        var newWidth = Screen.currentResolution.width / mouseSize;
+        var newHeight = Screen.currentResolution.height / mouseSize;
+        /*Texture2D newTexture = new Texture2D(newWidth, newHeight);
+        Graphics.Blit(originalTexture, newTexture, ImageEffects.bicubicDownsamplerMaterial);*/
+        Texture2D scaledCursor =  Utils.ScaleTexture(cursor, Screen.currentResolution.width / mouseSize,
+            Screen.currentResolution.height / mouseSize);
         Cursor.SetCursor(scaledCursor, new Vector2(scaledCursor.width/2, scaledCursor.height/2), CursorMode.Auto);
     }
 
