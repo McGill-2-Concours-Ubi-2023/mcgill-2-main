@@ -11,6 +11,12 @@ public class MainCharacterFreeFallStateBehaviour : GenericStateMachineMonoBehavi
 {
     private readonly static int FreeFallShouldLand = Animator.StringToHash("FreeFallShouldLand");
     private float3 m_Velocity;
+    private readonly static int GroundedToFreeFall = Animator.StringToHash("GroundedToFreeFall");
+
+    public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        animator.ResetTrigger(GroundedToFreeFall);
+    }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {

@@ -3,6 +3,14 @@ using UnityEngine.Animations;
 
 public class GenericStateMachineMonoBehaviour : MonoBehaviour
 {
+    protected bool shouldUpdate = true;
+    
+    protected void Transition(int stateHash)
+    {
+        shouldUpdate = false;
+        GetComponent<Animator>().SetTrigger(stateHash);
+    }
+    
     public virtual void OnStateEnter(
         Animator animator,
         AnimatorStateInfo stateInfo,
