@@ -7,7 +7,7 @@ using UnityEngine.InputSystem.Users;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(PlayerInput))]
-public class GamepadCursorController : MonoBehaviour
+public class CursorController : MonoBehaviour
 {
     private Mouse virtualMouse;
     private Mouse currentMouse;
