@@ -25,13 +25,17 @@ public class CursorController : MonoBehaviour
     private Texture2D defaultCursorTexture;
     [SerializeField]
     public Texture2D highlightCursorTexture;
+    private int scaleFactor;
+    private  int mouseSize;
 
     private const string gamepadScheme = "Gamepad";
     private const string mouseScheme = "Keyboard&Mouse";
 
     private void OnEnable()
     {
-        ChangeCursor(defaultCursorTexture);
+        scaleFactor = Screen.currentResolution.width / Screen.currentResolution.height;
+        mouseSize = 50 * scaleFactor; 
+        //ChangeCursor(defaultCursorTexture);
         Cursor.lockState = CursorLockMode.Confined;
         cursorTransform.gameObject.SetActive(false);
         currentMouse = Mouse.current;
@@ -55,7 +59,7 @@ public class CursorController : MonoBehaviour
             InputState.Change(virtualMouse.position, position);
         }
 
-        GetComponent<PlayerInput>().onControlsChanged += OnControlsChanged;
+        GetComponent<PlayerInput>().onControlsChanged += OnControlsChanged;        
     }
 
     private void OnDisable()
@@ -67,7 +71,9 @@ public class CursorController : MonoBehaviour
 
     public void ChangeCursor(Texture2D cursor)
     {
-        Cursor.SetCursor(cursor, new Vector2(cursor.width/2, cursor.height/2), CursorMode.Auto);
+        Texture2D scaledCursor = new Texture2D(Screen.currentResolution.width / mouseSize, Screen.currentResolution.height / mouseSize,
+            TextureFormat.ARGB32, false);
+        Cursor.SetCursor(scaledCursor, new Vector2(scaledCursor.width/2, scaledCursor.height/2), CursorMode.Auto);
     }
 
     private void UpdateVirtualCursor()
@@ -146,10 +152,13 @@ public class CursorController : MonoBehaviour
 
     public void PrintMessage()//Button OnClick event
     {
-        if (!Gamepad.current.buttonSouth.IsPressed() || !currentMouse.leftButton.IsPressed())
+        if(Gamepad.current != null)
         {
-            Debug.Log("BUTTON CLICKED!");
-        }
+            if (!Gamepad.current.buttonSouth.IsPressed() || !currentMouse.leftButton.IsPressed())
+            {
+                Debug.Log("BUTTON CLICKED!");
+            }
+        }      
     }
 
     public void OnHoverFeedback()
