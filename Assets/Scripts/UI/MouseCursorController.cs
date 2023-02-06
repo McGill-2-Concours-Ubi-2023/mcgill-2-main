@@ -9,19 +9,13 @@ public class MouseCursorController : MonoBehaviour
     public Texture2D cursor;
     public Texture2D cursorHighlight;
 
-    void ChangeCursor(Texture2D cursor)
-    {
-        Cursor.SetCursor(cursor, Vector2.zero, CursorMode.Auto);
-    }
-
-    private void Awake()
+    private void OnEnable()
     {
         ChangeCursor(cursor);
         Cursor.lockState = CursorLockMode.Confined;
     }
-
-    public void OnClick()
+    public void ChangeCursor(Texture2D cursor)
     {
-       // Debug.Log("Clicked!");
-    }
+        Cursor.SetCursor(cursor, Vector2.zero, CursorMode.Auto);
+    }   
 }
