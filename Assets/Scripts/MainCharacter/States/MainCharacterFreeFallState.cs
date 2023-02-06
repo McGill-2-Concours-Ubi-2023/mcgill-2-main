@@ -43,12 +43,9 @@ public class MainCharacterFreeFallStateBehaviour : GenericStateMachineMonoBehavi
     private void Update()
     {
         if (!shouldUpdate) return;
-        float3 input;
-        float forward = m_InputActionAsset["Forward"].ReadValue<float>();
-        input.z = forward;
-        float left = m_InputActionAsset["Left"].ReadValue<float>();
-        input.x = left;
-        
+        float3 input = new float3();
+        input.xz = ((float2)m_InputActionAsset["Movement"].ReadValue<Vector2>()).xy;
+
         float3 cameraForward = Vector3.ProjectOnPlane(m_MainCharacterController.Camera.transform.forward, Vector3.up);
         float3 cameraRight = m_MainCharacterController.Camera.transform.right;
         float3 adjustedDirection = input.x * cameraRight + input.z * cameraForward;

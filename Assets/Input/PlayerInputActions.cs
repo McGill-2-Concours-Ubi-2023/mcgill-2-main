@@ -28,154 +28,123 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
             ""id"": ""f194698f-0e52-4e87-8111-e63acf621c58"",
             ""actions"": [
                 {
-                    ""name"": ""Forward"",
-                    ""type"": ""Button"",
-                    ""id"": ""c5fa6541-82aa-425e-97c8-db64c3f05138"",
-                    ""expectedControlType"": ""Button"",
+                    ""name"": ""Movement"",
+                    ""type"": ""Value"",
+                    ""id"": ""af5dd57f-1d6e-417e-b894-53571bda8ea1"",
+                    ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Left"",
-                    ""type"": ""Button"",
-                    ""id"": ""5d88b511-4dd4-4bfc-b8bf-ad99a263ef37"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
                 {
-                    ""name"": ""Keyboard"",
-                    ""id"": ""381e2798-184b-4fa8-8635-d62a87d19647"",
-                    ""path"": ""1DAxis"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Forward"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""negative"",
-                    ""id"": ""2a0ef7a9-7eaa-45f9-8b12-777b547d5f3f"",
-                    ""path"": ""<Keyboard>/s"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Forward"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""positive"",
-                    ""id"": ""560b0f26-160a-4490-ad69-b54c2a70c934"",
-                    ""path"": ""<Keyboard>/w"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Forward"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
                     ""name"": ""Controller"",
-                    ""id"": ""8924450e-22b9-467b-8f0e-cbfb0bbe674c"",
-                    ""path"": ""1DAxis"",
+                    ""id"": ""3844ca7c-4aff-41a1-ab2a-1055743eb4c5"",
+                    ""path"": ""2DVector"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Forward"",
+                    ""action"": ""Movement"",
                     ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""negative"",
-                    ""id"": ""05fb11a5-bc15-4390-b820-d9b70e5453eb"",
-                    ""path"": ""<Joystick>/stick/down"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Forward"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""positive"",
-                    ""id"": ""bf1c3755-f725-4f7f-b41b-02fe459dc424"",
+                    ""name"": ""up"",
+                    ""id"": ""8d2ef451-8357-47e5-96fd-794c7a8598ad"",
                     ""path"": ""<Joystick>/stick/up"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Forward"",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""619b7af1-ef11-4508-b0ef-98efcb8f7d47"",
+                    ""path"": ""<Joystick>/stick/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""56cf2754-868e-414e-954b-9ddea34b0e6d"",
+                    ""path"": ""<Joystick>/stick/left"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""53aaca51-8ba6-46ef-b1e1-51aa9b4056dd"",
+                    ""path"": ""<Joystick>/stick/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
                 {
                     ""name"": ""Keyboard"",
-                    ""id"": ""92c4ba00-20a4-4d5c-a6c8-77ef908aa009"",
-                    ""path"": ""1DAxis"",
+                    ""id"": ""0eeafe39-8e6f-413b-b885-010fc8b293c9"",
+                    ""path"": ""2DVector"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Left"",
+                    ""action"": ""Movement"",
                     ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""negative"",
-                    ""id"": ""491cee12-11b0-4442-8e55-1b435879977b"",
+                    ""name"": ""up"",
+                    ""id"": ""e6db1b0d-e6a9-4575-a22d-7aa36518ecab"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""612ee6e2-93bd-4f3b-b6af-07722150e9ca"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""5306fdde-9634-4403-98d5-300dfcbfc72b"",
                     ""path"": ""<Keyboard>/a"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Left"",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""positive"",
-                    ""id"": ""a51d8709-a006-490f-83ac-fee35185c6ab"",
+                    ""name"": ""right"",
+                    ""id"": ""71251523-ed9b-48a1-8d70-37198ca93cad"",
                     ""path"": ""<Keyboard>/d"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Left"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""Controller"",
-                    ""id"": ""b0af83f5-5b91-4c3c-a150-66d986007420"",
-                    ""path"": ""1DAxis"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Left"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""negative"",
-                    ""id"": ""b0327b36-6b34-49f2-9394-6a0df3e545f0"",
-                    ""path"": ""<HID::Google LLC Stadia Controller rev. A>/stick/left"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Left"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""positive"",
-                    ""id"": ""4e68041d-aca9-4b9f-97af-60c2248b4b81"",
-                    ""path"": ""<HID::Google LLC Stadia Controller rev. A>/stick/right"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Left"",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 }
@@ -451,8 +420,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
 }");
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
-        m_Player_Forward = m_Player.FindAction("Forward", throwIfNotFound: true);
-        m_Player_Left = m_Player.FindAction("Left", throwIfNotFound: true);
+        m_Player_Movement = m_Player.FindAction("Movement", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Point = m_UI.FindAction("Point", throwIfNotFound: true);
@@ -521,14 +489,12 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
     // Player
     private readonly InputActionMap m_Player;
     private IPlayerActions m_PlayerActionsCallbackInterface;
-    private readonly InputAction m_Player_Forward;
-    private readonly InputAction m_Player_Left;
+    private readonly InputAction m_Player_Movement;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
         public PlayerActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Forward => m_Wrapper.m_Player_Forward;
-        public InputAction @Left => m_Wrapper.m_Player_Left;
+        public InputAction @Movement => m_Wrapper.m_Player_Movement;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -538,22 +504,16 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         {
             if (m_Wrapper.m_PlayerActionsCallbackInterface != null)
             {
-                @Forward.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnForward;
-                @Forward.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnForward;
-                @Forward.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnForward;
-                @Left.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLeft;
-                @Left.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLeft;
-                @Left.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLeft;
+                @Movement.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMovement;
+                @Movement.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMovement;
+                @Movement.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMovement;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
             {
-                @Forward.started += instance.OnForward;
-                @Forward.performed += instance.OnForward;
-                @Forward.canceled += instance.OnForward;
-                @Left.started += instance.OnLeft;
-                @Left.performed += instance.OnLeft;
-                @Left.canceled += instance.OnLeft;
+                @Movement.started += instance.OnMovement;
+                @Movement.performed += instance.OnMovement;
+                @Movement.canceled += instance.OnMovement;
             }
         }
     }
@@ -668,8 +628,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
     }
     public interface IPlayerActions
     {
-        void OnForward(InputAction.CallbackContext context);
-        void OnLeft(InputAction.CallbackContext context);
+        void OnMovement(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
