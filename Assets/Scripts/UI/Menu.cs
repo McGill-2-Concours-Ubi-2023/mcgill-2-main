@@ -2,10 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+
+#if UNITY_EDITOR
 using UnityEditor.SceneManagement;
-public class menu : MonoBehaviour
+#endif
+public class Menu : MonoBehaviour
 {
     public bool cursor;
+    
     void Start()
     {
        /* if (!cursor)
@@ -16,18 +20,12 @@ public class menu : MonoBehaviour
         else
             Cursor.visible = true;*/
     }
-
-    public void SceneLoad(int i)
-    {
-        SceneManager.LoadScene(i);
-    }
-    public void SceneLoad(string path) {
-        EditorSceneManager.OpenScene(path, OpenSceneMode.Additive);
-    }
+    
     public void Shut()
     {
         Application.Quit();
     }
+    
     public void URL(string url)
     {
         Application.OpenURL(url);
