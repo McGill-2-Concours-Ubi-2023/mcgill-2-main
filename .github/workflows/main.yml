@@ -3,7 +3,8 @@ name: build
 on:
   push:
     branches:
-      - '*'
+      - 'dev'
+      - 'main'
 
 jobs:
   build-windows:
@@ -29,8 +30,8 @@ jobs:
           versioning: Semantic
       - uses: actions/upload-artifact@v2
         with:
-          name: Build
-          path: build
+          name: BuildWindows
+          path: buildwindows
       - name: Return license
         uses: game-ci/unity-return-license@v2
         if: always()
