@@ -31,7 +31,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: BuildWindows
-          path: buildwindows
+          path: build
       - name: Return license
         uses: game-ci/unity-return-license@v2
         if: always()
