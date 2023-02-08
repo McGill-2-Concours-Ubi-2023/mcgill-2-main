@@ -12,7 +12,7 @@ public class CursorController : MonoBehaviour
     private Mouse virtualMouse;
     private Mouse currentMouse;
     [SerializeField]
-    private RectTransform cursorTransform; //cursor = 2D image
+    private RectTransform virtualCursorTransform, realCursorTransform; //cursor = 2D image
     [SerializeField][Range(10,2000)]
     private float cursorSensitivity = 1500;
     private float cursorFeedBackDampening = 2;
@@ -26,7 +26,6 @@ public class CursorController : MonoBehaviour
     [SerializeField]
     public Texture2D highlightCursorTexture;
     private int scaleFactor;
-    private  int mouseSize;
 
     private const string gamepadScheme = "Gamepad";
     private const string mouseScheme = "Keyboard&Mouse";
@@ -34,10 +33,12 @@ public class CursorController : MonoBehaviour
     private void OnEnable()
     {
         scaleFactor = Screen.currentResolution.width / Screen.currentResolution.height;
-        mouseSize = 100 * scaleFactor; 
-        //ChangeCursor(defaultCursorTexture);
+
         Cursor.lockState = CursorLockMode.Confined;
-        cursorTransform.gameObject.SetActive(false);
+        Cursor.visible = false;
+
+        virtualCursorTransform.gameObject.SetActive(false);
+        realCursorTransform.gameObject.SetActive(true);
         currentMouse = Mouse.current;
 
         if (virtualMouse == null)
@@ -51,38 +52,30 @@ public class CursorController : MonoBehaviour
         InputUser.PerformPairingWithDevice(virtualMouse, GetComponent<PlayerInput>().user);
         //Subscribe to the delegate by adding "UpdateVirtualCursor" to the invocation list
         InputSystem.onAfterUpdate += UpdateVirtualCursor;
+        InputSystem.onAfterUpdate += UpdateRealCursor;
 
-        if(cursorTransform != null)
+        if(virtualCursorTransform != null)
         {
             //initialize the cursor's position with the anchored position of the cursor Image
-            Vector2 position = cursorTransform.anchoredPosition;
+            Vector2 position = virtualCursorTransform.anchoredPosition;
             InputState.Change(virtualMouse.position, position);
         }
 
         GetComponent<PlayerInput>().onControlsChanged += OnControlsChanged;        
     }
 
-    private void Start()
-    {
-        ChangeCursor(defaultCursorTexture);
-    }
-
     private void OnDisable()
     {
         InputSystem.RemoveDevice(virtualMouse);
         InputSystem.onAfterUpdate -= UpdateVirtualCursor;
+        InputSystem.onAfterUpdate -= UpdateRealCursor;
         GetComponent<PlayerInput>().onControlsChanged -= OnControlsChanged;
     }
 
-    public void ChangeCursor(Texture2D cursor)
+    private void UpdateRealCursor()
     {
-        var newWidth = Screen.currentResolution.width / mouseSize;
-        var newHeight = Screen.currentResolution.height / mouseSize;
-        /*Texture2D newTexture = new Texture2D(newWidth, newHeight);
-        Graphics.Blit(originalTexture, newTexture, ImageEffects.bicubicDownsamplerMaterial);*/
-        Texture2D scaledCursor =  Utils.ScaleTexture(cursor, Screen.currentResolution.width / mouseSize,
-            Screen.currentResolution.height / mouseSize);
-        Cursor.SetCursor(scaledCursor, new Vector2(scaledCursor.width/2, scaledCursor.height/2), CursorMode.Auto);
+        var mousePosition = Mouse.current.position.ReadValue();
+        AnchorCursor(mousePosition, realCursorTransform);
     }
 
     private void UpdateVirtualCursor()
@@ -105,7 +98,7 @@ public class CursorController : MonoBehaviour
         InputState.Change(virtualMouse.position, newMousePosition);
         //Mouse.delta represents the change in mousePosition since last frame
         InputState.Change(virtualMouse.delta, deltaValue);
-        AnchorCursor(newMousePosition);
+        AnchorCursor(newMousePosition, virtualCursorTransform);
 
         OnGamepadClick();
 
@@ -125,30 +118,31 @@ public class CursorController : MonoBehaviour
         //TODO: Change tab
     }
 
-    private void AnchorCursor(Vector2 position)
+    private void AnchorCursor(Vector2 position, RectTransform transform)
     {
         //set the new anchoredPosition
         Vector2 anchoredPosition;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(virtualCanvas.GetComponent<RectTransform>(), position,
             virtualCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : Camera.main, out anchoredPosition);
-        cursorTransform.anchoredPosition = anchoredPosition;
+        transform.anchoredPosition = anchoredPosition;
     }
 
     private void OnControlsChanged(PlayerInput input)
     {
         if(input.currentControlScheme == mouseScheme && previousControlsScheme != mouseScheme)
         {
-            Cursor.visible = true;
-            cursorTransform.gameObject.SetActive(false);
+            realCursorTransform.gameObject.SetActive(true);
+            virtualCursorTransform.gameObject.SetActive(false);
+            AnchorCursor(virtualMouse.position.ReadValue(), realCursorTransform);
             currentMouse.WarpCursorPosition(virtualMouse.position.ReadValue());
             previousControlsScheme = mouseScheme;
         } else if (input.currentControlScheme == gamepadScheme && previousControlsScheme != gamepadScheme)
         {
-            cursorTransform.gameObject.SetActive(true);
+            realCursorTransform.gameObject.SetActive(false);
+            virtualCursorTransform.gameObject.SetActive(true);
             InputState.Change(virtualMouse.position, currentMouse.position.ReadValue());
-            AnchorCursor(currentMouse.position.ReadValue());
+            AnchorCursor(currentMouse.position.ReadValue(), virtualCursorTransform);
             previousControlsScheme = gamepadScheme;
-            Cursor.visible = false;
         }
     }
 
@@ -170,12 +164,12 @@ public class CursorController : MonoBehaviour
         }      
     }
 
-    public void OnHoverFeedback()
+    public void OnHoverFeedback() //Must be called in inspector via OnClick button action
     {
         cursorSensitivity /= cursorFeedBackDampening;
     }
 
-    public void OnExitFeedback()
+    public void OnExitFeedback() //Must be called in inspector via OnClick button action
     {
         cursorSensitivity *= cursorFeedBackDampening;
     }
