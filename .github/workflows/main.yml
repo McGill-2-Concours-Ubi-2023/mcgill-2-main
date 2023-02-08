@@ -28,10 +28,6 @@ jobs:
           targetPlatform: StandaloneWindows64
           allowDirtyBuild: true
           versioning: Semantic
-      - uses: actions/upload-artifact@v2
-        with:
-          name: BuildWindows
-          path: build
       - name: Return license
         uses: game-ci/unity-return-license@v2
         if: always()
