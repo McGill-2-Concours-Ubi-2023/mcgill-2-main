@@ -11,6 +11,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: game-ci/unity-activate@v2
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
       - uses: game-ci/unity-builder@v2
         env:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
