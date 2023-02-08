@@ -30,6 +30,19 @@ public class CursorController : MonoBehaviour
     private const string gamepadScheme = "Gamepad";
     private const string mouseScheme = "Keyboard&Mouse";
 
+    private void Update()
+    {
+        if (IsMouseOutsideViewPort())
+        {
+            Cursor.visible = true;
+        }
+        else
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Confined;
+        }
+    }
+
     private void OnEnable()
     {
         scaleFactor = Screen.currentResolution.width / Screen.currentResolution.height;

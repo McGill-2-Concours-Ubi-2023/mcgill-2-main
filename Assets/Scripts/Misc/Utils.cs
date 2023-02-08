@@ -27,7 +27,6 @@ public static class Utils
     public static Texture2D ScaleTexture( Texture2D originalTexture, int newWidth, int newHeight)
     {
         Texture2D scaledTexture = new Texture2D(newWidth, newHeight, TextureFormat.RGBA32, false);
-        scaledTexture.alphaIsTransparency = true;
         scaledTexture.filterMode = FilterMode.Bilinear;
         scaledTexture.wrapMode = TextureWrapMode.Clamp;
         Color[] pixels = originalTexture.GetPixels();
