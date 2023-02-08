@@ -41,6 +41,7 @@ public class CursorController : MonoBehaviour
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Confined;
         }
+
     }
 
     private void OnEnable()
@@ -164,6 +165,26 @@ public class CursorController : MonoBehaviour
         var mouseViewPosition = Camera.main.ScreenToViewportPoint(currentMouse.position.ReadValue());
         var isOutside = mouseViewPosition.x < 0 || mouseViewPosition.x > 1 || mouseViewPosition.y < 0 || mouseViewPosition.y > 1;
         return isOutside;
+    }
+
+    public void OnDPadNextButton()
+    {
+        var dpadValue = Gamepad.current.dpad.ReadValue();
+        if (dpadValue.x == 1)
+        {
+            //TODO: Select button right
+        }
+        else if (dpadValue.x == -1)
+        {
+            //TODO: Select button left
+        }
+        if(dpadValue.y == 1)
+        {
+            //TODO: Select button up
+        } else if(dpadValue.y == -1) 
+        {
+            //TODO: Select button down    
+        }
     }
 
     public void PrintMessage()//Button OnClick event
