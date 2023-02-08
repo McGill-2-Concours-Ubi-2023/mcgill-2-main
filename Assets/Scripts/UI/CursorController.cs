@@ -170,11 +170,19 @@ public class CursorController : MonoBehaviour
     {
         if(Gamepad.current != null)
         {
-            if (!Gamepad.current.buttonSouth.IsPressed() || !currentMouse.leftButton.IsPressed())
+            if (!Gamepad.current.buttonSouth.IsPressed() && !currentMouse.leftButton.IsPressed())
             {
                 Debug.Log("BUTTON CLICKED!");
             }
         }      
+    }
+
+    public void OnGamepadClickRumble()
+    {
+        if (!Gamepad.current.buttonSouth.IsPressed() && !currentMouse.leftButton.IsPressed())
+        {
+            FindObjectOfType<Rumbler>().TriggerVibration(0.1f, 0.3f, 0.3f);
+        }     
     }
 
     public void OnHoverFeedback() //Must be called in inspector via OnClick button action
