@@ -18,15 +18,19 @@ public class Rumbler : MonoBehaviour
 
     void Update()
     {
-        if (vibrationTimer > 0)
+        if (gamepad != null)
         {
-            gamepad.SetMotorSpeeds(leftVibrationStrength, rightVibrationStrength);
-            vibrationTimer -= Time.deltaTime;
-        }
-        else
-        {
-            gamepad.SetMotorSpeeds(0, 0);
-        }
+            if (vibrationTimer > 0)
+            {
+
+                gamepad.SetMotorSpeeds(leftVibrationStrength, rightVibrationStrength);
+                vibrationTimer -= Time.deltaTime;
+            }
+            else
+            {
+                gamepad.SetMotorSpeeds(0, 0);
+            }
+        }           
     }
 
     public void TriggerVibration(float duration, float leftStrength, float rightStrength)
