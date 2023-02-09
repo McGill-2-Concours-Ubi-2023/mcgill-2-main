@@ -33,7 +33,7 @@ public class MainCharacterGroundedStateBehaviour : GenericStateMachineMonoBehavi
         animator.ResetTrigger(FreeFallShouldLand);
         m_TimeOnEnter = Time.time;
     }
-    
+
     private void Update()
     {
         if (!shouldUpdate)
@@ -45,11 +45,13 @@ public class MainCharacterGroundedStateBehaviour : GenericStateMachineMonoBehavi
         CharacterController controller = GetComponent<CharacterController>();
         m_Animator.SetFloat(Speed, controller.velocity.magnitude, 0.1f, Time.deltaTime);
         controller.Move(m_Input * Time.deltaTime);
+
+        float2 rawInput = m_InputActionAsset["Movement"].ReadValue<Vector2>();
         
-        float forward = m_InputActionAsset["Forward"].ReadValue<float>();
-        m_Input.z = forward;
-        float left = m_InputActionAsset["Left"].ReadValue<float>();
-        m_Input.x = left;
+        Debug.Log((Vector2)rawInput);
+        
+        m_Input.xz = rawInput.xy;
+
         float3 cameraForward = Vector3.ProjectOnPlane(m_MainCharacterController.Camera.transform.forward, Vector3.up);
         float3 cameraRight = m_MainCharacterController.Camera.transform.right;
         float3 adjustedDirection = m_Input.x * cameraRight + m_Input.z * cameraForward;

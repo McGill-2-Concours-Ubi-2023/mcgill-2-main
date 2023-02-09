@@ -1,61 +1,53 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
-using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
+
 public class SceneListGenerator : MonoBehaviour
 {
-    public ClickSound cs; 
+    public ClickSound cs;
     public string sceneFolder = "Assets/Scenes";
-    public Transform ScenesManager; 
-    public GameObject sceneButtonFrefab;
+    [FormerlySerializedAs("ScenesManager")]
+    public Transform sceneManager;
+    [FormerlySerializedAs("sceneButtonFrefab")]
+    public GameObject sceneButtonPrefab;
+
     // Start is called before the first frame update
     private void Start()
     {
-        
         // Get all the scenes in the folder.
-        string[] scenePaths = GetScenePaths(sceneFolder);
+        IEnumerable<string> scenes = GetAllScenePaths();
 
         //instantiate the buttonlist.
-        foreach (string scenePath in scenePaths)
+        foreach (string scenePath in scenes)
         {
-            // get the scene.
-            Scene scene = EditorSceneManager.GetSceneByPath(scenePath);
-
             // Instantiate button
-            GameObject instance = Instantiate(sceneButtonFrefab);
-            instance.transform.SetParent(ScenesManager, false);
+            GameObject instance = Instantiate(sceneButtonPrefab);
+            instance.transform.SetParent(sceneManager, false);
             instance.GetComponentInChildren<TMP_Text>().text = scenePath;
-            instance.GetComponent<Button>().onClick.AddListener(delegate { LoadScene(scenePath); });
+            instance.GetComponent<Button>().onClick.AddListener(() =>
+            {
+                SceneManager.LoadScene(scenePath);
+            });
             instance.GetComponent<Button>().onClick.AddListener(Click);
         }
     }
-
-    private void LoadScene(string path)
-    {
-        //EditorSceneManager.OpenScene(path, OpenSceneMode.Additive);
-        SceneManager.LoadScene(path);
-    }
+    
     private void Click() {
         cs.Click();
     }
-
-    private string[] GetScenePaths(string folderPath)
+    
+    private IEnumerable<string> GetAllScenePaths()
     {
-        // Get all the assets in the folder.
-        string[] assetPaths = AssetDatabase.FindAssets("t:Scene", new[] { folderPath });
+        int sceneCount = SceneManager.sceneCountInBuildSettings;
 
-        // Get the full path of each scene.
-        string[] scenePaths = new string[assetPaths.Length];
-        for (int i = 0; i < assetPaths.Length; i++)
+        for( int i = 0; i < sceneCount; i++ )
         {
-            string assetPath = AssetDatabase.GUIDToAssetPath(assetPaths[i]);
-            scenePaths[i] = assetPath;
+            yield return SceneUtility.GetScenePathByBuildIndex(i);
         }
-
-        return scenePaths;
     }
-
-
 }
