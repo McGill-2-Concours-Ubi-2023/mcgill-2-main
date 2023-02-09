@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEditor.SceneManagement;
-public class menu : MonoBehaviour
+public class Menu : MonoBehaviour
 {
     public bool cursor;
     void Start()
