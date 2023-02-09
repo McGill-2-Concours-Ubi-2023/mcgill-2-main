@@ -9,6 +9,7 @@ using UnityEngine.UI;
 
 public class SceneListGenerator : MonoBehaviour
 {
+    public ClickSound cs;
     public string sceneFolder = "Assets/Scenes";
     [FormerlySerializedAs("ScenesManager")]
     public Transform sceneManager;
@@ -32,7 +33,12 @@ public class SceneListGenerator : MonoBehaviour
             {
                 SceneManager.LoadScene(scenePath);
             });
+            instance.GetComponent<Button>().onClick.AddListener(Click);
         }
+    }
+    
+    private void Click() {
+        cs.Click();
     }
     
     private IEnumerable<string> GetAllScenePaths()
