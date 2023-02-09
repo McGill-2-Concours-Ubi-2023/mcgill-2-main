@@ -6,12 +6,14 @@ using TMPro;
 using UnityEngine.UI;
 public class SceneListGenerator : MonoBehaviour
 {
+    public ClickSound cs; 
     public string sceneFolder = "Assets/Scenes";
     public Transform ScenesManager; 
     public GameObject sceneButtonFrefab;
     // Start is called before the first frame update
     private void Start()
     {
+        
         // Get all the scenes in the folder.
         string[] scenePaths = GetScenePaths(sceneFolder);
 
@@ -26,7 +28,7 @@ public class SceneListGenerator : MonoBehaviour
             instance.transform.SetParent(ScenesManager, false);
             instance.GetComponentInChildren<TMP_Text>().text = scenePath;
             instance.GetComponent<Button>().onClick.AddListener(delegate { LoadScene(scenePath); });
-           
+            instance.GetComponent<Button>().onClick.AddListener(Click);
         }
     }
 
@@ -34,6 +36,9 @@ public class SceneListGenerator : MonoBehaviour
     {
         //EditorSceneManager.OpenScene(path, OpenSceneMode.Additive);
         SceneManager.LoadScene(path);
+    }
+    private void Click() {
+        cs.Click();
     }
 
     private string[] GetScenePaths(string folderPath)
