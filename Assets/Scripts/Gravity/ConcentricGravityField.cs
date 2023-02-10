@@ -26,10 +26,12 @@ public class ConcentricGravityField : GravityField
 
         //When approaching Kernel, attraction force intensifies
         var FgLerp = Mathf.Lerp(mediumDensity + attractionForce, mediumDensity, forceDirection.magnitude);
-        rb.AddForce(forceDirection.normalized * gravity * rb.mass * FgLerp);
+        var velocityChange = forceDirection.normalized * gravity * rb.mass * FgLerp * Time.deltaTime;
+        rb.velocity += velocityChange;
         //Dampen over time to prevent sinusoidal behaviour
         var dampenLerp = Mathf.Lerp(0, dampeningForce, Mathf.Clamp01(forceDirection.magnitude));
-        rb.AddForce(-dampenLerp * rb.velocity);
+        var velocityDampening = -dampenLerp * rb.velocity * Time.deltaTime;
+        rb.velocity += velocityDampening;
     }
 }
 

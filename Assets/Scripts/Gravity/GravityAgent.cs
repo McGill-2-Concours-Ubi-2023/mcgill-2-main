@@ -10,7 +10,6 @@ public class GravityAgent : MonoBehaviour, IGravityTriggers
 
     public void SetMassCompression(float massCompression)
     {
-        Debug.Log("APPLYING COMPRESSION!!");
         this.massCompression = massCompression;
     }
 
