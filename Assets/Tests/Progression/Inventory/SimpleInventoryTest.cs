@@ -51,6 +51,15 @@ public class SimpleInventoryTest
         {
             inventory.RemoveItem(TestItemType.B);
         });
+        Assert.Throws<InventoryFullException<TestItemType>>(() =>
+        {
+            inventory.AddInBulk(TestItemType.B, 11);
+        });
+        inventory.AddInBulk(TestItemType.B, 10);
+        Assert.Throws<InventoryEmptyException<TestItemType>>(() =>
+        {
+            inventory.RemoveInBulk(TestItemType.B, 11);
+        });
     }
 
     [Test]
@@ -67,6 +76,11 @@ public class SimpleInventoryTest
         Assert.AreEqual(0, inventory.GetCount(TestItemType.B));
         inventory.AddItem(TestItemType.C);
         Assert.AreEqual(1, inventory.GetCount(TestItemType.C));
+        
+        inventory.AddInBulk(TestItemType.A, 3);
+        Assert.AreEqual(3, inventory.GetCount(TestItemType.A));
+        inventory.RemoveInBulk(TestItemType.A, 2);
+        Assert.AreEqual(1, inventory.GetCount(TestItemType.A));
     }
     
     [UnityTest]

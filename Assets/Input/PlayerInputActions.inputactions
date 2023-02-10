@@ -364,6 +364,56 @@
                     "isPartOfComposite": true
                 }
             ]
+        },
+        {
+            "name": "Debug",
+            "id": "ddaf7483-3b83-460f-af63-b50a128db259",
+            "actions": [
+                {
+                    "name": "ToggleDebug",
+                    "type": "Button",
+                    "id": "f564f6a3-9ff3-4c7c-ae99-cbd90cc6790e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "BothPress",
+                    "id": "356fab65-7c3c-4de4-882b-8f902fcfc586",
+                    "path": "OneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ToggleDebug",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "caef5da7-74b7-42af-b8da-1913bceddee7",
+                    "path": "<HID::Google LLC Stadia Controller rev. A>/button14",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ToggleDebug",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "60eb6c95-1636-46a9-91e4-f6b3b5db26cf",
+                    "path": "<HID::Google LLC Stadia Controller rev. A>/button15",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ToggleDebug",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                }
+            ]
         }
     ],
     "controlSchemes": [

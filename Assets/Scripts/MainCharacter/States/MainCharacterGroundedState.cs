@@ -47,9 +47,7 @@ public class MainCharacterGroundedStateBehaviour : GenericStateMachineMonoBehavi
         controller.Move(m_Input * Time.deltaTime);
 
         float2 rawInput = m_InputActionAsset["Movement"].ReadValue<Vector2>();
-        
-        Debug.Log((Vector2)rawInput);
-        
+
         m_Input.xz = rawInput.xy;
 
         float3 cameraForward = Vector3.ProjectOnPlane(m_MainCharacterController.Camera.transform.forward, Vector3.up);
@@ -76,7 +74,7 @@ public class MainCharacterGroundedStateBehaviour : GenericStateMachineMonoBehavi
             {
                 Vector3 jumpTarget = jumpAction.Hit.point;
                 //controller.Move(jumpTarget - controller.transform.position);
-                m_MainCharacterController.NavActionData = jumpTarget;
+                gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.SetNavActionData), jumpTarget);
                 Transition(GroundedToJumpAction);
                 return;
             }
