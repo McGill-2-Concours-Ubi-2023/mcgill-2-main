@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GravityAgent : MonoBehaviour
+public class GravityAgent : MonoBehaviour, IGravityTriggers
 {
 
     private bool hasEscaped;
@@ -10,6 +10,7 @@ public class GravityAgent : MonoBehaviour
 
     public void SetMassCompression(float massCompression)
     {
+        Debug.Log("APPLYING COMPRESSION!!");
         this.massCompression = massCompression;
     }
 

@@ -52,6 +52,6 @@ public abstract class GravityField : MonoBehaviour
 
     public void ApplyMassCompression()
     {
-        agents.ForEach(agent => agent.GetComponent<GravityAgent>().SetMassCompression(massCompression));
+        agents.ForEach(agent => agent.Trigger<IGravityTriggers>(nameof(IGravityTriggers.SetMassCompression), massCompression));
     }
 }
