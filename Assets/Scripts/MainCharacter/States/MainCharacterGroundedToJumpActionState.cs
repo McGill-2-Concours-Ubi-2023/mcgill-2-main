@@ -20,7 +20,9 @@ public class MainCharacterGroundedToJumpActionStateBehaviour : GenericStateMachi
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         m_Animator = animator;
-        m_JumpTarget = GetComponent<MainCharacterController>().NavActionData as Vector3? ?? Vector3.zero;
+        Ref<object> jumpTargetRef = new Ref<object>();
+        gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.GetNavActionData), jumpTargetRef);
+        m_JumpTarget = jumpTargetRef.Value as Vector3? ?? Vector3.zero;
         m_InitialPosition = transform.position;
         m_TimeOnEnter = Time.time;
     }
