@@ -9,7 +9,7 @@ public interface ITrigger
 
 public static class TriggerExt
 {
-    public static void Trigger<T>(this MonoBehaviour gameObject, string triggerName, params object[] args)
+    public static void Trigger<T>(this GameObject gameObject, string triggerName, params object[] args)
         where T : ITrigger
     {
         T[] impls = gameObject.GetComponents<T>();
