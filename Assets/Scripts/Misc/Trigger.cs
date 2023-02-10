@@ -5,6 +5,7 @@ using UnityEngine;
 
 public interface ITrigger
 {
+
 }
 
 public static class TriggerExt
