@@ -37,19 +37,4 @@ public static class Utils
         scaledTexture.Apply();
         return scaledTexture;
     }
-    
-    public static void Trigger(this MonoBehaviour monoBehaviour, string triggerName, object arg)
-    {
-        monoBehaviour.SendMessage(triggerName, arg, SendMessageOptions.DontRequireReceiver);
-    }
-    
-    public static void Trigger(this MonoBehaviour gameObject, string triggerName, params object[] args)
-    {
-        MonoBehaviour[] monoBehaviours = gameObject.GetComponents<MonoBehaviour>();
-        Type[] types = args.Select(arg => arg.GetType()).ToArray();
-        foreach (MonoBehaviour monoBehaviour in monoBehaviours)
-        {
-            monoBehaviour.GetType().GetMethod(triggerName, types)?.Invoke(monoBehaviour, args);
-        }
-    }
 }
