@@ -7,13 +7,15 @@ using UnityEngine.InputSystem;
 public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers
 {
     public float MovementSpeed;
+    public float DashSpeed;
     public CinemachineVirtualCamera Camera;
     private object m_NavActionData;
-    
+
     private ISimpleInventory<SimpleCollectible> m_SimpleCollectibleInventory;
     
     private InputActionAsset m_InputActionAsset;
-    
+    private readonly static int InDebugMode = Animator.StringToHash("InDebugMode");
+
     private void Awake()
     {
         m_SimpleCollectibleInventory = new SimpleInventory<SimpleCollectible>();
@@ -35,6 +37,18 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers
         gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnMovementIntention), adjustedDirection);
     }
 
+#if DEBUG
+    public void OnDebug()
+    {
+        Debug.Log("Toggle debug mode");
+        Animator animator = GetComponent<Animator>();
+        if (animator)
+        {
+            animator.SetBool(InDebugMode, !animator.GetBool(InDebugMode));
+        }
+    }
+#endif
+    
     public void CollectCoin()
     {
         m_SimpleCollectibleInventory.AddItem(SimpleCollectible.Coin);
@@ -48,6 +62,11 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers
     public void GetNavActionData(Ref<object> outData)
     {
         outData.Value = m_NavActionData;
+    }
+
+    public void OnDash()
+    {
+        gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnDashIntention));
     }
 }
 

@@ -11,4 +11,6 @@ public interface IMainCharacterTriggers : ITrigger
     public void OnInput(float2 input) { }
     
     public void OnMovementIntention(float3 intention) { }
+    
+    public void OnDashIntention() { }
 }

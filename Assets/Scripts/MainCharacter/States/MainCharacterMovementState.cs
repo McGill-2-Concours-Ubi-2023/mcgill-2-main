@@ -12,15 +12,16 @@ public class MainCharacterMovementStateBehaviour : GenericStateMachineMonoBehavi
 {
     private float3 m_MovementIntention;
     private MainCharacterController m_Controller;
-    private CharacterController m_CharacterController;
+    private Rigidbody m_Rigidbody;
     private Animator m_Animator;
     private readonly static int FreeFallShouldLand = Animator.StringToHash("FreeFallShouldLand");
     private readonly static int Speed = Animator.StringToHash("Speed");
+    private readonly static int MovementToDash = Animator.StringToHash("MovementToDash");
 
     private void Start()
     {
         m_Controller = GetComponent<MainCharacterController>();
-        m_CharacterController = GetComponent<CharacterController>();
+        m_Rigidbody = GetComponent<Rigidbody>();
         m_Animator = GetComponent<Animator>();
     }
 
@@ -32,11 +33,11 @@ public class MainCharacterMovementStateBehaviour : GenericStateMachineMonoBehavi
         }
         
         m_Animator.ResetTrigger(FreeFallShouldLand);
-        m_Animator.SetFloat(Speed, m_CharacterController.velocity.magnitude, 0.1f, Time.fixedDeltaTime);
+        m_Animator.SetFloat(Speed, m_Rigidbody.velocity.magnitude, 0.1f, Time.fixedDeltaTime);
         
         // move by velocity
         float speed = m_Controller.MovementSpeed;
-        m_CharacterController.Move(speed * m_MovementIntention * Time.fixedDeltaTime);
+        m_Rigidbody.velocity = m_MovementIntention * speed;
 
         if (any(m_MovementIntention.xz != float2.zero))
         {
@@ -48,7 +49,8 @@ public class MainCharacterMovementStateBehaviour : GenericStateMachineMonoBehavi
             {
                 angle = -angle;
             }
-            transform.rotation = Quaternion.Euler(0, angle * Mathf.Rad2Deg, 0);
+            m_Rigidbody.rotation = Quaternion.Euler(0, angle * Mathf.Rad2Deg, 0);
+            m_Rigidbody.angularVelocity = Vector3.zero;
         }
     }
 
@@ -60,5 +62,10 @@ public class MainCharacterMovementStateBehaviour : GenericStateMachineMonoBehavi
     public void OnFootstep()
     {
         
+    }
+    
+    public void OnDashIntention()
+    {
+        Transition(MovementToDash);
     }
 }
