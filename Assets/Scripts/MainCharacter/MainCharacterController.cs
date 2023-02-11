@@ -62,5 +62,10 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers
     {
         outData.Value = m_NavActionData;
     }
+
+    public void OnDash()
+    {
+        gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnDashIntention));
+    }
 }
 
