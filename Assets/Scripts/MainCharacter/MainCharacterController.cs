@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers
 {
     public float MovementSpeed;
+    public float DashSpeed;
     public CinemachineVirtualCamera Camera;
     private object m_NavActionData;
 

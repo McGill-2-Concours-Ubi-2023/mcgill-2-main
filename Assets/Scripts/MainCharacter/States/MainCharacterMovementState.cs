@@ -16,6 +16,7 @@ public class MainCharacterMovementStateBehaviour : GenericStateMachineMonoBehavi
     private Animator m_Animator;
     private readonly static int FreeFallShouldLand = Animator.StringToHash("FreeFallShouldLand");
     private readonly static int Speed = Animator.StringToHash("Speed");
+    private readonly static int MovementToDash = Animator.StringToHash("MovementToDash");
 
     private void Start()
     {
@@ -65,10 +66,6 @@ public class MainCharacterMovementStateBehaviour : GenericStateMachineMonoBehavi
     
     public void OnDashIntention()
     {
-        Rigidbody rb = GetComponent<Rigidbody>();
-        if (rb)
-        {
-            rb.velocity = float3(2.0f, 0.0f, 2.0f);
-        }
+        Transition(MovementToDash);
     }
 }
