@@ -10,6 +10,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers
     public float DashSpeed;
     public CinemachineVirtualCamera Camera;
     private object m_NavActionData;
+    public CinemachineVirtualCamera DebugCamera;
 
     private ISimpleInventory<SimpleCollectible> m_SimpleCollectibleInventory;
     
@@ -30,11 +31,18 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers
         float3 adjustedInput = new float3();
         adjustedInput.xz = input.xy;
 
-        float3 cameraForward = Vector3.ProjectOnPlane(Camera.transform.forward, Vector3.up);
-        float3 cameraRight = Camera.transform.right;
+        CinemachineVirtualCamera cam = GetActiveCamera();
+
+        float3 cameraForward = Vector3.ProjectOnPlane(cam.transform.forward, Vector3.up);
+        float3 cameraRight = cam.transform.right;
         float3 adjustedDirection = adjustedInput.x * cameraRight + adjustedInput.z * cameraForward;
 
         gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnMovementIntention), adjustedDirection);
+
+        #if DEBUG
+        float2 camInput = m_InputActionAsset["CameraMove"].ReadValue<Vector2>();
+        gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnDebugCameraRotation), camInput);
+        #endif
     }
 
 #if DEBUG
@@ -67,6 +75,11 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers
     public void OnDash()
     {
         gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnDashIntention));
+    }
+    
+    public CinemachineVirtualCamera GetActiveCamera()
+    {
+        return DebugCamera.gameObject.activeSelf ? DebugCamera : Camera;
     }
 }
 

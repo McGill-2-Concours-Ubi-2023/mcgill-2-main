@@ -11,6 +11,42 @@ public interface ITrigger
 
 public static class TriggerExt
 {
+    private class TriggerResolver
+    {
+        private static TriggerResolver m_Instance;
+        private readonly static object m_Lock = new object();
+        internal static TriggerResolver Instance
+        {
+            get
+            {
+                if (m_Instance == null)
+                {
+                    lock (m_Lock)
+                    {
+                        m_Instance ??= new TriggerResolver();
+                    }
+                }
+
+                return m_Instance;
+            }
+        }
+
+        internal Action ResolveTrigger<T>(T impl, string triggerName) where T : ITrigger
+        {
+            return null;
+        }
+        
+        internal Action<T1> ResolveTrigger<T, T1>(T impl, string triggerName, T1 t1) where T : ITrigger
+        {
+            return null;
+        }
+        
+        internal Action<T1, T2> ResolveTrigger<T, T1, T2>(T impl, string triggerName, T1 t1, T2 t2) where T : ITrigger
+        {
+            return null;
+        }
+    }
+    
     public static void Trigger<T>(this GameObject gameObject, string triggerName, params object[] args)
         where T : ITrigger
     {

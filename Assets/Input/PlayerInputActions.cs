@@ -53,6 +53,15 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CameraMove"",
+                    ""type"": ""Value"",
+                    ""id"": ""b0debe39-f426-4201-a7b4-7cb6352c4e82"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -253,6 +262,61 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""action"": ""Dash"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Controller"",
+                    ""id"": ""80a5acfe-946a-4bef-b3a6-c0bc0ca9b851"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraMove"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""1247c279-9ea4-4c0f-a3a9-5e0120225d35"",
+                    ""path"": ""<Gamepad>/rightStick/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""CameraMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""29f83cdf-ef1c-4fb1-8150-667ed5ad7b49"",
+                    ""path"": ""<Gamepad>/rightStick/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""CameraMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""91b19b08-175f-4dcd-8231-68a34d076510"",
+                    ""path"": ""<Gamepad>/rightStick/left"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""CameraMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""f4330371-64ad-455c-9e15-ccc8078e6bc2"",
+                    ""path"": ""<Gamepad>/rightStick/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""CameraMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -529,6 +593,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         m_Player_Movement = m_Player.FindAction("Movement", throwIfNotFound: true);
         m_Player_Debug = m_Player.FindAction("Debug", throwIfNotFound: true);
         m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
+        m_Player_CameraMove = m_Player.FindAction("CameraMove", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Point = m_UI.FindAction("Point", throwIfNotFound: true);
@@ -600,6 +665,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Movement;
     private readonly InputAction m_Player_Debug;
     private readonly InputAction m_Player_Dash;
+    private readonly InputAction m_Player_CameraMove;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -607,6 +673,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         public InputAction @Movement => m_Wrapper.m_Player_Movement;
         public InputAction @Debug => m_Wrapper.m_Player_Debug;
         public InputAction @Dash => m_Wrapper.m_Player_Dash;
+        public InputAction @CameraMove => m_Wrapper.m_Player_CameraMove;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -625,6 +692,9 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @Dash.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDash;
                 @Dash.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDash;
                 @Dash.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDash;
+                @CameraMove.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCameraMove;
+                @CameraMove.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCameraMove;
+                @CameraMove.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCameraMove;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -638,6 +708,9 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @Dash.started += instance.OnDash;
                 @Dash.performed += instance.OnDash;
                 @Dash.canceled += instance.OnDash;
+                @CameraMove.started += instance.OnCameraMove;
+                @CameraMove.performed += instance.OnCameraMove;
+                @CameraMove.canceled += instance.OnCameraMove;
             }
         }
     }
@@ -755,6 +828,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         void OnMovement(InputAction.CallbackContext context);
         void OnDebug(InputAction.CallbackContext context);
         void OnDash(InputAction.CallbackContext context);
+        void OnCameraMove(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
