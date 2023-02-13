@@ -189,7 +189,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 {
                     ""name"": ""modifier"",
                     ""id"": ""bf4cab9d-4d4f-4afe-96ac-91386ba294dd"",
-                    ""path"": ""<HID::Google LLC Stadia Controller rev. A>/button14"",
+                    ""path"": ""<Gamepad>/leftStickPress"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
@@ -200,7 +200,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 {
                     ""name"": ""binding"",
                     ""id"": ""c3ea4e22-18f6-4296-8843-afc3ca569b68"",
-                    ""path"": ""<HID::Google LLC Stadia Controller rev. A>/button15"",
+                    ""path"": ""<Gamepad>/rightStickPress"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
@@ -244,7 +244,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""759957c4-8f51-47fa-bc46-a3facc0be721"",
-                    ""path"": ""<HID::Google LLC Stadia Controller rev. A>/button19"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
