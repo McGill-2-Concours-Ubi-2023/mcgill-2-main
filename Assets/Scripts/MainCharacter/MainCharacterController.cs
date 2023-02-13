@@ -10,7 +10,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers
     public float DashSpeed;
     public CinemachineVirtualCamera Camera;
     private object m_NavActionData;
-    public CinemachineVirtualCamera DebugCamera;
+    public CinemachineVirtualCameraBase DebugCamera;
 
     private ISimpleInventory<SimpleCollectible> m_SimpleCollectibleInventory;
     
@@ -31,7 +31,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers
         float3 adjustedInput = new float3();
         adjustedInput.xz = input.xy;
 
-        CinemachineVirtualCamera cam = GetActiveCamera();
+        CinemachineVirtualCameraBase cam = GetActiveCamera();
 
         float3 cameraForward = Vector3.ProjectOnPlane(cam.transform.forward, Vector3.up);
         float3 cameraRight = cam.transform.right;
@@ -77,7 +77,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers
         gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnDashIntention));
     }
     
-    public CinemachineVirtualCamera GetActiveCamera()
+    public CinemachineVirtualCameraBase GetActiveCamera()
     {
         return DebugCamera.gameObject.activeSelf ? DebugCamera : Camera;
     }

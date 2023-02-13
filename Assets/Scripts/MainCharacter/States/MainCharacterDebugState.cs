@@ -1,3 +1,4 @@
+using Cinemachine;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -27,7 +28,18 @@ public class MainCharacterDebugStateBehaviour : GenericStateMachineMonoBehaviour
 
     public void OnDebugCameraRotation(float2 input)
     {
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (input.x != 0)
+        {
+            gameObject.transform.Rotate(Vector3.up, input.x * 90 * Time.deltaTime);
+            rb.angularVelocity = Vector3.zero;
+        }
         
+        if (input.y != 0)
+        {
+            Transform cameraBaseTransform = m_Controller.DebugCamera.Follow;
+            cameraBaseTransform.Rotate(-Vector3.right, input.y * 90 * Time.deltaTime);
+        }
     }
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
