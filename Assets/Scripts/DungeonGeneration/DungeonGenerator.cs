@@ -6,14 +6,11 @@ using UnityEngine;
 public class DungeonGenerator : MonoBehaviour
 {
     [SerializeField]
-    DungeonGridData grid;
-    [SerializeField]
-    DungeonData data;
+    DungeonGrid grid;
 
     private void Awake()
     {
         grid.SetMonoInstance(this.gameObject);
-        data.SetMonoInstance(this.gameObject);
     }
 
     private void Update()

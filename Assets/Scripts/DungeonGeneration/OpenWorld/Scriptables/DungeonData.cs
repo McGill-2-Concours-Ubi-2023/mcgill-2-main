@@ -23,7 +23,7 @@ public class DungeonData : ScriptableObject
         randomWalkParameters.ExecuteRandomWalk();
         corridorsParameters.GenerateCorridors(randomWalkParameters);
         //walls.CreateWalls(corridorsParameters.GetPositionsBuffer());
-        DungeonLayoutDrawer.DrawFloor(randomWalkParameters.GetPositionsBuffer(), mono);
+        //DungeonDrawer.Draw(randomWalkParameters.GetPositionsBuffer(), mono);
         //DungeonLayoutDrawer.DrawWalls(walls.GetPositionsBuffer(), mono);
     }
 
@@ -41,7 +41,7 @@ public class DungeonData : ScriptableObject
         randomWalkParameters.ClearBuffer();
         corridorsParameters.ClearBuffer();
         walls.ClearBuffer();
-        DungeonLayoutDrawer.EraseDungeon(mono);
+        DungeonDrawer.EraseDungeon(mono);
     }
 
     public DungeonWallGenerator GetWallsData() 
@@ -58,8 +58,8 @@ public class DungeonData : ScriptableObject
     public void LoadData()
     {
         ClearDungeon();
-        DungeonLayoutDrawer.DrawFloor(GetActiveLayout().GetFloorData(), mono);
-        DungeonLayoutDrawer.DrawWalls(GetActiveLayout().GetWallsData(), mono);
+        //DungeonDrawer.Draw(GetActiveLayout().GetFloorData(), mono);
+        //DungeonLayoutDrawer.DrawWalls(GetActiveLayout().GetWallsData(), mono);
     }
 
     public void SetMonoInstance(GameObject mono)
