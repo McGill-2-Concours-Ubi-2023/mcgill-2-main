@@ -13,7 +13,7 @@ public class DungeonGridEditor : Editor
 
         if (GUILayout.Button("Generate Grid"))
         {
-            grid.GenerateGrid();
+            //grid.GenerateGrid();
         }
     }
 }
