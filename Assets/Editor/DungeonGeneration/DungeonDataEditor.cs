@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,11 +14,8 @@ public class DungeonDataEditor : Editor
     {
         DrawDefaultInspector();
         dungeonData = ((DungeonData)target);
-        if (dungeonData.GetMonoInstance() == null)
-        {
-            dungeonData.SetMonoInstance(FindObjectOfType<DungeonGenerator>().gameObject);   
-        }
-
+        OnNullInitializeBehaviour(FindObjectOfType<DungeonGenerator>().gameObject);
+        
         if (GUILayout.Button("Generate new dungeon"))
         {
             dungeonData.GenerateDungeon();
@@ -56,6 +54,19 @@ public class DungeonDataEditor : Editor
                 EditorUtility.DisplayDialog("Success Dialog", "Layout successfully loaded!", "OK");
                 EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
             }
+        }
+    }
+
+    private void OnNullInitializeBehaviour(GameObject dungeonGenerator)
+    {
+        if (dungeonData.GetMonoInstance() == null)
+        {
+            dungeonData.SetMonoInstance(dungeonGenerator);
+            dungeonData.GetGrid().SetMonoInstance(dungeonGenerator);
+        }
+        else if (dungeonData.GetGrid().GetMonoInstance() == null)
+        {
+            dungeonData.GetGrid().SetMonoInstance(dungeonGenerator);
         }
     }
 }
