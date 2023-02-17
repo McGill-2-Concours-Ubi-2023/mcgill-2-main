@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[ExecuteInEditMode]
 public class DungeonGenerator : MonoBehaviour
 {
     [SerializeField]
@@ -18,10 +19,5 @@ public class DungeonGenerator : MonoBehaviour
         {
             data.SetMonoInstance(this.gameObject);
         }
-    }
-
-    private void Start()
-    {
-        data.GenerateDungeon();
     }
 }
