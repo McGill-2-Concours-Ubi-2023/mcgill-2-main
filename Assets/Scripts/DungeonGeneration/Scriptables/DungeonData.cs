@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New dungeon", menuName = "Dungeon asset")]
-public class DungeonData :DataContainer
+public class DungeonData :DataContainer, IDungeonTrigger
 {
     [SerializeField]
     private ScriptableObject activeLayout;
@@ -14,14 +14,19 @@ public class DungeonData :DataContainer
     [Range(0.1f, 1f)]
     private float roomPercent = 0.5f;
     [SerializeField]
-    private int roomSize = 10;
-    [SerializeField]
     private List<DungeonRoom> rooms = new List<DungeonRoom>();
+    [SerializeField]
+    private DungeonRoom startingRoom;
 
     public void GenerateDungeon()
     {
+        ClearDungeon();
+        rooms.Clear();
         GetGrid().SetMonoInstance(mono);
-        ((DungeonGrid)dungeonGrid).GenerateGrid(this);
+        GetGrid().GenerateGrid();
+        GetGrid().GenerateRooms(this);
+        GetGrid().ConnectMissingRooms(this);
+        GetGrid().DeleteRandomRooms(this);       
     }
 
     public void AddRoom(DungeonRoom room)
@@ -29,14 +34,24 @@ public class DungeonData :DataContainer
         rooms.Add(room);
     }
 
+    public void ReceiveMessage(string message)
+    {
+        Debug.Log(message);
+    }
+
+    public void SetStartingRoom(DungeonRoom room)
+    {
+        startingRoom = room;
+    }
+
+    public DungeonRoom GetStartingRoom()
+    {
+        return startingRoom;
+    }
+
     public float RoomPercent()
     {
         return roomPercent;
-    }
-
-    public int RoomSize()
-    {
-        return roomSize;
     }
 
     public DungeonLayout GetActiveLayout()
@@ -49,24 +64,38 @@ public class DungeonData :DataContainer
         return dungeonGrid as DungeonGrid;
     }
 
+    public List<DungeonRoom> AllRooms()
+    {
+        return rooms;
+    }
+
     public void ClearDungeon()
     {
+        rooms.Clear();
         GetGrid().ClearBuffer();
+        DungeonDrawer.EraseDungeon(mono);
     }
 
     public void SaveData()
     {
-        //throw new NotImplementedException();
+        var roomsPositions = new List<Vector3>();
+        rooms.ForEach(room =>
+        {
+            roomsPositions.Add(room.transform.position);
+        });
+        GetActiveLayout().SaveFloorData(roomsPositions);
+        GetActiveLayout().SaveStartPosition(startingRoom.transform.position);
     }
 
     public void LoadData()
     {
-        //throw new NotImplementedException();
+        ClearDungeon();
+        GetGrid().LoadRooms(GetActiveLayout().GetFloorData(), this);
+        startingRoom = rooms.Where(room => room.transform.position == GetActiveLayout().GetStartPosition()).First();
     }
 
     public object GetWallsData()
     {
         return null;
-        //throw new NotImplementedException();
     }
 }

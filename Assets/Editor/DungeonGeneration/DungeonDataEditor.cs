@@ -25,7 +25,7 @@ public class DungeonDataEditor : Editor
             EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
         }
 
-        if (dungeonData.GetActiveLayout() != null && dungeonData.GetWallsData() != null)
+        if (dungeonData.GetActiveLayout() != null)
         {
             if (GUILayout.Button("Save data"))
             {
