@@ -62,5 +62,26 @@ public static class TriggerExt
             method.Invoke(impl, args);
         }
     }
+
+    public static void Trigger<T>(this object obj, string triggerName, params object[] args)
+     where T : ITrigger
+    {
+        T[] impls = obj.GetType().GetInterfaces()
+            .Where(i => i.IsAssignableFrom(typeof(T)))
+            .Select(i => (T)obj)
+            .ToArray();
+
+        MethodInfo method = typeof(T).GetMethods().FirstOrDefault(m => m.Name == triggerName);
+        if (method == null)
+        {
+            return;
+        }
+
+        foreach (T impl in impls)
+        {
+            method.Invoke(impl, args);
+        }
+    }
+
 }
 
