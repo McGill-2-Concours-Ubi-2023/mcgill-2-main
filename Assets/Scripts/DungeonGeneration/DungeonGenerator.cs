@@ -12,12 +12,4 @@ public class DungeonGenerator : MonoBehaviour
     {
         data.SetMonoInstance(this.gameObject);
     }
-
-    private void Update()
-    {
-        if(data.GetMonoInstance() == null)
-        {
-            data.SetMonoInstance(this.gameObject);
-        }
-    }
 }

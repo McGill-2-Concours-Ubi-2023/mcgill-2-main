@@ -13,6 +13,10 @@ public class DungeonDataEditor : Editor
     {
         DrawDefaultInspector();
         dungeonData = ((DungeonData)target);
+        if (dungeonData.GetMonoInstance() == null)
+        {
+            dungeonData.SetMonoInstance(FindObjectOfType<DungeonGenerator>().gameObject);   
+        }
 
         if (GUILayout.Button("Generate new dungeon"))
         {
