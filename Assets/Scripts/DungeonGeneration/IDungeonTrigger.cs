@@ -2,7 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IDungeonTrigger : ITrigger
+public interface IDungeonMapTrigger : ITrigger
 {
-    public void ReceiveMessage(string message) { }
+    public abstract void MapGridGeneration();
+
+    public abstract void GenerateRoom(Vector2 pos, RoomTypes.RoomType rt);
+
 }

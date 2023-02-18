@@ -41,6 +41,10 @@ public class DungeonRoom : MonoBehaviour
         return transform.position;
     }
 
+    public Vector2 GetPositionInGrid() {
+        return new Vector2(0f, 0f);
+    }
+
     public List<DungeonRoom> GetConnectedRooms()
     {
         return adjacentRooms;

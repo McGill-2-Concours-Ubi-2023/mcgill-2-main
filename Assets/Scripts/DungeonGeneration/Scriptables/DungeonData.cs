@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New dungeon", menuName = "Dungeon asset")]
-public class DungeonData :DataContainer, IDungeonTrigger
+public class DungeonData :DataContainer
 {
     [SerializeField]
     private ScriptableObject activeLayout;
@@ -17,6 +17,8 @@ public class DungeonData :DataContainer, IDungeonTrigger
     private List<DungeonRoom> rooms = new List<DungeonRoom>();
     [SerializeField]
     private DungeonRoom startingRoom;
+    [SerializeField]
+    private MapManager mapM; 
 
     public void GenerateDungeon()
     {
@@ -24,6 +26,7 @@ public class DungeonData :DataContainer, IDungeonTrigger
         rooms.Clear();
         GetGrid().SetMonoInstance(mono);
         GetGrid().GenerateGrid();
+        mapM.Trigger<IDungeonMapTrigger>(nameof(IDungeonMapTrigger.MapGridGeneration)); //start map grid generation after the dungeon grid is done generating
         GetGrid().GenerateRooms(this);
         GetGrid().ConnectMissingRooms(this);
         GetGrid().DeleteRandomRooms(this);       
@@ -34,10 +37,10 @@ public class DungeonData :DataContainer, IDungeonTrigger
         rooms.Add(room);
     }
 
-    public void ReceiveMessage(string message)
+  /*  public void ReceiveMessage(string message)
     {
         Debug.Log(message);
-    }
+    }*/
 
     public void SetStartingRoom(DungeonRoom room)
     {

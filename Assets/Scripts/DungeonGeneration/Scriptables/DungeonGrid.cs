@@ -159,4 +159,8 @@ public class DungeonGrid : DataContainer
         });
         ConnectMissingRooms(data);
     }
+
+    public int GridSize() {
+        return gridSize;
+    }
 }
