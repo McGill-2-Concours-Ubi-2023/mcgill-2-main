@@ -15,7 +15,26 @@ public class DungeonDataEditor : Editor
         DrawDefaultInspector();
         dungeonData = ((DungeonData)target);
         OnNullInitializeBehaviour(FindObjectOfType<DungeonGenerator>().gameObject);
-        
+
+        if (GUILayout.Button("Track start room"))
+        {
+            var startingRoom = dungeonData.GetStartingRoom();
+            if(startingRoom == null && dungeonData.GetActiveLayout() != null)
+            {
+                dungeonData.LoadData();
+                startingRoom = dungeonData.GetStartingRoom();
+                EditorGUIUtility.PingObject(startingRoom);
+                Selection.activeGameObject = startingRoom.gameObject;
+            } else if(startingRoom != null)
+            {
+                EditorGUIUtility.PingObject(startingRoom);
+                Selection.activeGameObject = startingRoom.gameObject;
+            } else
+            {
+                EditorUtility.DisplayDialog("Null reference", "Error: room could not be tracked", "OK");
+            }
+        }
+
         if (GUILayout.Button("Generate new dungeon"))
         {
             dungeonData.GenerateDungeon();

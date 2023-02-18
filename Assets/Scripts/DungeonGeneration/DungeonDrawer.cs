@@ -16,23 +16,21 @@ public static class DungeonDrawer
     }
 
     //return the drawn GameObject
-    public static GameObject DrawSingleRoom(Vector3 position, PrimitiveType type, GameObject parentObj, Vector3 roomScale)
+    public static GameObject DrawSingleRoom(Vector3 position, GameObject prefab, GameObject parentObj)
     {
-        var obj = GameObject.CreatePrimitive(type);
+        var obj = GameObject.Instantiate(prefab);
         obj.transform.position = position;
-        obj.transform.localScale = roomScale;
         obj.transform.parent = FindDungeonDrawer(parentObj).transform;
         return obj;
     }
 
-    public static List<GameObject> DrawRooms(List<Vector3> positions, PrimitiveType type, GameObject parentObj, Vector3 roomScale)
+    public static List<GameObject> DrawRooms(List<Vector3> positions, GameObject prefab, GameObject parentObj)
     {
         var roomsObj = new List<GameObject>();
         foreach(var position in positions)
         {
-            var obj = GameObject.CreatePrimitive(type);
+            var obj = GameObject.Instantiate(prefab);
             obj.transform.position = position;
-            obj.transform.localScale = roomScale;
             obj.transform.parent = FindDungeonDrawer(parentObj).transform;
             roomsObj.Add(obj);
         }
