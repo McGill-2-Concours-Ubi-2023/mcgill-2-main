@@ -12,24 +12,21 @@ public class DungeonData :DataContainer
     private ScriptableObject dungeonGrid;
     [SerializeField]
     [Range(0.1f, 1f)]
-    private float roomPercent = 0.5f;
-    [SerializeField]
+    private float roomDensity = 0.5f;
     private List<DungeonRoom> rooms = new List<DungeonRoom>();
-    [SerializeField]
     private DungeonRoom startingRoom;
+    [SerializeField][Range(1, 50)]
+    private int minRoomCount = 20;
     [SerializeField]
-    private MapManager mapM; 
+    private GameObject roomPrefab;
 
     public void GenerateDungeon()
     {
         ClearDungeon();
         rooms.Clear();
         GetGrid().SetMonoInstance(mono);
-        GetGrid().GenerateGrid();
-        mapM.Trigger<IDungeonMapTrigger>(nameof(IDungeonMapTrigger.MapGridGeneration)); //start map grid generation after the dungeon grid is done generating
+        GetGrid().GenerateGrid(this);
         GetGrid().GenerateRooms(this);
-        GetGrid().ConnectMissingRooms(this);
-        GetGrid().DeleteRandomRooms(this);       
     }
 
     public void AddRoom(DungeonRoom room)
@@ -37,10 +34,10 @@ public class DungeonData :DataContainer
         rooms.Add(room);
     }
 
-  /*  public void ReceiveMessage(string message)
+    public int RoomCount()
     {
-        Debug.Log(message);
-    }*/
+        return minRoomCount;
+    }
 
     public void SetStartingRoom(DungeonRoom room)
     {
@@ -52,9 +49,14 @@ public class DungeonData :DataContainer
         return startingRoom;
     }
 
-    public float RoomPercent()
+    public float RoomDensity()
     {
-        return roomPercent;
+        return roomDensity;
+    }
+
+    public GameObject GetRoomPrefab()
+    {
+        return roomPrefab;
     }
 
     public DungeonLayout GetActiveLayout()
@@ -86,8 +88,8 @@ public class DungeonData :DataContainer
         {
             roomsPositions.Add(room.transform.position);
         });
-        GetActiveLayout().SaveFloorData(roomsPositions);
         GetActiveLayout().SaveStartPosition(startingRoom.transform.position);
+        GetActiveLayout().SaveFloorData(roomsPositions);
     }
 
     public void LoadData()
@@ -95,10 +97,5 @@ public class DungeonData :DataContainer
         ClearDungeon();
         GetGrid().LoadRooms(GetActiveLayout().GetFloorData(), this);
         startingRoom = rooms.Where(room => room.transform.position == GetActiveLayout().GetStartPosition()).First();
-    }
-
-    public object GetWallsData()
-    {
-        return null;
     }
 }

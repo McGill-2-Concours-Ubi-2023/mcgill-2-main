@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,26 @@ public class DungeonDataEditor : Editor
     {
         DrawDefaultInspector();
         dungeonData = ((DungeonData)target);
+        OnNullInitializeBehaviour(FindObjectOfType<DungeonGenerator>().gameObject);
+
+        if (GUILayout.Button("Track start room"))
+        {
+            var startingRoom = dungeonData.GetStartingRoom();
+            if(startingRoom == null && dungeonData.GetActiveLayout() != null)
+            {
+                dungeonData.LoadData();
+                startingRoom = dungeonData.GetStartingRoom();
+                EditorGUIUtility.PingObject(startingRoom);
+                Selection.activeGameObject = startingRoom.gameObject;
+            } else if(startingRoom != null)
+            {
+                EditorGUIUtility.PingObject(startingRoom);
+                Selection.activeGameObject = startingRoom.gameObject;
+            } else
+            {
+                EditorUtility.DisplayDialog("Null reference", "Error: room could not be tracked", "OK");
+            }
+        }
 
         if (GUILayout.Button("Generate new dungeon"))
         {
@@ -52,6 +73,19 @@ public class DungeonDataEditor : Editor
                 EditorUtility.DisplayDialog("Success Dialog", "Layout successfully loaded!", "OK");
                 EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
             }
+        }
+    }
+
+    private void OnNullInitializeBehaviour(GameObject dungeonGenerator)
+    {
+        if (dungeonData.GetMonoInstance() == null)
+        {
+            dungeonData.SetMonoInstance(dungeonGenerator);
+            dungeonData.GetGrid().SetMonoInstance(dungeonGenerator);
+        }
+        else if (dungeonData.GetGrid().GetMonoInstance() == null)
+        {
+            dungeonData.GetGrid().SetMonoInstance(dungeonGenerator);
         }
     }
 }
