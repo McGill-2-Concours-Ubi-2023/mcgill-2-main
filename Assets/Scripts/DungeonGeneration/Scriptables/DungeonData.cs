@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -15,6 +14,7 @@ public class DungeonData :DataContainer
     private float roomDensity = 0.5f;
     private List<DungeonRoom> rooms = new List<DungeonRoom>();
     private DungeonRoom startingRoom;
+    private MapManager mapM; 
     [SerializeField][Range(1, 50)]
     private int minRoomCount = 20;
     [SerializeField]
@@ -22,11 +22,15 @@ public class DungeonData :DataContainer
 
     public void GenerateDungeon()
     {
+        mapM = GameObject.Find("LayoutMap").GetComponent<MapManager>();
+        mapM.Trigger<IDungeonMapTrigger>(nameof(IDungeonMapTrigger.Test));
         ClearDungeon();
         rooms.Clear();
         GetGrid().SetMonoInstance(mono);
         GetGrid().GenerateGrid(this);
+        mapM.Trigger<IDungeonMapTrigger>(nameof(IDungeonMapTrigger.MapGridGeneration)); //start map grid generation after the dungeon grid is done generating
         GetGrid().GenerateRooms(this);
+        Debug.Log("generate");
     }
 
     public void AddRoom(DungeonRoom room)
@@ -79,6 +83,8 @@ public class DungeonData :DataContainer
         rooms.Clear();
         GetGrid().ClearBuffer();
         DungeonDrawer.EraseDungeon(mono);
+        mapM.Trigger<IDungeonMapTrigger>(nameof(IDungeonMapTrigger.ClearMap));
+        Debug.Log("destory");
     }
 
     public void SaveData()

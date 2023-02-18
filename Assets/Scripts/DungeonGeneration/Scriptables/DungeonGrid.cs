@@ -17,7 +17,8 @@ public class DungeonGrid : DataContainer
     private int cellsSpacing = 2;
     private DungeonData data;
     private Dictionary<Vector3, Vector2Int> gridMap;
-    
+    private MapManager mapM;
+
     public void GenerateGrid(DungeonData data)
     {
         ClearGrid();
@@ -42,11 +43,12 @@ public class DungeonGrid : DataContainer
 
     public void GenerateRooms(DungeonData data)
     {
+        mapM = GameObject.Find("LayoutMap").GetComponent<MapManager>();
         this.data = data;
         var startingPosition = dataBuffer.ElementAt(UnityEngine.Random.Range(0, dataBuffer.Count())); //start at a random position on the grid
         var startingRoom = DungeonRoom.Create(data, startingPosition, gridMap); //create starting room
         data.SetStartingRoom(startingRoom);
-
+        mapM.Trigger<IDungeonMapTrigger>(nameof(IDungeonMapTrigger.GenerateMapRoom), startingRoom.GridPosition(), RoomTypes.RoomType.Start);
         //Keep track of already populated grid points
         var visitedPoints = new HashSet<Vector3>();
         visitedPoints.Add(startingPosition);
@@ -64,6 +66,7 @@ public class DungeonGrid : DataContainer
                 {
                     var newRoom = DungeonRoom.Create(data, selectedPoint, gridMap);
                     unvisistedRooms.Push(newRoom);
+                    mapM.Trigger<IDungeonMapTrigger>(nameof(IDungeonMapTrigger.GenerateMapRoom),newRoom.GridPosition(), RoomTypes.RoomType.Normal);//setting to normal roomtype for all rooms for now, change this when roomtype is implemented 
                 }
             }         
         }
@@ -172,5 +175,9 @@ public class DungeonGrid : DataContainer
             data.AddRoom(loadedRoom);
         });
         ConnectRooms();
+    }
+
+    public int GridSize() {
+        return gridSize;
     }
 }
