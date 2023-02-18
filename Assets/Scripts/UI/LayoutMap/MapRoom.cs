@@ -57,9 +57,4 @@ public class MapRoom : MonoBehaviour
             //TODO: set room's icon
         }
     }
-
-   /* private void OnDestroy()
-    {
-        Debug.Log("destoryed");
-    }*/
 }
