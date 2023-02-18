@@ -8,7 +8,9 @@ public class DungeonRoom : MonoBehaviour
 {
     [SerializeField]
     private List<DungeonRoom> adjacentRooms = new List<DungeonRoom>();
-    private Guid uniqueId = new Guid();
+    private Guid uniqueId;
+    [SerializeField]
+    private Vector2Int gridPosition;
 
     public void ConnectRoom(DungeonRoom room)
     {
@@ -20,12 +22,24 @@ public class DungeonRoom : MonoBehaviour
         return uniqueId;
     }
 
+    public Vector2Int GridPosition()
+    {
+        return gridPosition;
+    }
+
+    public void Initialize(Dictionary<Vector3, Vector2Int> gridMap, Vector3 position)
+    {
+        adjacentRooms.Clear();
+        uniqueId = new Guid();
+        gridPosition = gridMap[position];
+    }
+
     public void DisconnectRoom(DungeonRoom room)
     {
         if (adjacentRooms.Contains(room)) adjacentRooms.Remove(room);
     }
 
-    public void Delete()
+    public void Delete() //Delete this room and all its links with other rooms
     {
         adjacentRooms.ForEach(room =>
         {
@@ -56,14 +70,14 @@ public class DungeonRoom : MonoBehaviour
         return false;
     } 
 
-    public static DungeonRoom Create(DungeonData data, Vector3 position)
+    public static DungeonRoom Create(DungeonData data, Vector3 position, Dictionary<Vector3, Vector2Int> gridMap)
     {
         //This is where the room gets instantiated, change the primitive and pass a prefab instead for the room
         //Eg: var roomObj = DungeonDrawer.DrawSingleObject(position, prefab, data.GetMonoInstance(), scale) as GameObject;
-        var roomObj = DungeonDrawer.DrawSingleRoom(position, PrimitiveType.Cube,
-            data.GetMonoInstance(), new Vector3(data.GetGrid().RoomSize(), 1 ,data.GetGrid().RoomSize())) as GameObject;
+        var roomObj = DungeonDrawer.DrawSingleRoom(position, data.GetRoomPrefab(), data.GetMonoInstance());
         roomObj.AddComponent<DungeonRoom>();
         var addedRoom = roomObj.GetComponent<DungeonRoom>();
+        addedRoom.Initialize(gridMap, position);
         data.AddRoom(addedRoom);
         return addedRoom;
     }
