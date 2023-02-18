@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: -5993541768572067010}
   m_Layer: 5
   m_Name: RoomCell
-  m_TagString: Untagged
+  m_TagString: MapRoom
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -26,7 +26,7 @@ RectTransform:
   m_GameObject: {fileID: 8655096935207501780}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8655096935500999586}
@@ -51,11 +51,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 600cace17a00d9042994388f6045f8cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ID: 0
   visited: {fileID: 1861577644, guid: b93f37f8dd5eee44ab87c4da13f3a879, type: 3}
-  visiting: {fileID: -1404656845, guid: 95218f07d86e24d40a30cf7419d39459, type: 3}
-  notVisited: {fileID: 12701348, guid: 95218f07d86e24d40a30cf7419d39459, type: 3}
+  visiting: {fileID: -1660199112, guid: ce04f1c7c5370d143a2b122f9d1ce35d, type: 3}
+  notVisited: {fileID: 1816123958, guid: ce04f1c7c5370d143a2b122f9d1ce35d, type: 3}
   backGround: {fileID: 8655096935500999587}
-  Icon: {fileID: 8655096935316643643}
+  iconImage: {fileID: 0}
 --- !u!1 &8655096935316643589
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,11 +4,9 @@ using UnityEngine;
 using UnityEngine.UI; 
 
 public class MapRoom : MonoBehaviour
-{   
-    public int ID {
-        get { return ID; }
-        set { ID = value; }
-    }
+{
+    [SerializeField]
+    private int ID; 
     private bool hasVisited = false;
     private int x, y; //position of the room in the whole map
     private RoomTypes.RoomType type;
@@ -20,8 +18,9 @@ public class MapRoom : MonoBehaviour
     [SerializeField]
     private Image backGround;
     [SerializeField]
-    private Image Icon; 
+    private Image iconImage;
 
+    
     public bool IsRoom() {
         return isRoom;
     }
@@ -43,4 +42,24 @@ public class MapRoom : MonoBehaviour
     public void LeaveRoom() {
         backGround.sprite = visited; 
     }
+
+    public void SetID(int id) {
+        ID = id; 
+    }
+
+    public void SetType(RoomTypes.RoomType type) {
+        this.type = type;
+        if (type == RoomTypes.RoomType.Start) {
+            backGround.sprite = visiting;
+            hasVisited = true;
+        }
+        else if (type != RoomTypes.RoomType.Normal) {
+            //TODO: set room's icon
+        }
+    }
+
+   /* private void OnDestroy()
+    {
+        Debug.Log("destoryed");
+    }*/
 }
