@@ -38,12 +38,13 @@ public class DungeonGrid : DataContainer
                 dataBuffer.Add(position);              
             }
         }
+        mapM = FindObjectOfType<MapManager>();
+        mapM.Trigger<IDungeonMapTrigger>(nameof(IDungeonMapTrigger.MapGridGeneration)); //start map grid generation after the dungeon grid is done generating
         DungeonDrawer.Draw(dataBuffer, mono, PrimitiveType.Cube);
     }
 
     public void GenerateRooms(DungeonData data)
     {
-        mapM = GameObject.Find("LayoutMap").GetComponent<MapManager>();
         this.data = data;
         var startingPosition = dataBuffer.ElementAt(UnityEngine.Random.Range(0, dataBuffer.Count())); //start at a random position on the grid
         var startingRoom = DungeonRoom.Create(data, startingPosition, gridMap); //create starting room
@@ -175,6 +176,20 @@ public class DungeonGrid : DataContainer
             data.AddRoom(loadedRoom);
         });
         ConnectRooms();
+    }
+
+    public void ReloadMiniMap(DungeonData data)
+    {      
+        data.AllRooms().ForEach(room =>
+        {
+            if (data.GetStartingRoom().GetPosition() == room.GetPosition())
+            {
+                mapM.Trigger<IDungeonMapTrigger>(nameof(IDungeonMapTrigger.GenerateMapRoom), room.GridPosition(), RoomTypes.RoomType.Start);
+            } else
+            {
+                mapM.Trigger<IDungeonMapTrigger>(nameof(IDungeonMapTrigger.GenerateMapRoom), room.GridPosition(), RoomTypes.RoomType.Normal);
+            }
+        });
     }
 
     public int GridSize() {
