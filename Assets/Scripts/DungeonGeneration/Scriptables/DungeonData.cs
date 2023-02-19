@@ -27,7 +27,6 @@ public class DungeonData :DataContainer
         rooms.Clear();
         GetGrid().SetMonoInstance(mono);
         GetGrid().GenerateGrid(this);
-        mapM.Trigger<IDungeonMapTrigger>(nameof(IDungeonMapTrigger.MapGridGeneration)); //start map grid generation after the dungeon grid is done generating
         GetGrid().GenerateRooms(this);
     }
 
@@ -76,6 +75,16 @@ public class DungeonData :DataContainer
         return rooms;
     }
 
+    public MapManager GetMapManager()
+    {
+        return mapM;
+    }
+
+    public void FindMapManager()
+    {
+        mapM = FindObjectOfType<MapManager>();
+    }
+
     public void ClearDungeon()
     {
         rooms.Clear();
@@ -92,7 +101,7 @@ public class DungeonData :DataContainer
             roomsPositions.Add(room.transform.position);
         });
         GetActiveLayout().SaveStartPosition(startingRoom.transform.position);
-        GetActiveLayout().SaveFloorData(roomsPositions);
+        GetActiveLayout().SaveFloorData(roomsPositions); 
     }
 
     public void LoadData()
@@ -100,5 +109,6 @@ public class DungeonData :DataContainer
         ClearDungeon();
         GetGrid().LoadRooms(GetActiveLayout().GetFloorData(), this);
         startingRoom = rooms.Where(room => room.transform.position == GetActiveLayout().GetStartPosition()).First();
+        GetGrid().ReloadMiniMap(this);
     }
 }

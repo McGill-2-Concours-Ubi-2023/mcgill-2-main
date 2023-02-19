@@ -16,10 +16,17 @@ public class DungeonDataEditor : Editor
         dungeonData = ((DungeonData)target);
         OnNullInitializeBehaviour(FindObjectOfType<DungeonGenerator>().gameObject);
 
-        if (GUILayout.Button("Track start room"))
+        var mapManager = dungeonData.GetMapManager();
+        var startingRoom = dungeonData.GetStartingRoom();
+
+        if (mapManager == null)
         {
-            var startingRoom = dungeonData.GetStartingRoom();
-            if(startingRoom == null && dungeonData.GetActiveLayout() != null)
+            dungeonData.FindMapManager();
+        }
+
+        if (GUILayout.Button("Track start room"))
+        {            
+            if (startingRoom == null && dungeonData.GetActiveLayout() != null)
             {
                 dungeonData.LoadData();
                 startingRoom = dungeonData.GetStartingRoom();
@@ -50,15 +57,21 @@ public class DungeonDataEditor : Editor
         {
             if (GUILayout.Button("Save data"))
             {
-                bool result = EditorUtility.DisplayDialog("Confirmation Dialog",
-                    "The selected dungeon's layout will be overwritten, do you still wish to continue?",
-                    "OK", "Cancel");
-                if (result)
+                if(dungeonData.AllRooms() == null || dungeonData.GetStartingRoom() == null)
                 {
-                    dungeonData.SaveData();
-                    EditorUtility.DisplayDialog("Success Dialog", "Layout successfully saved!", "OK");
-                    EditorUtility.SetDirty(dungeonData.GetActiveLayout());
-                }
+                    EditorUtility.DisplayDialog("Save data empty", "No data to save!", "OK");
+                } else
+                {
+                    bool result = EditorUtility.DisplayDialog("Confirmation Dialog",
+                                        "The selected dungeon's layout will be overwritten, do you still wish to continue?",
+                                        "OK", "Cancel");
+                    if (result)
+                    {
+                        dungeonData.SaveData();
+                        EditorUtility.DisplayDialog("Success Dialog", "Layout successfully saved!", "OK");
+                        EditorUtility.SetDirty(dungeonData.GetActiveLayout());
+                    }
+                }              
             }
         } 
 
