@@ -15,4 +15,6 @@ public interface IMainCharacterTriggers : ITrigger
     public void OnDashIntention() { }
     
     public void OnDebugCameraRotation(float2 input) { }
+    
+    public void OnPlayerFaceIntention(float3 intention) { }
 }
