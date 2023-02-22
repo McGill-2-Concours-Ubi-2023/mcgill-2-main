@@ -15,52 +15,79 @@ public class DungeonGrid : DataContainer
     [SerializeField]
     [Range(0, 100)]
     private int cellsSpacing = 2;
-    [SerializeField][Range(.1f, 1)]
-    private float roomDensity = 1;
-    
-    public void GenerateGrid()
+    private DungeonData data;
+    private Dictionary<Vector3, Vector2Int> gridMap;
+    private MapManager mapM;
+
+    public void GenerateGrid(DungeonData data)
     {
         ClearGrid();
+        this.data = data;
+        gridMap = new Dictionary<Vector3, Vector2Int>();        
         var currentPosition = mono.transform.position;
-        var offsetx = (roomSize + cellsSpacing) * Vector3.right;
-        var offsetz = (roomSize + cellsSpacing) * Vector3.forward;
+        var offsetx = (roomSize + cellsSpacing) * Vector3.forward;
+        var offsetz = (roomSize + cellsSpacing) * Vector3.right;
 
-        for (int i = 0; i < gridSize * gridSize; i++) //O(n)
+        for (int i = 0; i < gridSize; i++) // loop over rows
         {
-            var x = i % gridSize;
-            var z = i / gridSize;
-            var position = currentPosition + x * offsetx + z * offsetz;
-            dataBuffer.Add(position);
+            for (int j = 0; j < gridSize; j++) // loop over columns
+            {
+                var position = currentPosition + i * offsetx + j * offsetz;
+                var gridPosition = new Vector2Int(i, j);
+                gridMap.Add(position, gridPosition);
+                dataBuffer.Add(position);              
+            }
         }
+        mapM = FindObjectOfType<MapManager>();
+        mapM.Trigger<IDungeonMapTrigger>(nameof(IDungeonMapTrigger.MapGridGeneration)); //start map grid generation after the dungeon grid is done generating
         DungeonDrawer.Draw(dataBuffer, mono, PrimitiveType.Cube);
     }
 
     public void GenerateRooms(DungeonData data)
     {
+        this.data = data;
         var startingPosition = dataBuffer.ElementAt(UnityEngine.Random.Range(0, dataBuffer.Count())); //start at a random position on the grid
-        var startingRoom = DungeonRoom.Create(data, startingPosition); //create starting room
+        var startingRoom = DungeonRoom.Create(data, startingPosition, gridMap); //create starting room
         data.SetStartingRoom(startingRoom);
+        mapM.Trigger<IDungeonMapTrigger>(nameof(IDungeonMapTrigger.GenerateMapRoom), startingRoom.GridPosition(), RoomTypes.RoomType.Start);
+        //Keep track of already populated grid points
+        var visitedPoints = new HashSet<Vector3>();
+        visitedPoints.Add(startingPosition);
 
-        var visitedPoints = new HashSet<Vector3>(); //Keep track of already populated grid points
-        visitedPoints.Add(startingPosition); //Add the starting position to the visited points
-        
         Stack<DungeonRoom> unvisistedRooms = new Stack<DungeonRoom>(); //Stack for depth first traversal
         unvisistedRooms.Push(startingRoom);
-
-        for(int i = Mathf.FloorToInt(data.RoomPercent() * gridSize * gridSize); i > 0; i--)
+        
+        for(int i = Mathf.FloorToInt(data.RoomDensity() * gridSize * gridSize); i > 0; i--)
         {
             if(unvisistedRooms.Count > 0)
             {
                 var currentRoom = unvisistedRooms.Pop();
-                var neighbourPositions = GetNeighbouringPoints(currentRoom, visitedPoints);
-                foreach (var selectedPoint in SelectRandomNeighbours(neighbourPositions, visitedPoints))
+                var neighbourPositions = GetAvailableNeighbours(currentRoom, visitedPoints);
+                foreach (var selectedPoint in SelectRandomPoints(neighbourPositions, visitedPoints))
                 {
-                    var newRoom = DungeonRoom.Create(data, selectedPoint);
-                    currentRoom.ConnectRoom(newRoom);
+                    var newRoom = DungeonRoom.Create(data, selectedPoint, gridMap);
                     unvisistedRooms.Push(newRoom);
+                    mapM.Trigger<IDungeonMapTrigger>(nameof(IDungeonMapTrigger.GenerateMapRoom),newRoom.GridPosition(), RoomTypes.RoomType.Normal);//setting to normal roomtype for all rooms for now, change this when roomtype is implemented 
                 }
             }         
-        }     
+        }
+        Cleanup(visitedPoints);
+    }
+
+    private void Cleanup(HashSet<Vector3> visitedPoints)
+    {
+        ConnectRooms();
+        while(data.AllRooms().Count() < data.RoomCount())
+        {
+            var randomRoom = data.AllRooms().Where(room =>
+            GetAvailableNeighbours(room, visitedPoints).Count() > 0)
+            .OrderBy(room => room.Id())
+            .First();
+            var spawnPoint = GetAvailableNeighbours(randomRoom, visitedPoints).First();
+            visitedPoints.Add(spawnPoint);
+            DungeonRoom.Create(data, spawnPoint, gridMap);           
+        }
+        ConnectRooms();
     }
 
     public int RoomSize()
@@ -68,20 +95,36 @@ public class DungeonGrid : DataContainer
         return roomSize;
     }
 
-    private List<Vector3> GetNeighbouringPoints(DungeonRoom room, HashSet<Vector3> visitedPoints)
+    public int Size()
     {
-        var neightbours = new List<Vector3>();
-        Vector3 roomPosition = room.GetPosition();
-
-        Direction2D.cardinals.ForEach(cardinal =>
-        {
-            Vector3 samplePoint = roomPosition + new Vector3(cardinal.x, 0, cardinal.y) * (roomSize + cellsSpacing);
-            if (!visitedPoints.Contains(samplePoint)) neightbours.Add(samplePoint);
-        });
-        return neightbours.Intersect(dataBuffer).ToList();
+        return gridSize;
     }
 
-    private List<DungeonRoom> GetNeighbouringRooms(DungeonRoom room, DungeonData data)
+    private List<Vector3> GetAvailableNeighbours(DungeonRoom room, HashSet<Vector3> visitedPoints)
+    {
+        var points = new List<Vector3>();
+        GetNeighbouringPoints(room).ForEach(point =>
+        {
+            if (!visitedPoints.Contains(point)) points.Add(point);
+        });
+        return points.Intersect(dataBuffer).ToList();
+    }
+
+    private List<Vector3> GetNeighbouringPoints(DungeonRoom room)
+    {
+        var points = new List<Vector3>();
+        Direction2D.cardinals.ForEach(cardinal =>
+        {
+            Vector3 samplePoint = room.transform.position + new Vector3(cardinal.x, 0, cardinal.y) * (roomSize + cellsSpacing);
+            if (dataBuffer.Contains(samplePoint))
+            {
+                points.Add(samplePoint);
+            }
+        });
+        return points;
+    }
+
+    private List<DungeonRoom> GetNeighbouringRooms(DungeonRoom room)
     {
         var neighbours = new List<DungeonRoom>();
         Direction2D.cardinals.ForEach(cardinal =>
@@ -95,7 +138,7 @@ public class DungeonGrid : DataContainer
         return neighbours;
     }
 
-    private List<Vector3> SelectRandomNeighbours(List<Vector3> points, HashSet<Vector3> visitedPoints)
+    private List<Vector3> SelectRandomPoints(List<Vector3> points, HashSet<Vector3> visitedPoints)
     {
         int randomNumPoints = UnityEngine.Random.Range(1, points.Count);
         var selectedPoints = points.OrderBy(x => Guid.NewGuid()).Take(randomNumPoints).ToList();
@@ -103,42 +146,16 @@ public class DungeonGrid : DataContainer
         return selectedPoints;
     }
 
-    public void ConnectMissingRooms(DungeonData data)
+    public void ConnectRooms()
     {
         data.AllRooms().ForEach(room =>
         {
-            GetNeighbouringRooms(room, data).ForEach(neighbour =>
+            GetNeighbouringRooms(room).ForEach(neighbour =>
             {
                 if (!room.GetConnectedRooms().Contains(neighbour))
                     room.ConnectRoom(neighbour);
             });
         });
-    }
-
-    public void DeleteRandomRooms(DungeonData data)
-    {
-        int range = data.AllRooms().Count();
-        int randomNumRooms = UnityEngine.Random.Range(Mathf.FloorToInt(range * (1-roomDensity)), range);
-        data.AllRooms().OrderBy(room => room.Id())
-            .Take(randomNumRooms)
-            .ToList()
-            .ForEach(room => 
-            {
-                var adjacencyList = room.GetConnectedRooms();
-                bool canDelete = true;
-                adjacencyList.ForEach(adjacentRoom =>
-                {
-                    if(!DungeonRoom.PathExists(room, adjacentRoom, data.GetStartingRoom()))
-                    {
-                        canDelete = false;
-                    }
-                });
-                if (canDelete && room != data.GetStartingRoom()) 
-                {
-                    data.AllRooms().Remove(room);
-                    room.Delete();
-                } 
-            });        
     }
 
     public void ClearGrid()
@@ -148,15 +165,34 @@ public class DungeonGrid : DataContainer
     }
 
     public void LoadRooms(List<Vector3> rooms, DungeonData data)
-    {
+    {       
+        GenerateGrid(data);
         dataBuffer = rooms;
-        GenerateGrid();
-        var roomsObj = DungeonDrawer.DrawRooms(rooms, PrimitiveType.Cube, mono, new Vector3(roomSize, 1, roomSize));
+        var roomsObj = DungeonDrawer.DrawRooms(rooms, data.GetRoomPrefab(), mono);
         roomsObj.ForEach(roomObj => 
         {
-            roomObj.AddComponent<DungeonRoom>();
-            data.AddRoom(roomObj.GetComponent<DungeonRoom>());
+            var loadedRoom = roomObj.AddComponent<DungeonRoom>();
+            loadedRoom.Initialize(gridMap, roomObj.transform.position);
+            data.AddRoom(loadedRoom);
         });
-        ConnectMissingRooms(data);
+        ConnectRooms();
+    }
+
+    public void ReloadMiniMap(DungeonData data)
+    {      
+        data.AllRooms().ForEach(room =>
+        {
+            if (data.GetStartingRoom().GetPosition() == room.GetPosition())
+            {
+                mapM.Trigger<IDungeonMapTrigger>(nameof(IDungeonMapTrigger.GenerateMapRoom), room.GridPosition(), RoomTypes.RoomType.Start);
+            } else
+            {
+                mapM.Trigger<IDungeonMapTrigger>(nameof(IDungeonMapTrigger.GenerateMapRoom), room.GridPosition(), RoomTypes.RoomType.Normal);
+            }
+        });
+    }
+
+    public int GridSize() {
+        return gridSize;
     }
 }

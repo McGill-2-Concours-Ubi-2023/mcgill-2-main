@@ -1,10 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New dungeon", menuName = "Dungeon asset")]
-public class DungeonData :DataContainer, IDungeonTrigger
+public class DungeonData :DataContainer
 {
     [SerializeField]
     private ScriptableObject activeLayout;
@@ -12,21 +11,23 @@ public class DungeonData :DataContainer, IDungeonTrigger
     private ScriptableObject dungeonGrid;
     [SerializeField]
     [Range(0.1f, 1f)]
-    private float roomPercent = 0.5f;
-    [SerializeField]
+    private float roomDensity = 0.5f;
     private List<DungeonRoom> rooms = new List<DungeonRoom>();
-    [SerializeField]
     private DungeonRoom startingRoom;
+    private MapManager mapM; 
+    [SerializeField][Range(1, 50)]
+    private int minRoomCount = 20;
+    [SerializeField]
+    private GameObject roomPrefab;
 
     public void GenerateDungeon()
     {
+        mapM = GameObject.Find("LayoutMap").GetComponent<MapManager>();
         ClearDungeon();
         rooms.Clear();
         GetGrid().SetMonoInstance(mono);
-        GetGrid().GenerateGrid();
+        GetGrid().GenerateGrid(this);
         GetGrid().GenerateRooms(this);
-        GetGrid().ConnectMissingRooms(this);
-        GetGrid().DeleteRandomRooms(this);       
     }
 
     public void AddRoom(DungeonRoom room)
@@ -34,9 +35,9 @@ public class DungeonData :DataContainer, IDungeonTrigger
         rooms.Add(room);
     }
 
-    public void ReceiveMessage(string message)
+    public int RoomCount()
     {
-        Debug.Log(message);
+        return minRoomCount;
     }
 
     public void SetStartingRoom(DungeonRoom room)
@@ -49,9 +50,14 @@ public class DungeonData :DataContainer, IDungeonTrigger
         return startingRoom;
     }
 
-    public float RoomPercent()
+    public float RoomDensity()
     {
-        return roomPercent;
+        return roomDensity;
+    }
+
+    public GameObject GetRoomPrefab()
+    {
+        return roomPrefab;
     }
 
     public DungeonLayout GetActiveLayout()
@@ -69,11 +75,22 @@ public class DungeonData :DataContainer, IDungeonTrigger
         return rooms;
     }
 
+    public MapManager GetMapManager()
+    {
+        return mapM;
+    }
+
+    public void FindMapManager()
+    {
+        mapM = FindObjectOfType<MapManager>();
+    }
+
     public void ClearDungeon()
     {
         rooms.Clear();
         GetGrid().ClearBuffer();
         DungeonDrawer.EraseDungeon(mono);
+        mapM.Trigger<IDungeonMapTrigger>(nameof(IDungeonMapTrigger.ClearMap));
     }
 
     public void SaveData()
@@ -83,8 +100,8 @@ public class DungeonData :DataContainer, IDungeonTrigger
         {
             roomsPositions.Add(room.transform.position);
         });
-        GetActiveLayout().SaveFloorData(roomsPositions);
         GetActiveLayout().SaveStartPosition(startingRoom.transform.position);
+        GetActiveLayout().SaveFloorData(roomsPositions); 
     }
 
     public void LoadData()
@@ -92,10 +109,6 @@ public class DungeonData :DataContainer, IDungeonTrigger
         ClearDungeon();
         GetGrid().LoadRooms(GetActiveLayout().GetFloorData(), this);
         startingRoom = rooms.Where(room => room.transform.position == GetActiveLayout().GetStartPosition()).First();
-    }
-
-    public object GetWallsData()
-    {
-        return null;
+        GetGrid().ReloadMiniMap(this);
     }
 }
