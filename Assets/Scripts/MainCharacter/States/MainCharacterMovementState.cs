@@ -3,6 +3,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using static Unity.Mathematics.math;
 using float2 = Unity.Mathematics.float2;
+using float3 = Unity.Mathematics.float3;
 
 public class MainCharacterMovementState : GenericStateMachineBehaviour<MainCharacterMovementStateBehaviour>
 {
@@ -38,9 +39,24 @@ public class MainCharacterMovementStateBehaviour : GenericStateMachineMonoBehavi
         m_Animator.ResetTrigger(FreeFallShouldLand);
         m_Animator.SetFloat(Speed, m_Rigidbody.velocity.magnitude, 0.1f, Time.fixedDeltaTime);
         
-        // move by velocity
+        // move by force
         float speed = m_Controller.MovementSpeed;
-        m_Rigidbody.velocity = m_MovementIntention * speed;
+        float3 movementIntentionVel = m_MovementIntention * speed;
+        movementIntentionVel.y = m_Rigidbody.velocity.y;
+        float3 deltaVel = movementIntentionVel - (float3)m_Rigidbody.velocity;
+        float3 force = m_Rigidbody.mass * deltaVel / Time.fixedDeltaTime;
+        Debug.Log(length(force));
+        // if force is backward, reduce it
+        if (dot(force, movementIntentionVel) <= EPSILON)
+        {
+            if (length(force) > 5)
+            {
+                force = normalize(force) * 5;
+            }
+        }
+        
+        m_Rigidbody.AddForce(force, ForceMode.Force);
+        Debug.DrawRay(transform.position + transform.up, force, Color.red);
 
         if (any(m_FaceIntention.xz != float2.zero))
         {
