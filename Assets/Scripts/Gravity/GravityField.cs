@@ -27,20 +27,29 @@ public abstract class GravityField : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        GravityAgent agent = other.GetComponent<GravityAgent>();
-        if (isActive && agent)
+        if (isActive && other.GetComponent<GravityAgent>())
         {
             isInAtmosphere = true;
             agents.Add(other.gameObject);
-            other.gameObject.Trigger<IGravityTriggers>(nameof(IGravityTriggers.SetMassCompression), massCompression);
         }
+    }
+
+    public void SetMassCompressionForce(float compressionForce)
+    {
+        massCompression = compressionForce;
+    }
+
+    public float GetMassCompressionForce()
+    {
+        return massCompression;
     }
     
     private void OnTriggerStay(Collider other)
     {
         if (isActive) 
         {
-            if (!agents.Contains(other.gameObject) && other.GetComponent<GravityAgent>())
+            var agent = other.GetComponent<GravityAgent>();
+            if (!agents.Contains(other.gameObject) && agent && !agent.IsBound())
             {
                 agents.Add(other.gameObject);
             }
@@ -63,5 +72,14 @@ public abstract class GravityField : MonoBehaviour
     public void ReleaseAgent(GameObject obj)
     {
         agents.Remove(obj);
+    }
+
+    private void OnDestroy()
+    {
+        agents.ForEach(agent =>
+        {
+            if(agent != null)
+            agent.GetComponent<GravityAgent>().Release();
+        });
     }
 }

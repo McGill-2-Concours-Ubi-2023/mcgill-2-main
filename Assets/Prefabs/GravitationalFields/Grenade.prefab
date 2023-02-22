@@ -55,7 +55,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  massCompression: 5
+  massCompression: 10
   orientationSpeed: 2
   dampeningForce: 0.2
   attractionForce: 3
@@ -116,8 +116,8 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Radius: 0.4048556
+  m_Center: {x: 0, y: 0.0012952803, z: 0}
 --- !u!1 &1421598444750600915
 GameObject:
   m_ObjectHideFlags: 0
@@ -330,7 +330,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4882e309f5db9ab499f2293d697a5d4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destructionTimer: 2
+  destructionTimer: 3
   fieldVerticalOffset: 1
 --- !u!95 &1421598444886973484
 Animator:

@@ -33,6 +33,7 @@ public class GravitationalGrenade : MonoBehaviour
         //Slightly offset the y position of the field's kernel for better physics
         gravityField.transform.position = new Vector3(kernel.x, kernel.y + fieldVerticalOffset, kernel.z);
         gravityField.SetActive(true);
+
     }
 
     public void Despawn()
