@@ -34,7 +34,10 @@ public class GravityAgent : MonoBehaviour, IGravityTriggers
             timer += Time.deltaTime;
             yield return null;
         }
-        trigger.GetComponentInParent<GravityField>().ReleaseAgent(this.gameObject);
+        if (trigger)
+        {
+            trigger.GetComponentInParent<GravityField>().ReleaseAgent(this.gameObject);
+        }
         Destroy(this.gameObject);
     }
 

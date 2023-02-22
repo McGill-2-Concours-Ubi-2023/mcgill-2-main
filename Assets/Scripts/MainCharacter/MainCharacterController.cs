@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Cinemachine;
 using Unity.Mathematics;
 using UnityEngine;
@@ -11,6 +12,9 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers
     public CinemachineVirtualCamera Camera;
     private object m_NavActionData;
     public CinemachineVirtualCameraBase DebugCamera;
+    public GameObject GravityGrenadePrefab;
+    public float GravityGrenadeDisappearTime;
+    public float GravityGrenadeExplodeTime;
 
     private ISimpleInventory<SimpleCollectible> m_SimpleCollectibleInventory;
     
@@ -85,6 +89,37 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers
     public CinemachineVirtualCameraBase GetActiveCamera()
     {
         return DebugCamera.gameObject.activeSelf ? DebugCamera : Camera;
+    }
+
+    public void OnPrimaryWeaponPress()
+    {
+        
+    }
+    
+    private IEnumerator GrenadeDelayedExplode(GameObject grenade)
+    {
+        yield return new WaitForSeconds(GravityGrenadeExplodeTime);
+        grenade.SendMessage("Explode");
+        grenade.GetComponent<MeshRenderer>().enabled = false;
+    }
+    
+    private IEnumerator GrenadeDelayedDespawn(GameObject grenade)
+    {
+        yield return new WaitForSeconds(GravityGrenadeDisappearTime);
+        Destroy(grenade);
+    }
+    
+    public void OnPrimaryWeaponRelease()
+    {
+        GameObject grenade = Instantiate(GravityGrenadePrefab);
+        float3 throwDir = (transform.forward + transform.up).normalized;
+        Physics.IgnoreCollision(GetComponent<CapsuleCollider>(), grenade.GetComponent<SphereCollider>());
+        grenade.transform.position = transform.position;
+        Rigidbody rb = grenade.GetComponent<Rigidbody>();
+        rb.velocity = GetComponent<Rigidbody>().velocity;
+        rb.AddForce(throwDir * 10, ForceMode.Impulse);
+        StartCoroutine(GrenadeDelayedExplode(grenade));
+        StartCoroutine(GrenadeDelayedDespawn(grenade));
     }
 }
 
