@@ -2,41 +2,41 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GravityAgent : MonoBehaviour, IGravityTriggers
+public class GravityAgent : MonoBehaviour
 {
-
-    private bool hasEscaped;
     private float massCompression;
+    public GravityField currentField;
+    private bool isBound = false;
+    private bool isVanishing = false;
 
-    public void SetMassCompression(float massCompression)
-    {
-        this.massCompression = massCompression;
-    }
-
-    public IEnumerator OnWaitDestroy(float timer, GameObject trigger)
+    public IEnumerator OnWaitDestroy(float timer)
     {
         yield return new WaitForSeconds(timer);
-        if (!hasEscaped)
+        if (isBound)
         {
-            StartCoroutine(Disappear(trigger));
+            StartCoroutine(Disappear(0)); //spin the object for 1 second
         }
     }
 
-    private IEnumerator Disappear(GameObject trigger)
+    public bool IsBound()
     {
-        float timer = 0; 
+        return isBound;
+    }
+
+    private IEnumerator Disappear(float counter)
+    {
+        isVanishing = true;
+        massCompression = currentField.GetMassCompressionForce();
         while(transform.localScale.magnitude > 0.25f) 
         {
             //Exponentially decrease the scale
-            var decreaseFactor = Mathf.Exp(timer * massCompression) * Time.deltaTime;
+            var decreaseFactor = Mathf.Exp(counter * massCompression * 2) * Time.deltaTime;
             //Update the scale
             transform.localScale -= transform.localScale * decreaseFactor;
-            timer += Time.deltaTime;
+            Vector3 deltaD = currentField.transform.position - transform.position;
+            transform.position += deltaD.normalized * massCompression * Time.deltaTime;
+            counter += Time.deltaTime;
             yield return null;
-        }
-        if (trigger)
-        {
-            trigger.GetComponentInParent<GravityField>().ReleaseAgent(this.gameObject);
         }
         Destroy(this.gameObject);
     }
@@ -45,18 +45,45 @@ public class GravityAgent : MonoBehaviour, IGravityTriggers
     {
         if(other.gameObject.name.Equals("DestructionBounds"))
         {
-            hasEscaped = false;
+            BindField(other.GetComponentInParent<GravityField>());
+            isBound = true;
             StartCoroutine(OnWaitDestroy(other.gameObject.GetComponentInParent<GravitationalGrenade>()
-                .GetDestructionTimer(), other.gameObject));         
+                .GetDestructionTimer()));       
         }
+    }
+
+    private void BindField(GravityField field)
+    {
+        currentField = field;
+        foreach(var effectiveField in FindObjectsOfType<GravityField>())
+        {
+            if (effectiveField != currentField) effectiveField.ReleaseAgent(this.gameObject);
+        }
+    }
+
+    public void Release()
+    {
+        isBound = false;
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.name.Equals("DestructionBounds"))
         {
-            hasEscaped = true;
-            StopAllCoroutines();
+            if (other.GetComponentInParent<GravityField>() == currentField)
+            {
+                isBound = false;
+                if(!isVanishing)
+                StopAllCoroutines();
+            }
+        }
+    }
+
+    private void OnDestroy()
+    {
+        foreach(var field in FindObjectsOfType<GravityField>())
+        {
+            if (field.agents.Contains(this.gameObject)) field.ReleaseAgent(this.gameObject);
         }
     }
 }
