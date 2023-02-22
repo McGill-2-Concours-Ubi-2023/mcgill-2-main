@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,7 +17,7 @@ public abstract class GravityField : MonoBehaviour
 
     private void Awake()
     {
-        ApplyMassCompression();
+        agents = new List<GameObject>();
     }
 
     public void SetActive(bool active)
@@ -26,13 +27,24 @@ public abstract class GravityField : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(isActive)
-        isInAtmosphere = true;
+        GravityAgent agent = other.GetComponent<GravityAgent>();
+        if (isActive && agent)
+        {
+            isInAtmosphere = true;
+            agents.Add(other.gameObject);
+            other.gameObject.Trigger<IGravityTriggers>(nameof(IGravityTriggers.SetMassCompression), massCompression);
+        }
     }
+    
     private void OnTriggerStay(Collider other)
     {
         if (isActive) 
         {
+            if (!agents.Contains(other.gameObject) && other.GetComponent<GravityAgent>())
+            {
+                agents.Add(other.gameObject);
+            }
+            agents = agents.Where(agent => agent).ToList();
             agents.Where(agent => agent.name.Equals(other.name))
                 .ToList()
                 .ForEach(agent => ApplyGravity(agent.GetComponent<Rigidbody>()));
@@ -41,17 +53,15 @@ public abstract class GravityField : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if(isActive)
-        isInAtmosphere = false;
+        if (isActive)
+        {
+            isInAtmosphere = false;
+            ReleaseAgent(other.gameObject);
+        }
     }
 
     public void ReleaseAgent(GameObject obj)
     {
         agents.Remove(obj);
-    }
-
-    public void ApplyMassCompression()
-    {
-        agents.ForEach(agent => agent.Trigger<IGravityTriggers>(nameof(IGravityTriggers.SetMassCompression), massCompression));
     }
 }
