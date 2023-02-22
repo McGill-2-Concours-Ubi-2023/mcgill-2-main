@@ -39,10 +39,15 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers
 
         gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnMovementIntention), adjustedDirection);
 
+        float2 rightStick = m_InputActionAsset["CameraMove"].ReadValue<Vector2>();
         #if DEBUG
-        float2 camInput = m_InputActionAsset["CameraMove"].ReadValue<Vector2>();
-        gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnDebugCameraRotation), camInput);
+        gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnDebugCameraRotation), rightStick);
         #endif
+
+        float3 adjustedFaceInput = new float3();
+        adjustedFaceInput.xz = rightStick.xy;
+        float3 adjustedFaceDirection = adjustedFaceInput.x * cameraRight + adjustedFaceInput.z * cameraForward;
+        gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnPlayerFaceIntention), adjustedFaceDirection);
     }
 
 #if DEBUG

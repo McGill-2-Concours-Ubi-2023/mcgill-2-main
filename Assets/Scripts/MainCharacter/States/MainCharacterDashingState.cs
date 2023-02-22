@@ -18,12 +18,13 @@ public class MainCharacterDashingStateBehaviour : GenericStateMachineMonoBehavio
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        m_Rigidbody.velocity = transform.forward * GetComponent<MainCharacterController>().DashSpeed;
         m_Rigidbody.angularVelocity = Vector3.zero;
     }
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        m_Rigidbody.velocity = Vector3.zero;
+        //m_Rigidbody.velocity = Vector3.zero;
     }
 }
 
