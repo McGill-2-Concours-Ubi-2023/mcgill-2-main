@@ -43,7 +43,8 @@ public class GravityAgent : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.name.Equals("DestructionBounds"))
+        if(other.gameObject.name.Equals("DestructionBounds") 
+            && gameObject.layer == LayerMask.NameToLayer("Destructible"))
         {
             BindField(other.GetComponentInParent<GravityField>());
             isBound = true;
@@ -68,7 +69,8 @@ public class GravityAgent : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.name.Equals("DestructionBounds"))
+        if (other.gameObject.name.Equals("DestructionBounds") 
+            && gameObject.layer == LayerMask.NameToLayer("Destructible"))
         {
             if (other.GetComponentInParent<GravityField>() == currentField)
             {

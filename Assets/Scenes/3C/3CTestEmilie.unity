@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17276774, g: 0.21589115, b: 0.2978246, a: 1}
+  m_IndirectSpecularColor: {r: 0.17276844, g: 0.21589246, b: 0.2978263, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1099,7 +1099,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 946824644}
-  m_LocalRotation: {x: 0.26322827, y: 0.000000011308458, z: -0.0000000030855223, w: 0.9647336}
+  m_LocalRotation: {x: 0.2632283, y: 0, z: 0, w: 0.9647336}
   m_LocalPosition: {x: 0, y: 11.5, z: -15.57}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1368,6 +1368,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SampleGravityAgent (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1446046156755137095, guid: acbf635660d254a89a6a3ab74a1b572c,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 1446046156755137100, guid: acbf635660d254a89a6a3ab74a1b572c,
         type: 3}
@@ -3409,7 +3414,7 @@ GameObject:
   - component: {fileID: 1926466028}
   m_Layer: 0
   m_Name: Plane
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4128,17 +4133,17 @@ PrefabInstance:
     - target: {fileID: 6802649042709066298, guid: 62c5f7bf6283749bbb956738e090efac,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.26322827
+      value: 0.2632283
       objectReference: {fileID: 0}
     - target: {fileID: 6802649042709066298, guid: 62c5f7bf6283749bbb956738e090efac,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.000000011308458
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6802649042709066298, guid: 62c5f7bf6283749bbb956738e090efac,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.0000000030855223
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6802649042709066298, guid: 62c5f7bf6283749bbb956738e090efac,
         type: 3}
