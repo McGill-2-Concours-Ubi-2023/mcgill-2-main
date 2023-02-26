@@ -96,4 +96,17 @@ public class MainCharacterMovementStateBehaviour : GenericStateMachineMonoBehavi
         }
         m_FaceIntention = intention;
     }
+
+    public void OnSpawnCrateIntention()
+    {
+        try
+        {
+            m_Controller.SimpleCollectibleInventory.RemoveItem(SimpleCollectible.CratePoint);
+            Instantiate(m_Controller.CratePrefab, transform.position + transform.forward + transform.up, Quaternion.identity);
+        }
+        catch (InventoryEmptyException<SimpleCollectible> e)
+        {
+            Debug.LogWarning(e);
+        }
+    }
 }
