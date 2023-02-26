@@ -80,6 +80,15 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SpawnCrate"",
+                    ""type"": ""Button"",
+                    ""id"": ""3539febd-3f2b-4b9f-87bd-bd3e284dc237"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -342,7 +351,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""path"": ""<Gamepad>/rightShoulder"",
                     ""interactions"": ""Press"",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""PrimaryWeaponPress"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -353,8 +362,19 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""path"": ""<Gamepad>/rightShoulder"",
                     ""interactions"": ""Press(behavior=1)"",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""PrimaryWeaponRelease"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8fa1a432-528b-46bf-8f83-68c326295a0d"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""SpawnCrate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -636,6 +656,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         m_Player_CameraMove = m_Player.FindAction("CameraMove", throwIfNotFound: true);
         m_Player_PrimaryWeaponPress = m_Player.FindAction("PrimaryWeaponPress", throwIfNotFound: true);
         m_Player_PrimaryWeaponRelease = m_Player.FindAction("PrimaryWeaponRelease", throwIfNotFound: true);
+        m_Player_SpawnCrate = m_Player.FindAction("SpawnCrate", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Point = m_UI.FindAction("Point", throwIfNotFound: true);
@@ -710,6 +731,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_CameraMove;
     private readonly InputAction m_Player_PrimaryWeaponPress;
     private readonly InputAction m_Player_PrimaryWeaponRelease;
+    private readonly InputAction m_Player_SpawnCrate;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -720,6 +742,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         public InputAction @CameraMove => m_Wrapper.m_Player_CameraMove;
         public InputAction @PrimaryWeaponPress => m_Wrapper.m_Player_PrimaryWeaponPress;
         public InputAction @PrimaryWeaponRelease => m_Wrapper.m_Player_PrimaryWeaponRelease;
+        public InputAction @SpawnCrate => m_Wrapper.m_Player_SpawnCrate;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -747,6 +770,9 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @PrimaryWeaponRelease.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPrimaryWeaponRelease;
                 @PrimaryWeaponRelease.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPrimaryWeaponRelease;
                 @PrimaryWeaponRelease.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPrimaryWeaponRelease;
+                @SpawnCrate.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSpawnCrate;
+                @SpawnCrate.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSpawnCrate;
+                @SpawnCrate.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSpawnCrate;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -769,6 +795,9 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @PrimaryWeaponRelease.started += instance.OnPrimaryWeaponRelease;
                 @PrimaryWeaponRelease.performed += instance.OnPrimaryWeaponRelease;
                 @PrimaryWeaponRelease.canceled += instance.OnPrimaryWeaponRelease;
+                @SpawnCrate.started += instance.OnSpawnCrate;
+                @SpawnCrate.performed += instance.OnSpawnCrate;
+                @SpawnCrate.canceled += instance.OnSpawnCrate;
             }
         }
     }
@@ -889,6 +918,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         void OnCameraMove(InputAction.CallbackContext context);
         void OnPrimaryWeaponPress(InputAction.CallbackContext context);
         void OnPrimaryWeaponRelease(InputAction.CallbackContext context);
+        void OnSpawnCrate(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

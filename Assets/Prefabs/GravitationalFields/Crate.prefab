@@ -14,8 +14,9 @@ GameObject:
   - component: {fileID: 1446046156755137089}
   - component: {fileID: 1446046156755137088}
   - component: {fileID: 1446046156755137101}
+  - component: {fileID: 6433747908893306403}
   m_Layer: 7
-  m_Name: SampleGravityAgent
+  m_Name: Crate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -125,5 +126,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b118462950ba2544e940d4b351499fbe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentField: {fileID: 0}
+--- !u!114 &6433747908893306403
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1446046156755137095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01ccebb5993fc41128a00c3f903d6863, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

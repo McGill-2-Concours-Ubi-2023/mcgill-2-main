@@ -5,7 +5,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers
+public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, ICrateTriggers
 {
     public float MovementSpeed;
     public float DashSpeed;
@@ -15,15 +15,16 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers
     public GameObject GravityGrenadePrefab;
     public float GravityGrenadeDisappearTime;
     public float GravityGrenadeExplodeTime;
+    public GameObject CratePrefab;
 
-    private ISimpleInventory<SimpleCollectible> m_SimpleCollectibleInventory;
+    public ISimpleInventory<SimpleCollectible> SimpleCollectibleInventory;
     
     private InputActionAsset m_InputActionAsset;
     private readonly static int InDebugMode = Animator.StringToHash("InDebugMode");
 
     private void Awake()
     {
-        m_SimpleCollectibleInventory = new SimpleInventory<SimpleCollectible>();
+        SimpleCollectibleInventory = new SimpleInventory<SimpleCollectible>();
         m_InputActionAsset = GetComponent<PlayerInput>().actions;
     }
 
@@ -68,7 +69,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers
     
     public void CollectCoin()
     {
-        m_SimpleCollectibleInventory.AddItem(SimpleCollectible.Coin);
+        SimpleCollectibleInventory.AddItem(SimpleCollectible.Coin);
     }
 
     public void SetNavActionData(object data)
@@ -120,6 +121,16 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers
         rb.AddForce(throwDir * 10, ForceMode.Impulse);
         StartCoroutine(GrenadeDelayedExplode(grenade));
         StartCoroutine(GrenadeDelayedDespawn(grenade));
+    }
+
+    public void OnCollectCrate()
+    {
+        SimpleCollectibleInventory.AddItem(SimpleCollectible.CratePoint);
+    }
+
+    public void OnSpawnCrate()
+    {
+        gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnSpawnCrateIntention));
     }
 }
 

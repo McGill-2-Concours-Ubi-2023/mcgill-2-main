@@ -58,6 +58,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "SpawnCrate",
+                    "type": "Button",
+                    "id": "3539febd-3f2b-4b9f-87bd-bd3e284dc237",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -320,7 +329,7 @@
                     "path": "<Gamepad>/rightShoulder",
                     "interactions": "Press",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Gamepad",
                     "action": "PrimaryWeaponPress",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -331,8 +340,19 @@
                     "path": "<Gamepad>/rightShoulder",
                     "interactions": "Press(behavior=1)",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Gamepad",
                     "action": "PrimaryWeaponRelease",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8fa1a432-528b-46bf-8f83-68c326295a0d",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "SpawnCrate",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
