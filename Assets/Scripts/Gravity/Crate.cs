@@ -12,6 +12,6 @@ public class Crate : MonoBehaviour, ICrateTriggers
 {
     private void OnDestroy()
     {
-        GameObject.FindWithTag("Player").Trigger<ICrateTriggers>(nameof(ICrateTriggers.OnCollectCrate));
+        GameObject.FindWithTag("Player")?.Trigger<ICrateTriggers>(nameof(ICrateTriggers.OnCollectCrate));
     }
 }
