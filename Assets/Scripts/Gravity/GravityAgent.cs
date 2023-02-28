@@ -27,7 +27,7 @@ public class GravityAgent : MonoBehaviour
     {
         isVanishing = true;
         massCompression = currentField.GetMassCompressionForce();
-        while(transform.localScale.magnitude > 0.25f) 
+        while(transform.localScale.magnitude > 0.25f && currentField != null) 
         {
             //Exponentially decrease the scale
             var decreaseFactor = Mathf.Exp(counter * massCompression * 2) * Time.deltaTime;
@@ -36,7 +36,7 @@ public class GravityAgent : MonoBehaviour
             Vector3 deltaD = currentField.transform.position - transform.position;
             transform.position += deltaD.normalized * massCompression * Time.deltaTime;
             counter += Time.deltaTime;
-            yield return null;
+            yield return 0;
         }
         Destroy(this.gameObject);
     }
