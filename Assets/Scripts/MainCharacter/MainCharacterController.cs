@@ -4,6 +4,8 @@ using Cinemachine;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static Unity.Mathematics.math;
+using float3 = Unity.Mathematics.float3;
 
 public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, ICrateTriggers
 {
@@ -131,6 +133,32 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     public void OnSpawnCrate()
     {
         gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnSpawnCrateIntention));
+    }
+
+    public void HasFaceDirectionInput(Ref<bool> hasInput)
+    {
+        hasInput.Value = m_InputActionAsset["CameraMove"].ReadValue<Vector2>() != Vector2.zero;
+    }
+
+    public void AdjustFaceDirection(float3 direction)
+    {
+        if (all(direction == float3.zero))
+        {
+            return;
+        }
+        
+        direction = normalize(direction);
+        float3 forwardVector = new float3(0, 0, 1);
+        float angle = -acos(dot(direction, forwardVector));
+        float3 cross = math.cross(direction, forwardVector);
+        if (cross.y < 0)
+        {
+            angle = -angle;
+        }
+        
+        Rigidbody rb = GetComponent<Rigidbody>();
+        rb.rotation = Quaternion.Euler(0, angle * Mathf.Rad2Deg, 0);
+        rb.angularVelocity = Vector3.zero;
     }
 }
 

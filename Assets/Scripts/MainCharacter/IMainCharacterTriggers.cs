@@ -19,4 +19,8 @@ public interface IMainCharacterTriggers : ITrigger
     public void OnPlayerFaceIntention(float3 intention) { }
     
     public void OnSpawnCrateIntention() { }
+    
+    public void HasFaceDirectionInput(Ref<bool> hasInput) { }
+    
+    public void AdjustFaceDirection(float3 direction) { }
 }
