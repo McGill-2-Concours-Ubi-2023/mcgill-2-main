@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
@@ -11,10 +12,28 @@ public class DungeonRoom : MonoBehaviour
     private Guid uniqueId;
     [SerializeField]
     private Vector2Int gridPosition;
+    [SerializeField]
+    private static DungeonRoom activeRoom;
+    [SerializeField]
+    private List<DungeonDoor> doors = new List<DungeonDoor>();
+
+    public static DungeonRoom GetActiveRoom()
+    {
+        return activeRoom;
+    }
 
     public void ConnectRoom(DungeonRoom room)
     {
         adjacentRooms.Add(room);
+    }
+
+    public void GenerateDoorsPlaceholders(DungeonData data)
+    {
+        List<Vector3> wallsTransforms = new List<Vector3>();
+        Direction2D.cardinals.ForEach(cardinal =>
+        {
+            DungeonDoor.CreatePlaceholder(this, new Vector3(cardinal.x, 0, cardinal.y), data);
+        });
     }
 
     public Guid Id()
@@ -55,10 +74,6 @@ public class DungeonRoom : MonoBehaviour
         return transform.position;
     }
 
-    public Vector2 GetPositionInGrid() {
-        return new Vector2(0f, 0f);
-    }
-
     public List<DungeonRoom> GetConnectedRooms()
     {
         return adjacentRooms;
@@ -70,11 +85,44 @@ public class DungeonRoom : MonoBehaviour
         return false;
     } 
 
+    public void Enter()
+    {
+        activeRoom = this;
+        //TODO: add behaviour
+    }
+
+    public void GenerateDoors(DungeonData data)
+    {
+        adjacentRooms.ForEach(room =>
+        {     
+            if(room.doors.Count != 0 && !room.HasAccessToRoom(this)
+            || room.doors.Count == 0) 
+            {               
+                var addedDoor = DungeonDoor.Create(gameObject, this, room, data);
+                doors.Add(addedDoor);                
+            } else if (room.HasAccessToRoom(this))
+            {
+                room.doors.Where(door => door.GetSharedRooms().Contains(this))
+                .ToList().ForEach(door => this.doors.Add(door));
+            }                 
+        });
+    }
+
+    private bool HasAccessToRoom(DungeonRoom room)
+    {   
+        foreach(var door in doors)
+        {
+            if (door.GetSharedRooms().Contains(room))
+                return true;
+        }
+        return false;
+    }
+
     public static DungeonRoom Create(DungeonData data, Vector3 position, Dictionary<Vector3, Vector2Int> gridMap)
     {
         //This is where the room gets instantiated, change the primitive and pass a prefab instead for the room
         //Eg: var roomObj = DungeonDrawer.DrawSingleObject(position, prefab, data.GetMonoInstance(), scale) as GameObject;
-        var roomObj = DungeonDrawer.DrawSingleRoom(position, data.GetRoomPrefab(), data.GetMonoInstance());
+        var roomObj = DungeonDrawer.DrawSingleObject(position, data.GetRoomPrefab(), data.GetMonoInstance());
         roomObj.AddComponent<DungeonRoom>();
         var addedRoom = roomObj.GetComponent<DungeonRoom>();
         addedRoom.Initialize(gridMap, position);
@@ -106,4 +154,11 @@ public class DungeonRoom : MonoBehaviour
         return DFS(excludedRoom, startRoom, endRoom, visitedRooms);
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.layer == LayerMask.NameToLayer("Player"))
+        {
+            activeRoom = this;
+        }
+    }
 }

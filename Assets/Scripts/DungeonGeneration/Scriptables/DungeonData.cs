@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New dungeon", menuName = "Dungeon asset")]
@@ -19,20 +20,29 @@ public class DungeonData :DataContainer
     private int minRoomCount = 20;
     [SerializeField]
     private GameObject roomPrefab;
+    [SerializeField]
+    private GameObject doorPrefab;
+    [SerializeField]
+    private GameObject wallPrefab;
 
     public void GenerateDungeon()
     {
-        mapM = GameObject.Find("LayoutMap").GetComponent<MapManager>();
         ClearDungeon();
-        rooms.Clear();
         GetGrid().SetMonoInstance(mono);
         GetGrid().GenerateGrid(this);
         GetGrid().GenerateRooms(this);
+        SaveData();
+        FindObjectOfType<MainCharacterController>().transform.position = GetActiveLayout().GetStartPosition();
     }
 
     public void AddRoom(DungeonRoom room)
     {
         rooms.Add(room);
+    }
+
+    public DungeonRoom GetActiveRoom()
+    {
+        return DungeonRoom.GetActiveRoom();
     }
 
     public int RoomCount()
@@ -58,6 +68,16 @@ public class DungeonData :DataContainer
     public GameObject GetRoomPrefab()
     {
         return roomPrefab;
+    }
+
+    public GameObject GetDoorPrefab()
+    {
+        return doorPrefab;
+    }
+
+    public GameObject GetWallPrefab()
+    {
+        return wallPrefab;
     }
 
     public DungeonLayout GetActiveLayout()
@@ -87,10 +107,12 @@ public class DungeonData :DataContainer
 
     public void ClearDungeon()
     {
+        FindMapManager();
+        mapM.ClearMap();
         rooms.Clear();
-        GetGrid().ClearBuffer();
+        GetGrid().ClearBuffer();    
         DungeonDrawer.EraseDungeon(mono);
-        mapM.Trigger<IDungeonMapTrigger>(nameof(IDungeonMapTrigger.ClearMap));
+        
     }
 
     public void SaveData()
@@ -101,13 +123,13 @@ public class DungeonData :DataContainer
             roomsPositions.Add(room.transform.position);
         });
         GetActiveLayout().SaveStartPosition(startingRoom.transform.position);
-        GetActiveLayout().SaveFloorData(roomsPositions); 
+        GetActiveLayout().SaveFloorData(roomsPositions);
     }
 
     public void LoadData()
     {
         ClearDungeon();
-        GetGrid().LoadRooms(GetActiveLayout().GetFloorData(), this);
+        GetGrid().LoadRooms(GetActiveLayout().GetFloorData(), this); 
         startingRoom = rooms.Where(room => room.transform.position == GetActiveLayout().GetStartPosition()).First();
         GetGrid().ReloadMiniMap(this);
     }

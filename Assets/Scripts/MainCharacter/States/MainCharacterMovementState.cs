@@ -45,7 +45,7 @@ public class MainCharacterMovementStateBehaviour : GenericStateMachineMonoBehavi
         movementIntentionVel.y = m_Rigidbody.velocity.y;
         float3 deltaVel = movementIntentionVel - (float3)m_Rigidbody.velocity;
         float3 force = m_Rigidbody.mass * deltaVel / Time.fixedDeltaTime;
-        Debug.Log(length(force));
+        //Debug.Log(length(force));
         // if force is backward, reduce it
         if (dot(force, movementIntentionVel) <= EPSILON)
         {
