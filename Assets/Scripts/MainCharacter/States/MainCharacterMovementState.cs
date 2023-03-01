@@ -45,7 +45,6 @@ public class MainCharacterMovementStateBehaviour : GenericStateMachineMonoBehavi
         movementIntentionVel.y = m_Rigidbody.velocity.y;
         float3 deltaVel = movementIntentionVel - (float3)m_Rigidbody.velocity;
         float3 force = m_Rigidbody.mass * deltaVel / Time.fixedDeltaTime;
-        Debug.Log(length(force));
         // if force is backward, reduce it
         if (dot(force, movementIntentionVel) <= EPSILON)
         {
@@ -58,19 +57,10 @@ public class MainCharacterMovementStateBehaviour : GenericStateMachineMonoBehavi
         m_Rigidbody.AddForce(force, ForceMode.Force);
         Debug.DrawRay(transform.position + transform.up, force, Color.red);
 
-        if (any(m_FaceIntention.xz != float2.zero))
-        {
-            float3 direction = normalize(m_FaceIntention);
-            float3 forwardVector = new float3(0, 0, 1);
-            float angle = -acos(dot(direction, forwardVector));
-            float3 cross = math.cross(direction, forwardVector);
-            if (cross.y < 0)
-            {
-                angle = -angle;
-            }
-            m_Rigidbody.rotation = Quaternion.Euler(0, angle * Mathf.Rad2Deg, 0);
-            m_Rigidbody.angularVelocity = Vector3.zero;
-        }
+        Ref<bool> hasFaceIntention = false;
+        gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.HasFaceDirectionInput), hasFaceIntention);
+        gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.AdjustFaceDirection),
+        hasFaceIntention ? m_FaceIntention : m_MovementIntention);
     }
 
     public void OnMovementIntention(float3 intention)
