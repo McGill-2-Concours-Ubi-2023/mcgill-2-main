@@ -16,9 +16,9 @@ public static class DungeonDrawer
     }
 
     //return the drawn GameObject
-    public static GameObject DrawSingleRoom(Vector3 position, GameObject prefab, GameObject parentObj)
+    public static GameObject DrawSingleObject(Vector3 position, GameObject prefab, GameObject parentObj)
     {
-        var obj = GameObject.Instantiate(prefab);
+        var obj = Object.Instantiate(prefab);
         obj.transform.position = position;
         obj.transform.parent = FindDungeonDrawer(parentObj).transform;
         return obj;
