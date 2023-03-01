@@ -11,6 +11,6 @@ public class DungeonGenerator : MonoBehaviour
     private void Awake()
     {
         data.SetMonoInstance(this.gameObject);
-        data.LoadData();
+        data.TryQuickLoad();
     }
 }

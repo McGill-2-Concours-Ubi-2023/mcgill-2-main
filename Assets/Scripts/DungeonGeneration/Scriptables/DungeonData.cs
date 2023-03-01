@@ -126,6 +126,22 @@ public class DungeonData :DataContainer
         GetActiveLayout().SaveFloorData(roomsPositions);
     }
 
+    public void TryQuickLoad()
+    {
+        bool onLoadSuccess = false;
+        //if it matches the layout data, it means we already generated the dungeon for that layout
+        if(rooms.Count() > 0)
+        {
+            rooms = FindObjectsOfType<DungeonRoom>().ToList();
+            startingRoom = rooms.Where(room => room.transform.position == GetActiveLayout().GetStartPosition()).First();
+            FindMapManager();
+            onLoadSuccess = true;
+        }
+        //if does not succeed, regenerate the whole dungeon
+        if (!onLoadSuccess) LoadData();
+
+    }
+
     public void LoadData()
     {
         ClearDungeon();
