@@ -18,6 +18,7 @@ public class DungeonGrid : DataContainer
     private DungeonData data;
     private Dictionary<Vector3, Vector2Int> gridMap;
     private MapManager mapM;
+    private Dictionary<Vector3, GameObject> wallsPositions = new Dictionary<Vector3, GameObject>(); 
 
     public void GenerateGrid(DungeonData data)
     {
@@ -39,17 +40,27 @@ public class DungeonGrid : DataContainer
             }
         }
         mapM = FindObjectOfType<MapManager>();
-        mapM.Trigger<IDungeonMapTrigger>(nameof(IDungeonMapTrigger.MapGridGeneration)); //start map grid generation after the dungeon grid is done generating
+        mapM.MapGridGeneration(); //start map grid generation after the dungeon grid is done generating
         DungeonDrawer.Draw(dataBuffer, mono, PrimitiveType.Cube);
+    }
+
+    public Dictionary<Vector3, GameObject> GetWallsLayout()
+    {
+        return wallsPositions;
+    }
+
+    public void AddWallPosition(Vector3 position, GameObject obj)
+    {
+        wallsPositions.Add(position, obj);
     }
 
     public void GenerateRooms(DungeonData data)
     {
         this.data = data;
-        var startingPosition = dataBuffer.ElementAt(UnityEngine.Random.Range(0, dataBuffer.Count())); //start at a random position on the grid
+        var startingPosition = dataBuffer.ElementAt(UnityEngine.Random.Range(0, gridSize)); //start at a random position on the grid
         var startingRoom = DungeonRoom.Create(data, startingPosition, gridMap); //create starting room
         data.SetStartingRoom(startingRoom);
-        mapM.Trigger<IDungeonMapTrigger>(nameof(IDungeonMapTrigger.GenerateMapRoom), startingRoom.GridPosition(), RoomTypes.RoomType.Start);
+        mapM.GenerateMapRoom(startingRoom.GridPosition(), RoomTypes.RoomType.Start);
         //Keep track of already populated grid points
         var visitedPoints = new HashSet<Vector3>();
         visitedPoints.Add(startingPosition);
@@ -67,7 +78,7 @@ public class DungeonGrid : DataContainer
                 {
                     var newRoom = DungeonRoom.Create(data, selectedPoint, gridMap);
                     unvisistedRooms.Push(newRoom);
-                    mapM.Trigger<IDungeonMapTrigger>(nameof(IDungeonMapTrigger.GenerateMapRoom),newRoom.GridPosition(), RoomTypes.RoomType.Normal);//setting to normal roomtype for all rooms for now, change this when roomtype is implemented 
+                    mapM.GenerateMapRoom(newRoom.GridPosition(), RoomTypes.RoomType.Normal);//setting to normal roomtype for all rooms for now, change this when roomtype is implemented 
                 }
             }         
         }
@@ -88,6 +99,8 @@ public class DungeonGrid : DataContainer
             DungeonRoom.Create(data, spawnPoint, gridMap);           
         }
         ConnectRooms();
+        data.AllRooms().ForEach(room => room.GenerateDoorsPlaceholders(data));
+        data.AllRooms().ForEach(room => room.GenerateDoors(data));
     }
 
     public int RoomSize()
@@ -98,6 +111,11 @@ public class DungeonGrid : DataContainer
     public int Size()
     {
         return gridSize;
+    }
+
+    public int CellsSpacing()
+    {
+        return cellsSpacing;
     }
 
     private List<Vector3> GetAvailableNeighbours(DungeonRoom room, HashSet<Vector3> visitedPoints)
@@ -122,6 +140,11 @@ public class DungeonGrid : DataContainer
             }
         });
         return points;
+    }
+
+    public Dictionary<Vector3, Vector2Int> GetGridMap()
+    {
+        return gridMap;
     }
 
     private List<DungeonRoom> GetNeighbouringRooms(DungeonRoom room)
@@ -161,11 +184,12 @@ public class DungeonGrid : DataContainer
     public void ClearGrid()
     {
         ClearBuffer();
+        wallsPositions = new Dictionary<Vector3, GameObject>();
         DungeonDrawer.EraseDungeon(mono);
     }
 
     public void LoadRooms(List<Vector3> rooms, DungeonData data)
-    {       
+    {
         GenerateGrid(data);
         dataBuffer = rooms;
         var roomsObj = DungeonDrawer.DrawRooms(rooms, data.GetRoomPrefab(), mono);
@@ -176,18 +200,21 @@ public class DungeonGrid : DataContainer
             data.AddRoom(loadedRoom);
         });
         ConnectRooms();
+        data.AllRooms().ForEach(room => room.GenerateDoorsPlaceholders(data));
+        data.AllRooms().ForEach(room => room.GenerateDoors(data));
     }
 
     public void ReloadMiniMap(DungeonData data)
-    {      
+    {
         data.AllRooms().ForEach(room =>
         {
             if (data.GetStartingRoom().GetPosition() == room.GetPosition())
             {
-                mapM.Trigger<IDungeonMapTrigger>(nameof(IDungeonMapTrigger.GenerateMapRoom), room.GridPosition(), RoomTypes.RoomType.Start);
-            } else
+                mapM.GenerateMapRoom(room.GridPosition(), RoomTypes.RoomType.Start);
+            }
+            else
             {
-                mapM.Trigger<IDungeonMapTrigger>(nameof(IDungeonMapTrigger.GenerateMapRoom), room.GridPosition(), RoomTypes.RoomType.Normal);
+                mapM.GenerateMapRoom(room.GridPosition(), RoomTypes.RoomType.Normal);
             }
         });
     }

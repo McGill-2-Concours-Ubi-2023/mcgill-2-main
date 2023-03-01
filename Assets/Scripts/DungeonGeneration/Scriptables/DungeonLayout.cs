@@ -34,4 +34,14 @@ public class DungeonLayout : ScriptableObject
     {
         return startRoomPosition;
     }
+    public void ClearData()
+    {
+        floorData = new List<Vector3>();
+        startRoomPosition = Vector3.zero;
+    }
+
+    public bool IsEmpty()
+    {
+        return floorData.Count == 0; //if no rooms -> empty
+    }
 }

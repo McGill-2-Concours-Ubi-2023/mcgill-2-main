@@ -1,15 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-[ExecuteInEditMode]
 public class DungeonGenerator : MonoBehaviour
 {
     [SerializeField]
-    DungeonData data;
+    public DungeonData data;
 
     private void Awake()
     {
         data.SetMonoInstance(this.gameObject);
+        data.TryQuickLoad();
     }
 }
