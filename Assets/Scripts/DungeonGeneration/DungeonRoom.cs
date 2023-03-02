@@ -1,7 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Collections;
 using UnityEngine;
 
 [System.Serializable]
@@ -16,10 +16,22 @@ public class DungeonRoom : MonoBehaviour
     private static DungeonRoom activeRoom;
     [SerializeField]
     private List<DungeonDoor> doors = new List<DungeonDoor>();
+    [SerializeField]
+    private string layout;
+
+    internal object ToList()
+    {
+        throw new NotImplementedException();
+    }
 
     public static DungeonRoom GetActiveRoom()
     {
         return activeRoom;
+    }
+
+    public string GetLayout()
+    {
+        return layout;
     }
 
     public void ConnectRoom(DungeonRoom room)
@@ -46,8 +58,9 @@ public class DungeonRoom : MonoBehaviour
         return gridPosition;
     }
 
-    public void Initialize(Dictionary<Vector3, Vector2Int> gridMap, Vector3 position)
+    public void Initialize(Dictionary<Vector3, Vector2Int> gridMap, Vector3 position, string layout)
     {
+        this.layout = layout;
         adjacentRooms.Clear();
         uniqueId = new Guid();
         gridPosition = gridMap[position];
@@ -118,14 +131,14 @@ public class DungeonRoom : MonoBehaviour
         return false;
     }
 
-    public static DungeonRoom Create(DungeonData data, Vector3 position, Dictionary<Vector3, Vector2Int> gridMap)
+    public static DungeonRoom Create(DungeonData data, Vector3 position, Dictionary<Vector3, Vector2Int> gridMap,string layout)
     {
         //This is where the room gets instantiated, change the primitive and pass a prefab instead for the room
         //Eg: var roomObj = DungeonDrawer.DrawSingleObject(position, prefab, data.GetMonoInstance(), scale) as GameObject;
         var roomObj = DungeonDrawer.DrawSingleObject(position, data.GetRoomPrefab(), data.GetMonoInstance());
         roomObj.AddComponent<DungeonRoom>();
         var addedRoom = roomObj.GetComponent<DungeonRoom>();
-        addedRoom.Initialize(gridMap, position);
+        addedRoom.Initialize(gridMap, position, layout);
         data.AddRoom(addedRoom);
         return addedRoom;
     }
