@@ -7,6 +7,7 @@ public class Health : MonoBehaviour
 {
     public event Action<int,int> OnHealthChange;
     public event Action OnDeath;
+    [SerializeField]
     private int currentHealth = 5;
     private int MaxHealth = 5;
     public void TakeDamage(int damage)
