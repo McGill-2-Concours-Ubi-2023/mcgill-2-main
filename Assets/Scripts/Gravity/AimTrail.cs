@@ -17,6 +17,8 @@ public class AimTrail : MonoBehaviour
         
     }
 
+    //Theta = angle between xz plane and y component of velocity
+    //Phi = angle between xy plane and z component of velocity
     public void ComputeTrajectory(float v0, float theta, float phi, float g)
     {
         var x = v0 * Time.time * Mathf.Cos(theta) * Mathf.Cos(phi);

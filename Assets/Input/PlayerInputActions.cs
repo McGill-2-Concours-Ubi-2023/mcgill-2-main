@@ -349,7 +349,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""68163e9b-f7fb-4940-b612-1b76a518b81d"",
                     ""path"": ""<Gamepad>/rightShoulder"",
-                    ""interactions"": ""Press"",
+                    ""interactions"": ""Press(behavior=2)"",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""PrimaryWeaponPress"",

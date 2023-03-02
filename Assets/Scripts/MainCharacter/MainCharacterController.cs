@@ -47,6 +47,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnMovementIntention), adjustedDirection);
 
         float2 rightStick = m_InputActionAsset["CameraMove"].ReadValue<Vector2>();
+
         #if DEBUG
         gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnDebugCameraRotation), rightStick);
         #endif
@@ -96,7 +97,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
 
     public void OnPrimaryWeaponPress()
     {
-        
+        Debug.Log("PRESSING!");
     }
     
     private IEnumerator GrenadeDelayedExplode(GameObject grenade)
@@ -114,6 +115,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     
     public void OnPrimaryWeaponRelease()
     {
+        Debug.Log("RELEASING!!");
         GameObject grenade = Instantiate(GravityGrenadePrefab);
         float3 throwDir = (transform.forward + transform.up).normalized;
         Physics.IgnoreCollision(GetComponent<CapsuleCollider>(), grenade.GetComponent<SphereCollider>());
