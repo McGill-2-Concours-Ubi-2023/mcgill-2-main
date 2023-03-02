@@ -12,6 +12,12 @@ public class ConcentricGravityField : GravityField
     public float attractionForce;
     [Range(0.1f, 5.0f)]
     public float mediumDensity;
+    private float radius;
+
+    private void Awake()
+    {
+        radius = GetComponent<SphereCollider>().bounds.extents.magnitude / 2; 
+    }
 
     protected override void ApplyGravity(Rigidbody rb)
     {
@@ -32,6 +38,16 @@ public class ConcentricGravityField : GravityField
         var dampenLerp = Mathf.Lerp(0, dampeningForce, Mathf.Clamp01(forceDirection.magnitude));
         var velocityDampening = -dampenLerp * rb.velocity * Time.deltaTime;
         rb.velocity += velocityDampening;
+    }
+
+    protected override void DetectCollision()
+    {
+        Debug.Log(layerMask);
+        Collider[] colliders = Physics.OverlapSphere(transform.position, radius, layerMask);
+        foreach (Collider collider in colliders)
+        {
+            ProcessCollision(collider);
+        }
     }
 }
 

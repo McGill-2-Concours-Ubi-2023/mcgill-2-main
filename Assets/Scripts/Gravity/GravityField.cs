@@ -8,12 +8,14 @@ public abstract class GravityField : MonoBehaviour
     public float gravity;
     public List<GameObject> agents;
     protected bool isActive;
+    protected int layerMask;
     [SerializeField]
     [Range(1, 20)]
     protected float massCompression;
     private HashSet<Rigidbody> cachedRigidbodies = new HashSet<Rigidbody>();
 
     protected abstract void ApplyGravity(Rigidbody rb);
+    protected abstract void DetectCollision();
 
     private void Awake()
     {
@@ -36,7 +38,7 @@ public abstract class GravityField : MonoBehaviour
     }
 
     //collision condition set in collision matrix go to Edit > Project settings > Layer collision matrix
-    private void OnTriggerStay(Collider other)
+    protected void ProcessCollision(Collider other)
     {
         if (isActive)
         {
@@ -55,6 +57,8 @@ public abstract class GravityField : MonoBehaviour
 
     private void FixedUpdate()
     {
+        UpdateLayerMask();
+        DetectCollision();
         foreach (Rigidbody rb in cachedRigidbodies)
         {
             if (rb != null)
@@ -62,6 +66,13 @@ public abstract class GravityField : MonoBehaviour
                 ApplyGravity(rb);
             }
         }
+    }
+
+    private void UpdateLayerMask()
+    {
+        int layerMask1 = 1 << LayerMask.NameToLayer("Destructible"); // set the first layer mask 1"
+        int layerMask2 = 1 << LayerMask.NameToLayer("Player"); // set the second layer mask 
+        layerMask = layerMask1 | layerMask2; // combine the layer masks
     }
 
     private void OnTriggerExit(Collider other)
