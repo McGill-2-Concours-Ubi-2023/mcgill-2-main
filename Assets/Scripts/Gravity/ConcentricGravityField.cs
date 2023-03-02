@@ -22,8 +22,8 @@ public class ConcentricGravityField : GravityField
         //Multiply the agent's rotation (also a quaternion) by the above quaternion
         Quaternion targetRotation = rotationQuaternion * rb.transform.rotation;
         //Finally, smoothly interpolate between the current rotation and the target rotation
+        if(rb.gameObject.layer != LayerMask.NameToLayer("Player"))
         rb.transform.rotation = Quaternion.Lerp(rb.transform.rotation, targetRotation, orientationSpeed * Time.deltaTime);
-
         //When approaching Kernel, attraction force intensifies
         var FgLerp = Mathf.Lerp(mediumDensity + attractionForce, mediumDensity, forceDirection.magnitude);
         var velocityChange = forceDirection.normalized * gravity * rb.mass * FgLerp * Time.deltaTime;

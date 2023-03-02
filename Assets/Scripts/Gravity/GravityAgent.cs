@@ -14,7 +14,7 @@ public class GravityAgent : MonoBehaviour
         yield return new WaitForSeconds(timer);
         if (isBound)
         {
-            StartCoroutine(Disappear(0)); //spin the object for 1 second
+            StartCoroutine(Disappear()); //spin the object for 1 second
         }
     }
 
@@ -23,19 +23,22 @@ public class GravityAgent : MonoBehaviour
         return isBound;
     }
 
-    private IEnumerator Disappear(float counter)
+    private IEnumerator Disappear()
     {
         isVanishing = true;
         massCompression = currentField.GetMassCompressionForce();
-        while(transform.localScale.magnitude > 0.25f && currentField != null) 
+        bool isVisible = true;
+        float startTime = Time.time;
+
+        while (isVisible && currentField != null) 
         {
-            //Exponentially decrease the scale
-            var decreaseFactor = Mathf.Exp(counter * massCompression * 2) * Time.deltaTime;
-            //Update the scale
-            transform.localScale -= transform.localScale * decreaseFactor;
+            // Calculate the time elapsed since the start of the interpolation
+            float elapsedTime = Time.time - startTime;
+            // Calculate the new scale using an exponential decay function
+            transform.localScale *= Mathf.Exp(-elapsedTime*massCompression/100);
             Vector3 deltaD = currentField.transform.position - transform.position;
             transform.position += deltaD.normalized * massCompression * Time.deltaTime;
-            counter += Time.deltaTime;
+            isVisible = transform.localScale.x > 0.5f && transform.localScale.y > 0.5f && transform.localScale.z > 0.5f;
             yield return 0;
         }
         Destroy(this.gameObject);
