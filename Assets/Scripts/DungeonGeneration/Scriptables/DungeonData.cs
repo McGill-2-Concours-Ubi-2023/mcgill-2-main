@@ -13,8 +13,11 @@ public class DungeonData :DataContainer
     [SerializeField]
     [Range(0.1f, 1f)]
     private float roomDensity = 0.5f;
-    private List<DungeonRoom> rooms = new List<DungeonRoom>();
+    [SerializeField][HideInInspector]
+    private List<DungeonRoom> rooms;
+    [SerializeField][HideInInspector]
     private DungeonRoom startingRoom;
+    [SerializeField][HideInInspector]
     private MapManager mapM; 
     [SerializeField][Range(1, 50)]
     private int minRoomCount = 20;
@@ -28,7 +31,6 @@ public class DungeonData :DataContainer
     public void GenerateDungeon()
     {
         ClearDungeon();
-        GetGrid().SetMonoInstance(mono);
         GetGrid().GenerateGrid(this);
         GetGrid().GenerateRooms(this);
         SaveData();
@@ -107,12 +109,13 @@ public class DungeonData :DataContainer
 
     public void ClearDungeon()
     {
+        if (rooms == null) rooms = new List<DungeonRoom>();
         FindMapManager();
+        GetGrid().SetMonoInstance(mono);
         mapM.ClearMap();
         rooms.Clear();
         GetGrid().ClearBuffer();    
-        DungeonDrawer.EraseDungeon(mono);
-        
+        DungeonDrawer.EraseDungeon(mono);       
     }
 
     public void SaveData()
@@ -128,20 +131,26 @@ public class DungeonData :DataContainer
 
     public void TryQuickLoad()
     {
-        bool onLoadSuccess = false;
+        bool onQuickLoadSuccess = false;
+        bool matchLayout;
+        rooms = FindObjectsOfType<DungeonRoom>().ToList();
         //if it matches the layout data, it means we already generated the dungeon for that layout
-        if(rooms.Count() > 0)
+        if (rooms != null)
         {
-            rooms = FindObjectsOfType<DungeonRoom>().ToList();
-            startingRoom = rooms.Where(room => room.transform.position == GetActiveLayout().GetStartPosition()).First();
-            FindMapManager();
-            onLoadSuccess = true;
+            matchLayout = rooms.Where(room => room.GetLayout() != GetActiveLayout().GetName()).ToList().Count() == 0
+                && rooms.Count() == GetActiveLayout().GetFloorData().Count();
+            if(matchLayout)
+            {
+                startingRoom = rooms.Where(room => room.transform.position == GetActiveLayout().GetStartPosition()).First();
+                FindMapManager();
+                onQuickLoadSuccess = true;
+            }         
         }
         //if does not succeed, regenerate the whole dungeon
-        if (!onLoadSuccess) LoadData();
-
+        if (!onQuickLoadSuccess) LoadData();
     }
 
+    //Reload the whole dungeon
     public void LoadData()
     {
         ClearDungeon();

@@ -24,22 +24,19 @@ public class DungeonDataEditor : Editor
             dungeonData.FindMapManager();
         }
 
-        if (GUILayout.Button("Reload Monobehaviours references"))
+        if (GUILayout.Button("Load layout"))
         {
-            if (!dungeonData.GetActiveLayout().IsEmpty()) dungeonData.TryQuickLoad();         
+            if (!dungeonData.GetActiveLayout().IsEmpty()) dungeonData.TryQuickLoad();
         }
 
-        if(GUILayout.Button("Track start room"))
+        if (GUILayout.Button("Track start room"))
         {
-            if (startingRoom == null && !dungeonData.GetActiveLayout().IsEmpty())
+            if (!dungeonData.GetActiveLayout().IsEmpty())
             {
                 dungeonData.TryQuickLoad();
                 startingRoom = dungeonData.GetStartingRoom();
                 EditorGUIUtility.PingObject(startingRoom);
                 Selection.activeGameObject = startingRoom.gameObject;
-            }
-            else if (startingRoom != null)
-            {
                 EditorGUIUtility.PingObject(startingRoom);
                 Selection.activeGameObject = startingRoom.gameObject;
             }

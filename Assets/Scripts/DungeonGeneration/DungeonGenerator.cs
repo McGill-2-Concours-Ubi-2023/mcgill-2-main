@@ -12,5 +12,7 @@ public class DungeonGenerator : MonoBehaviour
     {
         data.SetMonoInstance(this.gameObject);
         data.TryQuickLoad();
+        //List<DungeonRoom> rooms = FindObjectsOfType<DungeonRoom>().ToList();
+        //data.SetRooms(rooms);
     }
 }
