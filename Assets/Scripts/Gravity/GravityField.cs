@@ -1,19 +1,21 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 
 public abstract class GravityField : MonoBehaviour
 {
     [Range(0.1f, 9.81f)]
     public float gravity;
     public List<GameObject> agents;
-    protected bool isInAtmosphere;
     protected bool isActive;
-    [SerializeField][Range(1,10)]
+    protected int layerMask;
+    [SerializeField]
+    [Range(1, 20)]
     protected float massCompression;
+    private HashSet<Rigidbody> cachedRigidbodies = new HashSet<Rigidbody>();
+
     protected abstract void ApplyGravity(Rigidbody rb);
+    protected abstract void DetectCollision();
 
     private void Awake()
     {
@@ -25,15 +27,6 @@ public abstract class GravityField : MonoBehaviour
         isActive = active;
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (isActive && other.GetComponent<GravityAgent>())
-        {
-            isInAtmosphere = true;
-            agents.Add(other.gameObject);
-        }
-    }
-
     public void SetMassCompressionForce(float compressionForce)
     {
         massCompression = compressionForce;
@@ -43,28 +36,49 @@ public abstract class GravityField : MonoBehaviour
     {
         return massCompression;
     }
-    
-    private void OnTriggerStay(Collider other)
+
+    //collision condition set in collision matrix go to Edit > Project settings > Layer collision matrix
+    protected void ProcessCollision(Collider other)
     {
-        if (isActive) 
+        if (isActive)
         {
             var agent = other.GetComponent<GravityAgent>();
             if (!agents.Contains(other.gameObject) && agent && !agent.IsBound())
             {
-                agents.Add(other.gameObject);
+                Rigidbody rb = other.GetComponent<Rigidbody>();
+                if (rb != null)
+                {
+                    agents.Add(other.gameObject);
+                    cachedRigidbodies.Add(rb);
+                }
             }
-            agents = agents.Where(agent => agent).ToList();
-            agents.Where(agent => agent.name.Equals(other.name))
-                .ToList()
-                .ForEach(agent => ApplyGravity(agent.GetComponent<Rigidbody>()));
-        }      
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        UpdateLayerMask();
+        DetectCollision();
+        foreach (Rigidbody rb in cachedRigidbodies)
+        {
+            if (rb != null)
+            {
+                ApplyGravity(rb);
+            }
+        }
+    }
+
+    private void UpdateLayerMask()
+    {
+        int layerMask1 = 1 << LayerMask.NameToLayer("Destructible"); // set the first layer mask 1"
+        int layerMask2 = 1 << LayerMask.NameToLayer("Player"); // set the second layer mask 
+        layerMask = layerMask1 | layerMask2; // combine the layer masks
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (isActive)
         {
-            isInAtmosphere = false;
             ReleaseAgent(other.gameObject);
         }
     }
@@ -72,14 +86,22 @@ public abstract class GravityField : MonoBehaviour
     public void ReleaseAgent(GameObject obj)
     {
         agents.Remove(obj);
+        Rigidbody rb = obj.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            cachedRigidbodies.Remove(rb);
+        }
     }
 
     private void OnDestroy()
     {
-        agents.ForEach(agent =>
+        foreach (Rigidbody rb in cachedRigidbodies)
         {
-            if(agent != null)
-            agent.GetComponent<GravityAgent>().Release();
-        });
+            if (rb != null)
+            {
+                rb.gameObject.GetComponent<GravityAgent>().Release();
+            }
+        }
+        cachedRigidbodies.Clear();
     }
 }
