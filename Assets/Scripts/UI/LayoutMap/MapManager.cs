@@ -15,6 +15,7 @@ public class MapManager : MonoBehaviour, IDungeonMapTrigger
     [SerializeField]
     private List<MapRoom> rooms = new List<MapRoom>(); // all cells in map, including the nonroom ones 
     private int gridSize;
+    [SerializeField]
     private List<GameObject> roomsObj = new List<GameObject>(); 
     public void GenerateMapRoom(Vector2Int pos, RoomTypes.RoomType rt) {
         int index = pos.y + gridSize * pos.x;
@@ -50,6 +51,12 @@ public class MapManager : MonoBehaviour, IDungeonMapTrigger
     public void Test()
     {
         Debug.Log("test");
+    }
+
+    public void VisitRoom(int roomIndex) {
+        Debug.Log(roomIndex);
+        roomsObj[roomIndex].GetComponent<MapRoom>().VisitRoom();
+        
     }
 
     public void Update()

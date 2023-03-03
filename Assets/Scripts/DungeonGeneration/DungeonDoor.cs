@@ -11,6 +11,12 @@ public class DungeonDoor : MonoBehaviour
     private DungeonRoom sharedRoom1;
     [SerializeField]
     private DungeonRoom sharedRoom2;
+    [SerializeField]
+    private DungeonGrid grid;
+    [SerializeField]
+    private DungeonData dungeonData;
+    [SerializeField]
+    private MapManager map; 
  
     public static DungeonDoor Create(GameObject doorObj, DungeonRoom originRoom, DungeonRoom targetRoom, DungeonData data)
     {
@@ -69,5 +75,7 @@ public class DungeonDoor : MonoBehaviour
             Vector3 Y_Offset = new Vector3(0, 5, 0);
             transform.position -= Y_Offset;
         }
+        /*Vector2Int position = dungeonData.GetActiveRoom().GridPosition();
+        map.VisitRoom(position.x * grid.GridSize() + position.y);*/
     }
 }
