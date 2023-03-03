@@ -22,7 +22,7 @@ public class ClickSound : MonoBehaviour
             AS.pitch = Random.Range(0.8f, 1.2f);
         if(Time.time>nextsoundtime){
             AS.PlayOneShot(AS.clip);
-            nextsoundtime = Time.time+soundGap;
+            //nextsoundtime = Time.time+soundGap;
         }
     }
 }

@@ -35,7 +35,7 @@ public class CinemachineCameraShake : MonoBehaviour
 
     public void OnClickShake()
     {
-        if(!Gamepad.current.aButton.IsPressed() && !Mouse.current.leftButton.IsPressed())
+        if(FindObjectOfType<CursorController>().IsClickSourceUnique())
         {
             Debug.Log("SHAKING!");
             ShakeCamera(4.0f, 3.0f);

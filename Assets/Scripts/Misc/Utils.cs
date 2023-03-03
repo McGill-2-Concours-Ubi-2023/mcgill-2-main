@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public static class Utils
@@ -35,5 +37,4 @@ public static class Utils
         scaledTexture.Apply();
         return scaledTexture;
     }
-
 }

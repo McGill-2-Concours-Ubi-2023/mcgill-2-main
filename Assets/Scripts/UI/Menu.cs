@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -20,12 +20,12 @@ public class Menu : MonoBehaviour
         else
             Cursor.visible = true;*/
     }
-    
+
     public void Shut()
     {
         Application.Quit();
     }
-    
+
     public void URL(string url)
     {
         Application.OpenURL(url);
