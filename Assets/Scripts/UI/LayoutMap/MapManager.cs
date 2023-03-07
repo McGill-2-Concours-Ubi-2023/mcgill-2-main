@@ -54,9 +54,11 @@ public class MapManager : MonoBehaviour, IDungeonMapTrigger
     }
 
     public void VisitRoom(int roomIndex) {
-        Debug.Log(roomIndex);
-        roomsObj[roomIndex].GetComponent<MapRoom>().VisitRoom();
-        
+        transform.GetChild(roomIndex).GetComponent<MapRoom>().VisitRoom();
+    }
+
+    public void LeaveRoom(int roomIndex) {
+        transform.GetChild(roomIndex).GetComponent<MapRoom>().LeaveRoom();
     }
 
     public void Update()
@@ -66,11 +68,13 @@ public class MapManager : MonoBehaviour, IDungeonMapTrigger
             {
                 RectTransform rect = this.gameObject.GetComponent<RectTransform>();
                 rect.localScale = new Vector3(0.3f, 0.3f, 1);
-               
-
             }
             else transform.localScale = Vector3.one;
             
         }
+    }
+
+    public int GetGridSize() {
+        return gridSize;
     }
 }

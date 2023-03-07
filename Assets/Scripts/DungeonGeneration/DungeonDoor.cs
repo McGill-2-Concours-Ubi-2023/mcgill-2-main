@@ -11,13 +11,8 @@ public class DungeonDoor : MonoBehaviour
     private DungeonRoom sharedRoom1;
     [SerializeField]
     private DungeonRoom sharedRoom2;
-    [SerializeField]
-    private DungeonGrid grid;
-    [SerializeField]
-    private DungeonData dungeonData;
-    [SerializeField]
-    private MapManager map; 
- 
+
+
     public static DungeonDoor Create(GameObject doorObj, DungeonRoom originRoom, DungeonRoom targetRoom, DungeonData data)
     {
         Vector3 Y_Offset = new Vector3(0, data.GetRoomPrefab().transform.localScale.y/2
@@ -75,7 +70,24 @@ public class DungeonDoor : MonoBehaviour
             Vector3 Y_Offset = new Vector3(0, 5, 0);
             transform.position -= Y_Offset;
         }
-        /*Vector2Int position = dungeonData.GetActiveRoom().GridPosition();
-        map.VisitRoom(position.x * grid.GridSize() + position.y);*/
+        GoThorouthDoor();
+    }
+
+    private void GoThorouthDoor() {
+        MapManager map = GameObject.Find("LayoutMap").GetComponent<MapManager>();
+        DungeonRoom currentRoom = map.dungeonData.GetActiveRoom();
+        Vector2Int position = currentRoom.GridPosition();
+        int gridSize = map.dungeonGrid.GridSize(); 
+        map.VisitRoom(position.x * gridSize + position.y);
+
+        if (sharedRoom1 == currentRoom)
+        {
+            Vector2Int pos = sharedRoom2.GridPosition();
+            map.LeaveRoom(pos.x * gridSize + pos.y);
+        }
+        else {
+            Vector2Int pos = sharedRoom1.GridPosition();
+            map.LeaveRoom(pos.x * gridSize + pos.y);
+        }
     }
 }
