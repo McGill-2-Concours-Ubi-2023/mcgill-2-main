@@ -18,6 +18,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     public float GravityGrenadeDisappearTime;
     public float GravityGrenadeExplodeTime;
     public GameObject CratePrefab;
+    private DungeonRoom m_LastRoom = null;
 
     public ISimpleInventory<SimpleCollectible> SimpleCollectibleInventory;
     
@@ -60,13 +61,26 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         float3 adjustedFaceDirection = adjustedFaceInput.x * cameraRight + adjustedFaceInput.z * cameraForward;
         gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnPlayerFaceIntention), adjustedFaceDirection);
         
+        
         // update camera focus
         if (cam.gameObject == Camera.gameObject)
         {
             // update camera follow
-            DungeonRoom activeRoom = DungeonRoom.GetActiveRoom();
-            Camera.m_LookAt = activeRoom.transform;
-            Camera.m_Follow = activeRoom.transform;
+            if (m_LastRoom != DungeonRoom.GetActiveRoom())
+            {
+                m_LastRoom = DungeonRoom.GetActiveRoom();
+                GameObject newCamera = Instantiate(Camera.gameObject);
+                newCamera.name = $"MainCamera_{Guid.NewGuid()}";
+                newCamera.SetActive(false);
+                CinemachineVirtualCamera newVirtualCamera = newCamera.GetComponent<CinemachineVirtualCamera>();
+                var targetTransform = m_LastRoom.transform;
+                newVirtualCamera.m_Follow = targetTransform;
+                newVirtualCamera.m_LookAt = targetTransform;
+                newCamera.SetActive(true);
+                Camera.gameObject.SetActive(false);
+                Destroy(Camera.gameObject, 10.0f);
+                Camera = newVirtualCamera;
+            }
         }
     }
 
