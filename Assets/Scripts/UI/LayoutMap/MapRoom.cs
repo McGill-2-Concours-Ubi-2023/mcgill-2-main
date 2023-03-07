@@ -35,8 +35,8 @@ public class MapRoom : MonoBehaviour
     public void VisitRoom() {
         if (!hasVisited) {
             hasVisited = true;
-            backGround.sprite = visited;
         }
+        backGround.sprite = visiting;
     }
 
     public void LeaveRoom() {

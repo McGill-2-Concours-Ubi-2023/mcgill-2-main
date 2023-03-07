@@ -16,6 +16,7 @@ public class Gun : MonoBehaviour
     public void Shoot()
     {
         GameObject bullet = GameObject.Instantiate(bulletPrefab, gunTip.position, Quaternion.identity);
+        Destroy(bullet, 5f);
         bullet.GetComponent<Bullet>().SetDirectionASpeed(transform.root.forward, speed);
     }
 
