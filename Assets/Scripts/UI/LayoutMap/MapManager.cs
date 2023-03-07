@@ -24,6 +24,7 @@ public class MapManager : MonoBehaviour, IDungeonMapTrigger
     }
 
     public void MapGridGeneration() {
+        ClearMap();
         gridSize = dungeonGrid.GridSize();
         var rectT = mapLayoutGroup.gameObject.GetComponent<RectTransform>().rect;
         Vector2 layoutSize = new Vector2(rectT.width, rectT.height);
@@ -41,9 +42,11 @@ public class MapManager : MonoBehaviour, IDungeonMapTrigger
 
     public void ClearMap() {
         GameObject[] roomsObj1 = GameObject.FindGameObjectsWithTag("MapRoom");
+        GameObject begonePls = GameObject.Find("RoomCellBackGround");
         foreach (var room in roomsObj1) {
             GameObject.DestroyImmediate(room);
         }
+        GameObject.DestroyImmediate(begonePls);
         rooms.Clear();
         roomsObj.Clear();
     }
