@@ -22,7 +22,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     public ISimpleInventory<SimpleCollectible> SimpleCollectibleInventory;
     
     private InputActionAsset m_InputActionAsset;
-    private readonly static int InDebugMode = Animator.StringToHash("InDebugMode");
+    private static readonly int InDebugMode = Animator.StringToHash("InDebugMode");
 
     private void Awake()
     {
@@ -35,8 +35,10 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         float2 input = m_InputActionAsset["Movement"].ReadValue<Vector2>();
         gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnInput), input);
 
-        float3 adjustedInput = new float3();
-        adjustedInput.xz = input.xy;
+        float3 adjustedInput = new float3
+        {
+            xz = input.xy
+        };
 
         CinemachineVirtualCameraBase cam = GetActiveCamera();
 
@@ -51,10 +53,21 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnDebugCameraRotation), rightStick);
         #endif
 
-        float3 adjustedFaceInput = new float3();
-        adjustedFaceInput.xz = rightStick.xy;
+        float3 adjustedFaceInput = new float3
+        {
+            xz = rightStick.xy
+        };
         float3 adjustedFaceDirection = adjustedFaceInput.x * cameraRight + adjustedFaceInput.z * cameraForward;
         gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnPlayerFaceIntention), adjustedFaceDirection);
+        
+        // update camera focus
+        if (cam.gameObject == Camera.gameObject)
+        {
+            // update camera follow
+            DungeonRoom activeRoom = DungeonRoom.GetActiveRoom();
+            Camera.m_LookAt = activeRoom.transform;
+            Camera.m_Follow = activeRoom.transform;
+        }
     }
 
 #if DEBUG
