@@ -93,36 +93,24 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     {
         return DebugCamera.gameObject.activeSelf ? DebugCamera : Camera;
     }
-
-    public void OnPrimaryWeaponPress()
-    {
-        
-    }
     
     private IEnumerator GrenadeDelayedExplode(GameObject grenade)
     {
+        grenade.SendMessage("Activate");
         yield return new WaitForSeconds(GravityGrenadeExplodeTime);
         grenade.SendMessage("Explode");
-        grenade.GetComponent<MeshRenderer>().enabled = false;
-    }
-    
-    private IEnumerator GrenadeDelayedDespawn(GameObject grenade)
-    {
-        yield return new WaitForSeconds(GravityGrenadeDisappearTime);
-        Destroy(grenade);
+        grenade.SendMessage("DisappearOverTime", GravityGrenadeDisappearTime);
     }
     
     public void OnPrimaryWeaponRelease()
     {
         GameObject grenade = Instantiate(GravityGrenadePrefab);
         float3 throwDir = (transform.forward + transform.up).normalized;
-        Physics.IgnoreCollision(GetComponent<CapsuleCollider>(), grenade.GetComponent<SphereCollider>());
-        grenade.transform.position = transform.position;
+        Physics.IgnoreCollision(GetComponent<CapsuleCollider>(), grenade.transform.Find("SphereMesh").GetComponent<SphereCollider>());
+        grenade.transform.position = transform.position + Vector3.up;
         Rigidbody rb = grenade.GetComponent<Rigidbody>();
-        rb.velocity = GetComponent<Rigidbody>().velocity;
         rb.AddForce(throwDir * 10, ForceMode.Impulse);
         StartCoroutine(GrenadeDelayedExplode(grenade));
-        StartCoroutine(GrenadeDelayedDespawn(grenade));
     }
 
     public void OnCollectCrate()
