@@ -19,6 +19,7 @@ public class DungeonRoom : MonoBehaviour
     [SerializeField]
     private string layout;
 
+
     internal object ToList()
     {
         throw new NotImplementedException();

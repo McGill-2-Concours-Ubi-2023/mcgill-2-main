@@ -18,11 +18,12 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     public float GravityGrenadeDisappearTime;
     public float GravityGrenadeExplodeTime;
     public GameObject CratePrefab;
+    private DungeonRoom m_LastRoom = null;
 
     public ISimpleInventory<SimpleCollectible> SimpleCollectibleInventory;
     
     private InputActionAsset m_InputActionAsset;
-    private readonly static int InDebugMode = Animator.StringToHash("InDebugMode");
+    private static readonly int InDebugMode = Animator.StringToHash("InDebugMode");
 
     private void Awake()
     {
@@ -35,8 +36,10 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         float2 input = m_InputActionAsset["Movement"].ReadValue<Vector2>();
         gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnInput), input);
 
-        float3 adjustedInput = new float3();
-        adjustedInput.xz = input.xy;
+        float3 adjustedInput = new float3
+        {
+            xz = input.xy
+        };
 
         CinemachineVirtualCameraBase cam = GetActiveCamera();
 
@@ -51,10 +54,34 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnDebugCameraRotation), rightStick);
         #endif
 
-        float3 adjustedFaceInput = new float3();
-        adjustedFaceInput.xz = rightStick.xy;
+        float3 adjustedFaceInput = new float3
+        {
+            xz = rightStick.xy
+        };
         float3 adjustedFaceDirection = adjustedFaceInput.x * cameraRight + adjustedFaceInput.z * cameraForward;
         gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnPlayerFaceIntention), adjustedFaceDirection);
+        
+        
+        // update camera focus
+        if (cam.gameObject == Camera.gameObject)
+        {
+            // update camera follow
+            if (m_LastRoom != DungeonRoom.GetActiveRoom())
+            {
+                m_LastRoom = DungeonRoom.GetActiveRoom();
+                GameObject newCamera = Instantiate(Camera.gameObject);
+                newCamera.name = $"MainCamera_{Guid.NewGuid()}";
+                newCamera.SetActive(false);
+                CinemachineVirtualCamera newVirtualCamera = newCamera.GetComponent<CinemachineVirtualCamera>();
+                var targetTransform = m_LastRoom.transform;
+                newVirtualCamera.m_Follow = targetTransform;
+                newVirtualCamera.m_LookAt = targetTransform;
+                newCamera.SetActive(true);
+                Camera.gameObject.SetActive(false);
+                Destroy(Camera.gameObject, 10.0f);
+                Camera = newVirtualCamera;
+            }
+        }
     }
 
 #if DEBUG
