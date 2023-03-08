@@ -5,6 +5,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using static Unity.Mathematics.math;
+using float2 = Unity.Mathematics.float2;
 using float3 = Unity.Mathematics.float3;
 
 public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, ICrateTriggers
@@ -19,6 +20,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     public float GravityGrenadeExplodeTime;
     public GameObject CratePrefab;
     private DungeonRoom m_LastRoom = null;
+    private float3 m_MovementDirection;
 
     public ISimpleInventory<SimpleCollectible> SimpleCollectibleInventory;
     
@@ -60,7 +62,9 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         };
         float3 adjustedFaceDirection = adjustedFaceInput.x * cameraRight + adjustedFaceInput.z * cameraForward;
         gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnPlayerFaceIntention), adjustedFaceDirection);
-        
+
+        m_MovementDirection = normalize(all(adjustedInput.xz == float2.zero) ? transform.forward : adjustedDirection);
+        Debug.DrawRay(transform.position + Vector3.up, m_MovementDirection, Color.green);
         
         // update camera focus
         if (cam.gameObject == Camera.gameObject)
@@ -174,6 +178,11 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         Rigidbody rb = GetComponent<Rigidbody>();
         rb.rotation = Quaternion.Euler(0, angle * Mathf.Rad2Deg, 0);
         rb.angularVelocity = Vector3.zero;
+    }
+
+    public void GetMovementDirection(Ref<float3> direction)
+    {
+        direction.Value = m_MovementDirection;
     }
 }
 

@@ -16,8 +16,11 @@ public class MainCharacterDashingStateBehaviour : GenericStateMachineMonoBehavio
     {
         animator.ResetTrigger(MovementToDash);
         m_Rigidbody = GetComponent<Rigidbody>();
-        m_Rigidbody.velocity = transform.forward * GetComponent<MainCharacterController>().DashSpeed;
-        m_Forward = transform.forward;
+        // get proper dash direction
+        Ref<float3> refForward = float3(0, 0, 0);
+        gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.GetMovementDirection), refForward);
+        m_Forward = refForward;
+        m_Rigidbody.velocity = m_Forward * GetComponent<MainCharacterController>().DashSpeed;
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -25,6 +28,7 @@ public class MainCharacterDashingStateBehaviour : GenericStateMachineMonoBehavio
         // expected velocity
         float3 expectedVelocity = m_Forward * GetComponent<MainCharacterController>().DashSpeed;
         float3 force = m_Rigidbody.mass * expectedVelocity * Time.fixedDeltaTime;
+        Debug.DrawRay(transform.position + Vector3.up, normalize(force) * 2, Color.magenta);
         m_Rigidbody.AddForce(force, ForceMode.Impulse);
         m_Rigidbody.angularVelocity = Vector3.zero;
     }
