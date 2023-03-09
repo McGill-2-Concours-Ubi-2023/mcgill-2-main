@@ -9,4 +9,9 @@ public class DungeonRoomCollider : MonoBehaviour
     {
         DungeonRoom.activeRoom = GetComponentInParent<DungeonRoom>();
     }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        DungeonRoom.activeRoom = GetComponentInParent<DungeonRoom>();
+    }
 }
