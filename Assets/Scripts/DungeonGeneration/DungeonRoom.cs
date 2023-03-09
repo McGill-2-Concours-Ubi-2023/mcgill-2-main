@@ -13,7 +13,7 @@ public class DungeonRoom : MonoBehaviour
     [SerializeField]
     private Vector2Int gridPosition;
     [SerializeField]
-    private static DungeonRoom activeRoom;
+    public static DungeonRoom activeRoom;
     [SerializeField]
     private List<DungeonDoor> doors = new List<DungeonDoor>();
     [SerializeField]
@@ -166,13 +166,5 @@ public class DungeonRoom : MonoBehaviour
     {
         HashSet<DungeonRoom> visitedRooms = new HashSet<DungeonRoom>();
         return DFS(excludedRoom, startRoom, endRoom, visitedRooms);
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if(collision.gameObject.layer == LayerMask.NameToLayer("Player"))
-        {
-            activeRoom = this;
-        }
     }
 }
