@@ -37,6 +37,7 @@ public class MapManager : MonoBehaviour, IDungeonMapTrigger
             room.transform.SetParent(this.transform);
             roomsObj.Add(mr.gameObject);
             mr.SetID(i);
+            room.transform.localScale = Vector3.one;
         }
     }
 

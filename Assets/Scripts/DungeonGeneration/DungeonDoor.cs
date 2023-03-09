@@ -70,7 +70,10 @@ public class DungeonDoor : MonoBehaviour
             Vector3 Y_Offset = new Vector3(0, 5, 0);
             transform.position -= Y_Offset;
         }
-        GoThorouthDoor();
+        if (other.CompareTag("Player")) {
+            GoThorouthDoor();
+        }
+        
     }
 
     private void GoThorouthDoor() {
