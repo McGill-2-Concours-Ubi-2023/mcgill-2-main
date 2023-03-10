@@ -21,6 +21,11 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     public GameObject CratePrefab;
     private DungeonRoom m_LastRoom = null;
     private float3 m_MovementDirection;
+    private Animator animator;
+    private float minDelay = 3.0f;
+    private float maxDelay = 6.0f;
+    private bool inputState = false;
+    public Coroutine danceCoroutine;
 
     public ISimpleInventory<SimpleCollectible> SimpleCollectibleInventory;
     
@@ -31,6 +36,37 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     {
         SimpleCollectibleInventory = new SimpleInventory<SimpleCollectible>();
         m_InputActionAsset = GetComponent<PlayerInput>().actions;
+        animator = GetComponent<Animator>();
+    }
+
+    private void Start()
+    {
+        StartCoroutine(RandomDance(UnityEngine.Random.Range(minDelay, maxDelay)));
+    }
+
+    IEnumerator RandomDance(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        StartCoroutine(OnInputWait());
+    }
+
+    IEnumerator OnInputWait()
+    {
+        var clipLength = 1.0f; //Default set to 1 sec
+        yield return new WaitForSeconds(0.5f);
+        if (!inputState) 
+        {
+            int randomNumber = UnityEngine.Random.Range(1, 3);
+            animator.SetTrigger("Dance_" + randomNumber);
+            clipLength = animator.GetCurrentAnimatorStateInfo(1).length;
+        }
+        yield return new WaitForSeconds(clipLength);
+        OnDanceEvent();
+    }
+
+    public void OnDanceEvent()
+    {
+        StartCoroutine(RandomDance(UnityEngine.Random.Range(minDelay, maxDelay)));
     }
 
     private void Update()
@@ -42,6 +78,9 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         {
             xz = input.xy
         };
+
+        inputState = (new Vector2(input.x, input.y)).magnitude > 0.2f;
+        animator.SetBool("InputState", inputState);
 
         CinemachineVirtualCameraBase cam = GetActiveCamera();
 
@@ -65,7 +104,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
 
         m_MovementDirection = normalize(all(adjustedInput.xz == float2.zero) ? transform.forward : adjustedDirection);
         Debug.DrawRay(transform.position + Vector3.up, m_MovementDirection, Color.green);
-        
+
         // update camera focus
         if (cam.gameObject == Camera.gameObject)
         {
@@ -92,7 +131,6 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     public void OnDebug()
     {
         Debug.Log("Toggle debug mode");
-        Animator animator = GetComponent<Animator>();
         if (animator)
         {
             animator.SetBool(InDebugMode, !animator.GetBool(InDebugMode));
@@ -135,6 +173,8 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     
     public void OnPrimaryWeaponRelease()
     {
+        int randomNumber = UnityEngine.Random.Range(1, 3);
+        animator.SetTrigger("ThrowGrenade_" + randomNumber);
         GameObject grenade = Instantiate(GravityGrenadePrefab);
         float3 throwDir = (transform.forward + transform.up).normalized;
         Physics.IgnoreCollision(GetComponent<CapsuleCollider>(), grenade.transform.Find("SphereMesh").GetComponent<SphereCollider>());
@@ -183,6 +223,20 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     public void GetMovementDirection(Ref<float3> direction)
     {
         direction.Value = m_MovementDirection;
+    }
+
+    private IEnumerator CheckForTurn()
+    {
+        while (true)
+        {
+            var previousDirection = m_MovementDirection;
+            yield return new WaitForSeconds(0.1f);
+            var rotation = Quaternion.FromToRotation(m_MovementDirection, previousDirection);
+            if(rotation.eulerAngles.y > 160f)
+            {
+                animator.SetTrigger("Turn");
+            }
+        }       
     }
 }
 
