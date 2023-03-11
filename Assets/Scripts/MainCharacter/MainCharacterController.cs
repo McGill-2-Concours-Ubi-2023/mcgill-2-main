@@ -8,7 +8,7 @@ using static Unity.Mathematics.math;
 using float2 = Unity.Mathematics.float2;
 using float3 = Unity.Mathematics.float3;
 
-public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, ICrateTriggers
+public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, ICrateTriggers, IGravityToCameraTrigger
 {
     public float MovementSpeed;
     public float DashSpeed;
@@ -183,6 +183,21 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     public void GetMovementDirection(Ref<float3> direction)
     {
         direction.Value = m_MovementDirection;
+    }
+
+    public void OnCameraStandardShake(float intensity, float timer, float frequencyGain)
+    {
+        Camera.GetComponent<CinemachineCameraShake>().SantardCameraShake(intensity, timer, 1, 0);
+    }
+
+    public void OnCameraWobbleShakeManualDecrement(float intensity, float frequencyGain)
+    {
+        Camera.GetComponent<CinemachineCameraShake>().WobbleGravityShake(intensity, frequencyGain, 1);
+    }
+
+    public void StopCameraShake()
+    {
+        Camera.GetComponent<CinemachineCameraShake>().StopCameraShake();
     }
 }
 
