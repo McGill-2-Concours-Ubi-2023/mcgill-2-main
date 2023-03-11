@@ -16,7 +16,12 @@ public class ConcentricGravityField : GravityField
 
     private void Awake()
     {
-        radius = GetComponent<SphereCollider>().bounds.extents.magnitude / 2; 
+        radius = GetComponent<SphereCollider>().radius;
+    }
+
+    public float Radius()
+    {
+        return radius;
     }
 
     protected override void ApplyGravity(Rigidbody rb)
@@ -42,7 +47,6 @@ public class ConcentricGravityField : GravityField
 
     protected override void DetectCollision()
     {
-        Debug.Log(layerMask);
         Collider[] colliders = Physics.OverlapSphere(transform.position, radius, layerMask);
         foreach (Collider collider in colliders)
         {

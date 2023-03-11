@@ -5,6 +5,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using static Unity.Mathematics.math;
+using float2 = Unity.Mathematics.float2;
 using float3 = Unity.Mathematics.float3;
 
 public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, ICrateTriggers
@@ -18,11 +19,13 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     public float GravityGrenadeDisappearTime;
     public float GravityGrenadeExplodeTime;
     public GameObject CratePrefab;
+    private DungeonRoom m_LastRoom = null;
+    private float3 m_MovementDirection;
 
     public ISimpleInventory<SimpleCollectible> SimpleCollectibleInventory;
     
     private InputActionAsset m_InputActionAsset;
-    private readonly static int InDebugMode = Animator.StringToHash("InDebugMode");
+    private static readonly int InDebugMode = Animator.StringToHash("InDebugMode");
 
     private void Awake()
     {
@@ -35,8 +38,10 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         float2 input = m_InputActionAsset["Movement"].ReadValue<Vector2>();
         gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnInput), input);
 
-        float3 adjustedInput = new float3();
-        adjustedInput.xz = input.xy;
+        float3 adjustedInput = new float3
+        {
+            xz = input.xy
+        };
 
         CinemachineVirtualCameraBase cam = GetActiveCamera();
 
@@ -51,10 +56,36 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnDebugCameraRotation), rightStick);
         #endif
 
-        float3 adjustedFaceInput = new float3();
-        adjustedFaceInput.xz = rightStick.xy;
+        float3 adjustedFaceInput = new float3
+        {
+            xz = rightStick.xy
+        };
         float3 adjustedFaceDirection = adjustedFaceInput.x * cameraRight + adjustedFaceInput.z * cameraForward;
         gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnPlayerFaceIntention), adjustedFaceDirection);
+
+        m_MovementDirection = normalize(all(adjustedInput.xz == float2.zero) ? transform.forward : adjustedDirection);
+        Debug.DrawRay(transform.position + Vector3.up, m_MovementDirection, Color.green);
+        
+        // update camera focus
+        if (cam.gameObject == Camera.gameObject)
+        {
+            // update camera follow
+            if (m_LastRoom != DungeonRoom.GetActiveRoom())
+            {
+                m_LastRoom = DungeonRoom.GetActiveRoom();
+                GameObject newCamera = Instantiate(Camera.gameObject);
+                newCamera.name = $"MainCamera_{Guid.NewGuid()}";
+                newCamera.SetActive(false);
+                CinemachineVirtualCamera newVirtualCamera = newCamera.GetComponent<CinemachineVirtualCamera>();
+                var targetTransform = m_LastRoom.transform;
+                newVirtualCamera.m_Follow = targetTransform;
+                newVirtualCamera.m_LookAt = targetTransform;
+                newCamera.SetActive(true);
+                Camera.gameObject.SetActive(false);
+                Destroy(Camera.gameObject, 10.0f);
+                Camera = newVirtualCamera;
+            }
+        }
     }
 
 #if DEBUG
@@ -93,36 +124,24 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     {
         return DebugCamera.gameObject.activeSelf ? DebugCamera : Camera;
     }
-
-    public void OnPrimaryWeaponPress()
-    {
-        
-    }
     
     private IEnumerator GrenadeDelayedExplode(GameObject grenade)
     {
+        grenade.SendMessage("Activate");
         yield return new WaitForSeconds(GravityGrenadeExplodeTime);
         grenade.SendMessage("Explode");
-        grenade.GetComponent<MeshRenderer>().enabled = false;
-    }
-    
-    private IEnumerator GrenadeDelayedDespawn(GameObject grenade)
-    {
-        yield return new WaitForSeconds(GravityGrenadeDisappearTime);
-        Destroy(grenade);
+        grenade.SendMessage("DisappearOverTime", GravityGrenadeDisappearTime);
     }
     
     public void OnPrimaryWeaponRelease()
     {
         GameObject grenade = Instantiate(GravityGrenadePrefab);
         float3 throwDir = (transform.forward + transform.up).normalized;
-        Physics.IgnoreCollision(GetComponent<CapsuleCollider>(), grenade.GetComponent<SphereCollider>());
-        grenade.transform.position = transform.position;
+        Physics.IgnoreCollision(GetComponent<CapsuleCollider>(), grenade.transform.Find("SphereMesh").GetComponent<SphereCollider>());
+        grenade.transform.position = transform.position + Vector3.up;
         Rigidbody rb = grenade.GetComponent<Rigidbody>();
-        rb.velocity = GetComponent<Rigidbody>().velocity;
         rb.AddForce(throwDir * 10, ForceMode.Impulse);
         StartCoroutine(GrenadeDelayedExplode(grenade));
-        StartCoroutine(GrenadeDelayedDespawn(grenade));
     }
 
     public void OnCollectCrate()
@@ -159,6 +178,11 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         Rigidbody rb = GetComponent<Rigidbody>();
         rb.rotation = Quaternion.Euler(0, angle * Mathf.Rad2Deg, 0);
         rb.angularVelocity = Vector3.zero;
+    }
+
+    public void GetMovementDirection(Ref<float3> direction)
+    {
+        direction.Value = m_MovementDirection;
     }
 }
 

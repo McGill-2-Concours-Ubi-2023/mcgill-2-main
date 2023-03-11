@@ -77,7 +77,7 @@ public abstract class GravityField : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (isActive)
+        if (isActive && other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
             ReleaseAgent(other.gameObject);
         }
