@@ -2,35 +2,55 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
-using UnityEngine.InputSystem;
 
 public class CinemachineCameraShake : MonoBehaviour
 {
     private CinemachineVirtualCamera virtualCamera;
     private float shakeTimer;
     private CinemachineBasicMultiChannelPerlin perlinChannel;
+    private float frequency;
+    public NoiseSettings[] noiseSettings;
     private void Awake()
     {
         virtualCamera = GetComponent<CinemachineVirtualCamera>();
         perlinChannel = virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+        frequency = perlinChannel.m_FrequencyGain;
     }
 
-    private void ShakeCamera(float intensity, float timer)
-    {      
-        perlinChannel.m_AmplitudeGain = intensity;
-        shakeTimer = timer;
-    }
-
-    private void Update()
+    public void SantardCameraShake(float intensity, float timer, float frequencyGain, int noiseSettingsId)
     {
-        if(shakeTimer > 0)
+        SetNoiseSettings(noiseSettingsId);
+        perlinChannel.m_AmplitudeGain = intensity;
+        perlinChannel.m_FrequencyGain = frequencyGain;
+        shakeTimer = timer;
+        Shake();
+    }
+
+    public void StopCameraShake()
+    {
+        perlinChannel.m_AmplitudeGain = 0;
+    }
+
+    public void SetNoiseSettings(int noiseSettingsId)
+    {
+        perlinChannel.m_NoiseProfile = noiseSettings[noiseSettingsId];
+    }
+
+    public void WobbleGravityShake(float intensity, float frequencyGain, int noiseSettingsId)
+    {
+        SetNoiseSettings(noiseSettingsId);
+        perlinChannel.m_AmplitudeGain = intensity;
+        perlinChannel.m_FrequencyGain = frequencyGain;
+    }
+
+    private IEnumerator Shake()
+    {
+        while (shakeTimer > 0)
         {
             shakeTimer -= Time.deltaTime;
+            yield return new WaitForEndOfFrame();
         }
-        else 
-        {
-            perlinChannel.m_AmplitudeGain = 0;
-        }
+        perlinChannel.m_AmplitudeGain = 0;
     }
 
     public void OnClickShake()
@@ -38,7 +58,7 @@ public class CinemachineCameraShake : MonoBehaviour
         if(FindObjectOfType<CursorController>().IsClickSourceUnique())
         {
             Debug.Log("SHAKING!");
-            ShakeCamera(4.0f, 3.0f);
+            SantardCameraShake(4.0f, 3.0f, 1, 0);
         }       
     }
 }

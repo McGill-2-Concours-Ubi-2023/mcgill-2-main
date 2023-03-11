@@ -15,10 +15,6 @@ public class GravitationalGrenade : MonoBehaviour
     private VisualEffect _explodeEffect;
     [SerializeField]
     private Material mainMaterial;
-    //[SerializeField]
-    //private Material explosionMaterial;
-    [SerializeField]
-    private bool expandWithMass = false;
     private MeshRenderer meshRenderer;
     [SerializeField][ColorUsage(true, true)]
     private Color defaultColor;
@@ -26,7 +22,17 @@ public class GravitationalGrenade : MonoBehaviour
     private Color explosionColor;
     private Renderer _renderer;
     private bool hasExploded = false;
-    
+    [SerializeField][Range(0.5f, 10.0f)]
+    private float explosionShakeIntensity = 0.1f;
+    [SerializeField]
+    private float explosionShakeTime = 0.5f;
+    [SerializeField]
+    private float explosionInfluenceDistance = 10.0f;
+    [SerializeField]
+    private float wobbleShakeIntensity = 4.0f;
+    [SerializeField]
+    private float shakeDampening = 6.0f;
+
     private void Awake()
     {
         animator = GetComponent<Animator>();
@@ -54,8 +60,12 @@ public class GravitationalGrenade : MonoBehaviour
     {
         if (!hasExploded)
         {
+            float distance = Vector3.Distance(GameObject.FindGameObjectWithTag("Player").transform.position, transform.position);
+            var intensity = Mathf.Lerp(0.1f, explosionShakeIntensity, 1 - Mathf.Clamp01(distance / explosionInfluenceDistance));
             _renderer.material.SetColor("_BaseColor", explosionColor);
             animator.SetTrigger("explode");
+            GameObject.FindGameObjectWithTag("Player").Trigger<IGravityToCameraTrigger>
+                (nameof(IGravityToCameraTrigger.OnCameraStandardShake), intensity, explosionShakeTime, 1);
             var kernel = gravityField.transform.position;
             //Slightly offset the y position of the field's kernel for better physics
             gravityField.transform.position = new Vector3(kernel.x, kernel.y + fieldVerticalOffset, kernel.z);
@@ -67,8 +77,22 @@ public class GravitationalGrenade : MonoBehaviour
             rb.constraints = RigidbodyConstraints.FreezeAll;
             rb.useGravity = false;
             StartCoroutine(InitializeVFX());
+            StartCoroutine(ShakeCameraGravity());
             hasExploded = true;
         }      
+    }
+
+    private IEnumerator ShakeCameraGravity()
+    {
+        while (true)
+        {
+            float distance = Vector3.Distance(GameObject.FindGameObjectWithTag("Player").transform.position, transform.position);
+            var intensity = Mathf.Lerp(0.1f, wobbleShakeIntensity, 1 - Mathf.Clamp01(distance / explosionInfluenceDistance));
+            var frequencyGain = intensity / (shakeDampening * 2);
+            GameObject.FindGameObjectWithTag("Player").Trigger<IGravityToCameraTrigger>
+               (nameof(IGravityToCameraTrigger.OnCameraWobbleShakeManualDecrement), intensity / shakeDampening, frequencyGain);
+            yield return new WaitForEndOfFrame();
+        }        
     }
 
     private IEnumerator InitializeVFX()
@@ -100,6 +124,9 @@ public class GravitationalGrenade : MonoBehaviour
 
     public void SelfDestroy()
     {
+        StopAllCoroutines();
+        GameObject.FindGameObjectWithTag("Player").Trigger<IGravityToCameraTrigger>
+              (nameof(IGravityToCameraTrigger.StopCameraShake));
         Destroy(this.gameObject);
     }
 
