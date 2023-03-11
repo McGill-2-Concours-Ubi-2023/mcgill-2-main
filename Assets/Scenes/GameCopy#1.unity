@@ -24328,7 +24328,7 @@ PrefabInstance:
     - target: {fileID: 846677019838790721, guid: a98ede08c13b146dc8929b2c126a9ea4,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.1230011
       objectReference: {fileID: 0}
     - target: {fileID: 846677019838790721, guid: a98ede08c13b146dc8929b2c126a9ea4,
         type: 3}
@@ -24338,7 +24338,7 @@ PrefabInstance:
     - target: {fileID: 846677019838790721, guid: a98ede08c13b146dc8929b2c126a9ea4,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.000000059604645
+      value: 0.020999938
       objectReference: {fileID: 0}
     - target: {fileID: 846677019838790721, guid: a98ede08c13b146dc8929b2c126a9ea4,
         type: 3}
@@ -24389,6 +24389,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalRotation.z
       value: -0.00035958065
+      objectReference: {fileID: 0}
+    - target: {fileID: 6320080083183383752, guid: a98ede08c13b146dc8929b2c126a9ea4,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.123
+      objectReference: {fileID: 0}
+    - target: {fileID: 6320080083183383752, guid: a98ede08c13b146dc8929b2c126a9ea4,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.021
       objectReference: {fileID: 0}
     - target: {fileID: 6545755565514662131, guid: a98ede08c13b146dc8929b2c126a9ea4,
         type: 3}
@@ -24465,6 +24475,11 @@ PrefabInstance:
       propertyPath: Camera
       value: 
       objectReference: {fileID: 990642048}
+    - target: {fileID: 6545755567180361436, guid: a98ede08c13b146dc8929b2c126a9ea4,
+        type: 3}
+      propertyPath: DashSpeed
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 6545755567180361436, guid: a98ede08c13b146dc8929b2c126a9ea4,
         type: 3}
       propertyPath: DebugCamera

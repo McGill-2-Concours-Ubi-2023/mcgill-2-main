@@ -220,6 +220,10 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         rb.angularVelocity = Vector3.zero;
     }
 
+    public void StopDash()
+    {
+        animator.SetTrigger("StopDash");
+    }
     public void GetMovementDirection(Ref<float3> direction)
     {
         direction.Value = m_MovementDirection;
