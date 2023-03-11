@@ -15,8 +15,7 @@ public class DungeonDoor : MonoBehaviour
 
     public static DungeonDoor Create(GameObject doorObj, DungeonRoom originRoom, DungeonRoom targetRoom, DungeonData data)
     {
-        Vector3 Y_Offset = new Vector3(0, data.GetRoomPrefab().transform.localScale.y/2
-              + data.GetDoorPrefab().transform.localScale.y / 2, 0);
+        Vector3 Y_Offset = new Vector3(0, data.GetNormalRoomPrefabs()[0].transform.localScale.y / 2, 0);
         Vector3 diff = originRoom.transform.position - targetRoom.transform.position;
         Vector3 doorPosition = doorObj.transform.position - diff/2 + Y_Offset;
         var doorObject = DungeonDrawer.DrawSingleObject(doorPosition, data.GetDoorPrefab(), doorObj);
@@ -33,16 +32,16 @@ public class DungeonDoor : MonoBehaviour
         return doorComponent;
     }
 
-    public static void CreatePlaceholder(DungeonRoom room, Vector3 direction, DungeonData data)
+    public static void CreatePlaceholder(DungeonRoom room, Vector3 cardinalDirection2D, DungeonData data)
     {
-        Vector3 Y_Offset = new Vector3(0, data.GetRoomPrefab().transform.localScale.y / 2
-              + data.GetDoorPrefab().transform.localScale.y / 2, 0);
-        Vector3 phPosition = room.transform.position + data.GetRoomPrefab().transform.localScale.x / 2 *
-            direction + Y_Offset;
+        Vector3 Y_Offset = new Vector3(0, data.GetNormalRoomPrefabs()[0].transform.localScale.y / 2, 0);
+        Vector3 phPosition = room.transform.position + data.GetNormalRoomPrefabs()[0].transform.localScale.x / 2 *
+            cardinalDirection2D + Y_Offset;
         if (!data.GetGrid().GetWallsLayout().ContainsKey(phPosition))
         {
             var doorPhObj = DungeonDrawer.DrawSingleObject(phPosition, data.GetWallPrefab(), room.transform.gameObject);
-            var doorPhRotation = Quaternion.FromToRotation(doorPhObj.transform.forward, direction);
+            var fromObjToRoomPosition = room.transform.position - doorPhObj.transform.position;
+            var doorPhRotation = Quaternion.FromToRotation(doorPhObj.transform.forward, fromObjToRoomPosition);
             var adjustedRotation = new Quaternion(0, doorPhRotation.y, doorPhRotation.z, doorPhRotation.w); // no -180 degrees on x axis
             doorPhObj.transform.rotation *= adjustedRotation;
             data.GetGrid().AddWallPosition(phPosition, doorPhObj);

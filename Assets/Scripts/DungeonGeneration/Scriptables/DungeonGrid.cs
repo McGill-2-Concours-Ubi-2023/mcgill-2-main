@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New grid", menuName = "Dungeon grid")]
-public class DungeonGrid : DataContainer
+public class DungeonGrid : DataContainer<RoomData>
 {
     [SerializeField]
     [Range(1, 500)]
@@ -18,7 +18,7 @@ public class DungeonGrid : DataContainer
     private DungeonData data;
     private Dictionary<Vector3, Vector2Int> gridMap;
     private MapManager mapM;
-    private Dictionary<Vector3, GameObject> wallsPositions = new Dictionary<Vector3, GameObject>(); 
+    private Dictionary<Vector3, GameObject> wallsPositions = new Dictionary<Vector3, GameObject>();
 
     public void GenerateGrid(DungeonData data)
     {
@@ -36,12 +36,12 @@ public class DungeonGrid : DataContainer
                 var position = currentPosition + i * offsetx + j * offsetz;
                 var gridPosition = new Vector2Int(i, j);
                 gridMap.Add(position, gridPosition);
-                dataBuffer.Add(position);              
+                positionsBuffer.Add(position);           
             }
         }
         mapM = FindObjectOfType<MapManager>();
         mapM.MapGridGeneration(); //start map grid generation after the dungeon grid is done generating
-        DungeonDrawer.Draw(dataBuffer, mono, PrimitiveType.Cube);
+        DungeonDrawer.DrawWithPrimitive(positionsBuffer, mono, PrimitiveType.Cube);
     }
 
     public Dictionary<Vector3, GameObject> GetWallsLayout()
@@ -57,12 +57,13 @@ public class DungeonGrid : DataContainer
     public void GenerateRooms(DungeonData data)
     {
         this.data = data;
-        var startingPosition = dataBuffer.ElementAt(UnityEngine.Random.Range(0, gridSize)); //start at a random position on the grid
-        var startingRoom = DungeonRoom.Create(data, startingPosition, gridMap, data.GetActiveLayout().GetName()); //create starting room
+        Vector3 startingPosition = positionsBuffer.ElementAt(UnityEngine.Random.Range(0, gridSize)); //start at a random position on the grid
+        DungeonRoom startingRoom = DungeonRoom.CreateRandomRoom(data, startingPosition, gridMap,
+            data.GetActiveLayout().GetName(), RoomTypes.RoomType.Start); //create starting room
         data.SetStartingRoom(startingRoom);
         mapM.GenerateMapRoom(startingRoom.GridPosition(), RoomTypes.RoomType.Start);
         //Keep track of already populated grid points
-        var visitedPoints = new HashSet<Vector3>();
+        HashSet<Vector3> visitedPoints = new HashSet<Vector3>();
         visitedPoints.Add(startingPosition);
 
         Stack<DungeonRoom> unvisistedRooms = new Stack<DungeonRoom>(); //Stack for depth first traversal
@@ -76,7 +77,8 @@ public class DungeonGrid : DataContainer
                 var neighbourPositions = GetAvailableNeighbours(currentRoom, visitedPoints);
                 foreach (var selectedPoint in SelectRandomPoints(neighbourPositions, visitedPoints))
                 {
-                    var newRoom = DungeonRoom.Create(data, selectedPoint, gridMap, data.GetActiveLayout().GetName());
+                    var roomType = RoomTypes.GetRandomRoomType();
+                    var newRoom = DungeonRoom.CreateRandomRoom(data, selectedPoint, gridMap, data.GetActiveLayout().GetName(), roomType);
                     unvisistedRooms.Push(newRoom);
                     mapM.GenerateMapRoom(newRoom.GridPosition(), RoomTypes.RoomType.Normal);//setting to normal roomtype for all rooms for now, change this when roomtype is implemented 
                 }
@@ -96,7 +98,8 @@ public class DungeonGrid : DataContainer
             .First();
             var spawnPoint = GetAvailableNeighbours(randomRoom, visitedPoints).First();
             visitedPoints.Add(spawnPoint);
-            DungeonRoom.Create(data, spawnPoint, gridMap, data.GetActiveLayout().GetName());           
+            //add rooms while below the threshold
+            DungeonRoom.CreateRandomRoom(data, spawnPoint, gridMap, data.GetActiveLayout().GetName(), RoomTypes.GetRandomRoomType());           
         }
         ConnectRooms();
         data.AllRooms().ForEach(room => room.GenerateDoorsPlaceholders(data));
@@ -125,7 +128,7 @@ public class DungeonGrid : DataContainer
         {
             if (!visitedPoints.Contains(point)) points.Add(point);
         });
-        return points.Intersect(dataBuffer).ToList();
+        return points.Intersect(positionsBuffer).ToList();
     }
 
     private List<Vector3> GetNeighbouringPoints(DungeonRoom room)
@@ -134,7 +137,7 @@ public class DungeonGrid : DataContainer
         Direction2D.cardinals.ForEach(cardinal =>
         {
             Vector3 samplePoint = room.transform.position + new Vector3(cardinal.x, 0, cardinal.y) * (roomSize + cellsSpacing);
-            if (dataBuffer.Contains(samplePoint))
+            if (positionsBuffer.Contains(samplePoint))
             {
                 points.Add(samplePoint);
             }
@@ -153,7 +156,7 @@ public class DungeonGrid : DataContainer
         Direction2D.cardinals.ForEach(cardinal =>
         {
             Vector3 samplePoint = room.transform.position + new Vector3(cardinal.x, 0, cardinal.y) * (roomSize + cellsSpacing);
-            if (dataBuffer.Contains(samplePoint))
+            if (positionsBuffer.Contains(samplePoint))
             {
                 neighbours.AddRange(data.AllRooms().Where(room => room.transform.position == samplePoint));
             }
@@ -183,22 +186,18 @@ public class DungeonGrid : DataContainer
 
     public void ClearGrid()
     {
-        ClearBuffer();
+        ClearData();
         wallsPositions = new Dictionary<Vector3, GameObject>();
         DungeonDrawer.EraseDungeon(mono);
     }
 
-    public void LoadRooms(List<Vector3> rooms, DungeonData data)
+    public void LoadRooms(List<RoomData> rooms, DungeonData data)
     {
         GenerateGrid(data);
-        dataBuffer = rooms;
-        var roomsObj = DungeonDrawer.DrawRooms(rooms, data.GetRoomPrefab(), mono);
-        roomsObj.ForEach(roomObj => 
+        foreach(var roomData in data.GetActiveLayout().GetRoomsData())
         {
-            var loadedRoom = roomObj.AddComponent<DungeonRoom>();
-            loadedRoom.Initialize(gridMap, roomObj.transform.position, data.GetActiveLayout().GetName());
-            data.AddRoom(loadedRoom);
-        });
+            DungeonRoom.CreateRoomFromData(roomData, data, gridMap, data.GetActiveLayout().GetName());
+        }
         ConnectRooms();
         data.AllRooms().ForEach(room => room.GenerateDoorsPlaceholders(data));
         data.AllRooms().ForEach(room => room.GenerateDoors(data));
