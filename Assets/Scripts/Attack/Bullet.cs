@@ -27,7 +27,6 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Collide"+ other.name);
         if (other.CompareTag("Player") || other.CompareTag("Enemy"))// do damage to player/enemy
         {
             other.gameObject.GetComponent<Health>().TakeDamage(damage); 

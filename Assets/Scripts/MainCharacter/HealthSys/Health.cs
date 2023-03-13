@@ -10,6 +10,9 @@ public class Health : MonoBehaviour
     [SerializeField]
     private int currentHealth = 5;
     private int MaxHealth = 5;
+    [SerializeField]
+    private HealthUI ui; 
+
     public void TakeDamage(int damage)
     {
         if (currentHealth - damage <= 0)
@@ -39,6 +42,14 @@ public class Health : MonoBehaviour
 
     public void Death() {
         OnDeath?.Invoke();
+    }
+
+    private void Start()
+    {
+        if (gameObject.CompareTag("Player")) {
+            ui.GenerateHearts(currentHealth);
+        }
+        
     }
 }
 
