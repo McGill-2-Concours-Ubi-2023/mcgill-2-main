@@ -24,5 +24,5 @@ public interface IMainCharacterTriggers : ITrigger
     
     public void AdjustFaceDirection(float3 direction) { }
     
-    public void GetMovementDirection(Ref<float3> direction) { }
+    public void UpdateMovementDirection(Ref<float3> direction) { }
 }

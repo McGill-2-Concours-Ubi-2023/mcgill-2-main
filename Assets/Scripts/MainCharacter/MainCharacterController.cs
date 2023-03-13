@@ -22,10 +22,9 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     private DungeonRoom m_LastRoom = null;
     private float3 m_MovementDirection;
     private Animator animator;
-    private float minDelay = 3.0f;
-    private float maxDelay = 6.0f;
     private bool inputState = false;
     public Coroutine danceCoroutine;
+    private Rigidbody rb;
     private bool isDashing;
     [Range(0, 1)]
     public float dashDuration = 0.3f;
@@ -37,6 +36,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
 
     private void Awake()
     {
+        rb = GetComponent<Rigidbody>();
         SimpleCollectibleInventory = new SimpleInventory<SimpleCollectible>();
         m_InputActionAsset = GetComponent<PlayerInput>().actions;
         animator = GetComponent<Animator>();
@@ -62,8 +62,14 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     {
         if (!inputState) 
         {
-            int randomWait = UnityEngine.Random.Range(2, 4);
-            yield return new WaitForSeconds(randomWait);
+            float randomWait = UnityEngine.Random.Range(2, 4);
+            while(randomWait > 0)
+            {
+                randomWait -= Time.deltaTime;
+                if (inputState || animator.GetBool("IsFloating") && danceCoroutine != null)
+                    StopCoroutine(danceCoroutine);
+                yield return new WaitForEndOfFrame();
+            }
             if (!inputState)
             {
                 int randomNumber = UnityEngine.Random.Range(1, 3);
@@ -92,10 +98,10 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
             };
         }
         else adjustedInput = float3.zero;
-        
 
-        inputState = (new Vector2(input.x, input.y)).magnitude > 0.2f;
+        inputState = (new Vector2(input.x, input.y)).magnitude > 0.05f;
         animator.SetBool("InputState", inputState);
+        if (inputState) animator.SetBool("IsFloating", false);
 
         CinemachineVirtualCameraBase cam = GetActiveCamera();
 
@@ -171,6 +177,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     public void OnDash()
     {
         //gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnDashIntention));
+        GetComponent<DashMeshTrail>().ActivateTrail();
         if (!isDashing)
         {
             animator.SetTrigger("MovementToDash");
@@ -186,7 +193,6 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     IEnumerator Dash()
     {
         isDashing = true;
-        Rigidbody rb = GetComponent<Rigidbody>();
         float timer = 0f;
         while (timer < dashDuration)
         {
@@ -219,8 +225,8 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         float3 throwDir = (transform.forward + transform.up).normalized;
         Physics.IgnoreCollision(GetComponent<CapsuleCollider>(), grenade.transform.Find("SphereMesh").GetComponent<SphereCollider>());
         grenade.transform.position = transform.position + Vector3.up;
-        Rigidbody rb = grenade.GetComponent<Rigidbody>();
-        rb.AddForce(throwDir * 10, ForceMode.Impulse);
+        Rigidbody grenade_rb = grenade.GetComponent<Rigidbody>();
+        grenade_rb.AddForce(throwDir * 10, ForceMode.Impulse);
         StartCoroutine(GrenadeDelayedExplode(grenade));
     }
 
@@ -255,14 +261,18 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
             angle = -angle;
         }
         
-        Rigidbody rb = GetComponent<Rigidbody>();
         rb.rotation = Quaternion.Euler(0, angle * Mathf.Rad2Deg, 0);
         rb.angularVelocity = Vector3.zero;
     }
 
-    public void GetMovementDirection(Ref<float3> direction)
+    public void UpdateMovementDirection(Ref<float3> direction)
     {
         direction.Value = m_MovementDirection;
+    }
+
+    public Vector3 GetMovementDirection()
+    {
+        return (Vector3)m_MovementDirection;
     }
 
     private IEnumerator CheckForTurn()

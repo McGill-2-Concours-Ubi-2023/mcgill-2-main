@@ -52,6 +52,11 @@ public abstract class GravityField : MonoBehaviour
                     cachedRigidbodies.Add(rb);
                 }
             }
+
+            if(other.tag == "Player")
+            {
+                other.GetComponent<Animator>().SetBool("IsFloating", true);
+            }
         }
     }
 
@@ -77,14 +82,18 @@ public abstract class GravityField : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (isActive && other.gameObject.layer == LayerMask.NameToLayer("Player"))
+        if (isActive)
         {
-            ReleaseAgent(other.gameObject);
+            ReleaseAgent(other.gameObject);           
         }
     }
 
     public void ReleaseAgent(GameObject obj)
     {
+        if (obj.tag == "Player")
+        {
+            obj.GetComponent<Animator>().SetBool("IsFloating", false);
+        }
         agents.Remove(obj);
         Rigidbody rb = obj.GetComponent<Rigidbody>();
         if (rb != null)
@@ -95,6 +104,8 @@ public abstract class GravityField : MonoBehaviour
 
     private void OnDestroy()
     {
+        var player = GameObject.FindGameObjectWithTag("Player");
+        if(player)player.GetComponent<Animator>().SetBool("IsFloating", false);
         foreach (Rigidbody rb in cachedRigidbodies)
         {
             if (rb != null)

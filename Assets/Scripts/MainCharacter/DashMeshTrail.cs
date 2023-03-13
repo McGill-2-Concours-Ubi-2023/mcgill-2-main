@@ -4,14 +4,18 @@ using UnityEngine;
 
 public class DashMeshTrail : MonoBehaviour
 {
-    public float activeTime = 5.0f;
+    public float activeTime = 0.5f;
     public bool isTrailActive = false;
     [Header("Trail Mesh")][Range(0.01f, 1.0f)]
     public float refreshRate = 0.1f;
     [SerializeField]
     private SkinnedMeshRenderer[] skinnedMeshRenderers;
-    // Start is called before the first frame update
-    void Start()
+    [Header("Shader related")]
+    public Material trailMaterial;
+    public float alphaDecreaseRate = 0.1f;
+    public float alphaDecreaseRefreshRate = 0.05f;
+
+    public void ActivateTrail()
     {
         StartCoroutine(Activate(activeTime));
     }
@@ -34,10 +38,26 @@ public class DashMeshTrail : MonoBehaviour
                 Mesh mesh = new Mesh();
                 skinnedMeshRenderers[i].BakeMesh(mesh);
                 meshFilter.mesh = mesh;
-            }
-            
+                var _transform = skinnedMeshRenderers[i].transform;
+                obj.transform.rotation = _transform.rotation;
+                obj.transform.position = _transform.position;
+                meshRenderer.material = trailMaterial;
+                StartCoroutine(FadeMaterial(meshRenderer.material, 0, alphaDecreaseRate, alphaDecreaseRefreshRate));
+                Destroy(obj, activeTime * 2);
+            }           
             yield return new WaitForSeconds(refreshRate);
         }
         isTrailActive = false;
+    }
+
+    IEnumerator FadeMaterial(Material mat, float goal, float rate, float refreshRate)
+    {
+        float valueToAnimate = mat.GetFloat("_Alpha");
+        while(valueToAnimate > goal)
+        {
+            valueToAnimate -= rate;
+            mat.SetFloat("_Alpha", valueToAnimate);
+            yield return new WaitForSeconds(refreshRate);
+        }
     }
 }
