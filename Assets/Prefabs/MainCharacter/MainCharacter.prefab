@@ -301,7 +301,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6545755567180361433}
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 36078ab0369161e49a29d349ae3e0739, type: 3}
+  m_Avatar: {fileID: 9000000, guid: 8a8dd103eb04c61408ec005a060e9785, type: 3}
   m_Controller: {fileID: 9100000, guid: 558bce95089d54f8fb0c9f363b7cb6a0, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
@@ -360,7 +360,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MovementSpeed: 4
-  DashSpeed: 10
+  DashSpeed: 15
   Camera: {fileID: 0}
   DebugCamera: {fileID: 0}
   GravityGrenadePrefab: {fileID: 1421598444886973463, guid: 8cf937658f1fc43208756448795cb8ed,
@@ -369,7 +369,7 @@ MonoBehaviour:
   GravityGrenadeExplodeTime: 2
   CratePrefab: {fileID: 1446046156755137095, guid: f5b8fa3d2620d4f24b1802a45ad6dfc6,
     type: 3}
-  dashDuration: 0.3
+  dashDuration: 0.2
 --- !u!54 &5316769501632722695
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -425,12 +425,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b0867390d94fd7459987322c1df284a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  activeTime: 5
+  activeTime: 0.3
   isTrailActive: 0
-  refreshRate: 0.1
+  refreshRate: 0.04
   skinnedMeshRenderers:
   - {fileID: 1899370250557454648}
   - {fileID: 5231984091942849430}
+  trailMaterial: {fileID: 2100000, guid: fc8b2eaec2948114cadb58aa3ca46936, type: 2}
+  alphaDecreaseRate: 0.05
+  alphaDecreaseRefreshRate: 0.05
 --- !u!1001 &2318305846299422585
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -498,6 +501,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: hair
       objectReference: {fileID: 0}
+    - target: {fileID: 3164982295968437048, guid: 0a93e9d4454ffb647834281bb6ad5303,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.9651575
+      objectReference: {fileID: 0}
+    - target: {fileID: 3164982295968437048, guid: 0a93e9d4454ffb647834281bb6ad5303,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.000000048428774
+      objectReference: {fileID: 0}
+    - target: {fileID: 3164982295968437048, guid: 0a93e9d4454ffb647834281bb6ad5303,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 3164982295968437048, guid: 0a93e9d4454ffb647834281bb6ad5303,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0a93e9d4454ffb647834281bb6ad5303, type: 3}
 --- !u!4 &2857252072512686226 stripped
@@ -506,6 +529,38 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2318305846299422585}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &4867609066871769171 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7179158139332175658, guid: 0a93e9d4454ffb647834281bb6ad5303,
+    type: 3}
+  m_PrefabInstance: {fileID: 2318305846299422585}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1773428102 &8824648381624827367
+ParentConstraint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4867609066871769171}
+  m_Enabled: 1
+  m_Weight: 1
+  m_TranslationAtRest: {x: 0, y: 0.96515757, z: 0}
+  m_RotationAtRest: {x: -89.980225, y: 0, z: 0}
+  m_TranslationOffsets:
+  - {x: 0.0000076293945, y: 0.030918926, z: 0.18253803}
+  m_RotationOffsets:
+  - {x: 0, y: 0, z: -180}
+  m_AffectTranslationX: 1
+  m_AffectTranslationY: 1
+  m_AffectTranslationZ: 1
+  m_AffectRotationX: 1
+  m_AffectRotationY: 1
+  m_AffectRotationZ: 1
+  m_IsContraintActive: 1
+  m_IsLocked: 1
+  m_Sources:
+  - sourceTransform: {fileID: 3762535360467883752}
+    weight: 1
 --- !u!137 &5231984091942849430 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: 7545775874996233455, guid: 0a93e9d4454ffb647834281bb6ad5303,
@@ -649,6 +704,12 @@ PrefabInstance:
 --- !u!137 &1899370250557454648 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: -3862895470674433509, guid: 8a8dd103eb04c61408ec005a060e9785,
+    type: 3}
+  m_PrefabInstance: {fileID: 5782575900039566115}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &3762535360467883752 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7208261743932278219, guid: 8a8dd103eb04c61408ec005a060e9785,
     type: 3}
   m_PrefabInstance: {fileID: 5782575900039566115}
   m_PrefabAsset: {fileID: 0}
