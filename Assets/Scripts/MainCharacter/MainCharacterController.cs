@@ -8,7 +8,7 @@ using static Unity.Mathematics.math;
 using float2 = Unity.Mathematics.float2;
 using float3 = Unity.Mathematics.float3;
 
-public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, ICrateTriggers
+public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, ICrateTriggers, IGravityToCameraTrigger
 {
     public float MovementSpeed;
     public float DashSpeed;
