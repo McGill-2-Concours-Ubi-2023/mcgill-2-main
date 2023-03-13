@@ -29,7 +29,7 @@ public class ConcentricGravityField : GravityField
         var forceDirection = transform.position - rb.transform.position;
         Debug.DrawRay(rb.transform.position, forceDirection, Color.red);
         //First generate the quaternion (similar to a transformation matrix)
-        Quaternion rotationQuaternion = Quaternion.FromToRotation(-rb.transform.up, forceDirection);
+        Quaternion rotationQuaternion = Quaternion.FromToRotation(transform.up, forceDirection);
         //Multiply the agent's rotation (also a quaternion) by the above quaternion
         Quaternion targetRotation = rotationQuaternion * rb.transform.rotation;
         //Finally, smoothly interpolate between the current rotation and the target rotation
