@@ -26,6 +26,9 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     private float maxDelay = 6.0f;
     private bool inputState = false;
     public Coroutine danceCoroutine;
+    private bool isDashing;
+    [Range(0, 1)]
+    public float dashDuration = 0.3f;
 
     public ISimpleInventory<SimpleCollectible> SimpleCollectibleInventory;
     
@@ -41,43 +44,55 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
 
     private void Start()
     {
-        StartCoroutine(RandomDance(UnityEngine.Random.Range(minDelay, maxDelay)));
+        StartCoroutine(RandomDance());
     }
 
-    IEnumerator RandomDance(float delay)
+    IEnumerator RandomDance()
     {
-        yield return new WaitForSeconds(delay);
-        StartCoroutine(OnInputWait());
+        while (true)
+        {
+            int randomEventTrigger = UnityEngine.Random.Range(6, 10);
+            yield return new WaitForSeconds(randomEventTrigger);
+            if(danceCoroutine != null)StopCoroutine(danceCoroutine);
+            danceCoroutine = StartCoroutine(OnInputWait());
+        }
     }
 
     IEnumerator OnInputWait()
     {
-        var clipLength = 1.0f; //Default set to 1 sec
-        yield return new WaitForSeconds(0.5f);
         if (!inputState) 
         {
-            int randomNumber = UnityEngine.Random.Range(1, 3);
-            animator.SetTrigger("Dance_" + randomNumber);
-            clipLength = animator.GetCurrentAnimatorStateInfo(1).length;
+            int randomWait = UnityEngine.Random.Range(2, 4);
+            yield return new WaitForSeconds(randomWait);
+            if (!inputState)
+            {
+                int randomNumber = UnityEngine.Random.Range(1, 3);
+                animator.SetTrigger("Dance_" + randomNumber);
+            }           
         }
-        yield return new WaitForSeconds(clipLength);
-        OnDanceEvent();
     }
+
 
     public void OnDanceEvent()
     {
-        StartCoroutine(RandomDance(UnityEngine.Random.Range(minDelay, maxDelay)));
+        //if(danceCoroutine != null)StopCoroutine(danceCoroutine);
     }
 
     private void Update()
     {
         float2 input = m_InputActionAsset["Movement"].ReadValue<Vector2>();
         gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnInput), input);
+        float3 adjustedInput;
 
-        float3 adjustedInput = new float3
+        if (!isDashing)
         {
-            xz = input.xy
-        };
+            adjustedInput = new float3
+            {
+                xz = input.xy
+            };
+        }
+        else adjustedInput = float3.zero;
+        
 
         inputState = (new Vector2(input.x, input.y)).magnitude > 0.2f;
         animator.SetBool("InputState", inputState);
@@ -155,9 +170,34 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
 
     public void OnDash()
     {
-        gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnDashIntention));
+        //gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnDashIntention));
+        if (!isDashing)
+        {
+            animator.SetTrigger("MovementToDash");
+            StartCoroutine(Dash());
+        }      
     }
-    
+
+    public void StopDash() //triggered as an animation event at the last keyframe
+    {
+        animator.SetTrigger("StopDash");
+    }
+
+    IEnumerator Dash()
+    {
+        isDashing = true;
+        Rigidbody rb = GetComponent<Rigidbody>();
+        float timer = 0f;
+        while (timer < dashDuration)
+        {
+            rb.velocity = (Vector3)m_MovementDirection * DashSpeed;
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        rb.velocity = rb.velocity / 5;
+        isDashing = false;
+    }
+
     public CinemachineVirtualCameraBase GetActiveCamera()
     {
         return DebugCamera.gameObject.activeSelf ? DebugCamera : Camera;
@@ -220,10 +260,6 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         rb.angularVelocity = Vector3.zero;
     }
 
-    public void StopDash()
-    {
-        animator.SetTrigger("StopDash");
-    }
     public void GetMovementDirection(Ref<float3> direction)
     {
         direction.Value = m_MovementDirection;
