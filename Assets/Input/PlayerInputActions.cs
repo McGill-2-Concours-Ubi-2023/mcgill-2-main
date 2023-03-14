@@ -89,6 +89,15 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Press"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Pause"",
+                    ""type"": ""Button"",
+                    ""id"": ""a526c386-5f46-4b2c-ae25-62c1f6521edd"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -377,6 +386,17 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""action"": ""SpawnCrate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0e5b1be5-638c-4571-bea6-8b9b886c448a"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -657,6 +677,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         m_Player_PrimaryWeaponPress = m_Player.FindAction("PrimaryWeaponPress", throwIfNotFound: true);
         m_Player_PrimaryWeaponRelease = m_Player.FindAction("PrimaryWeaponRelease", throwIfNotFound: true);
         m_Player_SpawnCrate = m_Player.FindAction("SpawnCrate", throwIfNotFound: true);
+        m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Point = m_UI.FindAction("Point", throwIfNotFound: true);
@@ -732,6 +753,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_PrimaryWeaponPress;
     private readonly InputAction m_Player_PrimaryWeaponRelease;
     private readonly InputAction m_Player_SpawnCrate;
+    private readonly InputAction m_Player_Pause;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -743,6 +765,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         public InputAction @PrimaryWeaponPress => m_Wrapper.m_Player_PrimaryWeaponPress;
         public InputAction @PrimaryWeaponRelease => m_Wrapper.m_Player_PrimaryWeaponRelease;
         public InputAction @SpawnCrate => m_Wrapper.m_Player_SpawnCrate;
+        public InputAction @Pause => m_Wrapper.m_Player_Pause;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -773,6 +796,9 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @SpawnCrate.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSpawnCrate;
                 @SpawnCrate.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSpawnCrate;
                 @SpawnCrate.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSpawnCrate;
+                @Pause.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPause;
+                @Pause.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPause;
+                @Pause.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPause;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -798,6 +824,9 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @SpawnCrate.started += instance.OnSpawnCrate;
                 @SpawnCrate.performed += instance.OnSpawnCrate;
                 @SpawnCrate.canceled += instance.OnSpawnCrate;
+                @Pause.started += instance.OnPause;
+                @Pause.performed += instance.OnPause;
+                @Pause.canceled += instance.OnPause;
             }
         }
     }
@@ -919,6 +948,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         void OnPrimaryWeaponPress(InputAction.CallbackContext context);
         void OnPrimaryWeaponRelease(InputAction.CallbackContext context);
         void OnSpawnCrate(InputAction.CallbackContext context);
+        void OnPause(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
