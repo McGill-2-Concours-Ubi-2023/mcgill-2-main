@@ -12,6 +12,90 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9a6afb8a42fded4eb9fcc2abb5a16de, type: 3}
   m_Name: DungeonGrid
   m_EditorClassIdentifier: 
+  positionsBuffer:
+  - {x: 0, y: 0, z: 0}
+  - {x: 15, y: 0, z: 0}
+  - {x: 30, y: 0, z: 0}
+  - {x: 45, y: 0, z: 0}
+  - {x: 60, y: 0, z: 0}
+  - {x: 75, y: 0, z: 0}
+  - {x: 0, y: 0, z: 15}
+  - {x: 15, y: 0, z: 15}
+  - {x: 30, y: 0, z: 15}
+  - {x: 45, y: 0, z: 15}
+  - {x: 60, y: 0, z: 15}
+  - {x: 75, y: 0, z: 15}
+  - {x: 0, y: 0, z: 30}
+  - {x: 15, y: 0, z: 30}
+  - {x: 30, y: 0, z: 30}
+  - {x: 45, y: 0, z: 30}
+  - {x: 60, y: 0, z: 30}
+  - {x: 75, y: 0, z: 30}
+  - {x: 0, y: 0, z: 45}
+  - {x: 15, y: 0, z: 45}
+  - {x: 30, y: 0, z: 45}
+  - {x: 45, y: 0, z: 45}
+  - {x: 60, y: 0, z: 45}
+  - {x: 75, y: 0, z: 45}
+  - {x: 0, y: 0, z: 60}
+  - {x: 15, y: 0, z: 60}
+  - {x: 30, y: 0, z: 60}
+  - {x: 45, y: 0, z: 60}
+  - {x: 60, y: 0, z: 60}
+  - {x: 75, y: 0, z: 60}
+  - {x: 0, y: 0, z: 75}
+  - {x: 15, y: 0, z: 75}
+  - {x: 30, y: 0, z: 75}
+  - {x: 45, y: 0, z: 75}
+  - {x: 60, y: 0, z: 75}
+  - {x: 75, y: 0, z: 75}
+  customMapBuffer:
+  - position: {x: 15, y: 0, z: 0}
+    type: 4
+  - position: {x: 15, y: 0, z: 15}
+    type: 2
+  - position: {x: 30, y: 0, z: 15}
+    type: 0
+  - position: {x: 15, y: 0, z: 30}
+    type: 0
+  - position: {x: 0, y: 0, z: 30}
+    type: 3
+  - position: {x: 30, y: 0, z: 30}
+    type: 0
+  - position: {x: 30, y: 0, z: 45}
+    type: 0
+  - position: {x: 15, y: 0, z: 45}
+    type: 2
+  - position: {x: 45, y: 0, z: 45}
+    type: 0
+  - position: {x: 45, y: 0, z: 30}
+    type: 2
+  - position: {x: 45, y: 0, z: 60}
+    type: 0
+  - position: {x: 45, y: 0, z: 75}
+    type: 0
+  - position: {x: 30, y: 0, z: 60}
+    type: 0
+  - position: {x: 30, y: 0, z: 75}
+    type: 0
+  - position: {x: 15, y: 0, z: 75}
+    type: 0
+  - position: {x: 0, y: 0, z: 75}
+    type: 3
+  - position: {x: 0, y: 0, z: 60}
+    type: 0
+  - position: {x: 0, y: 0, z: 45}
+    type: 0
+  - position: {x: 60, y: 0, z: 75}
+    type: 0
+  - position: {x: 75, y: 0, z: 75}
+    type: 0
+  - position: {x: 75, y: 0, z: 60}
+    type: 0
+  - position: {x: 60, y: 0, z: 60}
+    type: 3
+  - position: {x: 60, y: 0, z: 45}
+    type: 2
   gridSize: 6
   roomSize: 13
   cellsSpacing: 0

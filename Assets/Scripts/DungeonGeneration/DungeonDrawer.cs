@@ -1,11 +1,11 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
-using UnityEditor;
+using System.Reflection;
 using UnityEngine;
 
 public static class DungeonDrawer
 {
-    public static void Draw(List<Vector3> data, GameObject parentObj, PrimitiveType type)
+    public static void DrawWithPrimitive(List<Vector3> data, GameObject parentObj, PrimitiveType type)
     {
         foreach (var position in data)
         {
@@ -18,23 +18,49 @@ public static class DungeonDrawer
     //return the drawn GameObject
     public static GameObject DrawSingleObject(Vector3 position, GameObject prefab, GameObject parentObj)
     {
-        var obj = Object.Instantiate(prefab);
+        var obj = GameObject.Instantiate(prefab);
         obj.transform.position = position;
         obj.transform.parent = FindDungeonDrawer(parentObj).transform;
         return obj;
     }
 
-    public static List<GameObject> DrawRooms(List<Vector3> positions, GameObject prefab, GameObject parentObj)
+    public static GameObject DrawRandomRoom(Vector3 position, RoomTypes.RoomType roomType, DungeonData data)
     {
-        var roomsObj = new List<GameObject>();
+        string roomTypeName = Enum.GetName(typeof(RoomTypes.RoomType), roomType);
+        MethodInfo method = typeof(DungeonData).GetMethod("Get" + roomTypeName +"RoomPrefabs", BindingFlags.Public | BindingFlags.Instance);
+        GameObject[] roomPrefabs = (GameObject[])method.Invoke(data, null);
+        int randIndex = UnityEngine.Random.Range(0, roomPrefabs.Length);
+        var obj = GameObject.Instantiate(roomPrefabs[randIndex]);
+        obj.transform.position = position;
+        obj.transform.parent = FindDungeonDrawer(data.GetMonoInstance()).transform;
+        RoomData newRoomData = new RoomData(position, roomType, randIndex);
+        data.AddRoomData(newRoomData);
+        return obj;
+    }
+
+    public static GameObject DrawRoomFromData(RoomData roomData, DungeonData dungeonData)
+    {
+        string roomTypeName = roomData.GetRoomType().ToString();
+        MethodInfo method = typeof(DungeonData).GetMethod("Get" + roomTypeName + "RoomPrefabs", BindingFlags.Public | BindingFlags.Instance);
+        GameObject[] roomPrefabs = (GameObject[])method.Invoke(dungeonData, null);
+        var obj = GameObject.Instantiate(roomPrefabs[roomData.GetPrefabIndex()]);
+        obj.transform.position = roomData.GetPosition();
+        obj.transform.parent = FindDungeonDrawer(dungeonData.GetMonoInstance()).transform;
+        dungeonData.AddRoomData(roomData);
+        return obj;
+    }
+
+    public static List<GameObject> DrawObjects(List<Vector3> positions, GameObject prefab, GameObject parentObj)
+    {
+        var objList = new List<GameObject>();
         foreach(var position in positions)
         {
             var obj = GameObject.Instantiate(prefab);
             obj.transform.position = position;
             obj.transform.parent = FindDungeonDrawer(parentObj).transform;
-            roomsObj.Add(obj);
+            objList.Add(obj);
         }
-        return roomsObj;
+        return objList;
     }
 
     public static void EraseDungeon(GameObject mono)  
