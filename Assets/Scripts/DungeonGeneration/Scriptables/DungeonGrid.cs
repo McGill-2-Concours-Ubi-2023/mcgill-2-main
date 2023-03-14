@@ -41,7 +41,7 @@ public class DungeonGrid : DataContainer<RoomData>
         }
         mapM = FindObjectOfType<MapManager>();
         mapM.MapGridGeneration(); //start map grid generation after the dungeon grid is done generating
-        DungeonDrawer.DrawWithPrimitive(positionsBuffer, mono, PrimitiveType.Cube);
+        //DungeonDrawer.DrawWithPrimitive(positionsBuffer, mono, PrimitiveType.Cube);
     }
 
     public Dictionary<Vector3, GameObject> GetWallsLayout()
