@@ -18,6 +18,8 @@ public class DungeonRoom : MonoBehaviour
     private List<DungeonDoor> doors = new List<DungeonDoor>();
     [SerializeField]
     private string layout;
+    [SerializeField]
+    private RoomTypes.RoomType type;
 
 
     internal object ToList()
@@ -59,17 +61,23 @@ public class DungeonRoom : MonoBehaviour
         return gridPosition;
     }
 
-    public void Initialize(Dictionary<Vector3, Vector2Int> gridMap, Vector3 position, string layout)
+    public void Initialize(Dictionary<Vector3, Vector2Int> gridMap, Vector3 position, string layout, RoomTypes.RoomType type)
     {
         this.layout = layout;
         adjacentRooms.Clear();
         uniqueId = new Guid();
         gridPosition = gridMap[position];
+        this.type = type;
     }
 
     public void DisconnectRoom(DungeonRoom room)
     {
         if (adjacentRooms.Contains(room)) adjacentRooms.Remove(room);
+    }
+
+    public RoomTypes.RoomType GetRoomType()
+    {
+        return type;
     }
 
     public void Delete() //Delete this room and all its links with other rooms
@@ -132,16 +140,27 @@ public class DungeonRoom : MonoBehaviour
         return false;
     }
 
-    public static DungeonRoom Create(DungeonData data, Vector3 position, Dictionary<Vector3, Vector2Int> gridMap,string layout)
+    public static DungeonRoom CreateRandomRoom(DungeonData data, Vector3 position, Dictionary<Vector3, Vector2Int> gridMap,
+        string layout, RoomTypes.RoomType type)
     {
         //This is where the room gets instantiated, change the primitive and pass a prefab instead for the room
         //Eg: var roomObj = DungeonDrawer.DrawSingleObject(position, prefab, data.GetMonoInstance(), scale) as GameObject;
-        var roomObj = DungeonDrawer.DrawSingleObject(position, data.GetRoomPrefab(), data.GetMonoInstance());
+        var roomObj = DungeonDrawer.DrawRandomRoom(position, type, data);
         roomObj.AddComponent<DungeonRoom>();
-        var addedRoom = roomObj.GetComponent<DungeonRoom>();
-        addedRoom.Initialize(gridMap, position, layout);
-        data.AddRoom(addedRoom);
-        return addedRoom;
+        var newRoom = roomObj.GetComponent<DungeonRoom>();
+        newRoom.Initialize(gridMap, position, layout, type);
+        data.AddRoom(newRoom);
+        return newRoom;
+    }
+
+    public static DungeonRoom CreateRoomFromData(RoomData roomData, DungeonData dungeonData, Dictionary<Vector3, Vector2Int> gridMap, string layout)
+    {
+        var roomObj = DungeonDrawer.DrawRoomFromData(roomData, dungeonData);
+        roomObj.AddComponent<DungeonRoom>();
+        var loadedRoom = roomObj.GetComponent<DungeonRoom>();
+        loadedRoom.Initialize(gridMap, roomData.GetPosition(), layout, roomData.GetRoomType());
+        dungeonData.AddRoom(loadedRoom);
+        return loadedRoom;
     }
 
     public static bool DFS(DungeonRoom excludedRoom, DungeonRoom currentRoom, DungeonRoom endRoom, HashSet<DungeonRoom> visitedRooms)

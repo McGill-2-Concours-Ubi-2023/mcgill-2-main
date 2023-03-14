@@ -4,8 +4,9 @@ using UnityEditor;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New dungeon", menuName = "Dungeon asset")]
-public class DungeonData :DataContainer
+public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
 {
+    private GameObject mono;
     [SerializeField]
     private ScriptableObject activeLayout;
     [SerializeField]
@@ -22,11 +23,17 @@ public class DungeonData :DataContainer
     [SerializeField][Range(1, 50)]
     private int minRoomCount = 20;
     [SerializeField]
-    private GameObject roomPrefab;
+    private GameObject[] StartRoomPrefabs;
+    [SerializeField]
+    private GameObject[] NormalRoomPrefabs;
+    [SerializeField]
+    private GameObject[] TreasureRoomPrefabs;
+    [SerializeField]
+    private GameObject[] SpecialRoomPrefabs;
     [SerializeField]
     private GameObject doorPrefab;
     [SerializeField]
-    private GameObject wallPrefab;
+    private GameObject doorPlaceholderPrefab;  
 
     public void GenerateDungeon()
     {
@@ -34,7 +41,7 @@ public class DungeonData :DataContainer
         GetGrid().GenerateGrid(this);
         GetGrid().GenerateRooms(this);
         SaveData();
-        FindObjectOfType<MainCharacterController>().transform.position = GetActiveLayout().GetStartPosition();
+        FindObjectOfType<MainCharacterController>().transform.position = GetActiveLayout().GetStartPosition();        
     }
 
     public void AddRoom(DungeonRoom room)
@@ -67,11 +74,6 @@ public class DungeonData :DataContainer
         return roomDensity;
     }
 
-    public GameObject GetRoomPrefab()
-    {
-        return roomPrefab;
-    }
-
     public GameObject GetDoorPrefab()
     {
         return doorPrefab;
@@ -79,7 +81,7 @@ public class DungeonData :DataContainer
 
     public GameObject GetWallPrefab()
     {
-        return wallPrefab;
+        return doorPlaceholderPrefab;
     }
 
     public DungeonLayout GetActiveLayout()
@@ -107,6 +109,11 @@ public class DungeonData :DataContainer
         mapM = FindObjectOfType<MapManager>();
     }
 
+    public GameObject GetMonoInstance()
+    {
+        return mono;
+    }
+
     public void ClearDungeon()
     {
         if (rooms == null) rooms = new List<DungeonRoom>();
@@ -114,8 +121,13 @@ public class DungeonData :DataContainer
         GetGrid().SetMonoInstance(mono);
         mapM.ClearMap();
         rooms.Clear();
-        GetGrid().ClearBuffer();    
+        GetGrid().ClearData();    
         DungeonDrawer.EraseDungeon(mono);       
+    }
+
+    public void SetMonoInstance(GameObject mono)
+    {
+        this.mono = mono;
     }
 
     public void SaveData()
@@ -125,8 +137,12 @@ public class DungeonData :DataContainer
         {
             roomsPositions.Add(room.transform.position);
         });
-        GetActiveLayout().SaveStartPosition(startingRoom.transform.position);
-        GetActiveLayout().SaveFloorData(roomsPositions);
+        GetActiveLayout().SaveRoomsData(GetGrid().GetCustomMapBuffer());
+    }
+
+    public void AddRoomData(RoomData data)
+    {
+        GetGrid().AddData(data);
     }
 
     public void TryQuickLoad()
@@ -138,10 +154,11 @@ public class DungeonData :DataContainer
         if (rooms != null)
         {
             matchLayout = rooms.Where(room => room.GetLayout() != GetActiveLayout().GetName()).ToList().Count() == 0
-                && rooms.Count() == GetActiveLayout().GetFloorData().Count();
+                && rooms.Count() == GetActiveLayout().GetRoomsData().Count();
             if(matchLayout)
             {
-                startingRoom = rooms.Where(room => room.transform.position == GetActiveLayout().GetStartPosition()).First();
+                FindStartingRoom();
+                FindObjectOfType<MainCharacterController>().transform.position = startingRoom.transform.position;
                 FindMapManager();
                 onQuickLoadSuccess = true;
             }         
@@ -154,8 +171,37 @@ public class DungeonData :DataContainer
     public void LoadData()
     {
         ClearDungeon();
-        GetGrid().LoadRooms(GetActiveLayout().GetFloorData(), this); 
-        startingRoom = rooms.Where(room => room.transform.position == GetActiveLayout().GetStartPosition()).First();
+        GetGrid().LoadRooms(GetActiveLayout().GetRoomsData(), this);
+        FindStartingRoom();
+        FindObjectOfType<MainCharacterController>().transform.position = startingRoom.transform.position;
         GetGrid().ReloadMiniMap(this);
+    }
+
+    private void FindStartingRoom()
+    {
+        var startRoomdata = GetActiveLayout()
+                    .GetRoomsData()
+                    .Where(roomData => roomData.GetRoomType() == RoomTypes.RoomType.Start).First();
+        startingRoom = rooms.Where(room => room.GetRoomType() == startRoomdata.GetRoomType()).First();
+    }
+
+    public GameObject[] GetNormalRoomPrefabs()
+    {
+        return NormalRoomPrefabs;
+    }
+
+    public GameObject[] GetStartRoomPrefabs()
+    {
+        return StartRoomPrefabs;
+    }
+
+    public GameObject[] GetSpecialRoomPrefabs()
+    {
+        return SpecialRoomPrefabs;
+    }
+
+    public GameObject[] GetTreasureRoomPrefabs()
+    {
+        return TreasureRoomPrefabs;
     }
 }

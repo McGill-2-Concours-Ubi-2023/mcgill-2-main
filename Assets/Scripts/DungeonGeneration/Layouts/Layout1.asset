@@ -12,28 +12,64 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f50f171573fba184e931cb5b94b6bf66, type: 3}
   m_Name: Layout1
   m_EditorClassIdentifier: 
-  floorData:
-  - {x: 39, y: 0, z: 0}
-  - {x: 39, y: 0, z: 13}
-  - {x: 52, y: 0, z: 0}
-  - {x: 52, y: 0, z: 13}
-  - {x: 52, y: 0, z: 26}
-  - {x: 39, y: 0, z: 26}
-  - {x: 52, y: 0, z: 39}
-  - {x: 52, y: 0, z: 52}
-  - {x: 65, y: 0, z: 39}
-  - {x: 65, y: 0, z: 26}
-  - {x: 65, y: 0, z: 13}
-  - {x: 65, y: 0, z: 0}
-  - {x: 39, y: 0, z: 52}
-  - {x: 65, y: 0, z: 52}
-  - {x: 65, y: 0, z: 65}
-  - {x: 52, y: 0, z: 65}
-  - {x: 39, y: 0, z: 65}
-  - {x: 26, y: 0, z: 65}
-  - {x: 13, y: 0, z: 65}
-  - {x: 13, y: 0, z: 52}
-  - {x: 13, y: 0, z: 39}
-  - {x: 26, y: 0, z: 52}
-  - {x: 26, y: 0, z: 39}
-  startRoomPosition: {x: 39, y: 0, z: 0}
+  roomsData:
+  - position: {x: 65, y: 0, z: 0}
+    type: 4
+    prefabIndex: 2
+  - position: {x: 65, y: 0, z: 13}
+    type: 3
+    prefabIndex: 0
+  - position: {x: 52, y: 0, z: 13}
+    type: 3
+    prefabIndex: 2
+  - position: {x: 52, y: 0, z: 0}
+    type: 2
+    prefabIndex: 2
+  - position: {x: 39, y: 0, z: 0}
+    type: 2
+    prefabIndex: 1
+  - position: {x: 39, y: 0, z: 13}
+    type: 0
+    prefabIndex: 1
+  - position: {x: 26, y: 0, z: 13}
+    type: 0
+    prefabIndex: 1
+  - position: {x: 26, y: 0, z: 26}
+    type: 0
+    prefabIndex: 0
+  - position: {x: 26, y: 0, z: 39}
+    type: 0
+    prefabIndex: 0
+  - position: {x: 39, y: 0, z: 26}
+    type: 0
+    prefabIndex: 0
+  - position: {x: 52, y: 0, z: 26}
+    type: 2
+    prefabIndex: 1
+  - position: {x: 52, y: 0, z: 39}
+    type: 3
+    prefabIndex: 2
+  - position: {x: 65, y: 0, z: 39}
+    type: 0
+    prefabIndex: 1
+  - position: {x: 52, y: 0, z: 52}
+    type: 2
+    prefabIndex: 2
+  - position: {x: 52, y: 0, z: 65}
+    type: 0
+    prefabIndex: 1
+  - position: {x: 39, y: 0, z: 65}
+    type: 0
+    prefabIndex: 0
+  - position: {x: 26, y: 0, z: 65}
+    type: 0
+    prefabIndex: 1
+  - position: {x: 26, y: 0, z: 52}
+    type: 2
+    prefabIndex: 2
+  - position: {x: 39, y: 0, z: 52}
+    type: 0
+    prefabIndex: 1
+  - position: {x: 39, y: 0, z: 39}
+    type: 0
+    prefabIndex: 0

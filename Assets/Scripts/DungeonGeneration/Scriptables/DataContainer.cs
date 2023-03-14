@@ -2,9 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DataContainer : ScriptableObject
+public class DataContainer<T> : ScriptableObject
 {
-    protected List<Vector3> dataBuffer = new List<Vector3>();
+    [SerializeField]
+    protected List<Vector3> positionsBuffer = new List<Vector3>(); //use this buffer to store spacial data in your script
+    [SerializeField]
+    protected List<T> customMapBuffer = new List<T>();
     protected GameObject mono;
 
     public void SetMonoInstance(GameObject mono)
@@ -17,9 +20,20 @@ public class DataContainer : ScriptableObject
         return mono;
     }
 
-    public void ClearBuffer()
+    public List<T> GetCustomMapBuffer()
+    {
+        return customMapBuffer;
+    }
+
+    public void AddData(T item)
+    {
+        customMapBuffer.Add(item);
+    }
+
+    public void ClearData()
     {
         //Garbage collector is your friend, let him work a little bit
-        dataBuffer = new List<Vector3>();
+        customMapBuffer = new List<T>();
+        positionsBuffer = new List<Vector3>();
     }
 }

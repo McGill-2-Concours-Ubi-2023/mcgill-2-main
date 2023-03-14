@@ -21,6 +21,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     public GameObject CratePrefab;
     private DungeonRoom m_LastRoom = null;
     private float3 m_MovementDirection;
+    public float doorOpenRate = 1f;
     private Animator animator;
     private bool inputState = false;
     public Coroutine danceCoroutine;
