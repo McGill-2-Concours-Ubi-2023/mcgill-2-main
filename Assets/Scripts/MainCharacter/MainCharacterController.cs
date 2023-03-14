@@ -29,6 +29,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     private bool isDashing;
     [Range(0, 1)]
     public float dashDuration = 0.3f;
+    private bool m_GamePaused;
 
     public ISimpleInventory<SimpleCollectible> SimpleCollectibleInventory;
     
@@ -303,6 +304,15 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     public void StopCameraShake()
     {
         Camera.GetComponent<CinemachineCameraShake>().StopCameraShake();
+    }
+
+    public void OnPause()
+    {
+        m_GamePaused = !m_GamePaused;
+        Time.timeScale = m_GamePaused ? 0.0f : 1.0f;
+        if (m_GamePaused)
+        {
+        }
     }
 }
 
