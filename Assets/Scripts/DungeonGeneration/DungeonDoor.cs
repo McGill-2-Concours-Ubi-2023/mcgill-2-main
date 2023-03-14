@@ -11,7 +11,17 @@ public class DungeonDoor : MonoBehaviour
     private DungeonRoom sharedRoom1;
     [SerializeField]
     private DungeonRoom sharedRoom2;
+    private SkinnedMeshRenderer skinnedMeshRenderer;
+    private Coroutine openCoroutine;
+    private Coroutine closeCoroutine;
+    private BoxCollider doorCollisionCollider;
+    private Collider playerCollider;
 
+    private void Awake()
+    {
+        doorCollisionCollider = transform.Find("Door").GetComponent<BoxCollider>();
+        playerCollider = FindObjectOfType<MainCharacterController>().GetComponent<Collider>();
+    }
 
     public static DungeonDoor Create(GameObject doorObj, DungeonRoom originRoom, DungeonRoom targetRoom, DungeonData data)
     {
@@ -57,17 +67,41 @@ public class DungeonDoor : MonoBehaviour
     {
         if(other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
-            Vector3 Y_Offset = new Vector3(0, 5, 0);
-            transform.position += Y_Offset;
+            openCoroutine = StartCoroutine(Open());
+            if (closeCoroutine != null) StopCoroutine(closeCoroutine);
         }
+    }
+
+    IEnumerator Close()
+    {
+        if (skinnedMeshRenderer == null) skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
+        var openRate = FindObjectOfType<MainCharacterController>().doorOpenRate;
+        while (skinnedMeshRenderer.GetBlendShapeWeight(0) > 0)
+        {
+            skinnedMeshRenderer.SetBlendShapeWeight(0, skinnedMeshRenderer.GetBlendShapeWeight(0) - openRate);
+            yield return new WaitForEndOfFrame();
+        }
+        Physics.IgnoreCollision(playerCollider, doorCollisionCollider, false);
+    }
+
+    IEnumerator Open()
+    {
+        if (skinnedMeshRenderer == null) skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
+        var openRate = FindObjectOfType<MainCharacterController>().doorOpenRate;
+        while (skinnedMeshRenderer.GetBlendShapeWeight(0) < 100)
+        {
+            skinnedMeshRenderer.SetBlendShapeWeight(0, skinnedMeshRenderer.GetBlendShapeWeight(0) + openRate);
+            yield return new WaitForEndOfFrame();
+        }
+        Physics.IgnoreCollision(playerCollider, doorCollisionCollider, true);
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
-            Vector3 Y_Offset = new Vector3(0, 5, 0);
-            transform.position -= Y_Offset;
+            closeCoroutine = StartCoroutine(Close());
+            if (openCoroutine != null) StopCoroutine(openCoroutine);
         }
         if (other.CompareTag("Player")) {
             GoThorouthDoor();
