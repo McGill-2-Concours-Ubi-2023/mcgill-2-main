@@ -8,13 +8,13 @@ public class CinemachineCameraShake : MonoBehaviour
     private CinemachineVirtualCamera virtualCamera;
     private float shakeTimer;
     private CinemachineBasicMultiChannelPerlin perlinChannel;
-    private float frequency;
     public NoiseSettings[] noiseSettings;
     private void Awake()
     {
         virtualCamera = GetComponent<CinemachineVirtualCamera>();
         perlinChannel = virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
-        frequency = perlinChannel.m_FrequencyGain;
+        perlinChannel.m_FrequencyGain = 0;
+        perlinChannel.m_AmplitudeGain = 0;
     }
 
     public void SantardCameraShake(float intensity, float timer, float frequencyGain, int noiseSettingsId)

@@ -22,6 +22,13 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     private DungeonRoom m_LastRoom = null;
     private float3 m_MovementDirection;
     public float doorOpenRate = 1f;
+    private Animator animator;
+    private bool inputState = false;
+    public Coroutine danceCoroutine;
+    private Rigidbody rb;
+    private bool isDashing;
+    [Range(0, 1)]
+    public float dashDuration = 0.3f;
 
     public ISimpleInventory<SimpleCollectible> SimpleCollectibleInventory;
     
@@ -30,19 +37,72 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
 
     private void Awake()
     {
+        rb = GetComponent<Rigidbody>();
         SimpleCollectibleInventory = new SimpleInventory<SimpleCollectible>();
         m_InputActionAsset = GetComponent<PlayerInput>().actions;
+        animator = GetComponent<Animator>();
+    }
+
+    private void Start()
+    {
+        StartCoroutine(RandomDance());
+    }
+
+    IEnumerator RandomDance()
+    {
+        while (true)
+        {
+            int randomEventTrigger = UnityEngine.Random.Range(6, 10);
+            yield return new WaitForSeconds(randomEventTrigger);
+            if(danceCoroutine != null)StopCoroutine(danceCoroutine);
+            danceCoroutine = StartCoroutine(OnInputWait());
+        }
+    }
+
+    IEnumerator OnInputWait()
+    {
+        if (!inputState) 
+        {
+            float randomWait = UnityEngine.Random.Range(2, 4);
+            while(randomWait > 0)
+            {
+                randomWait -= Time.deltaTime;
+                if (inputState || animator.GetBool("IsFloating") && danceCoroutine != null)
+                    StopCoroutine(danceCoroutine);
+                yield return new WaitForEndOfFrame();
+            }
+            if (!inputState)
+            {
+                int randomNumber = UnityEngine.Random.Range(1, 3);
+                animator.SetTrigger("Dance_" + randomNumber);
+            }           
+        }
+    }
+
+
+    public void OnDanceEvent()
+    {
+        //if(danceCoroutine != null)StopCoroutine(danceCoroutine);
     }
 
     private void Update()
     {
         float2 input = m_InputActionAsset["Movement"].ReadValue<Vector2>();
         gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnInput), input);
+        float3 adjustedInput;
 
-        float3 adjustedInput = new float3
+        if (!isDashing)
         {
-            xz = input.xy
-        };
+            adjustedInput = new float3
+            {
+                xz = input.xy
+            };
+        }
+        else adjustedInput = float3.zero;
+
+        inputState = (new Vector2(input.x, input.y)).magnitude > 0.05f;
+        animator.SetBool("InputState", inputState);
+        if (inputState) animator.SetBool("IsFloating", false);
 
         CinemachineVirtualCameraBase cam = GetActiveCamera();
 
@@ -66,7 +126,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
 
         m_MovementDirection = normalize(all(adjustedInput.xz == float2.zero) ? transform.forward : adjustedDirection);
         Debug.DrawRay(transform.position + Vector3.up, m_MovementDirection, Color.green);
-        
+
         // update camera focus
         if (cam.gameObject == Camera.gameObject)
         {
@@ -93,7 +153,6 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     public void OnDebug()
     {
         Debug.Log("Toggle debug mode");
-        Animator animator = GetComponent<Animator>();
         if (animator)
         {
             animator.SetBool(InDebugMode, !animator.GetBool(InDebugMode));
@@ -118,9 +177,34 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
 
     public void OnDash()
     {
-        gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnDashIntention));
+        //gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnDashIntention));
+        GetComponent<DashMeshTrail>().ActivateTrail();
+        if (!isDashing)
+        {
+            animator.SetTrigger("MovementToDash");
+            StartCoroutine(Dash());
+        }      
     }
-    
+
+    public void StopDash() //triggered as an animation event at the last keyframe
+    {
+        animator.SetTrigger("StopDash");
+    }
+
+    IEnumerator Dash()
+    {
+        isDashing = true;
+        float timer = 0f;
+        while (timer < dashDuration)
+        {
+            rb.velocity = (Vector3)m_MovementDirection * DashSpeed;
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        rb.velocity = rb.velocity / 5;
+        isDashing = false;
+    }
+
     public CinemachineVirtualCameraBase GetActiveCamera()
     {
         return DebugCamera.gameObject.activeSelf ? DebugCamera : Camera;
@@ -136,12 +220,14 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     
     public void OnPrimaryWeaponRelease()
     {
+        int randomNumber = UnityEngine.Random.Range(1, 3);
+        animator.SetTrigger("ThrowGrenade_" + randomNumber);
         GameObject grenade = Instantiate(GravityGrenadePrefab);
         float3 throwDir = (transform.forward + transform.up).normalized;
         Physics.IgnoreCollision(GetComponent<CapsuleCollider>(), grenade.transform.Find("SphereMesh").GetComponent<SphereCollider>());
         grenade.transform.position = transform.position + Vector3.up;
-        Rigidbody rb = grenade.GetComponent<Rigidbody>();
-        rb.AddForce(throwDir * 10, ForceMode.Impulse);
+        Rigidbody grenade_rb = grenade.GetComponent<Rigidbody>();
+        grenade_rb.AddForce(throwDir * 10, ForceMode.Impulse);
         StartCoroutine(GrenadeDelayedExplode(grenade));
     }
 
@@ -176,14 +262,32 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
             angle = -angle;
         }
         
-        Rigidbody rb = GetComponent<Rigidbody>();
         rb.rotation = Quaternion.Euler(0, angle * Mathf.Rad2Deg, 0);
         rb.angularVelocity = Vector3.zero;
     }
 
-    public void GetMovementDirection(Ref<float3> direction)
+    public void UpdateMovementDirection(Ref<float3> direction)
     {
         direction.Value = m_MovementDirection;
+    }
+
+    public Vector3 GetMovementDirection()
+    {
+        return (Vector3)m_MovementDirection;
+    }
+
+    private IEnumerator CheckForTurn()
+    {
+        while (true)
+        {
+            var previousDirection = m_MovementDirection;
+            yield return new WaitForSeconds(0.1f);
+            var rotation = Quaternion.FromToRotation(m_MovementDirection, previousDirection);
+            if(rotation.eulerAngles.y > 160f)
+            {
+                animator.SetTrigger("Turn");
+            }
+        }       
     }
 
     public void OnCameraStandardShake(float intensity, float timer, float frequencyGain)
