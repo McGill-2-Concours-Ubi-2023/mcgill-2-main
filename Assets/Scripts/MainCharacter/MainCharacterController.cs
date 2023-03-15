@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Cinemachine;
+using JetBrains.Annotations;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -30,6 +31,8 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     [Range(0, 1)]
     public float dashDuration = 0.3f;
     private bool m_GamePaused;
+    [CanBeNull]
+    private GameObject m_PauseMenu;
 
     public ISimpleInventory<SimpleCollectible> SimpleCollectibleInventory;
     
@@ -42,6 +45,11 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         SimpleCollectibleInventory = new SimpleInventory<SimpleCollectible>();
         m_InputActionAsset = GetComponent<PlayerInput>().actions;
         animator = GetComponent<Animator>();
+        m_PauseMenu = GameObject.FindWithTag("PauseMenu");
+        if (m_PauseMenu)
+        {
+            m_PauseMenu.SetActive(false);
+        }
     }
 
     private void Start()
@@ -310,8 +318,9 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     {
         m_GamePaused = !m_GamePaused;
         Time.timeScale = m_GamePaused ? 0.0f : 1.0f;
-        if (m_GamePaused)
+        if (m_PauseMenu)
         {
+            m_PauseMenu.SetActive(m_GamePaused);
         }
     }
 }
