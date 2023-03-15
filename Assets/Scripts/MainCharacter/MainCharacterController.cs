@@ -326,12 +326,12 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
 
     public void OnShootPress()
     {
-        transform.GetComponentInChildren<Gun>()?.gameObject.Trigger<IGunTriggers>(nameof(IGunTriggers.OnShootStartIntention));
+        gameObject.TriggerDown<IGunTriggers>(nameof(IGunTriggers.OnShootStartIntention));
     }
     
     public void OnShootRelease()
     {
-        transform.GetComponentInChildren<Gun>()?.gameObject.Trigger<IGunTriggers>(nameof(IGunTriggers.OnShootStopIntention));
+        gameObject.TriggerDown<IGunTriggers>(nameof(IGunTriggers.OnShootStopIntention));
     }
     
     public void IsDashing(Ref<bool> refIsDashing)

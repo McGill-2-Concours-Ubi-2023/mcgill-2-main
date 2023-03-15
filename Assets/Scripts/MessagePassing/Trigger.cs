@@ -114,5 +114,16 @@ public static class TriggerExt
         }
         gameObject.TriggerDown<T>(triggerName, args);
     }
+    
+    public static void TriggerHierarchy<T>(this GameObject gameObject, string triggerName, params object[] args)
+        where T : ITrigger
+    {
+        if (!gameObject)
+        {
+            return;
+        }
+        GameObject root = gameObject.transform.root.gameObject;
+        root.TriggerDown<T>(triggerName, args);
+    }
 }
 
