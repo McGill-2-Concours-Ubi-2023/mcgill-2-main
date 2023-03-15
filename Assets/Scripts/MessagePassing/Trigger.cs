@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -11,42 +12,9 @@ public interface ITrigger
 
 public static class TriggerExt
 {
-    private class TriggerResolver
-    {
-        private static TriggerResolver m_Instance;
-        private readonly static object m_Lock = new object();
-        internal static TriggerResolver Instance
-        {
-            get
-            {
-                if (m_Instance == null)
-                {
-                    lock (m_Lock)
-                    {
-                        m_Instance ??= new TriggerResolver();
-                    }
-                }
+    private readonly static Dictionary<string, Delegate> DelegateCache = new Dictionary<string, Delegate>();
 
-                return m_Instance;
-            }
-        }
-
-        internal Action ResolveTrigger<T>(T impl, string triggerName) where T : ITrigger
-        {
-            return null;
-        }
-        
-        internal Action<T1> ResolveTrigger<T, T1>(T impl, string triggerName, T1 t1) where T : ITrigger
-        {
-            return null;
-        }
-        
-        internal Action<T1, T2> ResolveTrigger<T, T1, T2>(T impl, string triggerName, T1 t1, T2 t2) where T : ITrigger
-        {
-            return null;
-        }
-    }
-    
+    // GPT-4 wrote me this. Don't ask me how it works.
     public static void Trigger<T>(this GameObject gameObject, string triggerName, params object[] args)
         where T : ITrigger
     {
@@ -54,18 +22,61 @@ public static class TriggerExt
         {
             return;
         }
-        
+
         T[] impls = gameObject.GetComponents<T>();
-        MethodInfo method = typeof(T).GetMethods().FirstOrDefault(m => m.Name == triggerName);
-        if (method == null)
+        string cacheKey = typeof(T).FullName + "." + triggerName;
+
+        if (!DelegateCache.TryGetValue(cacheKey, out Delegate del))
         {
-            return;
+            MethodInfo method = typeof(T).GetMethod(triggerName);
+            if (method == null)
+            {
+                return;
+            }
+
+            ParameterInfo[] methodParams = method.GetParameters();
+
+            if (methodParams.Length != args.Length)
+            {
+                throw new ArgumentException("Number of arguments provided does not match the method's parameter count.");
+            }
+
+            Type delegateType;
+            if (methodParams.Length == 0)
+            {
+                delegateType = typeof(Action<T>);
+            }
+            else
+            {
+                Type[] genericArgs = new[] { typeof(T) }.Concat(methodParams.Select(p => p.ParameterType)).ToArray();
+                delegateType = GetActionType(genericArgs);
+            }
+            del = Delegate.CreateDelegate(delegateType, method);
+            DelegateCache[cacheKey] = del;
         }
         
+        object[] argumentArray = new object[] { null }.Concat(args).ToArray();
+
         foreach (T impl in impls)
         {
-            method.Invoke(impl, args);
+            argumentArray[0] = impl;
+            del.DynamicInvoke(argumentArray);
         }
+    }
+
+    private static Type GetActionType(params Type[] typeArgs)
+    {
+        int typeArgCount = typeArgs.Length;
+        Type genericActionType = typeArgCount switch
+        {
+            1 => typeof(Action<>),
+            2 => typeof(Action<,>),
+            3 => typeof(Action<,,>),
+            4 => typeof(Action<,,,>),
+            _ => throw new NotSupportedException("Methods with more than 3 parameters are not supported."),
+        };
+
+        return genericActionType.MakeGenericType(typeArgs);
     }
 
     public static void TriggerUp<T>(this GameObject gameObject, string triggerName, params object[] args)
