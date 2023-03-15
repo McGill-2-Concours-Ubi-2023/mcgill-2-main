@@ -323,5 +323,20 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
             m_PauseMenu.SetActive(m_GamePaused);
         }
     }
+
+    public void OnShootPress()
+    {
+        transform.GetComponentInChildren<Gun>()?.gameObject.Trigger<IGunTriggers>(nameof(IGunTriggers.OnShootStartIntention));
+    }
+    
+    public void OnShootRelease()
+    {
+        transform.GetComponentInChildren<Gun>()?.gameObject.Trigger<IGunTriggers>(nameof(IGunTriggers.OnShootStopIntention));
+    }
+    
+    public void IsDashing(Ref<bool> refIsDashing)
+    {
+        refIsDashing.Value = this.isDashing;
+    }
 }
 
