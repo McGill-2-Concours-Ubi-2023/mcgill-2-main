@@ -50,6 +50,11 @@ public static class TriggerExt
     public static void Trigger<T>(this GameObject gameObject, string triggerName, params object[] args)
         where T : ITrigger
     {
+        if (!gameObject)
+        {
+            return;
+        }
+        
         T[] impls = gameObject.GetComponents<T>();
         MethodInfo method = typeof(T).GetMethods().FirstOrDefault(m => m.Name == triggerName);
         if (method == null)
@@ -63,25 +68,51 @@ public static class TriggerExt
         }
     }
 
-    public static void Trigger<T>(this object obj, string triggerName, params object[] args)
-     where T : ITrigger
+    public static void TriggerUp<T>(this GameObject gameObject, string triggerName, params object[] args)
+        where T : ITrigger
     {
-        T[] impls = obj.GetType().GetInterfaces()
-            .Where(i => i.IsAssignableFrom(typeof(T)))
-            .Select(i => (T)obj)
-            .ToArray();
-
-        MethodInfo method = typeof(T).GetMethods().FirstOrDefault(m => m.Name == triggerName);
-        if (method == null)
+        if (!gameObject)
         {
             return;
         }
-
-        foreach (T impl in impls)
+        
+        gameObject.Trigger<T>(triggerName, args);
+        Transform parentTransform = gameObject.transform.parent;
+        if (parentTransform)
         {
-            method.Invoke(impl, args);
+            parentTransform.gameObject.TriggerUp<T>(triggerName, args);
         }
     }
 
+    public static void TriggerDown<T>(this GameObject gameObject, string triggerName, params object[] args)
+        where T : ITrigger
+    {
+        if (!gameObject)
+        {
+            return;
+        }
+        
+        gameObject.Trigger<T>(triggerName, args);
+        foreach (Transform childTransform in gameObject.transform)
+        {
+            childTransform.gameObject.TriggerDown<T>(triggerName, args);
+        }
+    }
+
+    public static void TriggerAll<T>(this GameObject gameObject, string triggerName, params object[] args)
+        where T : ITrigger
+    {
+        // trigger up then down
+        if (!gameObject)
+        {
+            return;
+        }
+        Transform parentTransform = gameObject.transform.parent;
+        if (parentTransform)
+        {
+            parentTransform.gameObject.TriggerUp<T>(triggerName, args);
+        }
+        gameObject.TriggerDown<T>(triggerName, args);
+    }
 }
 
