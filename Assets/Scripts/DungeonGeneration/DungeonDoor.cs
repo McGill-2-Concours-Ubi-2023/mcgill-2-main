@@ -32,30 +32,24 @@ public class DungeonDoor : MonoBehaviour
         var doorComponent = doorObject.AddComponent<DungeonDoor>();
         doorComponent.sharedRoom1 = originRoom;
         doorComponent.sharedRoom2 = targetRoom;
-        GameObject placeholder;
-        data.GetGrid().GetWallsLayout().TryGetValue(doorPosition, out placeholder);
-        if (placeholder != null)
-        {
-            doorComponent.transform.rotation = placeholder.transform.rotation;
-            GameObject.DestroyImmediate(placeholder);
-        }     
+        var orientation = originRoom.transform.position - targetRoom.transform.position;
+        var direction = new Vector3(orientation.x, 0, orientation.z);
+        var angle = Vector3.SignedAngle(doorObj.transform.forward, direction, Vector3.up);
+        doorObject.transform.Rotate(0, angle, 0);
         return doorComponent;
     }
 
-    public static void CreatePlaceholder(DungeonRoom room, Vector3 cardinalDirection2D, DungeonData data)
+    public static void Cleanup()
     {
-        Vector3 Y_Offset = new Vector3(0, data.GetNormalRoomPrefabs()[0].transform.localScale.y / 2, 0);
-        Vector3 phPosition = room.transform.position + data.GetNormalRoomPrefabs()[0].transform.localScale.x / 2 *
-            cardinalDirection2D + Y_Offset;
-        if (!data.GetGrid().GetWallsLayout().ContainsKey(phPosition))
+        foreach(var door_ in FindObjectsOfType<DungeonDoor>())
         {
-            var doorPhObj = DungeonDrawer.DrawSingleObject(phPosition, data.GetWallPrefab(), room.transform.gameObject);
-            var fromObjToRoomPosition = room.transform.position - doorPhObj.transform.position;
-            var doorPhRotation = Quaternion.FromToRotation(doorPhObj.transform.forward, fromObjToRoomPosition);
-            var adjustedRotation = new Quaternion(0, doorPhRotation.y, doorPhRotation.z, doorPhRotation.w); // no -180 degrees on x axis
-            doorPhObj.transform.rotation *= adjustedRotation;
-            data.GetGrid().AddWallPosition(phPosition, doorPhObj);
-        }      
+            foreach(var placeHolder in FindObjectsOfType<DungeonDoorPlaceholder>())
+            {
+                if((door_.transform.position - placeHolder.transform.position).magnitude < 0.5f){
+                    DestroyImmediate(placeHolder.gameObject);
+                }
+            }
+        }
     }
 
     public List<DungeonRoom> GetSharedRooms()

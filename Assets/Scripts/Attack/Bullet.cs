@@ -2,25 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
 public class Bullet : MonoBehaviour
 {
     float speed;
     Vector3 direction;
     [SerializeField]
     int damage = 1; 
-
-    // Update is called once per frame
-    void Update()
+    
+    private void Update()
     {
-        fly(direction, speed);
+        Fly(direction, speed);
     }
 
-    public void fly(Vector3 direction, float speed)
+    private void Fly(Vector3 direction, float speed)
     {
-        this.GetComponent<Rigidbody>().velocity = direction * speed;
+        GetComponent<Rigidbody>().velocity = direction * speed;
     }
 
-    public void SetDirectionASpeed(Vector3 direction, float speed) {
+    public void SetDirectionAndSpeed(Vector3 direction, float speed) {
         this.speed = speed;
         this.direction = direction; 
     }
@@ -29,11 +29,10 @@ public class Bullet : MonoBehaviour
     {
         if (other.CompareTag("Player") || other.CompareTag("Enemy"))// do damage to player/enemy
         {
-            other.gameObject.GetComponent<Health>().TakeDamage(damage); 
+            other.gameObject.Trigger<IHealthTriggers>(nameof(IHealthTriggers.TakeDamage), damage);
         }
         if (!other.CompareTag("Bullet")) {
-            GameObject.Destroy(this.gameObject);
+            Destroy(gameObject);
         }
-        
     }
 }

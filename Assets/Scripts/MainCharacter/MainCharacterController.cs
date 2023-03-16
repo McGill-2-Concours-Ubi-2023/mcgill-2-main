@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
 using Cinemachine;
+using JetBrains.Annotations;
 using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.VFX;
 using UnityEngine.InputSystem;
 using static Unity.Mathematics.math;
 using float2 = Unity.Mathematics.float2;
@@ -31,8 +31,8 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     [Range(0, 1)]
     public float dashDuration = 0.3f;
     private bool m_GamePaused;
-    [SerializeField]
-    private VisualEffect followEffect;
+    [CanBeNull]
+    private GameObject m_PauseMenu;
 
     public ISimpleInventory<SimpleCollectible> SimpleCollectibleInventory;
     
@@ -45,6 +45,11 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         SimpleCollectibleInventory = new SimpleInventory<SimpleCollectible>();
         m_InputActionAsset = GetComponent<PlayerInput>().actions;
         animator = GetComponent<Animator>();
+        m_PauseMenu = GameObject.FindWithTag("PauseMenu");
+        if (m_PauseMenu)
+        {
+            m_PauseMenu.SetActive(false);
+        }
     }
 
     private void Start()
@@ -81,15 +86,6 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
                 animator.SetTrigger("Dance_" + randomNumber);
             }           
         }
-    }
-
-    IEnumerator Die()
-    {
-        animator.SetTrigger("Die");
-        var dyingTime = animator.GetCurrentAnimatorClipInfo(0).Length;
-        followEffect.SendEvent("OnFollowTrail");
-        yield return new WaitForSeconds(dyingTime);
-        followEffect.SendEvent("OnStopTrail");
     }
 
 
@@ -322,9 +318,25 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     {
         m_GamePaused = !m_GamePaused;
         Time.timeScale = m_GamePaused ? 0.0f : 1.0f;
-        if (m_GamePaused)
+        if (m_PauseMenu)
         {
+            m_PauseMenu.SetActive(m_GamePaused);
         }
+    }
+
+    public void OnShootPress()
+    {
+        gameObject.TriggerDown<IGunTriggers>(nameof(IGunTriggers.OnShootStartIntention));
+    }
+    
+    public void OnShootRelease()
+    {
+        gameObject.TriggerDown<IGunTriggers>(nameof(IGunTriggers.OnShootStopIntention));
+    }
+    
+    public void IsDashing(Ref<bool> refIsDashing)
+    {
+        refIsDashing.Value = this.isDashing;
     }
 }
 
