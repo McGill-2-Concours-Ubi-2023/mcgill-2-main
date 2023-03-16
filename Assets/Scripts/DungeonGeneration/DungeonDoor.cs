@@ -14,12 +14,12 @@ public class DungeonDoor : MonoBehaviour
     private SkinnedMeshRenderer skinnedMeshRenderer;
     private Coroutine openCoroutine;
     private Coroutine closeCoroutine;
-    private BoxCollider doorCollisionCollider;
+    private MeshCollider doorCollider;
     private Collider playerCollider;
 
     private void Awake()
     {
-        doorCollisionCollider = transform.Find("Door").GetComponent<BoxCollider>();
+        doorCollider = transform.Find("Door").GetComponent<MeshCollider>();
         playerCollider = FindObjectOfType<MainCharacterController>().GetComponent<Collider>();
     }
 
@@ -79,9 +79,9 @@ public class DungeonDoor : MonoBehaviour
         while (skinnedMeshRenderer.GetBlendShapeWeight(0) > 0)
         {
             skinnedMeshRenderer.SetBlendShapeWeight(0, skinnedMeshRenderer.GetBlendShapeWeight(0) - openRate);
+            UpdateCollider();
             yield return new WaitForEndOfFrame();
         }
-        Physics.IgnoreCollision(playerCollider, doorCollisionCollider, false);
     }
 
     IEnumerator Open()
@@ -91,9 +91,16 @@ public class DungeonDoor : MonoBehaviour
         while (skinnedMeshRenderer.GetBlendShapeWeight(0) < 100)
         {
             skinnedMeshRenderer.SetBlendShapeWeight(0, skinnedMeshRenderer.GetBlendShapeWeight(0) + openRate);
+            UpdateCollider();
             yield return new WaitForEndOfFrame();
         }
-        Physics.IgnoreCollision(playerCollider, doorCollisionCollider, true);
+    }
+
+    private void UpdateCollider()
+    {
+        Mesh bakeMesh = new Mesh();
+        skinnedMeshRenderer.BakeMesh(bakeMesh);
+        doorCollider.sharedMesh = bakeMesh;
     }
 
     private void OnTriggerExit(Collider other)

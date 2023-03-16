@@ -3,6 +3,7 @@ using System.Collections;
 using Cinemachine;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.VFX;
 using UnityEngine.InputSystem;
 using static Unity.Mathematics.math;
 using float2 = Unity.Mathematics.float2;
@@ -30,6 +31,8 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     [Range(0, 1)]
     public float dashDuration = 0.3f;
     private bool m_GamePaused;
+    [SerializeField]
+    private VisualEffect followEffect;
 
     public ISimpleInventory<SimpleCollectible> SimpleCollectibleInventory;
     
@@ -78,6 +81,15 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
                 animator.SetTrigger("Dance_" + randomNumber);
             }           
         }
+    }
+
+    IEnumerator Die()
+    {
+        animator.SetTrigger("Die");
+        var dyingTime = animator.GetCurrentAnimatorClipInfo(0).Length;
+        followEffect.SendEvent("OnFollowTrail");
+        yield return new WaitForSeconds(dyingTime);
+        followEffect.SendEvent("OnStopTrail");
     }
 
 

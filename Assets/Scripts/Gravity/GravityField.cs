@@ -46,6 +46,7 @@ public abstract class GravityField : MonoBehaviour
             if (!agents.Contains(other.gameObject) && agent && !agent.IsBound())
             {
                 Rigidbody rb = other.GetComponent<Rigidbody>();
+                if (rb.isKinematic) rb.isKinematic = false;
                 if (rb != null)
                 {
                     agents.Add(other.gameObject);

@@ -14,88 +14,102 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   positionsBuffer:
   - {x: 0, y: 0, z: 0}
-  - {x: 15, y: 0, z: 0}
-  - {x: 30, y: 0, z: 0}
-  - {x: 45, y: 0, z: 0}
+  - {x: 12, y: 0, z: 0}
+  - {x: 24, y: 0, z: 0}
+  - {x: 36, y: 0, z: 0}
+  - {x: 48, y: 0, z: 0}
   - {x: 60, y: 0, z: 0}
-  - {x: 75, y: 0, z: 0}
-  - {x: 0, y: 0, z: 15}
-  - {x: 15, y: 0, z: 15}
-  - {x: 30, y: 0, z: 15}
-  - {x: 45, y: 0, z: 15}
-  - {x: 60, y: 0, z: 15}
-  - {x: 75, y: 0, z: 15}
-  - {x: 0, y: 0, z: 30}
-  - {x: 15, y: 0, z: 30}
-  - {x: 30, y: 0, z: 30}
-  - {x: 45, y: 0, z: 30}
-  - {x: 60, y: 0, z: 30}
-  - {x: 75, y: 0, z: 30}
-  - {x: 0, y: 0, z: 45}
-  - {x: 15, y: 0, z: 45}
-  - {x: 30, y: 0, z: 45}
-  - {x: 45, y: 0, z: 45}
-  - {x: 60, y: 0, z: 45}
-  - {x: 75, y: 0, z: 45}
+  - {x: 0, y: 0, z: 12}
+  - {x: 12, y: 0, z: 12}
+  - {x: 24, y: 0, z: 12}
+  - {x: 36, y: 0, z: 12}
+  - {x: 48, y: 0, z: 12}
+  - {x: 60, y: 0, z: 12}
+  - {x: 0, y: 0, z: 24}
+  - {x: 12, y: 0, z: 24}
+  - {x: 24, y: 0, z: 24}
+  - {x: 36, y: 0, z: 24}
+  - {x: 48, y: 0, z: 24}
+  - {x: 60, y: 0, z: 24}
+  - {x: 0, y: 0, z: 36}
+  - {x: 12, y: 0, z: 36}
+  - {x: 24, y: 0, z: 36}
+  - {x: 36, y: 0, z: 36}
+  - {x: 48, y: 0, z: 36}
+  - {x: 60, y: 0, z: 36}
+  - {x: 0, y: 0, z: 48}
+  - {x: 12, y: 0, z: 48}
+  - {x: 24, y: 0, z: 48}
+  - {x: 36, y: 0, z: 48}
+  - {x: 48, y: 0, z: 48}
+  - {x: 60, y: 0, z: 48}
   - {x: 0, y: 0, z: 60}
-  - {x: 15, y: 0, z: 60}
-  - {x: 30, y: 0, z: 60}
-  - {x: 45, y: 0, z: 60}
+  - {x: 12, y: 0, z: 60}
+  - {x: 24, y: 0, z: 60}
+  - {x: 36, y: 0, z: 60}
+  - {x: 48, y: 0, z: 60}
   - {x: 60, y: 0, z: 60}
-  - {x: 75, y: 0, z: 60}
-  - {x: 0, y: 0, z: 75}
-  - {x: 15, y: 0, z: 75}
-  - {x: 30, y: 0, z: 75}
-  - {x: 45, y: 0, z: 75}
-  - {x: 60, y: 0, z: 75}
-  - {x: 75, y: 0, z: 75}
   customMapBuffer:
-  - position: {x: 15, y: 0, z: 0}
+  - position: {x: 60, y: 0, z: 0}
     type: 4
-  - position: {x: 15, y: 0, z: 15}
-    type: 2
-  - position: {x: 30, y: 0, z: 15}
-    type: 0
-  - position: {x: 15, y: 0, z: 30}
-    type: 0
-  - position: {x: 0, y: 0, z: 30}
+    prefabIndex: 1
+  - position: {x: 60, y: 0, z: 12}
     type: 3
-  - position: {x: 30, y: 0, z: 30}
+    prefabIndex: 0
+  - position: {x: 60, y: 0, z: 24}
     type: 0
-  - position: {x: 30, y: 0, z: 45}
+    prefabIndex: 0
+  - position: {x: 48, y: 0, z: 24}
     type: 0
-  - position: {x: 15, y: 0, z: 45}
-    type: 2
-  - position: {x: 45, y: 0, z: 45}
+    prefabIndex: 1
+  - position: {x: 36, y: 0, z: 24}
     type: 0
-  - position: {x: 45, y: 0, z: 30}
-    type: 2
-  - position: {x: 45, y: 0, z: 60}
+    prefabIndex: 0
+  - position: {x: 24, y: 0, z: 24}
     type: 0
-  - position: {x: 45, y: 0, z: 75}
-    type: 0
-  - position: {x: 30, y: 0, z: 60}
-    type: 0
-  - position: {x: 30, y: 0, z: 75}
-    type: 0
-  - position: {x: 15, y: 0, z: 75}
-    type: 0
-  - position: {x: 0, y: 0, z: 75}
+    prefabIndex: 0
+  - position: {x: 24, y: 0, z: 12}
     type: 3
-  - position: {x: 0, y: 0, z: 60}
+    prefabIndex: 1
+  - position: {x: 12, y: 0, z: 12}
     type: 0
-  - position: {x: 0, y: 0, z: 45}
-    type: 0
-  - position: {x: 60, y: 0, z: 75}
-    type: 0
-  - position: {x: 75, y: 0, z: 75}
-    type: 0
-  - position: {x: 75, y: 0, z: 60}
-    type: 0
-  - position: {x: 60, y: 0, z: 60}
-    type: 3
-  - position: {x: 60, y: 0, z: 45}
+    prefabIndex: 0
+  - position: {x: 0, y: 0, z: 12}
     type: 2
+    prefabIndex: 1
+  - position: {x: 12, y: 0, z: 24}
+    type: 2
+    prefabIndex: 2
+  - position: {x: 0, y: 0, z: 24}
+    type: 0
+    prefabIndex: 0
+  - position: {x: 0, y: 0, z: 36}
+    type: 0
+    prefabIndex: 1
+  - position: {x: 12, y: 0, z: 36}
+    type: 2
+    prefabIndex: 0
+  - position: {x: 24, y: 0, z: 36}
+    type: 2
+    prefabIndex: 0
+  - position: {x: 36, y: 0, z: 36}
+    type: 2
+    prefabIndex: 1
+  - position: {x: 48, y: 0, z: 36}
+    type: 0
+    prefabIndex: 1
+  - position: {x: 48, y: 0, z: 48}
+    type: 2
+    prefabIndex: 2
+  - position: {x: 36, y: 0, z: 48}
+    type: 2
+    prefabIndex: 2
+  - position: {x: 24, y: 0, z: 48}
+    type: 2
+    prefabIndex: 0
+  - position: {x: 12, y: 0, z: 48}
+    type: 0
+    prefabIndex: 0
   gridSize: 6
   roomSize: 13
   cellsSpacing: 0
