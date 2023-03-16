@@ -8,6 +8,7 @@ using UnityEngine.InputSystem;
 using static Unity.Mathematics.math;
 using float2 = Unity.Mathematics.float2;
 using float3 = Unity.Mathematics.float3;
+using UnityEngine.VFX;
 
 public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, ICrateTriggers, IGravityToCameraTrigger
 {
@@ -33,6 +34,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     private bool m_GamePaused;
     [CanBeNull]
     private GameObject m_PauseMenu;
+    public VisualEffect trailFollowEffect;
 
     public ISimpleInventory<SimpleCollectible> SimpleCollectibleInventory;
     
@@ -182,6 +184,16 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     public void GetNavActionData(Ref<object> outData)
     {
         outData.Value = m_NavActionData;
+    }
+
+    public void ActivateTrail()
+    {
+        trailFollowEffect.SendEvent("OnFollowTrail");
+    }
+
+    public void StopTrail()
+    {
+        trailFollowEffect.SendEvent("OnStopTrail");
     }
 
     public void OnDash()

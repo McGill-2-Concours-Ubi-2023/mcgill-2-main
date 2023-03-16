@@ -263,8 +263,8 @@ VisualEffect:
   m_GameObject: {fileID: 852077923517610476}
   m_Enabled: 1
   m_Asset: {fileID: 8926484042661614526, guid: e721adbd5c063ff49abe78dab21adcbc, type: 3}
-  m_InitialEventName: OnPlay
-  m_InitialEventNameOverriden: 0
+  m_InitialEventName: OnFollowTrail
+  m_InitialEventNameOverriden: 1
   m_StartSeed: 0
   m_ResetSeedOnPlay: 1
   m_ResourceVersion: 1
@@ -281,7 +281,7 @@ VisualEffect:
       - m_Value: {x: 270.01978, y: 179.99533, z: 0}
         m_Name: Transform_angles
         m_Overridden: 1
-      - m_Value: {x: 59.972004, y: 1.2441208, z: 0.73355275}
+      - m_Value: {x: 30.000002, y: 0.5141208, z: 0.0045527816}
         m_Name: Transform_position
         m_Overridden: 1
       - m_Value: {x: 1.0000002, y: 1.0000001, z: 1.0000001}
@@ -562,6 +562,7 @@ MonoBehaviour:
     type: 3}
   doorOpenRate: 1
   dashDuration: 0.2
+  trailFollowEffect: {fileID: 8903094642532014375}
 --- !u!54 &5316769501632722695
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -701,12 +702,12 @@ PrefabInstance:
     - target: {fileID: 3164982295968437048, guid: 0a93e9d4454ffb647834281bb6ad5303,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.9651575
+      value: 0.96515745
       objectReference: {fileID: 0}
     - target: {fileID: 3164982295968437048, guid: 0a93e9d4454ffb647834281bb6ad5303,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.000000059604645
+      value: -0.000000048428774
       objectReference: {fileID: 0}
     - target: {fileID: 3164982295968437048, guid: 0a93e9d4454ffb647834281bb6ad5303,
         type: 3}
