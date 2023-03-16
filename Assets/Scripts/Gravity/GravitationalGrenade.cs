@@ -64,7 +64,7 @@ public class GravitationalGrenade : MonoBehaviour
             var intensity = Mathf.Lerp(0.1f, explosionShakeIntensity, 1 - Mathf.Clamp01(distance / explosionInfluenceDistance));
             _renderer.material.SetColor("_BaseColor", explosionColor);
             animator.SetTrigger("explode");
-            GameObject.FindGameObjectWithTag("Player").Trigger<IGravityToCameraTrigger>
+            GameObject.FindGameObjectWithTag("Player").Trigger<IGravityToCameraTrigger, float, float, float>
                 (nameof(IGravityToCameraTrigger.OnCameraStandardShake), intensity, explosionShakeTime, 1);
             var kernel = gravityField.transform.position;
             //Slightly offset the y position of the field's kernel for better physics
@@ -89,7 +89,7 @@ public class GravitationalGrenade : MonoBehaviour
             float distance = Vector3.Distance(GameObject.FindGameObjectWithTag("Player").transform.position, transform.position);
             var intensity = Mathf.Lerp(0.1f, wobbleShakeIntensity, 1 - Mathf.Clamp01(distance / explosionInfluenceDistance));
             var frequencyGain = intensity / (shakeDampening * 2);
-            GameObject.FindGameObjectWithTag("Player").Trigger<IGravityToCameraTrigger>
+            GameObject.FindGameObjectWithTag("Player").Trigger<IGravityToCameraTrigger, float, float>
                (nameof(IGravityToCameraTrigger.OnCameraWobbleShakeManualDecrement), intensity / shakeDampening, frequencyGain);
             yield return new WaitForEndOfFrame();
         }        

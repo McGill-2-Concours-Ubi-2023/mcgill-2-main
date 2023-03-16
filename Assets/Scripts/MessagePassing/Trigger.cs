@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public interface ITrigger
@@ -12,74 +14,101 @@ public interface ITrigger
 
 public static class TriggerExt
 {
-    private readonly static Dictionary<string, Delegate> DelegateCache = new Dictionary<string, Delegate>();
+    private static Task m_LoadingTask;
+    
+    // registry of function pointers by finding all derived types of ITrigger and their implementations
+    static TriggerExt()
+    {
+        m_LoadingTask = Task.Run(LoadTriggerMethods);
+    }
 
-    // GPT-4 wrote me this. Don't ask me how it works.
-    public static void Trigger<T>(this GameObject gameObject, string triggerName, params object[] args)
-        where T : ITrigger
+    private static async Task LoadTriggerMethods()
+    {
+        // find all derived types of ITrigger
+        List<Type> triggerTypes = AppDomain.CurrentDomain.GetAssemblies()
+            .SelectMany(a => a.GetTypes())
+            .Where(t => t.IsInterface && typeof(ITrigger).IsAssignableFrom(t)).ToList();
+        
+        await Task.Yield();
+        
+        // find all implementations of ITrigger
+        List<Type> triggerImpls = AppDomain.CurrentDomain.GetAssemblies()
+            .SelectMany(a => a.GetTypes())
+            .Where(t => t.IsClass && typeof(ITrigger).IsAssignableFrom(t)).ToList();
+        
+        await Task.Yield();
+        
+        // find all methods on ITrigger implementations
+        IEnumerable<MethodInfo> triggerMethods = triggerImpls.AsParallel()
+            .SelectMany(t => t.GetMethods(BindingFlags.Public | BindingFlags.Instance));
+        
+        await Task.Yield();
+        
+        // filter out methods on ITrigger implementations that are not in the ITrigger derived interfaces
+        IEnumerable<MethodInfo> triggerMethodsFiltered = triggerMethods.AsParallel()
+            .Where(m => triggerTypes.Any(t => t.GetMethod(m.Name) != null));
+            
+        await Task.Yield();
+        
+        ConcurrentDictionary<string, nint> nativeDelegateCache = new ConcurrentDictionary<string, nint>();
+
+        triggerMethodsFiltered.AsParallel().ForAll(m =>
+        {
+            
+            ParameterInfo[] methodParams = m.GetParameters();
+            int paramCount = methodParams.Length;
+            nint ptr = m.MethodHandle.GetFunctionPointer();
+            string cacheKey = GetCacheKey(m.DeclaringType, m.Name);
+            nativeDelegateCache[cacheKey] = ptr;
+            Debug.Log($"Loaded trigger method: {cacheKey} with {paramCount} parameters at address 0x{(ulong)ptr:x}");
+        });
+        
+        await Task.Yield();
+        foreach ((string key, nint value) in nativeDelegateCache)
+        {
+            NativeDelegateCache[key] = value;
+        }
+    }
+    
+        
+    private readonly static Dictionary<string, nint> NativeDelegateCache = new Dictionary<string, nint>();
+    
+    private static string GetCacheKey(Type type, string triggerName)
+    {
+        return type.FullName + "." + triggerName;
+    }
+
+    #region Trigger 0 args
+    public static void Trigger<T>(this GameObject gameObject, string triggerName)
     {
         if (!gameObject)
         {
             return;
         }
-
-        T[] impls = gameObject.GetComponents<T>();
-        string cacheKey = typeof(T).FullName + "." + triggerName;
-
-        if (!DelegateCache.TryGetValue(cacheKey, out Delegate del))
+        
+        if (!m_LoadingTask.IsCompleted)
         {
-            MethodInfo method = typeof(T).GetMethod(triggerName);
-            if (method == null)
-            {
-                return;
-            }
-
-            ParameterInfo[] methodParams = method.GetParameters();
-
-            if (methodParams.Length != args.Length)
-            {
-                throw new ArgumentException("Number of arguments provided does not match the method's parameter count.");
-            }
-
-            Type delegateType;
-            if (methodParams.Length == 0)
-            {
-                delegateType = typeof(Action<T>);
-            }
-            else
-            {
-                Type[] genericArgs = new[] { typeof(T) }.Concat(methodParams.Select(p => p.ParameterType)).ToArray();
-                delegateType = GetActionType(genericArgs);
-            }
-            del = Delegate.CreateDelegate(delegateType, method);
-            DelegateCache[cacheKey] = del;
+            m_LoadingTask.Wait();
         }
         
-        object[] argumentArray = new object[] { null }.Concat(args).ToArray();
-
+        T[] impls = gameObject.GetComponents<T>();
+        
         foreach (T impl in impls)
         {
-            argumentArray[0] = impl;
-            del.DynamicInvoke(argumentArray);
+            unsafe
+            {
+                string cacheKey = GetCacheKey(impl.GetType(), triggerName);
+                if (NativeDelegateCache.TryGetValue(cacheKey, out nint ptr))
+                {
+                    delegate* managed<object, void> del = (delegate* managed<object, void>)ptr;
+                    del(impl);
+                }
+            }
         }
     }
-
-    private static Type GetActionType(params Type[] typeArgs)
-    {
-        int typeArgCount = typeArgs.Length;
-        Type genericActionType = typeArgCount switch
-        {
-            1 => typeof(Action<>),
-            2 => typeof(Action<,>),
-            3 => typeof(Action<,,>),
-            4 => typeof(Action<,,,>),
-            _ => throw new NotSupportedException("Methods with more than 3 parameters are not supported."),
-        };
-
-        return genericActionType.MakeGenericType(typeArgs);
-    }
-
-    public static void TriggerUp<T>(this GameObject gameObject, string triggerName, params object[] args)
+    
+    
+    public static void TriggerUp<T>(this GameObject gameObject, string triggerName)
         where T : ITrigger
     {
         if (!gameObject)
@@ -87,15 +116,15 @@ public static class TriggerExt
             return;
         }
         
-        gameObject.Trigger<T>(triggerName, args);
+        gameObject.Trigger<T>(triggerName);
         Transform parentTransform = gameObject.transform.parent;
         if (parentTransform)
         {
-            parentTransform.gameObject.TriggerUp<T>(triggerName, args);
+            parentTransform.gameObject.TriggerUp<T>(triggerName);
         }
     }
 
-    public static void TriggerDown<T>(this GameObject gameObject, string triggerName, params object[] args)
+    public static void TriggerDown<T>(this GameObject gameObject, string triggerName)
         where T : ITrigger
     {
         if (!gameObject)
@@ -103,14 +132,14 @@ public static class TriggerExt
             return;
         }
         
-        gameObject.Trigger<T>(triggerName, args);
+        gameObject.Trigger<T>(triggerName);
         foreach (Transform childTransform in gameObject.transform)
         {
-            childTransform.gameObject.TriggerDown<T>(triggerName, args);
+            childTransform.gameObject.TriggerDown<T>(triggerName);
         }
     }
 
-    public static void TriggerAll<T>(this GameObject gameObject, string triggerName, params object[] args)
+    public static void TriggerAll<T>(this GameObject gameObject, string triggerName)
         where T : ITrigger
     {
         // trigger up then down
@@ -121,12 +150,12 @@ public static class TriggerExt
         Transform parentTransform = gameObject.transform.parent;
         if (parentTransform)
         {
-            parentTransform.gameObject.TriggerUp<T>(triggerName, args);
+            parentTransform.gameObject.TriggerUp<T>(triggerName);
         }
-        gameObject.TriggerDown<T>(triggerName, args);
+        gameObject.TriggerDown<T>(triggerName);
     }
     
-    public static void TriggerHierarchy<T>(this GameObject gameObject, string triggerName, params object[] args)
+    public static void TriggerHierarchy<T>(this GameObject gameObject, string triggerName)
         where T : ITrigger
     {
         if (!gameObject)
@@ -134,7 +163,278 @@ public static class TriggerExt
             return;
         }
         GameObject root = gameObject.transform.root.gameObject;
-        root.TriggerDown<T>(triggerName, args);
+        root.TriggerDown<T>(triggerName);
     }
+    
+    #endregion
+    
+    #region Trigger 1 arg
+    
+    public static void Trigger<T, T1>(this GameObject gameObject, string triggerName, T1 arg1)
+    {
+        if (!gameObject)
+        {
+            return;
+        }
+        
+        if (!m_LoadingTask.IsCompleted)
+        {
+            m_LoadingTask.Wait();
+        }
+        
+        T[] impls = gameObject.GetComponents<T>();
+        
+        foreach (T impl in impls)
+        {
+            unsafe
+            {
+                string cacheKey = GetCacheKey(impl.GetType(), triggerName);
+                if (NativeDelegateCache.TryGetValue(cacheKey, out nint ptr))
+                {
+                    delegate* managed<object, T1, void> del = (delegate* managed<object, T1, void>)ptr;
+                    del(impl, arg1);
+                }
+            }
+        }
+    }
+    
+    public static void TriggerUp<T, T1>(this GameObject gameObject, string triggerName, T1 arg1)
+        where T : ITrigger
+    {
+        if (!gameObject)
+        {
+            return;
+        }
+        
+        gameObject.Trigger<T, T1>(triggerName, arg1);
+        Transform parentTransform = gameObject.transform.parent;
+        if (parentTransform)
+        {
+            parentTransform.gameObject.TriggerUp<T, T1>(triggerName, arg1);
+        }
+    }
+
+    public static void TriggerDown<T, T1>(this GameObject gameObject, string triggerName, T1 arg1)
+        where T : ITrigger
+    {
+        if (!gameObject)
+        {
+            return;
+        }
+        
+        gameObject.Trigger<T, T1>(triggerName, arg1);
+        foreach (Transform childTransform in gameObject.transform)
+        {
+            childTransform.gameObject.TriggerDown<T, T1>(triggerName, arg1);
+        }
+    }
+
+    public static void TriggerAll<T, T1>(this GameObject gameObject, string triggerName, T1 arg1)
+        where T : ITrigger
+    {
+        // trigger up then down
+        if (!gameObject)
+        {
+            return;
+        }
+        Transform parentTransform = gameObject.transform.parent;
+        if (parentTransform)
+        {
+            parentTransform.gameObject.TriggerUp<T, T1>(triggerName, arg1);
+        }
+        gameObject.TriggerDown<T, T1>(triggerName, arg1);
+    }
+    
+    public static void TriggerHierarchy<T, T1>(this GameObject gameObject, string triggerName, T1 arg1)
+        where T : ITrigger
+    {
+        if (!gameObject)
+        {
+            return;
+        }
+        GameObject root = gameObject.transform.root.gameObject;
+        root.TriggerDown<T, T1>(triggerName, arg1);
+    }
+    
+    #endregion
+
+    #region Trigger 2 args
+    public static void Trigger<T, T1, T2>(this GameObject gameObject, string triggerName, T1 arg1, T2 arg2)
+    {
+        if (!gameObject)
+        {
+            return;
+        }
+        
+        if (!m_LoadingTask.IsCompleted)
+        {
+            m_LoadingTask.Wait();
+        }
+        
+        T[] impls = gameObject.GetComponents<T>();
+        
+        foreach (T impl in impls)
+        {
+            unsafe
+            {
+                string cacheKey = GetCacheKey(impl.GetType(), triggerName);
+                if (NativeDelegateCache.TryGetValue(cacheKey, out nint ptr))
+                {
+                    delegate* managed<object, T1, T2, void> del = (delegate* managed<object, T1, T2, void>)ptr;
+                    del(impl, arg1, arg2);
+                }
+            }
+        }
+    }
+    
+   
+    public static void TriggerUp<T, T1, T2>(this GameObject gameObject, string triggerName, T1 arg1, T2 arg2)
+        where T : ITrigger
+    {
+        if (!gameObject)
+        {
+            return;
+        }
+        
+        gameObject.Trigger<T, T1, T2>(triggerName, arg1, arg2);
+        Transform parentTransform = gameObject.transform.parent;
+        if (parentTransform)
+        {
+            parentTransform.gameObject.TriggerUp<T>(triggerName);
+        }
+    }
+
+    public static void TriggerDown<T, T1, T2>(this GameObject gameObject, string triggerName, T1 arg1, T2 arg2)
+        where T : ITrigger
+    {
+        if (!gameObject)
+        {
+            return;
+        }
+        
+        gameObject.Trigger<T, T1, T2>(triggerName, arg1, arg2);
+        foreach (Transform childTransform in gameObject.transform)
+        {
+            childTransform.gameObject.TriggerDown<T, T1, T2>(triggerName, arg1, arg2);
+        }
+    }
+
+    public static void TriggerAll<T, T1, T2>(this GameObject gameObject, string triggerName, T1 arg1, T2 arg2)
+        where T : ITrigger
+    {
+        // trigger up then down
+        if (!gameObject)
+        {
+            return;
+        }
+        Transform parentTransform = gameObject.transform.parent;
+        if (parentTransform)
+        {
+            parentTransform.gameObject.TriggerUp<T, T1, T2>(triggerName, arg1, arg2);
+        }
+        gameObject.TriggerDown<T, T1, T2>(triggerName, arg1, arg2);
+    }
+    
+    public static void TriggerHierarchy<T, T1, T2>(this GameObject gameObject, string triggerName, T1 arg1, T2 arg2)
+        where T : ITrigger
+    {
+        if (!gameObject)
+        {
+            return;
+        }
+        GameObject root = gameObject.transform.root.gameObject;
+        root.TriggerDown<T, T1, T2>(triggerName, arg1, arg2);
+    }
+    
+    #endregion
+    
+    #region Trigger 3 args
+    public static void Trigger<T, T1, T2, T3>(this GameObject gameObject, string triggerName, T1 arg1, T2 arg2, T3 arg3)
+    {
+        if (!gameObject)
+        {
+            return;
+        }
+        
+        if (!m_LoadingTask.IsCompleted)
+        {
+            m_LoadingTask.Wait();
+        }
+        
+        T[] impls = gameObject.GetComponents<T>();
+        
+        foreach (T impl in impls)
+        {
+            unsafe
+            {
+                string cacheKey = GetCacheKey(impl.GetType(), triggerName);
+                if (NativeDelegateCache.TryGetValue(cacheKey, out nint ptr))
+                {
+                    delegate* managed<object, T1, T2, T3, void> del = (delegate* managed<object, T1, T2, T3, void>)ptr;
+                    del(impl, arg1, arg2, arg3);
+                }
+            }
+        }
+    }
+    
+    public static void TriggerUp<T, T1, T2, T3>(this GameObject gameObject, string triggerName, T1 arg1, T2 arg2, T3 arg3)
+        where T : ITrigger
+    {
+        if (!gameObject)
+        {
+            return;
+        }
+        
+        gameObject.Trigger<T, T1, T2, T3>(triggerName, arg1, arg2, arg3);
+        Transform parentTransform = gameObject.transform.parent;
+        if (parentTransform)
+        {
+            parentTransform.gameObject.TriggerUp<T, T1, T2, T3>(triggerName, arg1, arg2, arg3);
+        }
+    }
+
+    public static void TriggerDown<T, T1, T2, T3>(this GameObject gameObject, string triggerName, T1 arg1, T2 arg2, T3 arg3)
+        where T : ITrigger
+    {
+        if (!gameObject)
+        {
+            return;
+        }
+        
+        gameObject.Trigger<T, T1, T2, T3>(triggerName, arg1, arg2, arg3);
+        foreach (Transform childTransform in gameObject.transform)
+        {
+            childTransform.gameObject.TriggerDown<T, T1, T2, T3>(triggerName, arg1, arg2, arg3);
+        }
+    }
+
+    public static void TriggerAll<T, T1, T2, T3>(this GameObject gameObject, string triggerName, T1 arg1, T2 arg2, T3 arg3)
+        where T : ITrigger
+    {
+        // trigger up then down
+        if (!gameObject)
+        {
+            return;
+        }
+        Transform parentTransform = gameObject.transform.parent;
+        if (parentTransform)
+        {
+            parentTransform.gameObject.TriggerUp<T, T1, T2, T3>(triggerName, arg1, arg2, arg3);
+        }
+        gameObject.TriggerDown<T, T1, T2, T3>(triggerName, arg1, arg2, arg3);
+    }
+    
+    public static void TriggerHierarchy<T, T1, T2, T3>(this GameObject gameObject, string triggerName, T1 arg1, T2 arg2, T3 arg3)
+        where T : ITrigger
+    {
+        if (!gameObject)
+        {
+            return;
+        }
+        GameObject root = gameObject.transform.root.gameObject;
+        root.TriggerDown<T, T1, T2, T3>(triggerName, arg1, arg2, arg3);
+    }
+    
+    #endregion
 }
 

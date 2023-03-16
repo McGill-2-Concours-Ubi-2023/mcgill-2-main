@@ -97,7 +97,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     private void Update()
     {
         float2 input = m_InputActionAsset["Movement"].ReadValue<Vector2>();
-        gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnInput), input);
+        gameObject.Trigger<IMainCharacterTriggers, float2>(nameof(IMainCharacterTriggers.OnInput), input);
         float3 adjustedInput;
 
         if (!isDashing)
@@ -119,11 +119,11 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         float3 cameraRight = cam.transform.right;
         float3 adjustedDirection = adjustedInput.x * cameraRight + adjustedInput.z * cameraForward;
 
-        gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnMovementIntention), adjustedDirection);
+        gameObject.Trigger<IMainCharacterTriggers, float3>(nameof(IMainCharacterTriggers.OnMovementIntention), adjustedDirection);
 
         float2 rightStick = m_InputActionAsset["CameraMove"].ReadValue<Vector2>();
         #if DEBUG
-        gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnDebugCameraRotation), rightStick);
+        gameObject.Trigger<IMainCharacterTriggers, float2>(nameof(IMainCharacterTriggers.OnDebugCameraRotation), rightStick);
         #endif
 
         float3 adjustedFaceInput = new float3
@@ -131,7 +131,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
             xz = rightStick.xy
         };
         float3 adjustedFaceDirection = adjustedFaceInput.x * cameraRight + adjustedFaceInput.z * cameraForward;
-        gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnPlayerFaceIntention), adjustedFaceDirection);
+        gameObject.Trigger<IMainCharacterTriggers, float3>(nameof(IMainCharacterTriggers.OnPlayerFaceIntention), adjustedFaceDirection);
 
         m_MovementDirection = normalize(all(adjustedInput.xz == float2.zero) ? transform.forward : adjustedDirection);
         Debug.DrawRay(transform.position + Vector3.up, m_MovementDirection, Color.green);
