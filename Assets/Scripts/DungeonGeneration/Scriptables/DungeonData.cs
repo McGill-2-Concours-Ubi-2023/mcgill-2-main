@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using Unity.AI.Navigation;
 
 [CreateAssetMenu(fileName = "New dungeon", menuName = "Dungeon asset")]
 public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
@@ -33,7 +34,7 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
     [SerializeField]
     private GameObject doorPrefab;
     [SerializeField]
-    private GameObject wallsPrefab;  
+    private GameObject wallsPrefab;
 
     public void GenerateDungeon()
     {
@@ -41,7 +42,8 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
         GetGrid().GenerateGrid(this);
         GetGrid().GenerateRooms(this);
         SaveData();
-        FindObjectOfType<MainCharacterController>().transform.position = GetActiveLayout().GetStartPosition();        
+        FindObjectOfType<MainCharacterController>().transform.position = GetActiveLayout().GetStartPosition();
+        mono.GetComponentInChildren<NavMeshSurface>().BuildNavMesh();
     }
 
     public void AddRoom(DungeonRoom room)

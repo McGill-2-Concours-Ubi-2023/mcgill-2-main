@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.AI;
 
 [System.Serializable]
 public class DungeonDoor : MonoBehaviour
@@ -16,11 +17,13 @@ public class DungeonDoor : MonoBehaviour
     private Coroutine closeCoroutine;
     private MeshCollider doorCollider;
     private Collider playerCollider;
+    private NavMeshObstacle doorObstacle;
 
     private void Awake()
     {
         doorCollider = transform.Find("Door").GetComponent<MeshCollider>();
         playerCollider = FindObjectOfType<MainCharacterController>().GetComponent<Collider>();
+        doorObstacle = transform.Find("Door").GetComponent<NavMeshObstacle>();
     }
 
     public static DungeonDoor Create(GameObject doorObj, DungeonRoom originRoom, DungeonRoom targetRoom, DungeonData data)
@@ -72,6 +75,7 @@ public class DungeonDoor : MonoBehaviour
         var openRate = FindObjectOfType<MainCharacterController>().doorOpenRate;
         while (skinnedMeshRenderer.GetBlendShapeWeight(0) > 0)
         {
+            doorObstacle.center -= new Vector3(0, 0, openRate / 100);
             skinnedMeshRenderer.SetBlendShapeWeight(0, skinnedMeshRenderer.GetBlendShapeWeight(0) - openRate);
             UpdateCollider();
             yield return new WaitForEndOfFrame();
@@ -84,6 +88,7 @@ public class DungeonDoor : MonoBehaviour
         var openRate = FindObjectOfType<MainCharacterController>().doorOpenRate;
         while (skinnedMeshRenderer.GetBlendShapeWeight(0) < 100)
         {
+            doorObstacle.center += new Vector3(0, 0, openRate / 100);
             skinnedMeshRenderer.SetBlendShapeWeight(0, skinnedMeshRenderer.GetBlendShapeWeight(0) + openRate);
             UpdateCollider();
             yield return new WaitForEndOfFrame();
