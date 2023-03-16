@@ -7,6 +7,8 @@ using System.Reflection;
 using System.Threading.Tasks;
 using UnityEngine;
 
+using method_identifier_t = System.UInt64;
+
 public interface ITrigger
 {
 
@@ -21,7 +23,7 @@ public static class TriggerExt
     {
         m_LoadingTask = Task.Run(LoadTriggerMethods);
     }
-
+    
     private static async Task LoadTriggerMethods()
     {
         // find all derived types of ITrigger
@@ -50,7 +52,7 @@ public static class TriggerExt
             
         await Task.Yield();
         
-        ConcurrentDictionary<string, nint> nativeDelegateCache = new ConcurrentDictionary<string, nint>();
+        ConcurrentDictionary<method_identifier_t, nint> nativeDelegateCache = new ConcurrentDictionary<method_identifier_t, nint>();
 
         triggerMethodsFiltered.AsParallel().ForAll(m =>
         {
@@ -58,24 +60,24 @@ public static class TriggerExt
             ParameterInfo[] methodParams = m.GetParameters();
             int paramCount = methodParams.Length;
             nint ptr = m.MethodHandle.GetFunctionPointer();
-            string cacheKey = GetCacheKey(m.DeclaringType, m.Name);
+            method_identifier_t cacheKey = GetCacheKey(m.DeclaringType, m.Name);
             nativeDelegateCache[cacheKey] = ptr;
             Debug.Log($"Loaded trigger method: {cacheKey} with {paramCount} parameters at address 0x{(ulong)ptr:x}");
         });
         
         await Task.Yield();
-        foreach ((string key, nint value) in nativeDelegateCache)
+        foreach ((method_identifier_t key, nint value) in nativeDelegateCache)
         {
             NativeDelegateCache[key] = value;
         }
     }
     
         
-    private readonly static Dictionary<string, nint> NativeDelegateCache = new Dictionary<string, nint>();
+    private readonly static Dictionary<method_identifier_t, nint> NativeDelegateCache = new Dictionary<method_identifier_t, nint>();
     
-    private static string GetCacheKey(Type type, string triggerName)
+    private static ulong GetCacheKey(Type type, string triggerName)
     {
-        return type.FullName + "." + triggerName;
+        return ((ulong) type.GetHashCode()) << 32 | (uint)triggerName.GetHashCode();
     }
 
     #region Trigger 0 args
@@ -97,7 +99,7 @@ public static class TriggerExt
         {
             unsafe
             {
-                string cacheKey = GetCacheKey(impl.GetType(), triggerName);
+                method_identifier_t cacheKey = GetCacheKey(impl.GetType(), triggerName);
                 if (NativeDelegateCache.TryGetValue(cacheKey, out nint ptr))
                 {
                     delegate* managed<object, void> del = (delegate* managed<object, void>)ptr;
@@ -188,7 +190,7 @@ public static class TriggerExt
         {
             unsafe
             {
-                string cacheKey = GetCacheKey(impl.GetType(), triggerName);
+                method_identifier_t cacheKey = GetCacheKey(impl.GetType(), triggerName);
                 if (NativeDelegateCache.TryGetValue(cacheKey, out nint ptr))
                 {
                     delegate* managed<object, T1, void> del = (delegate* managed<object, T1, void>)ptr;
@@ -277,7 +279,7 @@ public static class TriggerExt
         {
             unsafe
             {
-                string cacheKey = GetCacheKey(impl.GetType(), triggerName);
+                method_identifier_t cacheKey = GetCacheKey(impl.GetType(), triggerName);
                 if (NativeDelegateCache.TryGetValue(cacheKey, out nint ptr))
                 {
                     delegate* managed<object, T1, T2, void> del = (delegate* managed<object, T1, T2, void>)ptr;
@@ -367,7 +369,7 @@ public static class TriggerExt
         {
             unsafe
             {
-                string cacheKey = GetCacheKey(impl.GetType(), triggerName);
+                method_identifier_t cacheKey = GetCacheKey(impl.GetType(), triggerName);
                 if (NativeDelegateCache.TryGetValue(cacheKey, out nint ptr))
                 {
                     delegate* managed<object, T1, T2, T3, void> del = (delegate* managed<object, T1, T2, T3, void>)ptr;
