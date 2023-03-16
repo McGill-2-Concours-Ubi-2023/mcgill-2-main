@@ -7,6 +7,10 @@ using System.Reflection;
 using System.Threading.Tasks;
 using UnityEngine;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 using method_identifier_t = System.UInt64;
 
 public interface ITrigger
@@ -16,7 +20,86 @@ public interface ITrigger
 
 public static class TriggerExt
 {
-    private static Task m_LoadingTask;
+    #if UNITY_EDITOR
+    [MenuItem("Litter Box/Verify Trigger Methods")]
+    public static async void VerifyTriggerMethods()
+    {
+        EditorUtility.DisplayProgressBar("Verify Trigger Methods", "Finding all trigger methods...", 0f);
+        
+        // find all derived types of ITrigger
+        List<Type> triggerTypes = AppDomain.CurrentDomain.GetAssemblies()
+            .SelectMany(a => a.GetTypes())
+            .Where(t => t.IsInterface && typeof(ITrigger).IsAssignableFrom(t)).ToList();
+        
+        await Task.Yield();
+        
+        EditorUtility.DisplayProgressBar("Verify Trigger Methods", "Finding all trigger methods...", 0.25f);
+
+        // find all implementations of ITrigger
+        List<Type> triggerImpls = AppDomain.CurrentDomain.GetAssemblies()
+            .SelectMany(a => a.GetTypes())
+            .Where(t => t.IsClass && typeof(ITrigger).IsAssignableFrom(t)).ToList();
+        
+        await Task.Yield();
+        
+        EditorUtility.DisplayProgressBar("Verify Trigger Methods", "Finding all trigger methods...", 0.5f);
+
+        // find all methods on ITrigger implementations
+        IEnumerable<MethodInfo> triggerMethods = triggerImpls.AsParallel()
+            .SelectMany(t => t.GetMethods(BindingFlags.Public | BindingFlags.Instance));
+        
+        await Task.Yield();
+        
+        EditorUtility.DisplayProgressBar("Verify Trigger Methods", "Finding all trigger methods...", 0.75f);
+
+        // filter out methods on ITrigger implementations that are not in the ITrigger derived interfaces
+        IEnumerable<MethodInfo> triggerMethodsFiltered = triggerMethods.AsParallel()
+            .Where(m => triggerTypes.Any(t => t.GetMethod(m.Name) != null));
+            
+        await Task.Yield();
+        
+        EditorUtility.DisplayProgressBar("Verify Trigger Methods", "Finding all trigger methods...", 1f);
+
+        ConcurrentDictionary<method_identifier_t, nint> nativeDelegateCache = new ConcurrentDictionary<method_identifier_t, nint>();
+
+        bool hasErrors = false;
+        
+        EditorUtility.DisplayProgressBar("Verify Trigger Methods", "Verifying trigger methods", 0f);
+        
+        EditorUtility.ClearProgressBar();
+
+        int counter = 0;
+        
+        foreach (MethodInfo m in triggerMethodsFiltered)
+        {
+            counter++;
+            EditorUtility.DisplayProgressBar("Verify Trigger Methods", "Verifying trigger methods", counter / (float) triggerMethodsFiltered.Count());
+            ParameterInfo[] methodParams = m.GetParameters();
+            int paramCount = methodParams.Length;
+            nint ptr = m.MethodHandle.GetFunctionPointer();
+            method_identifier_t cacheKey = GetCacheKey(m.DeclaringType, m.Name);
+            if (nativeDelegateCache.ContainsKey(cacheKey))
+            {
+                string msg = $"Duplicate trigger method: {cacheKey} with {paramCount} parameters at address 0x{(ulong) ptr:x}";
+                Debug.LogError(msg);
+                EditorUtility.DisplayDialog("Verify Trigger Methods", msg, "OK");
+                hasErrors = true;
+            }
+            else
+            {
+                nativeDelegateCache[cacheKey] = ptr;
+            }
+            
+            await Task.Yield();
+        }
+        
+        EditorUtility.ClearProgressBar();
+
+        EditorUtility.DisplayDialog("Verify Trigger Methods", !hasErrors ? "No errors found." : "Errors were found.", "OK");
+    }
+    #endif
+    
+    private readonly static Task m_LoadingTask;
     
     // registry of function pointers by finding all derived types of ITrigger and their implementations
     static TriggerExt()
