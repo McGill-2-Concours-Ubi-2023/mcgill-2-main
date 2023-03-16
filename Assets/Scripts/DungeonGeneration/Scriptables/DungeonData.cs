@@ -33,7 +33,7 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
     [SerializeField]
     private GameObject doorPrefab;
     [SerializeField]
-    private GameObject doorPlaceholderPrefab;  
+    private GameObject wallsPrefab;  
 
     public void GenerateDungeon()
     {
@@ -81,7 +81,7 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
 
     public GameObject GetWallPrefab()
     {
-        return doorPlaceholderPrefab;
+        return wallsPrefab;
     }
 
     public DungeonLayout GetActiveLayout()
