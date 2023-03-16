@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using Unity.AI.Navigation;
+using UnityEngine.AI;
 
 [CreateAssetMenu(fileName = "New dungeon", menuName = "Dungeon asset")]
 public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
@@ -35,6 +36,8 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
     private GameObject doorPrefab;
     [SerializeField]
     private GameObject wallsPrefab;
+    [SerializeField][Header("Optional")]
+    private NavMeshData navMeshData;
 
     public void GenerateDungeon()
     {
@@ -43,7 +46,7 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
         GetGrid().GenerateRooms(this);
         SaveData();
         FindObjectOfType<MainCharacterController>().transform.position = GetActiveLayout().GetStartPosition();
-        mono.GetComponentInChildren<NavMeshSurface>().BuildNavMesh();
+        InitializeNavMesh();
     }
 
     public void AddRoom(DungeonRoom room)
@@ -147,6 +150,20 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
         GetGrid().AddData(data);
     }
 
+    private void InitializeNavMesh()
+    {
+        var navMeshSurface = mono.GetComponentInChildren<NavMeshSurface>();
+        if (navMeshData != null)
+        {
+            navMeshSurface.UpdateNavMesh(navMeshData);
+        }
+        else
+        {
+            navMeshSurface.BuildNavMesh();
+            navMeshData = navMeshSurface.navMeshData;
+        }
+    }
+
     public void TryQuickLoad()
     {
         bool onQuickLoadSuccess = false;
@@ -166,6 +183,7 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
             }         
         }
         //if does not succeed, regenerate the whole dungeon
+        InitializeNavMesh();
         if (!onQuickLoadSuccess) LoadData();
     }
 
