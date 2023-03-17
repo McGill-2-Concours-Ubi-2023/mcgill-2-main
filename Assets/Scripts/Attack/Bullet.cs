@@ -29,7 +29,7 @@ public class Bullet : MonoBehaviour
     {
         if (other.CompareTag("Player") || other.CompareTag("Enemy"))// do damage to player/enemy
         {
-            other.gameObject.Trigger<IHealthTriggers>(nameof(IHealthTriggers.TakeDamage), damage);
+            other.gameObject.Trigger<IHealthTriggers, int>(nameof(IHealthTriggers.TakeDamage), damage);
         }
         if (!other.CompareTag("Bullet")) {
             Destroy(gameObject);

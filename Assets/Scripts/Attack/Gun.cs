@@ -43,7 +43,7 @@ public class Gun : MonoBehaviour, IGunTriggers
         while (true)
         {
             Ref<bool> refPlayerIsDashing = false;
-            transform.root.gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.IsDashing), refPlayerIsDashing);
+            gameObject.TriggerUp<IMainCharacterTriggers, Ref<bool>>(nameof(IMainCharacterTriggers.IsDashing), refPlayerIsDashing);
             if (!refPlayerIsDashing)
             {
                 Shoot();

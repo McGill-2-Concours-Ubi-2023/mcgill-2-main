@@ -30,8 +30,7 @@ public class Health : MonoBehaviour, IHealthTriggers
         else {
             currentHealth -= damage;
             OnHealthChange?.Invoke(-damage, currentHealth);
-        }
-        
+        }        
     }
 
     public void GainHealth(int healthGain) {

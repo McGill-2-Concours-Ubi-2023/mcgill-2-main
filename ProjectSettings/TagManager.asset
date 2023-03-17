@@ -10,6 +10,7 @@ TagManager:
   - Enemy
   - Bullet
   - PauseMenu
+  - SouthWall
   layers:
   - Default
   - TransparentFX
@@ -46,4 +47,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: FollowParticles
+    uniqueID: 3468211721
     locked: 0

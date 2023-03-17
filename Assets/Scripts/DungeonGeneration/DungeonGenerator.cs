@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Unity.AI.Navigation;
 
 public class DungeonGenerator : MonoBehaviour
 {

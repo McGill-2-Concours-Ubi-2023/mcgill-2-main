@@ -58,8 +58,8 @@ public class MainCharacterMovementStateBehaviour : GenericStateMachineMonoBehavi
         Debug.DrawRay(transform.position + transform.up, force, Color.red);
 
         Ref<bool> hasFaceIntention = false;
-        gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.HasFaceDirectionInput), hasFaceIntention);
-        gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.AdjustFaceDirection),
+        gameObject.Trigger<IMainCharacterTriggers, Ref<bool>>(nameof(IMainCharacterTriggers.HasFaceDirectionInput), hasFaceIntention);
+        gameObject.Trigger<IMainCharacterTriggers, float3>(nameof(IMainCharacterTriggers.AdjustFaceDirection),
         hasFaceIntention ? m_FaceIntention : m_MovementIntention);
     }
 
