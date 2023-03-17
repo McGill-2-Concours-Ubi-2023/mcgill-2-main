@@ -152,16 +152,9 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
 
     private void InitializeNavMesh()
     {
-        var navMeshSurface = mono.GetComponentInChildren<NavMeshSurface>();
-        if (navMeshData != null)
-        {
-            navMeshSurface.UpdateNavMesh(navMeshData);
-        }
-        else
-        {
-            navMeshSurface.BuildNavMesh();
-            navMeshData = navMeshSurface.navMeshData;
-        }
+        NavMeshSurface navMeshSurface = mono.GetComponentInChildren<NavMeshSurface>();
+        Debug.Assert(navMeshSurface);
+        navMeshSurface.BuildNavMesh();
     }
 
     public void TryQuickLoad()
