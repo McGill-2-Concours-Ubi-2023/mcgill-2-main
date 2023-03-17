@@ -244,11 +244,11 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         int randomNumber = UnityEngine.Random.Range(1, 3);
         animator.SetTrigger("ThrowGrenade_" + randomNumber);
         GameObject grenade = Instantiate(GravityGrenadePrefab);
-        float3 throwDir = (transform.forward + transform.up).normalized;
+        float3 throwDir = (transform.forward + transform.up * 0.5f).normalized;
         Physics.IgnoreCollision(GetComponent<CapsuleCollider>(), grenade.transform.Find("SphereMesh").GetComponent<SphereCollider>());
-        grenade.transform.position = transform.position + Vector3.up;
+        grenade.transform.position = transform.position + Vector3.up * 0.5f;
         Rigidbody grenade_rb = grenade.GetComponent<Rigidbody>();
-        grenade_rb.AddForce(throwDir * 10, ForceMode.Impulse);
+        grenade_rb.AddForce(throwDir * 8, ForceMode.Impulse);
         StartCoroutine(GrenadeDelayedExplode(grenade));
     }
 
