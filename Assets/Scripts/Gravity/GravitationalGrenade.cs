@@ -32,6 +32,8 @@ public class GravitationalGrenade : MonoBehaviour
     private float wobbleShakeIntensity = 4.0f;
     [SerializeField]
     private float shakeDampening = 6.0f;
+    [SerializeField][Range(0.1f, 0.005f)]
+    private float particlesFadeRate = 0.1f;
     private VisualEffect _explodeEffect;
 
     private void Awake()
@@ -108,20 +110,32 @@ public class GravitationalGrenade : MonoBehaviour
 
     public void DisappearOverTime(float timer)
     {
-        StartCoroutine(StopParticles(timer));  
+        StartCoroutine(Despawn(timer));  
     }
 
-    private IEnumerator StopParticles(float timer)
+    private IEnumerator StopParticles()
     {
-        yield return new WaitForSeconds(timer);
-        _explodeEffect.Stop();
-        gravityField.SetActive(false);
-        Despawn();       
+        while(_explodeEffect.GetFloat("Alpha") > 0)
+        {
+            _explodeEffect.SetFloat("Alpha", _explodeEffect.GetFloat("Alpha") - particlesFadeRate);
+            yield return new WaitForEndOfFrame();
+        }
+        Destroy(this.gameObject);
     }
 
-    private void Despawn()
+    private IEnumerator Despawn(float timer)
     {
+        
+        float elapsedTime = 0.0f;
+        if(timer < 5.0f) _explodeEffect.Stop();
+        while (elapsedTime < timer)
+        {
+            elapsedTime += Time.deltaTime;
+            if (timer - elapsedTime < 5.0f) _explodeEffect.Stop();
+            yield return new WaitForEndOfFrame();
+        }
         animator.SetTrigger("despawn");
+        gravityField.SetActive(false);
     }
 
     public void SelfDestroy() //triggered in animator
@@ -129,7 +143,7 @@ public class GravitationalGrenade : MonoBehaviour
         StopAllCoroutines();
         GameObject.FindGameObjectWithTag("Player").Trigger<IGravityToCameraTrigger>
               (nameof(IGravityToCameraTrigger.StopCameraShake));
-        Destroy(this.gameObject);
+        StartCoroutine(StopParticles());
     }
 
     private void OnCollisionEnter(Collision collision)
