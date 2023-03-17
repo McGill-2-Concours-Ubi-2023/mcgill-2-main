@@ -16,10 +16,12 @@ public class Health : MonoBehaviour, IHealthTriggers
     private int currentHealth = 5;
     private int MaxHealth = 5;
     [SerializeField]
-    private HealthUI ui; 
+    private HealthUI ui;
+    public bool invulnerable;
 
     public void TakeDamage(int damage)
     {
+        if (invulnerable) return;
         if (currentHealth - damage <= 0)
         {
             currentHealth = 0;
