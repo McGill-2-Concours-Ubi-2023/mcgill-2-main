@@ -9,23 +9,19 @@ public class Iframes : MonoBehaviour
     [SerializeField]
     private int numOfFlashes;
     [SerializeField]
-    private SkinnedMeshRenderer characterBodySR;
-    [SerializeField]
-    private SkinnedMeshRenderer characterHairSR;
+    private MeshRenderer characterSR;
     [SerializeField]
     private Health playerHealth;
     [SerializeField]
     private Color flashColor;
-
-    private Color originalBodyColor;
-    private Color originalHairColor;
+   
+    private Color originalColor;
 
     // Update is called once per frame
     void Update()
     {
         //test code TODO: DELETE THIS
-        if (Input.GetKeyDown(KeyCode.P))
-        {
+        if (Input.GetKeyDown(KeyCode.A)) {
             playerHealth.TakeDamage(1);
         }
     }
@@ -33,33 +29,28 @@ public class Iframes : MonoBehaviour
     private void Start()
     {
         playerHealth.OnHealthChange += flash;
-        originalBodyColor = characterBodySR.material.color;
-        originalHairColor = characterHairSR.material.color;
+        originalColor = characterSR.material.color;
     }
 
-    public void flash(int change, int currentHealth)
-    {
+    public void flash(int change, int currentHealth) {
         if (change > 0) return;
         StartCoroutine(flash());
     }
 
-    private IEnumerator flash()
-    {
-
+    private IEnumerator flash() {
+        
         int i = 0;
-        float timer = 0f;
-        playerHealth.invulnerable = true;
+        float timer = 0f; 
+        playerHealth.invulnerable = true; 
         while (i < numOfFlashes)
         {
             if (timer < duration)
             {
-                characterBodySR.material.color = flashColor;
-                characterHairSR.material.color = flashColor;
+                characterSR.material.color = flashColor;
             }
-            else if (timer < duration * 2)
+            else if (timer < duration*2)
             {
-                characterBodySR.material.color = originalBodyColor;
-                characterHairSR.material.color = originalHairColor;
+                characterSR.material.color = originalColor;
             }
             else
             {
@@ -68,10 +59,10 @@ public class Iframes : MonoBehaviour
             }
             timer += Time.deltaTime;
             yield return null;
-
+            
         }
-        playerHealth.invulnerable = false;
-
+        playerHealth.invulnerable = false; 
+        
 
     }
 }
