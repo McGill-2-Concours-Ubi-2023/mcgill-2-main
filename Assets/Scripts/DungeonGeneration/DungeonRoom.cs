@@ -47,7 +47,7 @@ public class DungeonRoom : MonoBehaviour
         List<Vector3> wallsTransforms = new List<Vector3>();
         Direction2D.cardinals.ForEach(cardinal =>
         {
-            //DungeonDoor.UpdatePlaceholders(this, new Vector3(cardinal.x, 0, cardinal.y), data);
+            DungeonDoor.CreatePlaceholder(this, new Vector3(cardinal.x, 0, cardinal.y), data);
         });
     }
 
@@ -150,7 +150,6 @@ public class DungeonRoom : MonoBehaviour
         var newRoom = roomObj.GetComponent<DungeonRoom>();
         newRoom.Initialize(gridMap, position, layout, type);
         data.AddRoom(newRoom);
-        DungeonDrawer.DrawSingleObject(newRoom.GetPosition(), data.GetWallPrefab(), newRoom.gameObject);
         return newRoom;
     }
 
@@ -161,7 +160,6 @@ public class DungeonRoom : MonoBehaviour
         var loadedRoom = roomObj.GetComponent<DungeonRoom>();
         loadedRoom.Initialize(gridMap, roomData.GetPosition(), layout, roomData.GetRoomType());
         dungeonData.AddRoom(loadedRoom);
-        DungeonDrawer.DrawSingleObject(loadedRoom.GetPosition(), dungeonData.GetWallPrefab(), loadedRoom.gameObject);
         return loadedRoom;
     }
 

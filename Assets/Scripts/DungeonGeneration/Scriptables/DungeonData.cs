@@ -2,8 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using Unity.AI.Navigation;
-using UnityEngine.AI;
 
 [CreateAssetMenu(fileName = "New dungeon", menuName = "Dungeon asset")]
 public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
@@ -35,9 +33,7 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
     [SerializeField]
     private GameObject doorPrefab;
     [SerializeField]
-    private GameObject wallsPrefab;
-    [SerializeField][Header("Optional")]
-    private NavMeshData navMeshData;
+    private GameObject doorPlaceholderPrefab;  
 
     public void GenerateDungeon()
     {
@@ -45,8 +41,7 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
         GetGrid().GenerateGrid(this);
         GetGrid().GenerateRooms(this);
         SaveData();
-        FindObjectOfType<MainCharacterController>().transform.position = GetActiveLayout().GetStartPosition();
-        InitializeNavMesh();
+        FindObjectOfType<MainCharacterController>().transform.position = GetActiveLayout().GetStartPosition();        
     }
 
     public void AddRoom(DungeonRoom room)
@@ -86,7 +81,7 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
 
     public GameObject GetWallPrefab()
     {
-        return wallsPrefab;
+        return doorPlaceholderPrefab;
     }
 
     public DungeonLayout GetActiveLayout()
@@ -150,20 +145,6 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
         GetGrid().AddData(data);
     }
 
-    private void InitializeNavMesh()
-    {
-        var navMeshSurface = mono.GetComponentInChildren<NavMeshSurface>();
-        if (navMeshData != null)
-        {
-            navMeshSurface.UpdateNavMesh(navMeshData);
-        }
-        else
-        {
-            navMeshSurface.BuildNavMesh();
-            navMeshData = navMeshSurface.navMeshData;
-        }
-    }
-
     public void TryQuickLoad()
     {
         bool onQuickLoadSuccess = false;
@@ -183,7 +164,6 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
             }         
         }
         //if does not succeed, regenerate the whole dungeon
-        InitializeNavMesh();
         if (!onQuickLoadSuccess) LoadData();
     }
 

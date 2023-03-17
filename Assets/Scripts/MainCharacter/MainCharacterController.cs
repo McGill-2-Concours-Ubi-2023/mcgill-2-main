@@ -8,7 +8,6 @@ using UnityEngine.InputSystem;
 using static Unity.Mathematics.math;
 using float2 = Unity.Mathematics.float2;
 using float3 = Unity.Mathematics.float3;
-using UnityEngine.VFX;
 
 public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, ICrateTriggers, IGravityToCameraTrigger
 {
@@ -34,7 +33,6 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     private bool m_GamePaused;
     [CanBeNull]
     private GameObject m_PauseMenu;
-    public VisualEffect trailFollowEffect;
 
     public ISimpleInventory<SimpleCollectible> SimpleCollectibleInventory;
     
@@ -99,7 +97,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     private void Update()
     {
         float2 input = m_InputActionAsset["Movement"].ReadValue<Vector2>();
-        gameObject.Trigger<IMainCharacterTriggers, float2>(nameof(IMainCharacterTriggers.OnInput), input);
+        gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnInput), input);
         float3 adjustedInput;
 
         if (!isDashing)
@@ -121,11 +119,11 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         float3 cameraRight = cam.transform.right;
         float3 adjustedDirection = adjustedInput.x * cameraRight + adjustedInput.z * cameraForward;
 
-        gameObject.Trigger<IMainCharacterTriggers, float3>(nameof(IMainCharacterTriggers.OnMovementIntention), adjustedDirection);
+        gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnMovementIntention), adjustedDirection);
 
         float2 rightStick = m_InputActionAsset["CameraMove"].ReadValue<Vector2>();
         #if DEBUG
-        gameObject.Trigger<IMainCharacterTriggers, float2>(nameof(IMainCharacterTriggers.OnDebugCameraRotation), rightStick);
+        gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnDebugCameraRotation), rightStick);
         #endif
 
         float3 adjustedFaceInput = new float3
@@ -133,7 +131,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
             xz = rightStick.xy
         };
         float3 adjustedFaceDirection = adjustedFaceInput.x * cameraRight + adjustedFaceInput.z * cameraForward;
-        gameObject.Trigger<IMainCharacterTriggers, float3>(nameof(IMainCharacterTriggers.OnPlayerFaceIntention), adjustedFaceDirection);
+        gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnPlayerFaceIntention), adjustedFaceDirection);
 
         m_MovementDirection = normalize(all(adjustedInput.xz == float2.zero) ? transform.forward : adjustedDirection);
         Debug.DrawRay(transform.position + Vector3.up, m_MovementDirection, Color.green);
@@ -184,16 +182,6 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     public void GetNavActionData(Ref<object> outData)
     {
         outData.Value = m_NavActionData;
-    }
-
-    public void ActivateTrail()
-    {
-        trailFollowEffect.SendEvent("OnFollowTrail");
-    }
-
-    public void StopTrail()
-    {
-        trailFollowEffect.SendEvent("OnStopTrail");
     }
 
     public void OnDash()
@@ -338,12 +326,12 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
 
     public void OnShootPress()
     {
-        gameObject.TriggerDown<IGunTriggers>(nameof(IGunTriggers.OnShootStartIntention));
+        transform.GetComponentInChildren<Gun>()?.gameObject.Trigger<IGunTriggers>(nameof(IGunTriggers.OnShootStartIntention));
     }
     
     public void OnShootRelease()
     {
-        gameObject.TriggerDown<IGunTriggers>(nameof(IGunTriggers.OnShootStopIntention));
+        transform.GetComponentInChildren<Gun>()?.gameObject.Trigger<IGunTriggers>(nameof(IGunTriggers.OnShootStopIntention));
     }
     
     public void IsDashing(Ref<bool> refIsDashing)

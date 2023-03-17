@@ -18,7 +18,7 @@ public class MainCharacterDashingStateBehaviour : GenericStateMachineMonoBehavio
         m_Rigidbody = GetComponent<Rigidbody>();
         // get proper dash direction
         Ref<float3> refForward = float3(0, 0, 0);
-        gameObject.Trigger<IMainCharacterTriggers, Ref<float3>>(nameof(IMainCharacterTriggers.UpdateMovementDirection), refForward);
+        gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.UpdateMovementDirection), refForward);
         m_Forward = refForward;
         m_Rigidbody.velocity = m_Forward * GetComponent<MainCharacterController>().DashSpeed;
     }
