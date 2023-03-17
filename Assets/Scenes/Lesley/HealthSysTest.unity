@@ -759,7 +759,6 @@ GameObject:
   - component: {fileID: 1093101415}
   - component: {fileID: 1093101414}
   - component: {fileID: 1093101419}
-  - component: {fileID: 1093101420}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -874,23 +873,6 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!114 &1093101420
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1093101413}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a0472dc052d2ef439302c3e61455de0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  duration: 0.07
-  numOfFlashes: 6
-  characterSR: {fileID: 1093101416}
-  playerHealth: {fileID: 1093101414}
-  flashColor: {r: 0.3529412, g: 0.015686275, b: 0.36078432, a: 0.7019608}
 --- !u!1 &1315884780
 GameObject:
   m_ObjectHideFlags: 0

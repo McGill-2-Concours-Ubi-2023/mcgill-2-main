@@ -9,19 +9,22 @@ public class Iframes : MonoBehaviour
     [SerializeField]
     private int numOfFlashes;
     [SerializeField]
-    private MeshRenderer characterSR;
+    private SkinnedMeshRenderer characterBodySR;
+    [SerializeField]
+    private SkinnedMeshRenderer characterHairSR;
     [SerializeField]
     private Health playerHealth;
     [SerializeField]
     private Color flashColor;
    
-    private Color originalColor;
+    private Color originalBodyColor;
+    private Color originalHairColor; 
 
     // Update is called once per frame
     void Update()
     {
         //test code TODO: DELETE THIS
-        if (Input.GetKeyDown(KeyCode.A)) {
+        if (Input.GetKeyDown(KeyCode.P)) {
             playerHealth.TakeDamage(1);
         }
     }
@@ -29,7 +32,8 @@ public class Iframes : MonoBehaviour
     private void Start()
     {
         playerHealth.OnHealthChange += flash;
-        originalColor = characterSR.material.color;
+        originalBodyColor = characterBodySR.material.color;
+        originalHairColor = characterHairSR.material.color;
     }
 
     public void flash(int change, int currentHealth) {
@@ -46,11 +50,13 @@ public class Iframes : MonoBehaviour
         {
             if (timer < duration)
             {
-                characterSR.material.color = flashColor;
+                characterBodySR.material.color = flashColor;
+                characterHairSR.material.color = flashColor;
             }
             else if (timer < duration*2)
             {
-                characterSR.material.color = originalColor;
+                characterBodySR.material.color = originalBodyColor;
+                characterHairSR.material.color = originalHairColor;
             }
             else
             {
