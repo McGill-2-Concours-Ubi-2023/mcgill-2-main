@@ -68,7 +68,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 8
+  m_Radius: 4.44444
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1421598444235042090
 GameObject:
@@ -165,11 +165,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4882e309f5db9ab499f2293d697a5d4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destructionTimer: 5
+  destructionTimer: 2
   fieldVerticalOffset: 0
   _explodeEffect: {fileID: 5193105886784039860}
   mainMaterial: {fileID: 2100000, guid: dbbca38240731194b860e4e41a390631, type: 2}
-  expandWithMass: 0
   defaultColor: {r: 1.0901961, g: 0, b: 2, a: 0}
   explosionColor: {r: 0, g: 1.1294118, b: 2.0392158, a: 0}
   explosionShakeIntensity: 5

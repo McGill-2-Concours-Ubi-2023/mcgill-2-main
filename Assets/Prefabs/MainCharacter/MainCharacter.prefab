@@ -281,7 +281,7 @@ VisualEffect:
       - m_Value: {x: 270.01978, y: 179.99533, z: 0}
         m_Name: Transform_angles
         m_Overridden: 1
-      - m_Value: {x: 30.000002, y: 0.5141208, z: 0.0045527816}
+      - m_Value: {x: 0.000002492171, y: 0.5141208, z: 0.0045527816}
         m_Name: Transform_position
         m_Overridden: 1
       - m_Value: {x: 1.0000002, y: 1.0000001, z: 1.0000001}
@@ -556,9 +556,9 @@ MonoBehaviour:
   DebugCamera: {fileID: 0}
   GravityGrenadePrefab: {fileID: 1421598444886973463, guid: 8cf937658f1fc43208756448795cb8ed,
     type: 3}
-  GravityGrenadeDisappearTime: 10
+  GravityGrenadeDisappearTime: 2
   GravityGrenadeExplodeTime: 2
-  CratePrefab: {fileID: 1446046156755137095, guid: f5b8fa3d2620d4f24b1802a45ad6dfc6,
+  CratePrefab: {fileID: 7783365933817924897, guid: 6c8358d1fc62e7f4aadf35a0adf732a8,
     type: 3}
   doorOpenRate: 1
   dashDuration: 0.2
@@ -701,6 +701,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3164982295968437048, guid: 0a93e9d4454ffb647834281bb6ad5303,
         type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.00000083880195
+      objectReference: {fileID: 0}
+    - target: {fileID: 3164982295968437048, guid: 0a93e9d4454ffb647834281bb6ad5303,
+        type: 3}
       propertyPath: m_LocalPosition.y
       value: 0.96515745
       objectReference: {fileID: 0}
@@ -712,12 +717,12 @@ PrefabInstance:
     - target: {fileID: 3164982295968437048, guid: 0a93e9d4454ffb647834281bb6ad5303,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7071068
+      value: 0.7072289
       objectReference: {fileID: 0}
     - target: {fileID: 3164982295968437048, guid: 0a93e9d4454ffb647834281bb6ad5303,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.7071068
+      value: -0.7069847
       objectReference: {fileID: 0}
     - target: {fileID: 3164982295968437048, guid: 0a93e9d4454ffb647834281bb6ad5303,
         type: 3}
