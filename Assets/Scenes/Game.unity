@@ -40056,6 +40056,16 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 852077923517610476, guid: a98ede08c13b146dc8929b2c126a9ea4,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1233588702622221131, guid: a98ede08c13b146dc8929b2c126a9ea4,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1899370250557454648, guid: a98ede08c13b146dc8929b2c126a9ea4,
         type: 3}
       propertyPath: m_Mesh
@@ -40162,6 +40172,11 @@ PrefabInstance:
         type: 3}
       propertyPath: doorOpenRate
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6545755567180361436, guid: a98ede08c13b146dc8929b2c126a9ea4,
+        type: 3}
+      propertyPath: GravityGrenadeDisappearTime
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6545755567180361437, guid: a98ede08c13b146dc8929b2c126a9ea4,
         type: 3}
@@ -62583,7 +62598,7 @@ Transform:
   - {fileID: 712768970}
   - {fileID: 1735995343}
   m_Father: {fileID: 8338065729640471175}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1395107536
 GameObject:
@@ -93281,8 +93296,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1258490059}
   - {fileID: 1394654858}
+  - {fileID: 1258490059}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
