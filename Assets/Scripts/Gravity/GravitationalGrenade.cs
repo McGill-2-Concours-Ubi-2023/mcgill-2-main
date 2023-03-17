@@ -12,7 +12,7 @@ public class GravitationalGrenade : MonoBehaviour
     private Animator animator;
     private GravityField gravityField;
     [SerializeField]
-    private VisualEffect _explodeEffect;
+    private GameObject explodeEffectPrefab;
     [SerializeField]
     private Material mainMaterial;
     private MeshRenderer meshRenderer;
@@ -32,6 +32,7 @@ public class GravitationalGrenade : MonoBehaviour
     private float wobbleShakeIntensity = 4.0f;
     [SerializeField]
     private float shakeDampening = 6.0f;
+    private VisualEffect _explodeEffect;
 
     private void Awake()
     {
@@ -46,7 +47,7 @@ public class GravitationalGrenade : MonoBehaviour
 
     public VisualEffect GetVisualEffect()
     {
-        return _explodeEffect;
+        return explodeEffectPrefab.GetComponent<VisualEffect>();
     }
 
     public float GetDestructionTimer() { return destructionTimer; }
@@ -70,6 +71,8 @@ public class GravitationalGrenade : MonoBehaviour
             //Slightly offset the y position of the field's kernel for better physics
             gravityField.transform.position = new Vector3(kernel.x, kernel.y + fieldVerticalOffset, kernel.z);
             gravityField.SetActive(true);
+            GameObject obj = Instantiate(explodeEffectPrefab, transform.position, Quaternion.identity);
+            _explodeEffect = obj.GetComponent<VisualEffect>();
             _explodeEffect.SetFloat("Field radius", ((ConcentricGravityField)gravityField).Radius());
             //meshRenderer.material = explosionMaterial;
             transform.Find("SphereMesh").GetComponent<SphereCollider>().enabled = false;
@@ -105,24 +108,23 @@ public class GravitationalGrenade : MonoBehaviour
 
     public void DisappearOverTime(float timer)
     {
-        StartCoroutine(StopParticles(timer));       
+        StartCoroutine(StopParticles(timer));  
     }
 
     private IEnumerator StopParticles(float timer)
     {
         yield return new WaitForSeconds(timer);
         _explodeEffect.Stop();
-        StartCoroutine(Despawn());       
+        gravityField.SetActive(false);
+        Despawn();       
     }
 
-    private IEnumerator Despawn()
+    private void Despawn()
     {
-        yield return new WaitForSeconds(6.0f); //Life time of particle system is random between 1 and 5
-        //GameObject mesh = transform.Find("SphereMesh").gameObject;
         animator.SetTrigger("despawn");
     }
 
-    public void SelfDestroy()
+    public void SelfDestroy() //triggered in animator
     {
         StopAllCoroutines();
         GameObject.FindGameObjectWithTag("Player").Trigger<IGravityToCameraTrigger>
