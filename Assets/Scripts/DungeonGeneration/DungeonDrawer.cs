@@ -38,23 +38,20 @@ public static class DungeonDrawer
         return obj;
     }
 
-    /*public static GameObject ReplaceRoom(GameObject roomPrefab, DungeonRoom existingRoom, RoomTypes.RoomType type)
+    public static GameObject ReplaceRoom(DungeonRoom existingRoom, DungeonData dungeonData, GameObject roomPrefab, RoomTypes.RoomType type)
     {
-        DungeonData dungeonData = GameObject.FindObjectOfType<DungeonData>();
-        RoomData data = dungeonData.GetActiveLayout().GetRoomData(existingRoom);
-        DrawRoomFromData(data, )
-        
-    }*/
-
-    public static GameObject DrawRoomFromData(RoomData roomData, DungeonData dungeonData, GameObject roomPrefab, RoomTypes.RoomType type)
-    {
-        RoomData buffer = new RoomData(roomData.GetPosition(), roomData.GetRoomType(), 0);
-        dungeonData.GetActiveLayout().RemoveData(roomData);
-        buffer.SetRoomType(type);
-        var obj = GameObject.Instantiate(roomPrefab);
-        obj.transform.position = roomData.GetPosition();
+        RoomData existingRoomData = dungeonData.GetActiveLayout().GetRoomData(existingRoom);
+        RoomData bufferData = new RoomData(existingRoomData.GetPosition(), existingRoomData.GetRoomType(), 0);
+        GameObject obj = GameObject.Instantiate(roomPrefab);
+        dungeonData.GetActiveLayout().RemoveData(existingRoomData);
+        bufferData.SetRoomType(type);      
+        obj.transform.position = bufferData.GetPosition();
         obj.transform.parent = FindDungeonDrawer(dungeonData.GetMonoInstance()).transform;
-        dungeonData.AddRoomData(roomData);
+        dungeonData.AddRoomData(bufferData);
+        DungeonRoom newRoom = obj.AddComponent<DungeonRoom>();
+        newRoom.ReassignRoom(existingRoom, type);       
+        GameObject.DestroyImmediate(existingRoom.gameObject);
+        newRoom.Isolate();
         return obj;
     }
 

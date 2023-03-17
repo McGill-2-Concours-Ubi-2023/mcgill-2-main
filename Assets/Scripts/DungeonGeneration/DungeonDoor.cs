@@ -18,12 +18,28 @@ public class DungeonDoor : MonoBehaviour
     private MeshCollider doorCollider;
     private Collider playerCollider;
     private NavMeshObstacle doorObstacle;
+    private bool canOpen = true;
 
     private void Awake()
     {
         doorCollider = transform.Find("Door").GetComponent<MeshCollider>();
         playerCollider = FindObjectOfType<MainCharacterController>().GetComponent<Collider>();
         doorObstacle = transform.Find("Door").GetComponent<NavMeshObstacle>();
+    }
+
+    public bool CanOpen()
+    {
+        return canOpen;
+    }
+
+    public void Block()
+    {
+        canOpen = false;
+    }
+
+    public void Unlock()
+    {
+        canOpen = true;
     }
 
     public static DungeonDoor Create(GameObject doorObj, DungeonRoom originRoom, DungeonRoom targetRoom, DungeonData data)
@@ -62,7 +78,7 @@ public class DungeonDoor : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.layer == LayerMask.NameToLayer("Player"))
+        if(other.gameObject.layer == LayerMask.NameToLayer("Player") && canOpen)
         {
             openCoroutine = StartCoroutine(Open());
             if (closeCoroutine != null) StopCoroutine(closeCoroutine);
@@ -92,7 +108,7 @@ public class DungeonDoor : MonoBehaviour
             skinnedMeshRenderer.SetBlendShapeWeight(0, skinnedMeshRenderer.GetBlendShapeWeight(0) + openRate);
             UpdateCollider();
             yield return new WaitForEndOfFrame();
-        }
+        }               
     }
 
     private void UpdateCollider()

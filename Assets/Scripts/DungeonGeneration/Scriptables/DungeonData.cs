@@ -8,6 +8,8 @@ using UnityEngine.AI;
 [CreateAssetMenu(fileName = "New dungeon", menuName = "Dungeon asset")]
 public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
 {
+    [SerializeField]
+    public GameObject specialRoomPrefab;
     private GameObject mono;
     [SerializeField]
     private ScriptableObject activeLayout;
@@ -48,6 +50,8 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
         FindObjectOfType<MainCharacterController>().transform.position = GetActiveLayout().GetStartPosition();
         InitializeNavMesh();
     }
+
+
 
     public void AddRoom(DungeonRoom room)
     {
