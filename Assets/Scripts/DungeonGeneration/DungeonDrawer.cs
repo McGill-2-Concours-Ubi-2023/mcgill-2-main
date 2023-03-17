@@ -38,6 +38,26 @@ public static class DungeonDrawer
         return obj;
     }
 
+    /*public static GameObject ReplaceRoom(GameObject roomPrefab, DungeonRoom existingRoom, RoomTypes.RoomType type)
+    {
+        DungeonData dungeonData = GameObject.FindObjectOfType<DungeonData>();
+        RoomData data = dungeonData.GetActiveLayout().GetRoomData(existingRoom);
+        DrawRoomFromData(data, )
+        
+    }*/
+
+    public static GameObject DrawRoomFromData(RoomData roomData, DungeonData dungeonData, GameObject roomPrefab, RoomTypes.RoomType type)
+    {
+        RoomData buffer = new RoomData(roomData.GetPosition(), roomData.GetRoomType(), 0);
+        dungeonData.GetActiveLayout().RemoveData(roomData);
+        buffer.SetRoomType(type);
+        var obj = GameObject.Instantiate(roomPrefab);
+        obj.transform.position = roomData.GetPosition();
+        obj.transform.parent = FindDungeonDrawer(dungeonData.GetMonoInstance()).transform;
+        dungeonData.AddRoomData(roomData);
+        return obj;
+    }
+
     public static GameObject DrawRoomFromData(RoomData roomData, DungeonData dungeonData)
     {
         string roomTypeName = roomData.GetRoomType().ToString();
