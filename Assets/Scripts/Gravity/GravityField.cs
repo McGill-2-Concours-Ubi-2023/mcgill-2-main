@@ -10,8 +10,8 @@ public abstract class GravityField : MonoBehaviour
     protected bool isActive;
     protected int layerMask;
     [SerializeField]
-    [Range(1, 20)]
-    protected float massCompression;
+    [Range(0.5f, 3.0f)]
+    protected float massCompression = 1.0f;
     private HashSet<Rigidbody> cachedRigidbodies = new HashSet<Rigidbody>();
 
     protected abstract void ApplyGravity(Rigidbody rb);
