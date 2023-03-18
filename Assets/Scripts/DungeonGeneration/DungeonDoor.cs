@@ -16,13 +16,11 @@ public class DungeonDoor : MonoBehaviour
     private Coroutine openCoroutine;
     private Coroutine closeCoroutine;
     private MeshCollider doorCollider;
-    private Collider playerCollider;
     private NavMeshObstacle doorObstacle;
 
-    private void Awake()
+    private void Start()
     {
         doorCollider = transform.Find("Door").GetComponent<MeshCollider>();
-        playerCollider = FindObjectOfType<MainCharacterController>().GetComponent<Collider>();
         doorObstacle = transform.Find("Door").GetComponent<NavMeshObstacle>();
     }
 
@@ -49,8 +47,22 @@ public class DungeonDoor : MonoBehaviour
             foreach(var placeHolder in FindObjectsOfType<DungeonDoorPlaceholder>())
             {
                 if((door_.transform.position - placeHolder.transform.position).magnitude < 0.5f){
-                    DestroyImmediate(placeHolder.gameObject);
+                    DungeonData.SafeDestroy(placeHolder.gameObject);
                 }
+            }
+        }
+
+        foreach (var placeholder in FindObjectsOfType<DungeonDoorPlaceholder>())
+        {
+            foreach(var doorWall in GameObject.FindGameObjectsWithTag("DoorWall"))
+            {
+                if (doorWall != null)
+                {
+                    if ((doorWall.transform.position - placeholder.transform.position).magnitude < 1.0f)
+                    {
+                        DungeonData.SafeDestroy(doorWall.gameObject);
+                    }
+                }                
             }
         }
     }
@@ -66,6 +78,7 @@ public class DungeonDoor : MonoBehaviour
         {
             openCoroutine = StartCoroutine(Open());
             if (closeCoroutine != null) StopCoroutine(closeCoroutine);
+            DungeonRoom.lastEnteredDoor = this;
         }
     }
 
@@ -112,7 +125,6 @@ public class DungeonDoor : MonoBehaviour
         if (other.CompareTag("Player")) {
             GoThorouthDoor();
         }
-        
     }
 
     private void GoThorouthDoor() {
@@ -130,6 +142,24 @@ public class DungeonDoor : MonoBehaviour
         else {
             Vector2Int pos = sharedRoom1.GridPosition();
             map.LeaveRoom(pos.x * gridSize + pos.y);
+        }
+    }
+
+    public void ShowWalls()
+    {
+        if (DungeonRoom.GetActiveRoom() == sharedRoom1)
+        {
+            foreach (OccludableWall wall in sharedRoom2.GetOccludableWalls())
+            {
+                if (wall != null) wall.Occlude();
+            }
+        }
+        else if (DungeonRoom.GetActiveRoom() == sharedRoom2)
+        {
+            foreach (OccludableWall wall in sharedRoom1.GetOccludableWalls())
+            {
+                if (wall != null) wall.Occlude();
+            }
         }
     }
 }
