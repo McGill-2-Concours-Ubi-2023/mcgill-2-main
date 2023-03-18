@@ -188,6 +188,7 @@ public class DungeonRoom : MonoBehaviour
 
     private void BindWalls(GameObject walls)
     {
+        Debug.Log(walls == null);
         var southWestCornerWall = walls.transform.Find("Corner").GetComponentInChildren<OccludableWall>();
         var southEastCotnerWall = walls.transform.Find("Corner4").GetComponentInChildren<OccludableWall>();
         var middleWallNoDoor = walls.transform.Find("PlainWall1").GetComponentInChildren<OccludableWall>();
@@ -225,7 +226,7 @@ public class DungeonRoom : MonoBehaviour
         var loadedRoom = roomObj.GetComponent<DungeonRoom>();
         loadedRoom.Initialize(gridMap, roomData.GetPosition(), layout, roomData.GetRoomType());
         dungeonData.AddRoom(loadedRoom);
-        DungeonDrawer.DrawSingleObject(loadedRoom.GetPosition(), dungeonData.GetWallPrefab(), loadedRoom.gameObject);
+        loadedRoom.walls = DungeonDrawer.DrawSingleObject(loadedRoom.GetPosition(), dungeonData.GetWallPrefab(), loadedRoom.gameObject);
         return loadedRoom;
     }
 
