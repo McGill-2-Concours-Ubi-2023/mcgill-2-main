@@ -26,13 +26,6 @@ public class DungeonRoom : MonoBehaviour
     private List<OccludableWall> occludableWalls;
     private List<OccludableWall> northWalls;
     private GameObject walls;
-    private void Awake()
-    {
-        if(type == RoomTypes.RoomType.Start)
-        {
-            occludableWalls.ForEach(wall => wall.Hide());
-        }
-    }
 
     public static DungeonRoom GetActiveRoom()
     {
@@ -188,7 +181,7 @@ public class DungeonRoom : MonoBehaviour
 
     private void BindWalls(GameObject walls)
     {
-        Debug.Log(walls == null);
+        //Debug.Log(walls == null);
         var southWestCornerWall = walls.transform.Find("Corner").GetComponentInChildren<OccludableWall>();
         var southEastCotnerWall = walls.transform.Find("Corner4").GetComponentInChildren<OccludableWall>();
         var middleWallNoDoor = walls.transform.Find("PlainWall1").GetComponentInChildren<OccludableWall>();
