@@ -53,6 +53,26 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
     {
         rooms.Add(room);
     }
+    public static void SafeDestroy(GameObject obj)
+    {
+    #if UNITY_EDITOR
+        // Check if we're in the Unity editor
+        if (Application.isPlaying)
+        {
+            // If in play mode, destroy the object immediately
+            GameObject.Destroy(obj);
+        }
+        else
+        {
+            // If in editor mode, schedule the object for destruction in the editor
+            GameObject.DestroyImmediate(obj);
+        }
+    #else
+        // If not in editor mode, destroy the object immediately
+        Object.Destroy(obj);
+    #endif
+    }
+
 
     public DungeonRoom GetActiveRoom()
     {

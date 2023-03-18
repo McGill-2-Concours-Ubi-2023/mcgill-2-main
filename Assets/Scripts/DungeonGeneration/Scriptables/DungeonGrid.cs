@@ -104,6 +104,7 @@ public class DungeonGrid : DataContainer<RoomData>
         ConnectRooms();
         data.AllRooms().ForEach(room => room.GenerateDoors(data));
         DungeonDoor.Cleanup();
+        DungeonRoom.Cleanup();
     }
 
     public int RoomSize()
@@ -201,6 +202,7 @@ public class DungeonGrid : DataContainer<RoomData>
         ConnectRooms();
         data.AllRooms().ForEach(room => room.GenerateDoors(data));
         DungeonDoor.Cleanup();
+        DungeonRoom.Cleanup();
     }
 
     public void ReloadMiniMap(DungeonData data)
