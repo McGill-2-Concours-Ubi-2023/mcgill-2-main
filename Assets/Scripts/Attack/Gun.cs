@@ -24,6 +24,7 @@ public class Gun : MonoBehaviour, IGunTriggers
     
     private Coroutine m_ShootCoroutine;
     private bool m_ShootCoroutinePaused = true;
+    [SerializeField] bool overrideVel;
 
     private void Start()
     {
@@ -32,9 +33,11 @@ public class Gun : MonoBehaviour, IGunTriggers
 
     private void Shoot()
     {
-        GameObject bullet = GameObject.Instantiate(bulletPrefab, gunTip.position + transform.root.forward * 0.2f, Quaternion.identity);
+        //GameObject bullet = GameObject.Instantiate(bulletPrefab, gunTip.position + transform.root.forward * 0.2f, Quaternion.identity);
+        GameObject bullet = GameObject.Instantiate(bulletPrefab, gunTip.position, gunTip.rotation);
         float3 vel = transform.root.GetComponent<Rigidbody>().velocity;
         vel += (float3)(transform.root.forward * speed);
+        if(overrideVel)
         bullet.GetComponent<Bullet>().SetDirectionAndSpeed(normalize(vel), length(vel));
     }
     

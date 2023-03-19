@@ -22,12 +22,14 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] float wakeTime = 1f;
     [SerializeField] bool lookAtPlayer = true;
     [SerializeField] bool drawPath = true;
+    [SerializeField] Transform turningPart;
     NavMeshPath navMeshPath;
     NavMeshPath navMeshPath2;
     [SerializeField] LineRenderer lr;
     // Start is called before the first frame update
     void Start()
     {
+        if(turningPart==null)turningPart = this.transform;
         navMeshPath = new NavMeshPath();
         navMeshPath2 = new NavMeshPath();
         navMeshAgent = GetComponent<NavMeshAgent>();

@@ -18,7 +18,9 @@ GameObject:
   - component: {fileID: 4467039506689872514}
   - component: {fileID: 4467039506689872513}
   - component: {fileID: 4467039506689872522}
-  m_Layer: 0
+  - component: {fileID: 2017727586027097123}
+  - component: {fileID: 282724516381393665}
+  m_Layer: 7
   m_Name: PillAI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -135,12 +137,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4467039506689872512}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6b2791f9bdcc04041894b98e26fe49b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyHealth: {fileID: 0}
+  enemyHealth: {fileID: 2017727586027097123}
 --- !u!114 &4467039506689872515
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -167,6 +169,7 @@ MonoBehaviour:
   wakeTime: 2
   lookAtPlayer: 1
   drawPath: 1
+  turningPart: {fileID: 0}
   lr: {fileID: 4467039506689872513}
 --- !u!114 &4467039506689872514
 MonoBehaviour:
@@ -185,6 +188,7 @@ MonoBehaviour:
   gunTip: {fileID: 4467039507983047917}
   speed: 10
   bulletInterval: 0.2
+  overrideVel: 0
 --- !u!120 &4467039506689872513
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -300,6 +304,34 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &2017727586027097123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4467039506689872512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9486b327d3c33545a56e8d24d4e468b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHealth: 5
+  ui: {fileID: 0}
+  invulnerable: 0
+--- !u!114 &282724516381393665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4467039506689872512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b118462950ba2544e940d4b351499fbe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentField: {fileID: 0}
 --- !u!1 &4467039507983047916
 GameObject:
   m_ObjectHideFlags: 0
@@ -309,7 +341,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4467039507983047917}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: attackspawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -324,7 +356,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4467039507983047916}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.51095057}
+  m_LocalPosition: {x: 0, y: 0.50004005, z: 0.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -343,7 +375,7 @@ GameObject:
   - component: {fileID: 4467039508469041927}
   - component: {fileID: 4467039508469041926}
   - component: {fileID: 4467039508469041925}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
