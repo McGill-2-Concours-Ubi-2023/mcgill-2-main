@@ -8,13 +8,16 @@ public class GravityAgent : MonoBehaviour
     public GravityField currentField;
     private bool isBound = false;
     private bool isVanishing = false;
+    private Animator animator;
 
     public IEnumerator OnWaitDestroy(float timer)
     {
         yield return new WaitForSeconds(timer);
         if (isBound)
         {
-            StartCoroutine(Disappear()); //spin the object for 1 second
+            animator = GetComponent<Animator>();
+            animator.speed *= massCompression;
+            animator.SetTrigger("Despawn");
         }
     }
 
@@ -23,7 +26,13 @@ public class GravityAgent : MonoBehaviour
         return isBound;
     }
 
-    private IEnumerator Disappear()
+    public void OnSelfDestroy()
+    {
+        Destroy(this.gameObject);
+    }
+
+    //============SHIT CODE :DEPRECATED============= 
+    /*private IEnumerator Disappear()
     {
         isVanishing = true;
         massCompression = currentField.GetMassCompressionForce();
@@ -42,7 +51,7 @@ public class GravityAgent : MonoBehaviour
             yield return 0;
         }
         Destroy(this.gameObject);
-    }
+    }*/
 
     private void OnTriggerEnter(Collider other)
     {
@@ -51,15 +60,16 @@ public class GravityAgent : MonoBehaviour
         {
             BindField(other.GetComponentInParent<GravityField>());
             isBound = true;
-            StartCoroutine(OnWaitDestroy(other.gameObject.GetComponentInParent<GravitationalGrenade>()
-                .GetDestructionTimer()));       
+            GravitationalGrenade grenade = other.gameObject.GetComponentInParent<GravitationalGrenade>();
+            StartCoroutine(OnWaitDestroy(grenade.GetDestructionTimer()));       
         }
     }
 
     private void BindField(GravityField field)
     {
         currentField = field;
-        foreach(var effectiveField in FindObjectsOfType<GravityField>())
+        massCompression = currentField.GetMassCompressionForce();
+        foreach (var effectiveField in FindObjectsOfType<GravityField>())
         {
             if (effectiveField != currentField) effectiveField.ReleaseAgent(this.gameObject);
         }

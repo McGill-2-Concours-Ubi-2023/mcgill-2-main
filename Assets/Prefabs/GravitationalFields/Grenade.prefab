@@ -52,10 +52,10 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  massCompression: 5
+  massCompression: 1
   orientationSpeed: 2
   dampeningForce: 0.2
-  attractionForce: 3
+  attractionForce: 5
   mediumDensity: 2
 --- !u!135 &1421598444063381553
 SphereCollider:
@@ -68,7 +68,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 8
+  m_Radius: 7
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1421598444235042090
 GameObject:
@@ -113,7 +113,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 3
+  m_Radius: 2
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1421598444886973463
 GameObject:
@@ -165,7 +165,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4882e309f5db9ab499f2293d697a5d4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destructionTimer: 4
+  destructionTimer: 1
   fieldVerticalOffset: 0.1
   explodeEffectPrefab: {fileID: 5480380345123376577, guid: 3d01b05315065b145a88eb9173f53240,
     type: 3}
@@ -177,6 +177,7 @@ MonoBehaviour:
   explosionInfluenceDistance: 10
   wobbleShakeIntensity: 4
   shakeDampening: 6
+  particlesFadeRate: 0.01
 --- !u!95 &1421598444886973484
 Animator:
   serializedVersion: 5
