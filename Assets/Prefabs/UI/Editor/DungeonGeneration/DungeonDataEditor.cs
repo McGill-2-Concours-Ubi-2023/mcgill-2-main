@@ -26,14 +26,14 @@ public class DungeonDataEditor : Editor
 
         if (GUILayout.Button("Load layout"))
         {
-            if (!dungeonData.GetActiveLayout().IsEmpty()) dungeonData.TryQuickLoad();
+            if (!dungeonData.GetActiveLayout().IsEmpty()) dungeonData.LoadData();
         }
 
         if (GUILayout.Button("Track start room"))
         {
             if (!dungeonData.GetActiveLayout().IsEmpty())
             {
-                dungeonData.TryQuickLoad();
+                dungeonData.LoadData();
                 startingRoom = dungeonData.GetStartingRoom();
                 EditorGUIUtility.PingObject(startingRoom);
                 Selection.activeGameObject = startingRoom.gameObject;

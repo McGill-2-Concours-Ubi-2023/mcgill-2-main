@@ -187,29 +187,6 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
         navMeshSurface.BuildNavMesh();
     }
 
-    public void TryQuickLoad()
-    {
-        bool onQuickLoadSuccess = false;
-        bool matchLayout;
-        rooms = FindObjectsOfType<DungeonRoom>().ToList();
-        //if it matches the layout data, it means we already generated the dungeon for that layout
-        if (rooms != null)
-        {
-            matchLayout = rooms.Where(room => room.GetLayout() != GetActiveLayout().GetName()).ToList().Count() == 0
-                && rooms.Count() == GetActiveLayout().GetRoomsData().Count();
-            if(matchLayout)
-            {
-                FindStartingRoom();
-                FindObjectOfType<MainCharacterController>().transform.position = startingRoom.transform.position;
-                FindMapManager();
-                onQuickLoadSuccess = true;
-            }         
-        }
-        //if does not succeed, regenerate the whole dungeon
-        InitializeNavMesh();
-        if (!onQuickLoadSuccess) LoadData();
-    }
-
     //Reload the whole dungeon
     public void LoadData()
     {
@@ -218,6 +195,8 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
         FindStartingRoom();
         FindObjectOfType<MainCharacterController>().transform.position = startingRoom.transform.position;
         GetGrid().ReloadMiniMap(this);
+        Cleanup();
+        InitializeNavMesh();
     }
 
     private void FindStartingRoom()

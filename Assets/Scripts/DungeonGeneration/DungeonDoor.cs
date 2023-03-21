@@ -40,19 +40,6 @@ public class DungeonDoor : MonoBehaviour
         return doorComponent;
     }
 
-    public static void Cleanup()
-    {
-        foreach(var door_ in FindObjectsOfType<DungeonDoor>())
-        {
-            foreach(var placeHolder in FindObjectsOfType<DungeonDoorPlaceholder>())
-            {
-                if((door_.transform.position - placeHolder.transform.position).magnitude < 0.5f){
-                    DungeonData.SafeDestroy(placeHolder.gameObject);
-                }
-            }
-        }
-    }
-
     public List<DungeonRoom> GetSharedRooms()
     {
         return new List<DungeonRoom>() { sharedRoom1, sharedRoom2 };

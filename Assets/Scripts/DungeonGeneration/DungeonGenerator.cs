@@ -8,10 +8,18 @@ public class DungeonGenerator : MonoBehaviour
 {
     [SerializeField]
     public DungeonData data;
+    [SerializeField]
+    private bool newDungeonOnPlay = false;
 
     private void Awake()
     {
         data.SetMonoInstance(this.gameObject);
-        data.GenerateDungeon();
+        if (newDungeonOnPlay)
+        {
+            data.GenerateDungeon();
+        } else
+        {
+            data.LoadData();
+        }
     }
 }

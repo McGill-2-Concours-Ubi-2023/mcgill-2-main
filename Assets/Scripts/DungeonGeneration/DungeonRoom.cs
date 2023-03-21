@@ -23,9 +23,11 @@ public class DungeonRoom : MonoBehaviour
     private string layout;
     [SerializeField]
     private RoomTypes.RoomType type;
+    [SerializeField][HideInInspector]
     private List<OccludableWall> occludableWalls;
+    [SerializeField][HideInInspector]
     private List<OccludableWall> northWalls;
-    [SerializeField]
+    [SerializeField][HideInInspector]
     private GameObject walls;
 
     public static DungeonRoom GetActiveRoom()
@@ -180,9 +182,8 @@ public class DungeonRoom : MonoBehaviour
 
     private IEnumerator OnNextFrameCleanup() //Cleanup all rooms on next frame
     {
-        yield return new WaitForEndOfFrame();
+        yield return null;
         var composites = walls.GetComponentsInChildren<WallComposite>();
-
         foreach (var composite in composites)
         {
             var plainWall = composite.plainWall;
