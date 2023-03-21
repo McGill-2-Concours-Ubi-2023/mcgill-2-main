@@ -20,7 +20,7 @@ public static class DungeonDrawer
     {
         var obj = GameObject.Instantiate(prefab);
         obj.transform.position = position;
-        obj.transform.parent = FindDungeonDrawer(parentObj).transform;
+        obj.transform.parent = parentObj.transform;
         return obj;
     }
 

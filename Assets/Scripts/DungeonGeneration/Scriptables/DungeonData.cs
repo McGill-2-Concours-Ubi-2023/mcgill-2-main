@@ -18,7 +18,7 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
     [SerializeField]
     [Range(0.1f, 1f)]
     private float roomDensity = 0.5f;
-    [SerializeField][HideInInspector]
+    [SerializeField]
     private List<DungeonRoom> rooms;
     [SerializeField][HideInInspector]
     private DungeonRoom startingRoom;
@@ -49,6 +49,7 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
         SaveData();
         FindObjectOfType<MainCharacterController>().transform.position = GetActiveLayout().GetStartPosition();
         InitializeNavMesh();
+        Cleanup();
     }
 
 
@@ -57,6 +58,26 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
     {
         rooms.Add(room);
     }
+    public static void SafeDestroy(GameObject obj)
+    {
+    #if UNITY_EDITOR
+        // Check if we're in the Unity editor
+        if (Application.isPlaying)
+        {
+            // If in play mode, destroy the object immediately
+            GameObject.Destroy(obj);
+        }
+        else
+        {
+            // If in editor mode, schedule the object for destruction in the editor
+            GameObject.DestroyImmediate(obj);
+        }
+    #else
+        // If not in editor mode, destroy the object immediately
+        Object.Destroy(obj);
+    #endif
+    }
+
 
     public DungeonRoom GetActiveRoom()
     {
@@ -123,6 +144,15 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
         return mono;
     }
 
+    public void Cleanup()
+    {
+       foreach(DungeonRoom room in rooms)
+       {
+            room.RemovePlaceholders();
+            room.RemoveUnusedDoorWalls(); 
+       }
+    }
+
     public void ClearDungeon()
     {
         if (rooms == null) rooms = new List<DungeonRoom>();
@@ -161,29 +191,6 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
         navMeshSurface.BuildNavMesh();
     }
 
-    public void TryQuickLoad()
-    {
-        bool onQuickLoadSuccess = false;
-        bool matchLayout;
-        rooms = FindObjectsOfType<DungeonRoom>().ToList();
-        //if it matches the layout data, it means we already generated the dungeon for that layout
-        if (rooms != null)
-        {
-            matchLayout = rooms.Where(room => room.GetLayout() != GetActiveLayout().GetName()).ToList().Count() == 0
-                && rooms.Count() == GetActiveLayout().GetRoomsData().Count();
-            if(matchLayout)
-            {
-                FindStartingRoom();
-                FindObjectOfType<MainCharacterController>().transform.position = startingRoom.transform.position;
-                FindMapManager();
-                onQuickLoadSuccess = true;
-            }         
-        }
-        //if does not succeed, regenerate the whole dungeon
-        InitializeNavMesh();
-        if (!onQuickLoadSuccess) LoadData();
-    }
-
     //Reload the whole dungeon
     public void LoadData()
     {
@@ -192,6 +199,8 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
         FindStartingRoom();
         FindObjectOfType<MainCharacterController>().transform.position = startingRoom.transform.position;
         GetGrid().ReloadMiniMap(this);
+        Cleanup();
+        InitializeNavMesh();
     }
 
     private void FindStartingRoom()

@@ -13,52 +13,31 @@ MonoBehaviour:
   m_Name: Layout1
   m_EditorClassIdentifier: 
   roomsData:
-  - position: {x: 60, y: 0, z: 0}
+  - position: {x: 15, y: 0, z: 0}
     type: 4
+    prefabIndex: 0
+  - position: {x: 15, y: 0, z: 15}
+    type: 0
+    prefabIndex: 8
+  - position: {x: 30, y: 0, z: 0}
+    type: 0
+    prefabIndex: 15
+  - position: {x: 45, y: 0, z: 0}
+    type: 3
+    prefabIndex: 0
+  - position: {x: 45, y: 0, z: 15}
+    type: 3
     prefabIndex: 0
   - position: {x: 60, y: 0, z: 15}
     type: 0
-    prefabIndex: 5
-  - position: {x: 75, y: 0, z: 0}
-    type: 0
-    prefabIndex: 9
-  - position: {x: 75, y: 0, z: 15}
-    type: 2
     prefabIndex: 0
-  - position: {x: 75, y: 0, z: 30}
-    type: 2
-    prefabIndex: 0
-  - position: {x: 75, y: 0, z: 45}
-    type: 0
-    prefabIndex: 12
-  - position: {x: 60, y: 0, z: 45}
+  - position: {x: 30, y: 0, z: 15}
     type: 3
     prefabIndex: 0
-  - position: {x: 45, y: 0, z: 45}
-    type: 2
+  - position: {x: 30, y: 0, z: 30}
+    type: 3
     prefabIndex: 0
-  - position: {x: 60, y: 0, z: 30}
-    type: 0
-    prefabIndex: 6
-  - position: {x: 45, y: 0, z: 30}
-    type: 0
-    prefabIndex: 14
-  - position: {x: 45, y: 0, z: 15}
-    type: 0
-    prefabIndex: 3
-  - position: {x: 45, y: 0, z: 0}
-    type: 0
-    prefabIndex: 10
-  - position: {x: 30, y: 0, z: 0}
-    type: 0
-    prefabIndex: 0
-  - position: {x: 15, y: 0, z: 0}
-    type: 0
-    prefabIndex: 12
-  - position: {x: 15, y: 0, z: 15}
-    type: 0
-    prefabIndex: 12
-  - position: {x: 30, y: 0, z: 15}
+  - position: {x: 30, y: 0, z: 45}
     type: 2
     prefabIndex: 0
   - position: {x: 15, y: 0, z: 30}
@@ -67,18 +46,36 @@ MonoBehaviour:
   - position: {x: 15, y: 0, z: 45}
     type: 0
     prefabIndex: 12
-  - position: {x: 30, y: 0, z: 30}
-    type: 3
-    prefabIndex: 0
-  - position: {x: 30, y: 0, z: 45}
-    type: 0
-    prefabIndex: 7
-  - position: {x: 30, y: 0, z: 60}
-    type: 0
-    prefabIndex: 1
-  - position: {x: 45, y: 0, z: 60}
-    type: 0
-    prefabIndex: 9
-  - position: {x: 45, y: 0, z: 75}
+  - position: {x: 15, y: 0, z: 60}
     type: 2
     prefabIndex: 0
+  - position: {x: 30, y: 0, z: 60}
+    type: 0
+    prefabIndex: 9
+  - position: {x: 30, y: 0, z: 75}
+    type: 0
+    prefabIndex: 5
+  - position: {x: 45, y: 0, z: 75}
+    type: 0
+    prefabIndex: 3
+  - position: {x: 60, y: 0, z: 75}
+    type: 2
+    prefabIndex: 0
+  - position: {x: 60, y: 0, z: 60}
+    type: 2
+    prefabIndex: 0
+  - position: {x: 75, y: 0, z: 60}
+    type: 0
+    prefabIndex: 7
+  - position: {x: 75, y: 0, z: 75}
+    type: 0
+    prefabIndex: 6
+  - position: {x: 45, y: 0, z: 45}
+    type: 0
+    prefabIndex: 2
+  - position: {x: 45, y: 0, z: 60}
+    type: 0
+    prefabIndex: 5
+  - position: {x: 45, y: 0, z: 30}
+    type: 0
+    prefabIndex: 9
