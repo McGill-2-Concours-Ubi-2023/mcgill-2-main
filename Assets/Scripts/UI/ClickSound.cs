@@ -19,10 +19,10 @@ public class ClickSound : MonoBehaviour
     public void Click()
     {
         if(!dontRandomize)
-            AS.pitch = Random.Range(0.8f, 1.2f);
+            AS.pitch = Random.Range(0.95f, 1.05f);
         if(Time.time>nextsoundtime){
             AS.PlayOneShot(AS.clip);
-            //nextsoundtime = Time.time+soundGap;
+            nextsoundtime = Time.time+soundGap;
         }
     }
 }
