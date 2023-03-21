@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Collections;
@@ -22,14 +23,19 @@ public class DungeonRoom : MonoBehaviour
     private string layout;
     [SerializeField]
     private RoomTypes.RoomType type;
-    [SerializeField]
     private List<OccludableWall> occludableWalls;
     private List<OccludableWall> northWalls;
+    [SerializeField]
     private GameObject walls;
 
     public static DungeonRoom GetActiveRoom()
     {
         return activeRoom;
+    }
+
+    public GameObject GetWalls()
+    {
+        return walls;
     }
 
     public void GetBottomRoomOccludableWalls()
@@ -80,20 +86,6 @@ public class DungeonRoom : MonoBehaviour
         this.type = type;
     }
 
-    public static void Cleanup()
-    {
-        var rooms = FindObjectOfType<DungeonGenerator>().data.AllRooms();
-        foreach(DungeonRoom room in rooms)
-        {
-            if(room.northWalls != null)
-            {
-                room.northWalls.RemoveAll(wall => wall == null);
-            }
-            Debug.Assert(room.occludableWalls != null);
-            room.occludableWalls.RemoveAll(wall => wall == null);
-        }     
-    }
-
     public void DisconnectRoom(DungeonRoom room)
     {
         if (adjacentRooms.Contains(room)) adjacentRooms.Remove(room);
@@ -112,7 +104,7 @@ public class DungeonRoom : MonoBehaviour
                 room.adjacentRooms.Remove(this);
         });
         //Use Destroy if at runtime
-        GameObject.DestroyImmediate(this.gameObject);
+        DungeonData.SafeDestroy(this.gameObject);
     }
 
     public Vector3 GetPosition()
@@ -165,8 +157,41 @@ public class DungeonRoom : MonoBehaviour
         return false;
     }
 
+    public void RemovePlaceholders()
+    {
+        var placeholders = walls.GetComponentsInChildren<DungeonDoorPlaceholder>();
+        foreach(var door in doors)
+        {
+            foreach(var placeholder in placeholders)
+            {
+                if(placeholder != null && door != null)
+                {
+                    Vector3 diff = placeholder.transform.position - door.transform.position;
+                    if (diff.magnitude < 0.5f) DungeonData.SafeDestroy(placeholder.gameObject);
+                }              
+            }
+        }
+    }
+
+    public void RemoveUnusedDoorWalls()
+    {       
+        StartCoroutine(OnNextFrameCleanup());
+    }
+
+    private IEnumerator OnNextFrameCleanup() //Cleanup all rooms on next frame
+    {
+        yield return new WaitForEndOfFrame();
+        var composites = walls.GetComponentsInChildren<WallComposite>();
+
+        foreach (var composite in composites)
+        {
+            var plainWall = composite.plainWall;
+            if (plainWall != null) DungeonData.SafeDestroy(composite.doorWall.gameObject);
+        }
+    }
+
     public static DungeonRoom CreateRandomRoom(DungeonData data, Vector3 position, Dictionary<Vector3, Vector2Int> gridMap,
-        string layout, RoomTypes.RoomType type)
+        string layout, RoomTypes.RoomType type) 
     {
         //This is where the room gets instantiated, change the primitive and pass a prefab instead for the room
         //Eg: var roomObj = DungeonDrawer.DrawSingleObject(position, prefab, data.GetMonoInstance(), scale) as GameObject;

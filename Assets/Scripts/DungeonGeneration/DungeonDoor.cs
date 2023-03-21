@@ -51,20 +51,6 @@ public class DungeonDoor : MonoBehaviour
                 }
             }
         }
-
-        foreach (var placeholder in FindObjectsOfType<DungeonDoorPlaceholder>())
-        {
-            foreach(var doorWall in GameObject.FindGameObjectsWithTag("DoorWall"))
-            {
-                if (doorWall != null)
-                {
-                    if ((doorWall.transform.position - placeholder.transform.position).magnitude < 1.0f)
-                    {
-                        DungeonData.SafeDestroy(doorWall.gameObject);
-                    }
-                }                
-            }
-        }
     }
 
     public List<DungeonRoom> GetSharedRooms()

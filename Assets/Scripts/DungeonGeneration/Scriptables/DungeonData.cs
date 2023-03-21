@@ -16,7 +16,7 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
     [SerializeField]
     [Range(0.1f, 1f)]
     private float roomDensity = 0.5f;
-    [SerializeField][HideInInspector]
+    [SerializeField]
     private List<DungeonRoom> rooms;
     [SerializeField][HideInInspector]
     private DungeonRoom startingRoom;
@@ -47,6 +47,7 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
         SaveData();
         FindObjectOfType<MainCharacterController>().transform.position = GetActiveLayout().GetStartPosition();
         InitializeNavMesh();
+        Cleanup();
     }
 
     public void AddRoom(DungeonRoom room)
@@ -137,6 +138,15 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
     public GameObject GetMonoInstance()
     {
         return mono;
+    }
+
+    public void Cleanup()
+    {
+       foreach(DungeonRoom room in rooms)
+       {
+            room.RemovePlaceholders();
+            room.RemoveUnusedDoorWalls(); 
+       }
     }
 
     public void ClearDungeon()

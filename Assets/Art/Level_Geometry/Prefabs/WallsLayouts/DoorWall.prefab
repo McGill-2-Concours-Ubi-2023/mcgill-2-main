@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8988796587664242423}
   - component: {fileID: 7098187075061835463}
   - component: {fileID: 8771329064586709433}
+  - component: {fileID: 337761439322213738}
   m_Layer: 14
   m_Name: DoorWall
   m_TagString: DoorWall
@@ -87,6 +88,18 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+--- !u!114 &337761439322213738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8654615333775504730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba665b716564b814fa3903ee47866ffc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &4395330753599433965
 PrefabInstance:
   m_ObjectHideFlags: 0
