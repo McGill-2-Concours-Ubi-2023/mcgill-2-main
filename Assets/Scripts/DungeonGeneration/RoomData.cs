@@ -17,6 +17,11 @@ public class RoomData
         this.prefabIndex = prefabIndex;
     }
 
+    public void SetRoomType(RoomTypes.RoomType type)
+    {
+        this.type = type;
+    }
+
     public Vector3 GetPosition()
     {
         return position;

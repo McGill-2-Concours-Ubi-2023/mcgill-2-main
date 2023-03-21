@@ -21,6 +21,23 @@ public class DungeonLayout : ScriptableObject
         return roomsData;
     }
 
+    public void RemoveData(RoomData data)
+    {
+        if (roomsData.Contains(data)) roomsData.Remove(data);
+    }
+
+    public RoomData GetRoomData(DungeonRoom room)
+    {
+        foreach(RoomData data in roomsData)
+        {
+            if(room.GetPosition() == data.GetPosition() && data.GetRoomType() == room.GetRoomType())
+            {
+                return data;
+            }
+        }
+        return null;
+    }
+
     public void SaveRoomsData(List<RoomData> data)
     {
         this.roomsData = data;

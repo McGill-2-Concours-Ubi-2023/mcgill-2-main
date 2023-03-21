@@ -26,9 +26,12 @@ public class Gun : MonoBehaviour, IGunTriggers
     private bool m_ShootCoroutinePaused = true;
     [SerializeField] bool overrideVel;
 
+    private MainCharacterController playerController;
+
+
     private void Start()
     {
-        
+        playerController = GetComponentInParent<MainCharacterController>();
     }
 
     private void Shoot()
@@ -39,6 +42,7 @@ public class Gun : MonoBehaviour, IGunTriggers
         vel += (float3)(transform.root.forward * speed);
         if(overrideVel)
         bullet.GetComponent<Bullet>().SetDirectionAndSpeed(normalize(vel), length(vel));
+        playerController.GetComponent<Animator>().SetTrigger("Shoot");
     }
     
     private IEnumerator ShootCoroutine()
