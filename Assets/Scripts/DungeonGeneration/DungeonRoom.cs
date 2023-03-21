@@ -149,6 +149,22 @@ public class DungeonRoom : MonoBehaviour
         BindWalls(walls);
     }
 
+    public void Isolate()
+    {
+        foreach(DungeonDoor door in doors)
+        {
+            door.Block();
+        }
+    }
+
+    public void ReassignRoom(DungeonRoom existingRoom, RoomTypes.RoomType type)
+    {
+        this.adjacentRooms = existingRoom.adjacentRooms;
+        this.doors = existingRoom.doors;
+        this.layout = existingRoom.layout;
+        this.type = type;
+    }
+
     private bool HasAccessToRoom(DungeonRoom room)
     {   
         foreach(var door in doors)

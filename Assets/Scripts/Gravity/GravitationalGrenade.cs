@@ -35,6 +35,9 @@ public class GravitationalGrenade : MonoBehaviour
     [SerializeField][Range(0.1f, 0.005f)]
     private float particlesFadeRate = 0.1f;
     private VisualEffect _explodeEffect;
+    [SerializeField]
+    private GameObject swarmEffectPrefab;
+    private VisualEffect swarmEffect;
 
     private void Awake()
     {
@@ -57,6 +60,19 @@ public class GravitationalGrenade : MonoBehaviour
     public void Activate()
     {
         animator.SetTrigger("activate");
+    }
+
+    public void StartSwarm()
+    {
+        GameObject obj = Instantiate(swarmEffectPrefab, transform.position, Quaternion.identity);
+        swarmEffect = obj.GetComponent<VisualEffect>();
+        swarmEffect.playRate = 2.5f;
+        swarmEffect.SendEvent("OnSwarmPlay");
+    }
+
+    public void StopSwarm()
+    {
+        swarmEffect.SendEvent("OnSwarmStop");
     }
 
     public void Explode() //"Spawns" the gravity field object
@@ -104,7 +120,7 @@ public class GravitationalGrenade : MonoBehaviour
     {
         yield return new WaitForEndOfFrame();
         _explodeEffect.SendEvent("OnBurst");
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.1f);
         _explodeEffect.SendEvent("OnLoop");
     }
 
@@ -134,7 +150,9 @@ public class GravitationalGrenade : MonoBehaviour
             if (timer - elapsedTime < 5.0f) _explodeEffect.Stop();
             yield return new WaitForEndOfFrame();
         }
+        _explodeEffect.SendEvent("OnStop");
         animator.SetTrigger("despawn");
+        swarmEffect.SendEvent("OnSwarmStop");
         gravityField.SetActive(false);
     }
 

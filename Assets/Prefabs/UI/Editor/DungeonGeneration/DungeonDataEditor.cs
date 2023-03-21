@@ -67,6 +67,12 @@ public class DungeonDataEditor : Editor
                 }
             }       
         }
+        if (GUILayout.Button("Replace Start Room (testing)"))
+        {
+            
+            DungeonDrawer.ReplaceRoom(dungeonData.GetStartingRoom(), dungeonData, dungeonData.specialRoomPrefab, RoomTypes.RoomType.Special);
+        }
+
 
         if (GUILayout.Button("Clear dungeon"))
         {
