@@ -53,7 +53,6 @@ public class DungeonRoom : MonoBehaviour
                     {
                         occludableWalls.Add(wall);
                     }
-                    else room.northWalls.Remove(wall);
                 }
             }
         }

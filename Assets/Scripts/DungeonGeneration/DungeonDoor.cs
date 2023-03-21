@@ -65,6 +65,7 @@ public class DungeonDoor : MonoBehaviour
     {
         if(other.gameObject.layer == LayerMask.NameToLayer("Player") && canOpen)
         {
+            Debug.Log("YOOO");
             openCoroutine = StartCoroutine(Open());
             if (closeCoroutine != null) StopCoroutine(closeCoroutine);
             DungeonRoom.lastEnteredDoor = this;
