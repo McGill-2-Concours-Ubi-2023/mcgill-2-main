@@ -25,7 +25,7 @@ public class Bullet : MonoBehaviour
         this.direction = direction; 
     }
 
-    private void OnCollisionEnter(Collision other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player") || other.gameObject.CompareTag("Enemy"))// do damage to player/enemy
         {

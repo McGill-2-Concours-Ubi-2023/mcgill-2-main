@@ -16,9 +16,13 @@ public class GravityAgent : MonoBehaviour
         yield return new WaitForSeconds(timer);
         if (isBound)
         {
-            animator = GetComponent<Animator>();
-            animator.speed *= massCompression;
-            animator.SetTrigger("Despawn");
+            Animator animator;
+            TryGetComponent<Animator>(out animator);
+            if (animator)
+            {
+                animator.speed *= massCompression;
+                if (animator) animator.SetTrigger("Despawn");
+            }          
         }
     }
 

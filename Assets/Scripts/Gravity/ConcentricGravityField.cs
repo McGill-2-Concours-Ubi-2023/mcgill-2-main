@@ -37,7 +37,7 @@ public class ConcentricGravityField : GravityField
         rb.transform.rotation = Quaternion.Lerp(rb.transform.rotation, targetRotation, orientationSpeed * Time.deltaTime);
         //When approaching Kernel, attraction force intensifies
         var FgLerp = Mathf.Lerp(mediumDensity + attractionForce, mediumDensity, forceDirection.magnitude);
-        var velocityChange = forceDirection.normalized * gravity * rb.mass * FgLerp * Time.deltaTime;
+        var velocityChange = forceDirection.normalized * gravity * FgLerp * Time.deltaTime;
         rb.velocity += velocityChange;
         //Dampen over time to prevent sinusoidal behaviour
         var dampenLerp = Mathf.Lerp(0, dampeningForce, Mathf.Clamp01(forceDirection.magnitude));

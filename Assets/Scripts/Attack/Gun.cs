@@ -41,7 +41,7 @@ public class Gun : MonoBehaviour, IGunTriggers
         //GameObject bullet = GameObject.Instantiate(bulletPrefab, gunTip.position + transform.root.forward * 0.2f, Quaternion.identity);
         GameObject bullet = GameObject.Instantiate(bulletPrefab, gunTip.position, gunTip.rotation);
         float3 vel = transform.root.GetComponent<Rigidbody>().velocity;
-        vel += (float3)(transform.root.forward * speed);
+        vel = (float3)(playerController.GetMovementDirection() * speed);
         if(overrideVel)
             bullet.GetComponent<Bullet>().SetDirectionAndSpeed(normalize(vel), length(vel));
         if(playerGun)

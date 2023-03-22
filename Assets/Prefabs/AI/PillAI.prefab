@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 282724516381393665}
   m_Layer: 7
   m_Name: PillAI
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -161,7 +161,7 @@ MonoBehaviour:
   move: 0
   autoSleep: 1
   randomRadius: 5
-  gun: {fileID: 4467039506689872514}
+  gun: {fileID: 0}
   lookSpeed: 7
   randomLayerMask:
     serializedVersion: 2
@@ -189,6 +189,7 @@ MonoBehaviour:
   speed: 10
   bulletInterval: 0.2
   overrideVel: 0
+  playerGun: 0
 --- !u!120 &4467039506689872513
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -332,6 +333,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentField: {fileID: 0}
+  isBound: 0
 --- !u!1 &4467039507983047916
 GameObject:
   m_ObjectHideFlags: 0
