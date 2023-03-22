@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 2094439156593905127}
   - component: {fileID: 6909087264287612142}
   - component: {fileID: 2872712690886730069}
-  - component: {fileID: 6297115957973533998}
   - component: {fileID: 7714694599487570210}
   m_Layer: 14
   m_Name: PlainWall
@@ -70,22 +69,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 6.007444, y: 3.706568, z: 0.8954733}
   m_Center: {x: 0, y: 1.8573946, z: 0.4132283}
---- !u!114 &6297115957973533998
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2446855827266312440}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_OverrideArea: 1
-  m_Area: 1
-  m_IgnoreFromBuild: 0
-  m_AffectedAgents: ffffffff
 --- !u!95 &7714694599487570210
 Animator:
   serializedVersion: 5
@@ -190,6 +173,28 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7f2b22fcc74cca14888879ad0f00905d, type: 3}
+--- !u!1 &8587829212385831604 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 7f2b22fcc74cca14888879ad0f00905d,
+    type: 3}
+  m_PrefabInstance: {fileID: 8930480809437550565}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3321814212307750730
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8587829212385831604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 1
+  m_Area: 1
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff
 --- !u!4 &8963792217177763854 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 7f2b22fcc74cca14888879ad0f00905d,

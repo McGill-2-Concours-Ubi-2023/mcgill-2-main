@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class Bullet : MonoBehaviour
 {
-    float speed;
+    [SerializeField] float speed =20;
     Vector3 direction;
     [SerializeField]
     int damage = 1; 
@@ -17,7 +17,7 @@ public class Bullet : MonoBehaviour
 
     private void Fly(Vector3 direction, float speed)
     {
-        GetComponent<Rigidbody>().velocity = direction * speed;
+        GetComponent<Rigidbody>().velocity = transform.forward * speed;
     }
 
     public void SetDirectionAndSpeed(Vector3 direction, float speed) {

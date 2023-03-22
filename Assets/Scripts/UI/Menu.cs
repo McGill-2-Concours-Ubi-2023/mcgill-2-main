@@ -30,4 +30,11 @@ public class Menu : MonoBehaviour
     {
         Application.OpenURL(url);
     }
+    public void LoadScene(int i) {
+        SceneManager.LoadScene(i);
+    }
+    public void LoadScene(string s)
+    {
+        SceneManager.LoadScene(s);
+    }
 }
