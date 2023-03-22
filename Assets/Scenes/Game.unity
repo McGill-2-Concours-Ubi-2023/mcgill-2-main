@@ -2956,6 +2956,9 @@ MonoBehaviour:
   - {fileID: 367660022}
   layout: Layout1
   type: 0
+  occludableWalls: []
+  northWalls: []
+  walls: {fileID: 0}
 --- !u!4 &61063954
 Transform:
   m_ObjectHideFlags: 0
@@ -3039,6 +3042,9 @@ MonoBehaviour:
   - {fileID: 993437209}
   layout: Layout1
   type: 0
+  occludableWalls: []
+  northWalls: []
+  walls: {fileID: 0}
 --- !u!4 &61294634
 Transform:
   m_ObjectHideFlags: 0
@@ -4648,6 +4654,9 @@ MonoBehaviour:
   - {fileID: 2063670144}
   layout: Layout1
   type: 0
+  occludableWalls: []
+  northWalls: []
+  walls: {fileID: 0}
 --- !u!4 &99467442
 Transform:
   m_ObjectHideFlags: 0
@@ -5045,6 +5054,9 @@ MonoBehaviour:
   - {fileID: 1163069098}
   layout: Layout1
   type: 2
+  occludableWalls: []
+  northWalls: []
+  walls: {fileID: 0}
 --- !u!4 &105442231
 Transform:
   m_ObjectHideFlags: 0
@@ -17565,6 +17577,9 @@ MonoBehaviour:
   - {fileID: 993437209}
   layout: Layout1
   type: 0
+  occludableWalls: []
+  northWalls: []
+  walls: {fileID: 0}
 --- !u!4 &339152131
 Transform:
   m_ObjectHideFlags: 0
@@ -27272,6 +27287,9 @@ MonoBehaviour:
   - {fileID: 915511321}
   layout: Layout1
   type: 3
+  occludableWalls: []
+  northWalls: []
+  walls: {fileID: 0}
 --- !u!4 &540475074
 Transform:
   m_ObjectHideFlags: 0
@@ -34564,6 +34582,9 @@ MonoBehaviour:
   - {fileID: 1063138149}
   layout: Layout1
   type: 2
+  occludableWalls: []
+  northWalls: []
+  walls: {fileID: 0}
 --- !u!4 &689872793
 Transform:
   m_ObjectHideFlags: 0
@@ -45994,37 +46015,37 @@ PrefabInstance:
     - target: {fileID: 846677019838790721, guid: a98ede08c13b146dc8929b2c126a9ea4,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.009555817
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 846677019838790721, guid: a98ede08c13b146dc8929b2c126a9ea4,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.93433464
+      value: 0.9651575
       objectReference: {fileID: 0}
     - target: {fileID: 846677019838790721, guid: a98ede08c13b146dc8929b2c126a9ea4,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.07965385
+      value: -0.000000048428774
       objectReference: {fileID: 0}
     - target: {fileID: 846677019838790721, guid: a98ede08c13b146dc8929b2c126a9ea4,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7950559
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 846677019838790721, guid: a98ede08c13b146dc8929b2c126a9ea4,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.60520273
+      value: -0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 846677019838790721, guid: a98ede08c13b146dc8929b2c126a9ea4,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.01165934
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 846677019838790721, guid: a98ede08c13b146dc8929b2c126a9ea4,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.038469497
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 852077923517610476, guid: a98ede08c13b146dc8929b2c126a9ea4,
         type: 3}
@@ -46080,37 +46101,37 @@ PrefabInstance:
     - target: {fileID: 1127604391099544964, guid: a98ede08c13b146dc8929b2c126a9ea4,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.036899567
+      value: -0.48960876
       objectReference: {fileID: 0}
     - target: {fileID: 1127604391099544964, guid: a98ede08c13b146dc8929b2c126a9ea4,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.76
+      value: 0.77921236
       objectReference: {fileID: 0}
     - target: {fileID: 1127604391099544964, guid: a98ede08c13b146dc8929b2c126a9ea4,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.34080154
+      value: -0.009783864
       objectReference: {fileID: 0}
     - target: {fileID: 1127604391099544964, guid: a98ede08c13b146dc8929b2c126a9ea4,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.57394594
       objectReference: {fileID: 0}
     - target: {fileID: 1127604391099544964, guid: a98ede08c13b146dc8929b2c126a9ea4,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0.08142986
       objectReference: {fileID: 0}
     - target: {fileID: 1127604391099544964, guid: a98ede08c13b146dc8929b2c126a9ea4,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.00000009362675
+      value: -0.81437016
       objectReference: {fileID: 0}
     - target: {fileID: 1127604391099544964, guid: a98ede08c13b146dc8929b2c126a9ea4,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0.027503584
       objectReference: {fileID: 0}
     - target: {fileID: 1127604391099544964, guid: a98ede08c13b146dc8929b2c126a9ea4,
         type: 3}
@@ -47685,6 +47706,9 @@ MonoBehaviour:
   - {fileID: 1711954484}
   layout: Layout1
   type: 2
+  occludableWalls: []
+  northWalls: []
+  walls: {fileID: 0}
 --- !u!4 &968224095
 Transform:
   m_ObjectHideFlags: 0
@@ -49874,6 +49898,9 @@ MonoBehaviour:
   - {fileID: 1566258922}
   layout: Layout1
   type: 2
+  occludableWalls: []
+  northWalls: []
+  walls: {fileID: 0}
 --- !u!4 &1009925679
 Transform:
   m_ObjectHideFlags: 0
@@ -55410,6 +55437,9 @@ MonoBehaviour:
   - {fileID: 1023367585}
   layout: Layout1
   type: 4
+  occludableWalls: []
+  northWalls: []
+  walls: {fileID: 0}
 --- !u!4 &1123521940
 Transform:
   m_ObjectHideFlags: 0
@@ -57052,6 +57082,9 @@ MonoBehaviour:
   - {fileID: 982596204}
   layout: Layout1
   type: 0
+  occludableWalls: []
+  northWalls: []
+  walls: {fileID: 0}
 --- !u!4 &1159165437
 Transform:
   m_ObjectHideFlags: 0
@@ -60893,6 +60926,9 @@ MonoBehaviour:
   - {fileID: 1668700346}
   layout: Layout1
   type: 0
+  occludableWalls: []
+  northWalls: []
+  walls: {fileID: 0}
 --- !u!4 &1261785656
 Transform:
   m_ObjectHideFlags: 0
@@ -64665,6 +64701,9 @@ MonoBehaviour:
   - {fileID: 904423925}
   layout: Layout1
   type: 0
+  occludableWalls: []
+  northWalls: []
+  walls: {fileID: 0}
 --- !u!4 &1331989134
 Transform:
   m_ObjectHideFlags: 0
@@ -66130,6 +66169,9 @@ MonoBehaviour:
   - {fileID: 1012801662}
   layout: Layout1
   type: 2
+  occludableWalls: []
+  northWalls: []
+  walls: {fileID: 0}
 --- !u!4 &1379942799
 Transform:
   m_ObjectHideFlags: 0
@@ -84297,6 +84339,9 @@ MonoBehaviour:
   - {fileID: 506846278}
   layout: Layout1
   type: 0
+  occludableWalls: []
+  northWalls: []
+  walls: {fileID: 0}
 --- !u!4 &1725685293
 Transform:
   m_ObjectHideFlags: 0
@@ -85612,6 +85657,9 @@ MonoBehaviour:
   - {fileID: 709895350}
   layout: Layout1
   type: 2
+  occludableWalls: []
+  northWalls: []
+  walls: {fileID: 0}
 --- !u!4 &1748148613
 Transform:
   m_ObjectHideFlags: 0
@@ -87149,6 +87197,9 @@ MonoBehaviour:
   - {fileID: 22919231}
   layout: Layout1
   type: 0
+  occludableWalls: []
+  northWalls: []
+  walls: {fileID: 0}
 --- !u!4 &1787973318
 Transform:
   m_ObjectHideFlags: 0
@@ -90164,6 +90215,9 @@ MonoBehaviour:
   - {fileID: 1893280954}
   layout: Layout1
   type: 3
+  occludableWalls: []
+  northWalls: []
+  walls: {fileID: 0}
 --- !u!4 &1855597343
 Transform:
   m_ObjectHideFlags: 0
@@ -92935,6 +92989,9 @@ MonoBehaviour:
   - {fileID: 2086651196}
   layout: Layout1
   type: 0
+  occludableWalls: []
+  northWalls: []
+  walls: {fileID: 0}
 --- !u!4 &1923959244
 Transform:
   m_ObjectHideFlags: 0
@@ -96528,6 +96585,9 @@ MonoBehaviour:
   - {fileID: 472633127}
   layout: Layout1
   type: 0
+  occludableWalls: []
+  northWalls: []
+  walls: {fileID: 0}
 --- !u!4 &1986120735
 Transform:
   m_ObjectHideFlags: 0
@@ -97908,6 +97968,9 @@ MonoBehaviour:
   - {fileID: 843364464}
   layout: Layout1
   type: 0
+  occludableWalls: []
+  northWalls: []
+  walls: {fileID: 0}
 --- !u!4 &1999939699
 Transform:
   m_ObjectHideFlags: 0
@@ -104108,6 +104171,9 @@ MonoBehaviour:
   - {fileID: 205063240}
   layout: Layout1
   type: 0
+  occludableWalls: []
+  northWalls: []
+  walls: {fileID: 0}
 --- !u!4 &2097751251
 Transform:
   m_ObjectHideFlags: 0
@@ -105290,6 +105356,9 @@ MonoBehaviour:
   - {fileID: 1577577578}
   layout: Layout1
   type: 0
+  occludableWalls: []
+  northWalls: []
+  walls: {fileID: 0}
 --- !u!4 &2125581895
 Transform:
   m_ObjectHideFlags: 0
@@ -106383,3 +106452,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: f3352c264dde70e4b8aa1bd421710308, type: 2}
+  newDungeonOnPlay: 0
