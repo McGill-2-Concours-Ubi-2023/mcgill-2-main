@@ -16,7 +16,7 @@ public class EnemyAI : MonoBehaviour
     moveType moveCache = moveType.ASLEEP;
     [SerializeField] bool autoSleep = true;
     [SerializeField] float randomRadius;
-    [SerializeField] Gun gun;
+    [SerializeField] Gun1 gun;
     [SerializeField] float lookSpeed;
     [SerializeField] LayerMask randomLayerMask = -1;
     [SerializeField] float wakeTime = 1f;
@@ -60,9 +60,9 @@ public class EnemyAI : MonoBehaviour
                 {
                     FaceTarget(player.position);
                 }
-                gun.OnShootStartIntention();
+                if(gun!=null)
+                gun.Shoot();
             }
-            else gun.OnShootStopIntention();
         }
 
         
@@ -92,7 +92,7 @@ public class EnemyAI : MonoBehaviour
     void RandomTarget()
     {
         Vector3 ori = (move == moveType.RANDOM) ? this.transform.position : player.position;
-        Vector3 randompt = new Vector3(0,0,0);
+        Vector3 randompt = RandomNavSphere(ori, randomRadius, randomLayerMask);
         do//checking if the point is actually reachable
         {
             randompt = RandomNavSphere(ori, randomRadius, randomLayerMask);

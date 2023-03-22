@@ -293,7 +293,7 @@ PrefabInstance:
     - target: {fileID: 3164982295968437048, guid: 0a93e9d4454ffb647834281bb6ad5303,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -0.00000083880195
       objectReference: {fileID: 0}
     - target: {fileID: 3164982295968437048, guid: 0a93e9d4454ffb647834281bb6ad5303,
         type: 3}
@@ -440,6 +440,11 @@ PrefabInstance:
       objectReference: {fileID: 4732581139146179420}
     - target: {fileID: 6351373347666087230, guid: 136e04102ca6e724b8fce6a7e46a4fdd,
         type: 3}
+      propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[1].m_Value.x
+      value: 0.000002492171
+      objectReference: {fileID: 0}
+    - target: {fileID: 6351373347666087230, guid: 136e04102ca6e724b8fce6a7e46a4fdd,
+        type: 3}
       propertyPath: m_PropertySheet.m_NamedObject.m_Array.Array.data[0].m_Value
       value: 
       objectReference: {fileID: 4215632952355636880}
@@ -538,6 +543,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Gun
+      objectReference: {fileID: 0}
+    - target: {fileID: 2435986675446788181, guid: b5d03294d62926645bd790817082b95a,
+        type: 3}
+      propertyPath: playerGun
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b5d03294d62926645bd790817082b95a, type: 3}
