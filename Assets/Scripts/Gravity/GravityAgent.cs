@@ -21,7 +21,7 @@ public class GravityAgent : MonoBehaviour
             if (animator)
             {
                 animator.speed *= massCompression;
-                if (animator) animator.SetTrigger("Despawn");
+                animator.SetTrigger("Despawn");
             }          
         }
     }

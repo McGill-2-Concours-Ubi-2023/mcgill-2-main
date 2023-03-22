@@ -48,7 +48,7 @@ GameObject:
   - component: {fileID: 1728544523}
   - component: {fileID: 7277031812847996845}
   m_Layer: 3
-  m_Name: MainCharacter
+  m_Name: MainCharacterDeprecated
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -197,6 +197,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentField: {fileID: 0}
+  isBound: 0
 --- !u!114 &7277031812847996845
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -433,11 +434,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: FollowTrail
       objectReference: {fileID: 0}
+    - target: {fileID: 2916513261366062581, guid: 136e04102ca6e724b8fce6a7e46a4fdd,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3441256998511020805, guid: 136e04102ca6e724b8fce6a7e46a4fdd,
         type: 3}
       propertyPath: Target
       value: 
       objectReference: {fileID: 4732581139146179420}
+    - target: {fileID: 3653597300438275922, guid: 136e04102ca6e724b8fce6a7e46a4fdd,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6351373347666087230, guid: 136e04102ca6e724b8fce6a7e46a4fdd,
         type: 3}
       propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[1].m_Value.x
@@ -477,17 +488,17 @@ PrefabInstance:
     - target: {fileID: 2435986675446788178, guid: b5d03294d62926645bd790817082b95a,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.3
+      value: 0.05
       objectReference: {fileID: 0}
     - target: {fileID: 2435986675446788178, guid: b5d03294d62926645bd790817082b95a,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.1
+      value: 0.05
       objectReference: {fileID: 0}
     - target: {fileID: 2435986675446788178, guid: b5d03294d62926645bd790817082b95a,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.1
+      value: 0.05
       objectReference: {fileID: 0}
     - target: {fileID: 2435986675446788178, guid: b5d03294d62926645bd790817082b95a,
         type: 3}
@@ -549,6 +560,12 @@ PrefabInstance:
       propertyPath: playerGun
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2435986675446788182, guid: b5d03294d62926645bd790817082b95a,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 2885756083127718827, guid: bb56d117df5a3a84d93ea375d75f1412,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b5d03294d62926645bd790817082b95a, type: 3}
 --- !u!4 &1127604391099544964 stripped
