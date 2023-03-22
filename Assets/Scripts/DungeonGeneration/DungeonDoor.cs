@@ -18,6 +18,7 @@ public class DungeonDoor : MonoBehaviour
     private MeshCollider doorCollider;
     private NavMeshObstacle doorObstacle;
     private bool canOpen = true;
+    private DungeonRoom bufferRoom;
 
     private void Start()
     {
@@ -65,6 +66,14 @@ public class DungeonDoor : MonoBehaviour
     {
         if(other.gameObject.layer == LayerMask.NameToLayer("Player") && canOpen)
         {
+            if (sharedRoom1 == DungeonRoom.activeRoom) 
+            {
+                bufferRoom = sharedRoom2;
+            }
+            else
+            {
+                bufferRoom = sharedRoom1;
+            } 
             openCoroutine = StartCoroutine(Open());
             if (closeCoroutine != null) StopCoroutine(closeCoroutine);
             DungeonRoom.lastEnteredDoor = this;
@@ -110,13 +119,16 @@ public class DungeonDoor : MonoBehaviour
         {
             closeCoroutine = StartCoroutine(Close());
             if (openCoroutine != null) StopCoroutine(openCoroutine);
-        }
-        if (other.CompareTag("Player")) {
-            GoThorouthDoor();
+
+            if (other.CompareTag("Player"))
+            {
+                if(DungeonRoom.activeRoom == bufferRoom)
+                GoThorouthDoor();
+            }
         }
     }
 
-    private void GoThorouthDoor() {
+    public void GoThorouthDoor() {
         MapManager map = GameObject.Find("LayoutMap").GetComponent<MapManager>();
         DungeonRoom currentRoom = map.dungeonData.GetActiveRoom();
         Vector2Int position = currentRoom.GridPosition();

@@ -50,7 +50,7 @@ public static class DungeonDrawer
         dungeonData.AddRoomData(bufferData);
         DungeonRoom newRoom = obj.AddComponent<DungeonRoom>();
         newRoom.ReassignRoom(existingRoom, type);       
-        GameObject.DestroyImmediate(existingRoom.gameObject);
+        DungeonData.SafeDestroy(existingRoom.transform.Find("Floor").gameObject);
         newRoom.Isolate();
         return obj;
     }
