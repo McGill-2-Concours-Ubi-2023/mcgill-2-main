@@ -47,7 +47,7 @@ public class ConcentricGravityField : GravityField
 
     protected override void DetectCollision()
     {
-        Collider[] colliders = Physics.OverlapSphere(transform.position, radius, layerMask);
+        Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
         foreach (Collider collider in colliders)
         {
             ProcessCollision(collider);

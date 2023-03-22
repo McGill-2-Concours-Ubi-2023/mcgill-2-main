@@ -46,12 +46,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c673cb596f53004783cc89449bf6f61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  destructionBounds: {fileID: 1421598444235042090}
   gravity: 9.81
-  agents:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  agents: []
   massCompression: 1
   orientationSpeed: 2
   dampeningForce: 0.2
@@ -86,7 +83,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1421598444235042085
 Transform:
   m_ObjectHideFlags: 0
@@ -113,7 +110,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 2
+  m_Radius: 1.5
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1421598444886973463
 GameObject:
