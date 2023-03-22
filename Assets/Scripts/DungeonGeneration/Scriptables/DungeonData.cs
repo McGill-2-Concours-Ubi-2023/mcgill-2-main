@@ -18,7 +18,7 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
     [SerializeField]
     [Range(0.1f, 1f)]
     private float roomDensity = 0.5f;
-    [SerializeField]
+    [SerializeField][HideInInspector]
     private List<DungeonRoom> rooms;
     [SerializeField][HideInInspector]
     private DungeonRoom startingRoom;
@@ -38,8 +38,8 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
     private GameObject doorPrefab;
     [SerializeField]
     private GameObject wallsPrefab;
-    [SerializeField][Header("Optional")]
-    private NavMeshData navMeshData;
+    [SerializeField][Header("Replace rooms")]
+    private GameObject[] roomOverrides;
 
     public void GenerateDungeon()
     {
@@ -51,8 +51,6 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
         InitializeNavMesh();
         Cleanup();
     }
-
-
 
     public void AddRoom(DungeonRoom room)
     {
@@ -229,5 +227,10 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
     public GameObject[] GetTreasureRoomPrefabs()
     {
         return TreasureRoomPrefabs;
+    }
+
+    public GameObject[] GetRoomOverrides()
+    {
+        return roomOverrides;
     }
 }

@@ -17,13 +17,14 @@ public class DungeonDoor : MonoBehaviour
     private Coroutine closeCoroutine;
     private MeshCollider doorCollider;
     private NavMeshObstacle doorObstacle;
+    [SerializeField]
     private bool canOpen = true;
     private DungeonRoom bufferRoom;
 
     private void Start()
     {
         doorCollider = transform.Find("Door").GetComponent<MeshCollider>();
-        doorObstacle = transform.Find("Door").GetComponent<NavMeshObstacle>();
+        doorObstacle = transform.Find("Door").GetComponent<NavMeshObstacle>();        
     }
 
     public bool CanOpen()
@@ -47,13 +48,14 @@ public class DungeonDoor : MonoBehaviour
         Vector3 diff = originRoom.transform.position - targetRoom.transform.position;
         Vector3 doorPosition = doorObj.transform.position - diff/2 + Y_Offset;
         var doorObject = DungeonDrawer.DrawSingleObject(doorPosition, data.GetDoorPrefab(), doorObj);
-        var doorComponent = doorObject.AddComponent<DungeonDoor>();
+        var doorComponent = doorObject.AddComponent<DungeonDoor>(); //canOpen = true by default;
         doorComponent.sharedRoom1 = originRoom;
         doorComponent.sharedRoom2 = targetRoom;
         var orientation = originRoom.transform.position - targetRoom.transform.position;
         var direction = new Vector3(orientation.x, 0, orientation.z);
         var angle = Vector3.SignedAngle(doorObj.transform.forward, direction, Vector3.up);
         doorObject.transform.Rotate(0, angle, 0);
+        if (originRoom.IsIsolated() || targetRoom.IsIsolated()) doorComponent.canOpen = false; //lock door is isolated
         return doorComponent;
     }
 

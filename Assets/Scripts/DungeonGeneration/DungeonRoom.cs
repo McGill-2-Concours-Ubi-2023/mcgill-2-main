@@ -29,6 +29,7 @@ public class DungeonRoom : MonoBehaviour
     private List<OccludableWall> northWalls;
     [SerializeField][HideInInspector]
     private GameObject walls;
+    private bool isIsolated;
 
     public static DungeonRoom GetActiveRoom()
     {
@@ -156,6 +157,11 @@ public class DungeonRoom : MonoBehaviour
         }
     }
 
+    public bool IsIsolated()
+    {
+        return isIsolated;
+    }
+
     public void ReassignRoom(DungeonRoom existingRoom, RoomTypes.RoomType type)
     {
         this.adjacentRooms = existingRoom.adjacentRooms;
@@ -220,32 +226,40 @@ public class DungeonRoom : MonoBehaviour
         return newRoom;
     }
 
-    private void BindWalls(GameObject walls)
+    public void BindWalls(GameObject walls)
     {
         //Debug.Log(walls == null);
-        var southWestCornerWall = walls.transform.Find("Corner").GetComponentInChildren<OccludableWall>();
-        var southEastCotnerWall = walls.transform.Find("Corner4").GetComponentInChildren<OccludableWall>();
-        var middleWallNoDoor = walls.transform.Find("PlainWall1").GetComponentInChildren<OccludableWall>();
-        var middleWallDoor = walls.transform.Find("DoorWall1").GetComponentInChildren<OccludableWall>();
+        var southWestCornerWall = walls.transform.Find("Corner");
+        var southEastCotnerWall = walls.transform.Find("Corner4");
+        var middleWallNoDoor = walls.transform.Find("PlainWall1");
+        var middleWallDoor = walls.transform.Find("DoorWall1");
         if (occludableWalls == null) occludableWalls = new List<OccludableWall>();
-        occludableWalls.Add(southWestCornerWall);
-        occludableWalls.Add(southEastCotnerWall);
-        occludableWalls.Add(middleWallDoor);
-        occludableWalls.Add(middleWallNoDoor);
+        if(southWestCornerWall != null)
+        occludableWalls.Add(southWestCornerWall.GetComponentInChildren<OccludableWall>());
+        if(southEastCotnerWall != null)
+        occludableWalls.Add(southEastCotnerWall.GetComponentInChildren<OccludableWall>());
+        if(middleWallDoor != null)
+        occludableWalls.Add(middleWallDoor.GetComponentInChildren<OccludableWall>());
+        if(middleWallNoDoor != null)
+        occludableWalls.Add(middleWallNoDoor.GetComponentInChildren<OccludableWall>());
         GetBottomRoomOccludableWalls();
     }
 
     private void FindNorthWalls()
     {
-        var topEastCornerWall = walls.transform.Find("Corner2").GetComponentInChildren<OccludableWall>();
-        var topWestCornerWall = walls.transform.Find("Corner3").GetComponentInChildren<OccludableWall>();
-        var topMiddleWallDoor = walls.transform.Find("PlainWall2").GetComponentInChildren<OccludableWall>();
-        var topMiddleWallNoDoor = walls.transform.Find("DoorWall2").GetComponentInChildren<OccludableWall>();
+        var topEastCornerWall = walls.transform.Find("Corner2");
+        var topWestCornerWall = walls.transform.Find("Corner3");
+        var topMiddleWallDoor = walls.transform.Find("PlainWall2");
+        var topMiddleWallNoDoor = walls.transform.Find("DoorWall2");
         if (northWalls == null) northWalls = new List<OccludableWall>();
-        northWalls.Add(topEastCornerWall);
-        northWalls.Add(topWestCornerWall);
-        northWalls.Add(topMiddleWallNoDoor);
-        northWalls.Add(topMiddleWallDoor);
+        if(topEastCornerWall != null)
+        northWalls.Add(topEastCornerWall.GetComponentInChildren<OccludableWall>());
+        if(topWestCornerWall != null)
+        northWalls.Add(topWestCornerWall.GetComponentInChildren<OccludableWall>());
+        if(topMiddleWallNoDoor)
+        northWalls.Add(topMiddleWallNoDoor.GetComponentInChildren<OccludableWall>());
+        if(topMiddleWallDoor != null)
+        northWalls.Add(topMiddleWallDoor.GetComponentInChildren<OccludableWall>());
     }
 
     public List<OccludableWall> GetOccludableWalls()
@@ -261,6 +275,7 @@ public class DungeonRoom : MonoBehaviour
         loadedRoom.Initialize(gridMap, roomData.GetPosition(), layout, roomData.GetRoomType());
         dungeonData.AddRoom(loadedRoom);
         loadedRoom.walls = DungeonDrawer.DrawSingleObject(loadedRoom.GetPosition(), dungeonData.GetWallPrefab(), loadedRoom.gameObject);
+        loadedRoom.isIsolated = roomData.IsIsolated();
         return loadedRoom;
     }
 

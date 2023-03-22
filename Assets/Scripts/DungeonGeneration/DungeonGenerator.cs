@@ -10,6 +10,7 @@ public class DungeonGenerator : MonoBehaviour
     public DungeonData data;
     [SerializeField]
     private bool newDungeonOnPlay = false;
+    public DungeonRoom roomToReplace;
 
     private void Awake()
     {

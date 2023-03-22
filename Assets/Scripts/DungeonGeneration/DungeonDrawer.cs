@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
@@ -38,29 +39,47 @@ public static class DungeonDrawer
         return obj;
     }
 
-    public static GameObject ReplaceRoom(DungeonRoom existingRoom, DungeonData dungeonData, GameObject roomPrefab, RoomTypes.RoomType type)
+    //Runtime function, won't work in Editor
+    public static GameObject ReplaceRoomAndIsolate(DungeonRoom room, DungeonData dungeonData, GameObject roomPrefab, RoomTypes.RoomType type)
     {
-        RoomData existingRoomData = dungeonData.GetActiveLayout().GetRoomData(existingRoom);
-        RoomData bufferData = new RoomData(existingRoomData.GetPosition(), existingRoomData.GetRoomType(), 0);
+        RoomData roomData = dungeonData.GetActiveLayout().GetRoomData(room);
         GameObject obj = GameObject.Instantiate(roomPrefab);
-        dungeonData.GetActiveLayout().RemoveData(existingRoomData);
-        bufferData.SetRoomType(type);      
-        obj.transform.position = bufferData.GetPosition();
+        roomData.SetRoomType(type);
+        roomData.SetIsolated(true);//Serialize it
+        GameObject[] roomOptions = dungeonData.GetRoomOverrides();
+        int newPrefabIndex = 0;
+        for(int i = 0; i<roomOptions.Length; i++)
+        {
+            if (roomOptions[i] == roomPrefab)
+            {
+                newPrefabIndex = i;
+                break;
+            }
+        }
+        obj.transform.position = roomData.GetPosition();
         obj.transform.parent = FindDungeonDrawer(dungeonData.GetMonoInstance()).transform;
-        dungeonData.AddRoomData(bufferData);
-        DungeonRoom newRoom = obj.AddComponent<DungeonRoom>();
-        newRoom.ReassignRoom(existingRoom, type);       
-        DungeonData.SafeDestroy(existingRoom.transform.Find("Floor").gameObject);
-        newRoom.Isolate();
+        roomData.SetOverride(true, newPrefabIndex);     
+        room.ReassignRoom(room, type);
+        room.GetWalls().transform.parent = room.transform;      
+        room.Isolate();
+        DungeonData.SafeDestroy(room.transform.Find("Floor").gameObject);
         return obj;
     }
 
     public static GameObject DrawRoomFromData(RoomData roomData, DungeonData dungeonData)
-    {
-        string roomTypeName = roomData.GetRoomType().ToString();
-        MethodInfo method = typeof(DungeonData).GetMethod("Get" + roomTypeName + "RoomPrefabs", BindingFlags.Public | BindingFlags.Instance);
-        GameObject[] roomPrefabs = (GameObject[])method.Invoke(dungeonData, null);
-        var obj = GameObject.Instantiate(roomPrefabs[roomData.GetPrefabIndex()]);
+    {      
+        GameObject obj;
+        if (roomData.IsOverride())
+        {
+            GameObject[] roomPrefabs = dungeonData.GetRoomOverrides();
+            obj = GameObject.Instantiate(roomPrefabs[roomData.GetPrefabIndex()]);
+        } else
+        {
+            string roomTypeName = roomData.GetRoomType().ToString();
+            MethodInfo method = typeof(DungeonData).GetMethod("Get" + roomTypeName + "RoomPrefabs", BindingFlags.Public | BindingFlags.Instance);
+            GameObject[] roomPrefabs = (GameObject[])method.Invoke(dungeonData, null);
+            obj = GameObject.Instantiate(roomPrefabs[roomData.GetPrefabIndex()]);
+        }
         obj.transform.position = roomData.GetPosition();
         obj.transform.parent = FindDungeonDrawer(dungeonData.GetMonoInstance()).transform;
         dungeonData.AddRoomData(roomData);
