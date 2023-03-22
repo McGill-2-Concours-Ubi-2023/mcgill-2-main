@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
@@ -57,11 +58,12 @@ public class ConfigurationEditor : Editor
         GUILayout.Label("description:");
         descriptionToRemove = GUILayout.TextField(descriptionToRemove);
         RoomToRemove = (GameObject)EditorGUILayout.ObjectField("room:", RoomToRemove, typeof(GameObject), true);
-        if (GUILayout.Button("Remove entry") && descriptionToRemove != "" && RoomToRemove != null)
+        if (GUILayout.Button("Remove config") && descriptionToRemove != "" && RoomToRemove != null)
         {
             if (config.configurations.ContainsKey(descriptionToRemove))
             {
                 config.configurations[descriptionToRemove].Remove(RoomToRemove);
+                if (config.configurations[descriptionToRemove].Count == 0) config.configurations.Remove(descriptionToRemove);
                 descriptionToRemove = ""; // clear the input field
                 RoomToRemove = null; // clear the game object field
                 EditorUtility.SetDirty(target); // mark the scriptable object as dirty to save the changes
@@ -71,6 +73,19 @@ public class ConfigurationEditor : Editor
         }
         serializedObject.ApplyModifiedProperties();
 
+        GuiLine();
+        GUILayout.Label("Remove description", subTitle);
+        GUILayout.Label("description:");
+        descriptionToRemove = GUILayout.TextField(descriptionToRemove);
+        if (GUILayout.Button("Remove description") && descriptionToRemove != "") {
+            if (config.configurations.ContainsKey(descriptionToRemove)) {
+                config.configurations.Remove(descriptionToRemove);
+                descriptionToRemove = ""; // clear the input field
+                EditorUtility.SetDirty(target); // mark the scriptable object as dirty to save the changes
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+            }
+        }
     }
     void GuiLine(int i_height = 5)
 
@@ -86,3 +101,4 @@ public class ConfigurationEditor : Editor
 
 
 }
+#endif
