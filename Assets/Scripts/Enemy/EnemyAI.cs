@@ -49,7 +49,7 @@ public class EnemyAI : MonoBehaviour
     {
         if (move != moveType.ASLEEP)
         {
-            if ((navMeshAgent.remainingDistance < repathDist && move == moveType.RANDOM) || (move == moveType.APPROACH && Vector3.Distance(navMeshAgent.destination, player.position) > randomRadius))
+            if ((navMeshAgent.remainingDistance < repathDist && move == moveType.RANDOM) || (move == moveType.APPROACH && Vector3.Distance(navMeshAgent.destination, player.position) > randomRadius+1))
             {
                 RandomTarget();//if we're close to the target position or the player has significantly changed position, recalculate target pos.
             }
@@ -110,9 +110,9 @@ public class EnemyAI : MonoBehaviour
 
         NavMeshHit navHit;
 
-        NavMesh.SamplePosition(randomDirection, out navHit, distance, layermask);
-
-        return navHit.position;
+        if(NavMesh.SamplePosition(randomDirection, out navHit, distance, layermask))
+            return navHit.position;
+        else return origin;//failsafe
     }
     private void FaceTarget(Vector3 destination)//looks at target instead of move direction, clunky as hell but it'll do the trick
     {
