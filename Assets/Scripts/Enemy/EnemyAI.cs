@@ -26,6 +26,7 @@ public class EnemyAI : MonoBehaviour
     NavMeshPath navMeshPath;
     NavMeshPath navMeshPath2;
     [SerializeField] LineRenderer lr;
+    bool waking;
     // Start is called before the first frame update
     void Start()
     {
@@ -47,9 +48,33 @@ public class EnemyAI : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+
+
+        Debug.Log(Vector3.Distance(navMeshAgent.destination, player.position).ToString());
+        if (navMeshAgent.path.corners.Length > 0 && drawPath)
+        {
+            lr.positionCount = navMeshAgent.path.corners.Length;
+            for (int i = 0; i < navMeshAgent.path.corners.Length; i++)
+            {
+                lr.SetPosition(i, navMeshAgent.path.corners[i]);
+            }
+        }// draws the path
+
+        //code below determines if player is reachable, awakens if they are, sleeps if they arent
+        Vector3 playerpt = RandomNavSphere(player.position, randomRadius, randomLayerMask);
+        navMeshAgent.CalculatePath(player.position, navMeshPath2);
+        if (navMeshPath2.status == NavMeshPathStatus.PathComplete && move == moveType.ASLEEP && autoSleep &&!waking)
+        {
+            StartCoroutine(awaken());
+        }
+        else if (navMeshPath.status != NavMeshPathStatus.PathComplete && move != moveType.ASLEEP && autoSleep)
+        {
+            moveCache = move;
+            move = moveType.ASLEEP;
+        }
         if (move != moveType.ASLEEP)
         {
-            if ((navMeshAgent.remainingDistance < repathDist && move == moveType.RANDOM) || (move == moveType.APPROACH && Vector3.Distance(navMeshAgent.destination, player.position) > randomRadius+1))
+            if ((navMeshAgent.remainingDistance < repathDist && move == moveType.RANDOM) || (move == moveType.APPROACH && Vector3.Distance(navMeshAgent.destination, player.position) > randomRadius+0.5))
             {
                 RandomTarget();//if we're close to the target position or the player has significantly changed position, recalculate target pos.
             }
@@ -65,40 +90,21 @@ public class EnemyAI : MonoBehaviour
             }
         }
 
-        
-
-        if (navMeshAgent.path.corners.Length > 0 && drawPath)
-        {
-            lr.positionCount = navMeshAgent.path.corners.Length;
-            for (int i = 0; i < navMeshAgent.path.corners.Length; i++)
-            {
-                lr.SetPosition(i, navMeshAgent.path.corners[i]);
-            }
-        }// draws the path
-
-        //code below determines if player is reachable, awakens if they are, sleeps if they arent
-        Vector3 playerpt = RandomNavSphere(player.position, randomRadius, randomLayerMask);
-        navMeshAgent.CalculatePath(player.position, navMeshPath2);
-        if (navMeshPath2.status == NavMeshPathStatus.PathComplete && move == moveType.ASLEEP &&autoSleep)
-        {
-            StartCoroutine(awaken());
-        }
-        else if (navMeshPath.status != NavMeshPathStatus.PathComplete && move != moveType.ASLEEP && autoSleep) {
-            moveCache = move;
-            move = moveType.ASLEEP;
-        }
     }
 
     void RandomTarget()
     {
         Vector3 ori = (move == moveType.RANDOM) ? this.transform.position : player.position;
         Vector3 randompt = RandomNavSphere(ori, randomRadius, randomLayerMask);
-        do//checking if the point is actually reachable
+        Debug.Log("pathing");
+        do//checking if the point is actually reachable(only works in random, theoretically if the player radius is too high it may mess up and try to go off screen but I'm stupid and this works okay)
         {
             randompt = RandomNavSphere(ori, randomRadius, randomLayerMask);
             navMeshAgent.CalculatePath(randompt, navMeshPath);
-
-        } while (navMeshPath.status != NavMeshPathStatus.PathComplete);
+        
+        
+        } while (navMeshPath.status != NavMeshPathStatus.PathComplete && move == moveType.RANDOM);
+        
         navMeshAgent.destination = randompt;
     }
 
@@ -110,7 +116,7 @@ public class EnemyAI : MonoBehaviour
 
         NavMeshHit navHit;
 
-        if(NavMesh.SamplePosition(randomDirection, out navHit, distance, layermask))
+        if(NavMesh.SamplePosition(randomDirection, out navHit, 4, layermask))
             return navHit.position;
         else return origin;//failsafe
     }
@@ -121,9 +127,11 @@ public class EnemyAI : MonoBehaviour
         Quaternion rotation = Quaternion.LookRotation(lookPos);
         transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * lookSpeed);
     }
-    IEnumerator awaken() { 
+    IEnumerator awaken() {
+        waking = true;
         yield return new WaitForSeconds(wakeTime);
         move = moveCache;
         RandomTarget();
+        waking = false;
     }
 }
