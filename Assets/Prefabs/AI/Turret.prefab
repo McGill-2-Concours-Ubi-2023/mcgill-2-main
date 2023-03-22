@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6855429342318850290}
   - component: {fileID: 6855429342318850293}
   - component: {fileID: 6855429342318850292}
+  - component: {fileID: 8394683929319327146}
   m_Layer: 0
   m_Name: Turret
   m_TagString: Untagged
@@ -98,6 +99,21 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8394683929319327146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6855429342318850295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9486b327d3c33545a56e8d24d4e468b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHealth: 5
+  ui: {fileID: 0}
+  invulnerable: 0
 --- !u!1 &8153731443243491382
 GameObject:
   m_ObjectHideFlags: 0
@@ -241,11 +257,11 @@ GameObject:
   - component: {fileID: 8153731444753709488}
   - component: {fileID: 8153731444753709489}
   - component: {fileID: 8153731444753709494}
-  - component: {fileID: 8153731444753709495}
   - component: {fileID: 8153731444753709492}
   - component: {fileID: 8153731444753709503}
   - component: {fileID: 5825876448954427158}
   - component: {fileID: 5707665176391444532}
+  - component: {fileID: 1983785414921901080}
   m_Layer: 7
   m_Name: PillAI (1)
   m_TagString: Untagged
@@ -262,7 +278,7 @@ Transform:
   m_GameObject: {fileID: 8153731444753709493}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0.50001, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8153731443729627096}
@@ -383,38 +399,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 0}
   repathDist: 1
-  attackRange: 7
+  attackRange: 10
   move: 0
   autoSleep: 1
   randomRadius: 5
-  gun: {fileID: 8153731444753709495}
-  lookSpeed: 7
+  gun: {fileID: 1983785414921901080}
+  lookSpeed: 5
   randomLayerMask:
     serializedVersion: 2
     m_Bits: 1
   wakeTime: 2
   lookAtPlayer: 1
-  drawPath: 1
+  drawPath: 0
   turningPart: {fileID: 0}
   lr: {fileID: 8153731444753709492}
---- !u!114 &8153731444753709495
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8153731444753709493}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a49933f7196eca04ea31f36b0ce657af, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bulletPrefab: {fileID: 3231657277267066154, guid: a42fed9549d3d9b4f9d694ab5106faec,
-    type: 3}
-  gunTip: {fileID: 8153731443729627096}
-  speed: 10
-  bulletInterval: 0.2
-  overrideVel: 0
 --- !u!120 &8153731444753709492
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -558,3 +556,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentField: {fileID: 0}
+  isBound: 0
+--- !u!114 &1983785414921901080
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8153731444753709493}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 715fe828e9054154e900fcdf7e40de93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bulletPrefab: {fileID: 3231657277267066154, guid: 5a7ab7794c88e8b4dbb95dc25a289b67,
+    type: 3}
+  gunTip: {fileID: 8153731443729627096}
+  bulletInterval: 0.2

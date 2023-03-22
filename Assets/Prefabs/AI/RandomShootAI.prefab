@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3582646812591520579}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.3}
+  m_LocalPosition: {x: 0, y: -0.2, z: -0.3}
   m_LocalScale: {x: 0.3, y: 0.3, z: 0.6}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -109,7 +109,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8914186940552852626}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.2, z: 0}
   m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -190,7 +190,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8914186941005423485}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.5}
+  m_LocalPosition: {x: 0, y: -0.2, z: 0.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -222,7 +222,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &8914186942331497752
 Transform:
   m_ObjectHideFlags: 0
@@ -262,7 +262,7 @@ CapsuleCollider:
   m_Radius: 0.3
   m_Height: 0
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: -0.2, z: 0}
 --- !u!195 &8914186942331497748
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -323,7 +323,7 @@ MonoBehaviour:
     m_Bits: 1
   wakeTime: 2
   lookAtPlayer: 1
-  drawPath: 1
+  drawPath: 0
   turningPart: {fileID: 0}
   lr: {fileID: 8914186942331497744}
 --- !u!114 &5659585742967448672
@@ -338,7 +338,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 715fe828e9054154e900fcdf7e40de93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletPrefab: {fileID: 3231657277267066154, guid: 450f054086322a74eaae684fa4428c8e,
+  bulletPrefab: {fileID: 3231657277267066154, guid: 28518c30489e32c46b2e390f832e95f3,
     type: 3}
   gunTip: {fileID: 8914186941005423484}
   bulletInterval: 1
@@ -469,7 +469,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9486b327d3c33545a56e8d24d4e468b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHealth: 5
+  currentHealth: 3
   ui: {fileID: 0}
   invulnerable: 0
 --- !u!114 &5019228231863106704

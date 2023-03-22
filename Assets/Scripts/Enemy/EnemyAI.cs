@@ -134,7 +134,7 @@ public class EnemyAI : MonoBehaviour
     }
     IEnumerator awaken() {
         waking = true;
-        if (wokeOnce = false)
+        if (wokeOnce == false)
             yield return new WaitForSeconds(wakeTime);
         else
             yield return new WaitForSeconds(0.1f);

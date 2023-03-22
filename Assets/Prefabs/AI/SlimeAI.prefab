@@ -157,9 +157,9 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.4
-  m_Height: 0
+  m_Height: 2
   m_Direction: 1
-  m_Center: {x: 0, y: 0.38, z: 0}
+  m_Center: {x: 0, y: 0.88, z: 0}
 --- !u!195 &6948398992708779295
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -178,7 +178,7 @@ NavMeshAgent:
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
-  m_Height: 1
+  m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
@@ -220,7 +220,7 @@ MonoBehaviour:
     m_Bits: 1
   wakeTime: 2
   lookAtPlayer: 0
-  drawPath: 1
+  drawPath: 0
   turningPart: {fileID: 0}
   lr: {fileID: 6948398992708779285}
 --- !u!114 &6148190733883815013
@@ -366,7 +366,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9486b327d3c33545a56e8d24d4e468b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHealth: 5
+  currentHealth: 3
   ui: {fileID: 0}
   invulnerable: 0
 --- !u!114 &6809372961070476437
@@ -382,6 +382,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentField: {fileID: 0}
+  isBound: 0
 --- !u!1 &7727487958522292030
 GameObject:
   m_ObjectHideFlags: 0
