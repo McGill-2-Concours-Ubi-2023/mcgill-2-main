@@ -538,7 +538,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1135630567738069197}
   m_LocalRotation: {x: -0.7071068, y: -0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -0.00000083880013, y: 0.96515745, z: -0.0000000037252903}
+  m_LocalPosition: {x: -0.00000083446525, y: 0.96515745, z: -0.000000052154064}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -787,8 +787,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1628222058864621126}
   - component: {fileID: 1628222058864621121}
-  - component: {fileID: 1628222058864621123}
-  - component: {fileID: 5498799850252265365}
   m_Layer: 3
   m_Name: MainCharacterMenu
   m_TagString: Player
@@ -825,7 +823,7 @@ Animator:
   m_GameObject: {fileID: 1628222058864621127}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 8a8dd103eb04c61408ec005a060e9785, type: 3}
-  m_Controller: {fileID: 9100000, guid: 558bce95089d54f8fb0c9f363b7cb6a0, type: 2}
+  m_Controller: {fileID: 9100000, guid: eb6b8489f5e91c34c94106914ceb7039, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -835,54 +833,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
---- !u!114 &1628222058864621123
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1628222058864621127}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: 6ac447cf4851d4682adc0be32bb7a2f1,
-    type: 3}
-  m_NotificationBehavior: 0
-  m_UIInputModule: {fileID: 0}
-  m_DeviceLostEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_DeviceRegainedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ControlsChangedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ActionEvents:
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: c5fa6541-82aa-425e-97c8-db64c3f05138
-    m_ActionName: Player/Forward[/Keyboard/w]
-  m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: Gamepad
-  m_DefaultActionMap: Player
-  m_SplitScreenIndex: -1
-  m_Camera: {fileID: 0}
---- !u!114 &5498799850252265365
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1628222058864621127}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b118462950ba2544e940d4b351499fbe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentField: {fileID: 0}
 --- !u!1 &1693187143436691708
 GameObject:
   m_ObjectHideFlags: 0
@@ -2885,6 +2835,8 @@ MonoBehaviour:
   gunTip: {fileID: 4893626553759989236}
   speed: 10
   bulletInterval: 0.2
+  overrideVel: 0
+  playerGun: 0
 --- !u!1 &4893626553759989237
 GameObject:
   m_ObjectHideFlags: 0
