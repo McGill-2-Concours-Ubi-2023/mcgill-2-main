@@ -25,13 +25,13 @@ public class Bullet : MonoBehaviour
         this.direction = direction; 
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision other)
     {
-        if (other.CompareTag("Player") || other.CompareTag("Enemy"))// do damage to player/enemy
+        if (other.gameObject.CompareTag("Player") || other.gameObject.CompareTag("Enemy"))// do damage to player/enemy
         {
             other.gameObject.Trigger<IHealthTriggers, int>(nameof(IHealthTriggers.TakeDamage), damage);
         }
-        if (!other.CompareTag("Bullet")) {
+        if (!other.gameObject.CompareTag("Bullet")) {
             Destroy(gameObject);
         }
     }

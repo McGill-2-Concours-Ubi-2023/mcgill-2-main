@@ -27,6 +27,7 @@ public class EnemyAI : MonoBehaviour
     NavMeshPath navMeshPath2;
     [SerializeField] LineRenderer lr;
     bool waking;
+    bool wokeOnce=false;
     // Start is called before the first frame update
     void Start()
     {
@@ -50,7 +51,7 @@ public class EnemyAI : MonoBehaviour
     {
 
 
-        Debug.Log(Vector3.Distance(navMeshAgent.destination, player.position).ToString());
+        
         if (navMeshAgent.path.corners.Length > 0 && drawPath)
         {
             lr.positionCount = navMeshAgent.path.corners.Length;
@@ -84,9 +85,13 @@ public class EnemyAI : MonoBehaviour
                 if (lookAtPlayer)//might not necessarily want to shoot at player
                 {
                     FaceTarget(player.position);
+
                 }
-                if(gun!=null)
-                gun.Shoot();
+                if (gun != null)
+                {
+                    gun.Shoot();
+                    Debug.Log("shot");
+                }
             }
         }
 
@@ -129,7 +134,11 @@ public class EnemyAI : MonoBehaviour
     }
     IEnumerator awaken() {
         waking = true;
-        yield return new WaitForSeconds(wakeTime);
+        if (wokeOnce = false)
+            yield return new WaitForSeconds(wakeTime);
+        else
+            yield return new WaitForSeconds(0.1f);
+        wokeOnce = true;
         move = moveCache;
         RandomTarget();
         waking = false;
