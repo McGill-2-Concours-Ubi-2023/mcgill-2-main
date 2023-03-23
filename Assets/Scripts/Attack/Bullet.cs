@@ -27,11 +27,22 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Player") || other.gameObject.CompareTag("Enemy"))// do damage to player/enemy
+        if(gameObject.CompareTag("EnemyBullet"))
         {
-            other.gameObject.Trigger<IHealthTriggers, int>(nameof(IHealthTriggers.TakeDamage), damage);
+            if (other.gameObject.CompareTag("Player"))
+            {
+                other.gameObject.Trigger<IHealthTriggers, int>(nameof(IHealthTriggers.TakeDamage), damage);
+            }
         }
-        if (!other.gameObject.CompareTag("Bullet")) {
+        else if (gameObject.CompareTag("PlayerBullet"))
+        {
+            if (other.gameObject.CompareTag("Enemy"))
+            {
+                other.gameObject.Trigger<IHealthTriggers, int>(nameof(IHealthTriggers.TakeDamage), damage);
+            }
+        }
+        
+        if (!(other.gameObject.CompareTag("EnemyBullet")|| other.gameObject.CompareTag("PlayerBullet"))) {
             Destroy(gameObject);
         }
     }

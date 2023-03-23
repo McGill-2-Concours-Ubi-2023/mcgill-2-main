@@ -90,7 +90,7 @@ public class EnemyAI : MonoBehaviour
                 if (gun != null)
                 {
                     gun.Shoot();
-                    Debug.Log("shot");
+                    //Debug.Log("shot");
                 }
             }
         }
