@@ -1,12 +1,14 @@
 using System;
 using System.Collections;
 using Cinemachine;
+using JetBrains.Annotations;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using static Unity.Mathematics.math;
 using float2 = Unity.Mathematics.float2;
 using float3 = Unity.Mathematics.float3;
+using UnityEngine.VFX;
 
 public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, ICrateTriggers, IGravityToCameraTrigger
 {
@@ -30,6 +32,9 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     [Range(0, 1)]
     public float dashDuration = 0.3f;
     private bool m_GamePaused;
+    [CanBeNull]
+    private GameObject m_PauseMenu;
+    public VisualEffect trailFollowEffect;
 
     public ISimpleInventory<SimpleCollectible> SimpleCollectibleInventory;
     
@@ -42,6 +47,11 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         SimpleCollectibleInventory = new SimpleInventory<SimpleCollectible>();
         m_InputActionAsset = GetComponent<PlayerInput>().actions;
         animator = GetComponent<Animator>();
+        m_PauseMenu = GameObject.FindWithTag("PauseMenu");
+        if (m_PauseMenu)
+        {
+            m_PauseMenu.SetActive(false);
+        }
     }
 
     private void Start()
@@ -89,7 +99,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     private void Update()
     {
         float2 input = m_InputActionAsset["Movement"].ReadValue<Vector2>();
-        gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnInput), input);
+        gameObject.Trigger<IMainCharacterTriggers, float2>(nameof(IMainCharacterTriggers.OnInput), input);
         float3 adjustedInput;
 
         if (!isDashing)
@@ -111,11 +121,11 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         float3 cameraRight = cam.transform.right;
         float3 adjustedDirection = adjustedInput.x * cameraRight + adjustedInput.z * cameraForward;
 
-        gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnMovementIntention), adjustedDirection);
+        gameObject.Trigger<IMainCharacterTriggers, float3>(nameof(IMainCharacterTriggers.OnMovementIntention), adjustedDirection);
 
         float2 rightStick = m_InputActionAsset["CameraMove"].ReadValue<Vector2>();
         #if DEBUG
-        gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnDebugCameraRotation), rightStick);
+        gameObject.Trigger<IMainCharacterTriggers, float2>(nameof(IMainCharacterTriggers.OnDebugCameraRotation), rightStick);
         #endif
 
         float3 adjustedFaceInput = new float3
@@ -123,7 +133,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
             xz = rightStick.xy
         };
         float3 adjustedFaceDirection = adjustedFaceInput.x * cameraRight + adjustedFaceInput.z * cameraForward;
-        gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnPlayerFaceIntention), adjustedFaceDirection);
+        gameObject.Trigger<IMainCharacterTriggers, float3>(nameof(IMainCharacterTriggers.OnPlayerFaceIntention), adjustedFaceDirection);
 
         m_MovementDirection = normalize(all(adjustedInput.xz == float2.zero) ? transform.forward : adjustedDirection);
         Debug.DrawRay(transform.position + Vector3.up, m_MovementDirection, Color.green);
@@ -176,6 +186,16 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         outData.Value = m_NavActionData;
     }
 
+    public void ActivateTrail()
+    {
+        trailFollowEffect.SendEvent("OnFollowTrail");
+    }
+
+    public void StopTrail()
+    {
+        trailFollowEffect.SendEvent("OnStopTrail");
+    }
+
     public void OnDash()
     {
         //gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnDashIntention));
@@ -224,11 +244,11 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         int randomNumber = UnityEngine.Random.Range(1, 3);
         animator.SetTrigger("ThrowGrenade_" + randomNumber);
         GameObject grenade = Instantiate(GravityGrenadePrefab);
-        float3 throwDir = (transform.forward + transform.up).normalized;
+        float3 throwDir = (transform.forward + transform.up * 0.5f).normalized;
         Physics.IgnoreCollision(GetComponent<CapsuleCollider>(), grenade.transform.Find("SphereMesh").GetComponent<SphereCollider>());
-        grenade.transform.position = transform.position + Vector3.up;
+        grenade.transform.position = transform.position + Vector3.up * 0.5f;
         Rigidbody grenade_rb = grenade.GetComponent<Rigidbody>();
-        grenade_rb.AddForce(throwDir * 10, ForceMode.Impulse);
+        grenade_rb.AddForce(throwDir * 8, ForceMode.Impulse);
         StartCoroutine(GrenadeDelayedExplode(grenade));
     }
 
@@ -310,9 +330,25 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     {
         m_GamePaused = !m_GamePaused;
         Time.timeScale = m_GamePaused ? 0.0f : 1.0f;
-        if (m_GamePaused)
+        if (m_PauseMenu)
         {
+            m_PauseMenu.SetActive(m_GamePaused);
         }
+    }
+
+    public void OnShootPress()
+    {
+        gameObject.TriggerDown<IGunTriggers>(nameof(IGunTriggers.OnShootStartIntention));
+    }
+    
+    public void OnShootRelease()
+    {
+        gameObject.TriggerDown<IGunTriggers>(nameof(IGunTriggers.OnShootStopIntention));
+    }
+    
+    public void IsDashing(Ref<bool> refIsDashing)
+    {
+        refIsDashing.Value = this.isDashing;
     }
 }
 

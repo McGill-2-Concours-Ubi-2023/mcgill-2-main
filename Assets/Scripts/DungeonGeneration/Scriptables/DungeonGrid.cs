@@ -102,7 +102,6 @@ public class DungeonGrid : DataContainer<RoomData>
             DungeonRoom.CreateRandomRoom(data, spawnPoint, gridMap, data.GetActiveLayout().GetName(), RoomTypes.GetRandomRoomType());           
         }
         ConnectRooms();
-        data.AllRooms().ForEach(room => room.GenerateDoorsPlaceholders(data));
         data.AllRooms().ForEach(room => room.GenerateDoors(data));
     }
 
@@ -199,7 +198,6 @@ public class DungeonGrid : DataContainer<RoomData>
             DungeonRoom.CreateRoomFromData(roomData, data, gridMap, data.GetActiveLayout().GetName());
         }
         ConnectRooms();
-        data.AllRooms().ForEach(room => room.GenerateDoorsPlaceholders(data));
         data.AllRooms().ForEach(room => room.GenerateDoors(data));
     }
 

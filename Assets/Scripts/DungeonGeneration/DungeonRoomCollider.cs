@@ -8,6 +8,8 @@ public class DungeonRoomCollider : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         DungeonRoom.activeRoom = GetComponentInParent<DungeonRoom>();
+        DungeonRoom.activeRoom.GetOccludableWalls().ForEach(wall => { if (wall != null) wall.Hide(); });
+        if(DungeonRoom.lastEnteredDoor != null)DungeonRoom.lastEnteredDoor.ShowWalls();
     }
 
     private void OnTriggerStay(Collider other)

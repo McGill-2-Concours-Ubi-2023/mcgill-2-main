@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Collections;
@@ -15,21 +16,47 @@ public class DungeonRoom : MonoBehaviour
     [SerializeField]
     public static DungeonRoom activeRoom;
     [SerializeField]
+    public static DungeonDoor lastEnteredDoor;
+    [SerializeField]
     private List<DungeonDoor> doors = new List<DungeonDoor>();
     [SerializeField]
     private string layout;
     [SerializeField]
     private RoomTypes.RoomType type;
-
-
-    internal object ToList()
-    {
-        throw new NotImplementedException();
-    }
+    [SerializeField][HideInInspector]
+    private List<OccludableWall> occludableWalls;
+    [SerializeField][HideInInspector]
+    private List<OccludableWall> northWalls;
+    [SerializeField][HideInInspector]
+    private GameObject walls;
+    private bool isIsolated;
 
     public static DungeonRoom GetActiveRoom()
     {
         return activeRoom;
+    }
+
+    public GameObject GetWalls()
+    {
+        return walls;
+    }
+
+    public void GetBottomRoomOccludableWalls()
+    {
+        foreach(DungeonRoom room in adjacentRooms)
+        {
+            if ((room.transform.position - transform.position).normalized == -Vector3.forward)
+            {
+                room.FindNorthWalls();
+                foreach (OccludableWall wall in room.northWalls)
+                {
+                    if (wall != null)
+                    {
+                        occludableWalls.Add(wall);
+                    }
+                }
+            }
+        }
     }
 
     public string GetLayout()
@@ -40,15 +67,6 @@ public class DungeonRoom : MonoBehaviour
     public void ConnectRoom(DungeonRoom room)
     {
         adjacentRooms.Add(room);
-    }
-
-    public void GenerateDoorsPlaceholders(DungeonData data)
-    {
-        List<Vector3> wallsTransforms = new List<Vector3>();
-        Direction2D.cardinals.ForEach(cardinal =>
-        {
-            DungeonDoor.CreatePlaceholder(this, new Vector3(cardinal.x, 0, cardinal.y), data);
-        });
     }
 
     public Guid Id()
@@ -88,7 +106,7 @@ public class DungeonRoom : MonoBehaviour
                 room.adjacentRooms.Remove(this);
         });
         //Use Destroy if at runtime
-        GameObject.DestroyImmediate(this.gameObject);
+        DungeonData.SafeDestroy(this.gameObject);
     }
 
     public Vector3 GetPosition()
@@ -128,6 +146,28 @@ public class DungeonRoom : MonoBehaviour
                 .ToList().ForEach(door => this.doors.Add(door));
             }                 
         });
+        BindWalls(walls);
+    }
+
+    public void Isolate()
+    {
+        foreach(DungeonDoor door in doors)
+        {
+            door.Block();
+        }
+    }
+
+    public bool IsIsolated()
+    {
+        return isIsolated;
+    }
+
+    public void ReassignRoom(DungeonRoom existingRoom, RoomTypes.RoomType type)
+    {
+        this.adjacentRooms = existingRoom.adjacentRooms;
+        this.doors = existingRoom.doors;
+        this.layout = existingRoom.layout;
+        this.type = type;
     }
 
     private bool HasAccessToRoom(DungeonRoom room)
@@ -140,8 +180,40 @@ public class DungeonRoom : MonoBehaviour
         return false;
     }
 
+    public void RemovePlaceholders()
+    {
+        var placeholders = walls.GetComponentsInChildren<DungeonDoorPlaceholder>();
+        foreach(var door in doors)
+        {
+            foreach(var placeholder in placeholders)
+            {
+                if(placeholder != null && door != null)
+                {
+                    Vector3 diff = placeholder.transform.position - door.transform.position;
+                    if (diff.magnitude < 0.5f) DungeonData.SafeDestroy(placeholder.gameObject);
+                }              
+            }
+        }
+    }
+
+    public void RemoveUnusedDoorWalls()
+    {       
+        StartCoroutine(OnNextFrameCleanup());
+    }
+
+    private IEnumerator OnNextFrameCleanup() //Cleanup all rooms on next frame
+    {
+        yield return null;
+        var composites = walls.GetComponentsInChildren<WallComposite>();
+        foreach (var composite in composites)
+        {
+            var plainWall = composite.plainWall;
+            if (plainWall != null) DungeonData.SafeDestroy(composite.doorWall.gameObject);
+        }
+    }
+
     public static DungeonRoom CreateRandomRoom(DungeonData data, Vector3 position, Dictionary<Vector3, Vector2Int> gridMap,
-        string layout, RoomTypes.RoomType type)
+        string layout, RoomTypes.RoomType type) 
     {
         //This is where the room gets instantiated, change the primitive and pass a prefab instead for the room
         //Eg: var roomObj = DungeonDrawer.DrawSingleObject(position, prefab, data.GetMonoInstance(), scale) as GameObject;
@@ -150,7 +222,49 @@ public class DungeonRoom : MonoBehaviour
         var newRoom = roomObj.GetComponent<DungeonRoom>();
         newRoom.Initialize(gridMap, position, layout, type);
         data.AddRoom(newRoom);
+        newRoom.walls = DungeonDrawer.DrawSingleObject(newRoom.GetPosition(), data.GetWallPrefab(), newRoom.gameObject);
         return newRoom;
+    }
+
+    public void BindWalls(GameObject walls)
+    {
+        //Debug.Log(walls == null);
+        var southWestCornerWall = walls.transform.Find("Corner");
+        var southEastCotnerWall = walls.transform.Find("Corner4");
+        var middleWallNoDoor = walls.transform.Find("PlainWall1");
+        var middleWallDoor = walls.transform.Find("DoorWall1");
+        if (occludableWalls == null) occludableWalls = new List<OccludableWall>();
+        if(southWestCornerWall != null)
+        occludableWalls.Add(southWestCornerWall.GetComponentInChildren<OccludableWall>());
+        if(southEastCotnerWall != null)
+        occludableWalls.Add(southEastCotnerWall.GetComponentInChildren<OccludableWall>());
+        if(middleWallDoor != null)
+        occludableWalls.Add(middleWallDoor.GetComponentInChildren<OccludableWall>());
+        if(middleWallNoDoor != null)
+        occludableWalls.Add(middleWallNoDoor.GetComponentInChildren<OccludableWall>());
+        GetBottomRoomOccludableWalls();
+    }
+
+    private void FindNorthWalls()
+    {
+        var topEastCornerWall = walls.transform.Find("Corner2");
+        var topWestCornerWall = walls.transform.Find("Corner3");
+        var topMiddleWallDoor = walls.transform.Find("PlainWall2");
+        var topMiddleWallNoDoor = walls.transform.Find("DoorWall2");
+        if (northWalls == null) northWalls = new List<OccludableWall>();
+        if(topEastCornerWall != null)
+        northWalls.Add(topEastCornerWall.GetComponentInChildren<OccludableWall>());
+        if(topWestCornerWall != null)
+        northWalls.Add(topWestCornerWall.GetComponentInChildren<OccludableWall>());
+        if(topMiddleWallNoDoor)
+        northWalls.Add(topMiddleWallNoDoor.GetComponentInChildren<OccludableWall>());
+        if(topMiddleWallDoor != null)
+        northWalls.Add(topMiddleWallDoor.GetComponentInChildren<OccludableWall>());
+    }
+
+    public List<OccludableWall> GetOccludableWalls()
+    {
+        return occludableWalls;
     }
 
     public static DungeonRoom CreateRoomFromData(RoomData roomData, DungeonData dungeonData, Dictionary<Vector3, Vector2Int> gridMap, string layout)
@@ -160,6 +274,8 @@ public class DungeonRoom : MonoBehaviour
         var loadedRoom = roomObj.GetComponent<DungeonRoom>();
         loadedRoom.Initialize(gridMap, roomData.GetPosition(), layout, roomData.GetRoomType());
         dungeonData.AddRoom(loadedRoom);
+        loadedRoom.walls = DungeonDrawer.DrawSingleObject(loadedRoom.GetPosition(), dungeonData.GetWallPrefab(), loadedRoom.gameObject);
+        loadedRoom.isIsolated = roomData.IsIsolated();
         return loadedRoom;
     }
 

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.AI;
 
 [System.Serializable]
 public class DungeonDoor : MonoBehaviour
@@ -14,13 +15,31 @@ public class DungeonDoor : MonoBehaviour
     private SkinnedMeshRenderer skinnedMeshRenderer;
     private Coroutine openCoroutine;
     private Coroutine closeCoroutine;
-    private BoxCollider doorCollisionCollider;
-    private Collider playerCollider;
+    private MeshCollider doorCollider;
+    private NavMeshObstacle doorObstacle;
+    [SerializeField]
+    private bool canOpen = true;
+    private DungeonRoom bufferRoom;
 
-    private void Awake()
+    private void Start()
     {
-        doorCollisionCollider = transform.Find("Door").GetComponent<BoxCollider>();
-        playerCollider = FindObjectOfType<MainCharacterController>().GetComponent<Collider>();
+        doorCollider = transform.Find("Door").GetComponent<MeshCollider>();
+        doorObstacle = transform.Find("Door").GetComponent<NavMeshObstacle>();        
+    }
+
+    public bool CanOpen()
+    {
+        return canOpen;
+    }
+
+    public void Block()
+    {
+        canOpen = false;
+    }
+
+    public void Unlock()
+    {
+        canOpen = true;
     }
 
     public static DungeonDoor Create(GameObject doorObj, DungeonRoom originRoom, DungeonRoom targetRoom, DungeonData data)
@@ -29,33 +48,15 @@ public class DungeonDoor : MonoBehaviour
         Vector3 diff = originRoom.transform.position - targetRoom.transform.position;
         Vector3 doorPosition = doorObj.transform.position - diff/2 + Y_Offset;
         var doorObject = DungeonDrawer.DrawSingleObject(doorPosition, data.GetDoorPrefab(), doorObj);
-        var doorComponent = doorObject.AddComponent<DungeonDoor>();
+        var doorComponent = doorObject.AddComponent<DungeonDoor>(); //canOpen = true by default;
         doorComponent.sharedRoom1 = originRoom;
         doorComponent.sharedRoom2 = targetRoom;
-        GameObject placeholder;
-        data.GetGrid().GetWallsLayout().TryGetValue(doorPosition, out placeholder);
-        if (placeholder != null)
-        {
-            doorComponent.transform.rotation = placeholder.transform.rotation;
-            GameObject.DestroyImmediate(placeholder);
-        }     
+        var orientation = originRoom.transform.position - targetRoom.transform.position;
+        var direction = new Vector3(orientation.x, 0, orientation.z);
+        var angle = Vector3.SignedAngle(doorObj.transform.forward, direction, Vector3.up);
+        doorObject.transform.Rotate(0, angle, 0);
+        if (originRoom.IsIsolated() || targetRoom.IsIsolated()) doorComponent.canOpen = false; //lock door is isolated
         return doorComponent;
-    }
-
-    public static void CreatePlaceholder(DungeonRoom room, Vector3 cardinalDirection2D, DungeonData data)
-    {
-        Vector3 Y_Offset = new Vector3(0, data.GetNormalRoomPrefabs()[0].transform.localScale.y / 2, 0);
-        Vector3 phPosition = room.transform.position + data.GetNormalRoomPrefabs()[0].transform.localScale.x / 2 *
-            cardinalDirection2D + Y_Offset;
-        if (!data.GetGrid().GetWallsLayout().ContainsKey(phPosition))
-        {
-            var doorPhObj = DungeonDrawer.DrawSingleObject(phPosition, data.GetWallPrefab(), room.transform.gameObject);
-            var fromObjToRoomPosition = room.transform.position - doorPhObj.transform.position;
-            var doorPhRotation = Quaternion.FromToRotation(doorPhObj.transform.forward, fromObjToRoomPosition);
-            var adjustedRotation = new Quaternion(0, doorPhRotation.y, doorPhRotation.z, doorPhRotation.w); // no -180 degrees on x axis
-            doorPhObj.transform.rotation *= adjustedRotation;
-            data.GetGrid().AddWallPosition(phPosition, doorPhObj);
-        }      
     }
 
     public List<DungeonRoom> GetSharedRooms()
@@ -65,10 +66,19 @@ public class DungeonDoor : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.layer == LayerMask.NameToLayer("Player"))
+        if(other.gameObject.layer == LayerMask.NameToLayer("Player") && canOpen)
         {
+            if (sharedRoom1 == DungeonRoom.activeRoom) 
+            {
+                bufferRoom = sharedRoom2;
+            }
+            else
+            {
+                bufferRoom = sharedRoom1;
+            } 
             openCoroutine = StartCoroutine(Open());
             if (closeCoroutine != null) StopCoroutine(closeCoroutine);
+            DungeonRoom.lastEnteredDoor = this;
         }
     }
 
@@ -78,10 +88,11 @@ public class DungeonDoor : MonoBehaviour
         var openRate = FindObjectOfType<MainCharacterController>().doorOpenRate;
         while (skinnedMeshRenderer.GetBlendShapeWeight(0) > 0)
         {
+            doorObstacle.center -= new Vector3(0, 0, openRate / 100);
             skinnedMeshRenderer.SetBlendShapeWeight(0, skinnedMeshRenderer.GetBlendShapeWeight(0) - openRate);
+            UpdateCollider();
             yield return new WaitForEndOfFrame();
         }
-        Physics.IgnoreCollision(playerCollider, doorCollisionCollider, false);
     }
 
     IEnumerator Open()
@@ -90,10 +101,18 @@ public class DungeonDoor : MonoBehaviour
         var openRate = FindObjectOfType<MainCharacterController>().doorOpenRate;
         while (skinnedMeshRenderer.GetBlendShapeWeight(0) < 100)
         {
+            doorObstacle.center += new Vector3(0, 0, openRate / 100);
             skinnedMeshRenderer.SetBlendShapeWeight(0, skinnedMeshRenderer.GetBlendShapeWeight(0) + openRate);
+            UpdateCollider();
             yield return new WaitForEndOfFrame();
-        }
-        Physics.IgnoreCollision(playerCollider, doorCollisionCollider, true);
+        }               
+    }
+
+    private void UpdateCollider()
+    {
+        Mesh bakeMesh = new Mesh();
+        skinnedMeshRenderer.BakeMesh(bakeMesh);
+        doorCollider.sharedMesh = bakeMesh;
     }
 
     private void OnTriggerExit(Collider other)
@@ -102,14 +121,16 @@ public class DungeonDoor : MonoBehaviour
         {
             closeCoroutine = StartCoroutine(Close());
             if (openCoroutine != null) StopCoroutine(openCoroutine);
+
+            if (other.CompareTag("Player"))
+            {
+                if(DungeonRoom.activeRoom == bufferRoom)
+                GoThorouthDoor();
+            }
         }
-        if (other.CompareTag("Player")) {
-            GoThorouthDoor();
-        }
-        
     }
 
-    private void GoThorouthDoor() {
+    public void GoThorouthDoor() {
         MapManager map = GameObject.Find("LayoutMap").GetComponent<MapManager>();
         DungeonRoom currentRoom = map.dungeonData.GetActiveRoom();
         Vector2Int position = currentRoom.GridPosition();
@@ -124,6 +145,24 @@ public class DungeonDoor : MonoBehaviour
         else {
             Vector2Int pos = sharedRoom1.GridPosition();
             map.LeaveRoom(pos.x * gridSize + pos.y);
+        }
+    }
+
+    public void ShowWalls()
+    {
+        if (DungeonRoom.GetActiveRoom() == sharedRoom1)
+        {
+            foreach (OccludableWall wall in sharedRoom2.GetOccludableWalls())
+            {
+                if (wall != null) wall.Occlude();
+            }
+        }
+        else if (DungeonRoom.GetActiveRoom() == sharedRoom2)
+        {
+            foreach (OccludableWall wall in sharedRoom1.GetOccludableWalls())
+            {
+                if (wall != null) wall.Occlude();
+            }
         }
     }
 }

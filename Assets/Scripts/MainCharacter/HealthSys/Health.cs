@@ -3,7 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class Health : MonoBehaviour
+public interface IHealthTriggers : ITrigger
+{
+    void TakeDamage(int damage);
+}
+
+public class Health : MonoBehaviour, IHealthTriggers
 {
     public event Action<int,int> OnHealthChange;
     public event Action OnDeath;
@@ -11,10 +16,12 @@ public class Health : MonoBehaviour
     private int currentHealth = 5;
     private int MaxHealth = 5;
     [SerializeField]
-    private HealthUI ui; 
+    private HealthUI ui;
+    public bool invulnerable;
 
     public void TakeDamage(int damage)
     {
+        if (invulnerable) return;
         if (currentHealth - damage <= 0)
         {
             currentHealth = 0;
@@ -23,8 +30,7 @@ public class Health : MonoBehaviour
         else {
             currentHealth -= damage;
             OnHealthChange?.Invoke(-damage, currentHealth);
-        }
-        
+        }        
     }
 
     public void GainHealth(int healthGain) {

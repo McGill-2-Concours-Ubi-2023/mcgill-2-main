@@ -4,27 +4,42 @@ using UnityEngine;
 
 public abstract class GravityField : MonoBehaviour
 {
+    [SerializeField]
+    private GameObject destructionBounds;
     [Range(0.1f, 9.81f)]
     public float gravity;
     public List<GameObject> agents;
     protected bool isActive;
     protected int layerMask;
     [SerializeField]
-    [Range(1, 20)]
-    protected float massCompression;
+    [Range(0.5f, 3.0f)]
+    protected float massCompression = 1.0f;
     private HashSet<Rigidbody> cachedRigidbodies = new HashSet<Rigidbody>();
+
 
     protected abstract void ApplyGravity(Rigidbody rb);
     protected abstract void DetectCollision();
 
     private void Awake()
     {
+        if(agents == null)
         agents = new List<GameObject>();
+    }
+
+    public int GetLayerMask()
+    {
+        return layerMask;
     }
 
     public void SetActive(bool active)
     {
         isActive = active;
+        destructionBounds.SetActive(active);
+    }
+
+    public bool IsActive()
+    {
+        return isActive;
     }
 
     public void SetMassCompressionForce(float compressionForce)
@@ -46,6 +61,7 @@ public abstract class GravityField : MonoBehaviour
             if (!agents.Contains(other.gameObject) && agent && !agent.IsBound())
             {
                 Rigidbody rb = other.GetComponent<Rigidbody>();
+                if (rb.isKinematic) rb.isKinematic = false;
                 if (rb != null)
                 {
                     agents.Add(other.gameObject);

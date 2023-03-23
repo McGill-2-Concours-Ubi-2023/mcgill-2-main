@@ -1,20 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GravityAgent : MonoBehaviour
 {
     private float massCompression;
     public GravityField currentField;
+    [SerializeField]
     private bool isBound = false;
-    private bool isVanishing = false;
+    private Animator animator;
 
     public IEnumerator OnWaitDestroy(float timer)
     {
         yield return new WaitForSeconds(timer);
         if (isBound)
         {
-            StartCoroutine(Disappear()); //spin the object for 1 second
+            Animator animator;
+            TryGetComponent<Animator>(out animator);
+            if (animator)
+            {
+                animator.speed *= massCompression;
+                animator.SetTrigger("Despawn");
+            }          
         }
     }
 
@@ -23,24 +31,8 @@ public class GravityAgent : MonoBehaviour
         return isBound;
     }
 
-    private IEnumerator Disappear()
+    public void OnSelfDestroy()
     {
-        isVanishing = true;
-        massCompression = currentField.GetMassCompressionForce();
-        bool isVisible = true;
-        float startTime = Time.time;
-
-        while (isVisible && currentField != null) 
-        {
-            // Calculate the time elapsed since the start of the interpolation
-            float elapsedTime = Time.time - startTime;
-            // Calculate the new scale using an exponential decay function
-            transform.localScale *= Mathf.Exp(-elapsedTime*massCompression/100);
-            Vector3 deltaD = currentField.transform.position - transform.position;
-            transform.position += deltaD.normalized * massCompression * Time.deltaTime;
-            isVisible = transform.localScale.x > 0.5f && transform.localScale.y > 0.5f && transform.localScale.z > 0.5f;
-            yield return 0;
-        }
         Destroy(this.gameObject);
     }
 
@@ -50,16 +42,17 @@ public class GravityAgent : MonoBehaviour
             && gameObject.layer == LayerMask.NameToLayer("Destructible"))
         {
             BindField(other.GetComponentInParent<GravityField>());
-            isBound = true;
-            StartCoroutine(OnWaitDestroy(other.gameObject.GetComponentInParent<GravitationalGrenade>()
-                .GetDestructionTimer()));       
+            if (currentField.IsActive()) isBound = true;
+            GravitationalGrenade grenade = other.gameObject.GetComponentInParent<GravitationalGrenade>();
+            StartCoroutine(OnWaitDestroy(grenade.GetDestructionTimer()));       
         }
     }
 
     private void BindField(GravityField field)
     {
         currentField = field;
-        foreach(var effectiveField in FindObjectsOfType<GravityField>())
+        massCompression = currentField.GetMassCompressionForce();
+        foreach (var effectiveField in FindObjectsOfType<GravityField>())
         {
             if (effectiveField != currentField) effectiveField.ReleaseAgent(this.gameObject);
         }
@@ -77,8 +70,7 @@ public class GravityAgent : MonoBehaviour
         {
             if (other.GetComponentInParent<GravityField>() == currentField)
             {
-                isBound = false;
-                if(!isVanishing)
+                Release();
                 StopAllCoroutines();
             }
         }

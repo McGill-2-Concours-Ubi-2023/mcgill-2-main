@@ -9,6 +9,8 @@ TagManager:
   - Destructible
   - Enemy
   - Bullet
+  - PauseMenu
+  - DoorWall
   layers:
   - Default
   - TransparentFX
@@ -24,8 +26,8 @@ TagManager:
   - 2DDistorsionMask
   - DungeonRoomCollider
   - GravityGrenade
-  - 
-  - 
+  - Wall
+  - MeleeBullet
   - 
   - 
   - 
@@ -45,4 +47,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: FollowParticles
+    uniqueID: 3468211721
     locked: 0
