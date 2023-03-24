@@ -30,6 +30,9 @@ public class DungeonRoom : MonoBehaviour
     [SerializeField][HideInInspector]
     private GameObject walls;
     private bool isIsolated;
+    [SerializeField]
+    private List<EnemyAI> enemies;
+    private bool areEnemiesPresent;
 
     public static DungeonRoom GetActiveRoom()
     {
@@ -39,6 +42,45 @@ public class DungeonRoom : MonoBehaviour
     public GameObject GetWalls()
     {
         return walls;
+    }
+
+    public void SpawnEnemies()
+    {
+        enemies = new List<EnemyAI>();
+        GetComponent<EnemySpawn1>().enabled = true;
+        areEnemiesPresent = true;
+        Vector3 detectionRange = transform.Find("RoomCollider").GetComponent<BoxCollider>().size;
+        StartCoroutine(CheckForAI(detectionRange));
+        Isolate();
+    }
+
+    IEnumerator CheckForAI(Vector3 detectionRange)
+    {
+        while (areEnemiesPresent)
+        {
+            //check every one second for enemies in the room
+            yield return new WaitForSeconds(1.0f);
+            Collider[] colliders = Physics.OverlapBox(transform.position, detectionRange);
+            foreach (Collider collider in colliders)
+            {
+                if (collider.CompareTag("Enemy"))
+                {
+                    var enemy = collider.GetComponent<EnemyAI>();
+                    if (!enemies.Contains(enemy) && enemy != null) 
+                    {
+                        enemies.Add(enemy);
+                        enemy.AttachRoom(this);
+                    }
+                }
+                areEnemiesPresent = enemies.Count > 0;
+            }
+        }
+        OpenUp();
+    }
+
+    public void StopSpawnEnemies()
+    {
+        GetComponent<EnemySpawn1>().enabled = false;
     }
 
     public void GetBottomRoomOccludableWalls()
@@ -157,6 +199,15 @@ public class DungeonRoom : MonoBehaviour
         }
     }
 
+    //FBI ???
+    public void OpenUp()
+    {
+        foreach (DungeonDoor door in doors)
+        {
+            door.Unlock();
+        }
+    }
+
     public bool IsIsolated()
     {
         return isIsolated;
@@ -168,6 +219,11 @@ public class DungeonRoom : MonoBehaviour
         this.doors = existingRoom.doors;
         this.layout = existingRoom.layout;
         this.type = type;
+    }
+
+    internal void RemoveEnemy(EnemyAI enemyAI)
+    {
+        if (enemies.Contains(enemyAI)) enemies.Remove(enemyAI);
     }
 
     private bool HasAccessToRoom(DungeonRoom room)

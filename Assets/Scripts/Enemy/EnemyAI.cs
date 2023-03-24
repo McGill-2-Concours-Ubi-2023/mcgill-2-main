@@ -28,6 +28,8 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] LineRenderer lr;
     bool waking;
     bool wokeOnce=false;
+    [SerializeField]
+    private DungeonRoom attachedRoom;
     // Start is called before the first frame update
     void Start()
     {
@@ -47,6 +49,17 @@ public class EnemyAI : MonoBehaviour
     }
 
     // Update is called once per frame
+
+    public void AttachRoom(DungeonRoom room)
+    {
+        attachedRoom = room;
+    }
+
+    public DungeonRoom GetAttachedRoom()
+    {
+        return attachedRoom;
+    }
+
     void FixedUpdate()
     {
 
@@ -101,7 +114,7 @@ public class EnemyAI : MonoBehaviour
     {
         Vector3 ori = (move == moveType.RANDOM) ? this.transform.position : player.position;
         Vector3 randompt = RandomNavSphere(ori, randomRadius, randomLayerMask);
-        Debug.Log("pathing");
+        //Debug.Log("pathing");
         do//checking if the point is actually reachable(only works in random, theoretically if the player radius is too high it may mess up and try to go off screen but I'm stupid and this works okay)
         {
             randompt = RandomNavSphere(ori, randomRadius, randomLayerMask);

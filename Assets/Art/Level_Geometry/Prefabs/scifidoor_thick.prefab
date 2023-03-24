@@ -132,6 +132,8 @@ GameObject:
   - component: {fileID: 5371444339678739907}
   - component: {fileID: 810994453467515600}
   - component: {fileID: 7523353364382772468}
+  - component: {fileID: 7649658580406347213}
+  - component: {fileID: 1179146603788158728}
   m_Layer: 0
   m_Name: Gate
   m_TagString: Untagged
@@ -235,6 +237,32 @@ MonoBehaviour:
   m_Area: 1
   m_IgnoreFromBuild: 1
   m_AffectedAgents: ffffffff
+--- !u!65 &7649658580406347213
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5725427899017443757}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.62769914, y: 2.398668, z: 2.145833}
+  m_Center: {x: -1.406043, y: 0.000000027711968, z: 1.0649108}
+--- !u!65 &1179146603788158728
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5725427899017443757}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.6710567, y: 2.398668, z: 2.1361814}
+  m_Center: {x: 1.3763064, y: 0.00000002713664, z: 1.0600846}
 --- !u!1 &6731566312865161675
 GameObject:
   m_ObjectHideFlags: 0

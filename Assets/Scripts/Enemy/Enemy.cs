@@ -13,6 +13,9 @@ public class Enemy : MonoBehaviour
     }
 
     public void OnEnemyDeath() {
+        EnemyAI ai;
+        TryGetComponent<EnemyAI>(out ai);
+        if (ai) ai.GetAttachedRoom().RemoveEnemy(ai);
         GameObject.Destroy(this.gameObject);
     }
 }
