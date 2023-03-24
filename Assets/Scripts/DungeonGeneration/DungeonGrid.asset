@@ -50,66 +50,126 @@ MonoBehaviour:
   - {x: 80, y: 0, z: 100}
   - {x: 100, y: 0, z: 100}
   customMapBuffer:
-  - position: {x: 0, y: 0, z: 0}
+  - position: {x: 40, y: 0, z: 0}
     type: 4
     prefabIndex: 0
-  - position: {x: 0, y: 0, z: 20}
-    type: 0
-    prefabIndex: 12
-  - position: {x: 0, y: 0, z: 40}
-    type: 0
-    prefabIndex: 14
-  - position: {x: 0, y: 0, z: 60}
-    type: 0
-    prefabIndex: 1
-  - position: {x: 20, y: 0, z: 60}
-    type: 0
-    prefabIndex: 7
-  - position: {x: 20, y: 0, z: 40}
-    type: 0
-    prefabIndex: 7
-  - position: {x: 40, y: 0, z: 40}
+    isOverride: 0
+    isIsolated: 0
+  - position: {x: 20, y: 0, z: 0}
+    type: 2
+    prefabIndex: 0
+    isOverride: 0
+    isIsolated: 0
+  - position: {x: 40, y: 0, z: 20}
     type: 0
     prefabIndex: 5
-  - position: {x: 60, y: 0, z: 40}
-    type: 0
+    isOverride: 0
+    isIsolated: 0
+  - position: {x: 40, y: 0, z: 40}
+    type: 3
     prefabIndex: 0
+    isOverride: 0
+    isIsolated: 0
+  - position: {x: 60, y: 0, z: 20}
+    type: 0
+    prefabIndex: 3
+    isOverride: 0
+    isIsolated: 0
+  - position: {x: 80, y: 0, z: 20}
+    type: 0
+    prefabIndex: 10
+    isOverride: 0
+    isIsolated: 0
   - position: {x: 80, y: 0, z: 40}
-    type: 0
-    prefabIndex: 13
-  - position: {x: 80, y: 0, z: 60}
-    type: 0
-    prefabIndex: 6
-  - position: {x: 80, y: 0, z: 80}
     type: 2
     prefabIndex: 0
-  - position: {x: 60, y: 0, z: 80}
-    type: 0
-    prefabIndex: 7
-  - position: {x: 80, y: 0, z: 100}
-    type: 0
-    prefabIndex: 2
-  - position: {x: 100, y: 0, z: 100}
-    type: 0
-    prefabIndex: 1
-  - position: {x: 100, y: 0, z: 80}
-    type: 0
-    prefabIndex: 8
-  - position: {x: 100, y: 0, z: 60}
-    type: 0
-    prefabIndex: 14
-  - position: {x: 100, y: 0, z: 40}
-    type: 2
-    prefabIndex: 0
+    isOverride: 0
+    isIsolated: 0
   - position: {x: 100, y: 0, z: 20}
     type: 0
-    prefabIndex: 0
+    prefabIndex: 10
+    isOverride: 0
+    isIsolated: 0
   - position: {x: 100, y: 0, z: 0}
-    type: 2
-    prefabIndex: 0
+    type: 0
+    prefabIndex: 1
+    isOverride: 0
+    isIsolated: 0
   - position: {x: 80, y: 0, z: 0}
     type: 0
-    prefabIndex: 5
+    prefabIndex: 3
+    isOverride: 0
+    isIsolated: 0
+  - position: {x: 60, y: 0, z: 0}
+    type: 3
+    prefabIndex: 0
+    isOverride: 0
+    isIsolated: 0
+  - position: {x: 60, y: 0, z: 40}
+    type: 2
+    prefabIndex: 0
+    isOverride: 0
+    isIsolated: 0
+  - position: {x: 80, y: 0, z: 60}
+    type: 0
+    prefabIndex: 1
+    isOverride: 0
+    isIsolated: 0
+  - position: {x: 80, y: 0, z: 80}
+    type: 0
+    prefabIndex: 7
+    isOverride: 0
+    isIsolated: 0
+  - position: {x: 60, y: 0, z: 60}
+    type: 2
+    prefabIndex: 0
+    isOverride: 0
+    isIsolated: 0
+  - position: {x: 40, y: 0, z: 60}
+    type: 0
+    prefabIndex: 10
+    isOverride: 0
+    isIsolated: 0
+  - position: {x: 40, y: 0, z: 80}
+    type: 0
+    prefabIndex: 9
+    isOverride: 0
+    isIsolated: 0
+  - position: {x: 20, y: 0, z: 80}
+    type: 2
+    prefabIndex: 0
+    isOverride: 0
+    isIsolated: 0
+  - position: {x: 20, y: 0, z: 60}
+    type: 2
+    prefabIndex: 0
+    isOverride: 0
+    isIsolated: 0
+  - position: {x: 20, y: 0, z: 100}
+    type: 3
+    prefabIndex: 0
+    isOverride: 0
+    isIsolated: 0
+  - position: {x: 0, y: 0, z: 100}
+    type: 0
+    prefabIndex: 14
+    isOverride: 0
+    isIsolated: 0
+  - position: {x: 0, y: 0, z: 80}
+    type: 2
+    prefabIndex: 0
+    isOverride: 0
+    isIsolated: 0
+  - position: {x: 0, y: 0, z: 60}
+    type: 2
+    prefabIndex: 0
+    isOverride: 0
+    isIsolated: 0
+  - position: {x: 0, y: 0, z: 40}
+    type: 0
+    prefabIndex: 7
+    isOverride: 0
+    isIsolated: 0
   gridSize: 6
-  roomSize: 15
+  roomSize: 25
   cellsSpacing: 0

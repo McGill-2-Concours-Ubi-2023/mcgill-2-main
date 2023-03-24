@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using Unity.AI.Navigation;
 
+[ExecuteInEditMode]
 public class DungeonGenerator : MonoBehaviour
 {
     [SerializeField]
@@ -14,7 +15,7 @@ public class DungeonGenerator : MonoBehaviour
 
     private void Awake()
     {
-        data.SetMonoInstance(this.gameObject);
+        data.SetMonoInstance(this);
         if (newDungeonOnPlay)
         {
             data.GenerateDungeon();

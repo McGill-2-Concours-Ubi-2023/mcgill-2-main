@@ -10,7 +10,7 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
 {
     [SerializeField]
     public GameObject specialRoomPrefab;
-    private GameObject mono;
+    private MonoBehaviour mono;
     [SerializeField]
     private ScriptableObject activeLayout;
     [SerializeField]
@@ -139,7 +139,7 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
 
     public GameObject GetMonoInstance()
     {
-        return mono;
+        return mono.gameObject;
     }
 
     public void Cleanup()
@@ -157,12 +157,12 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
         FindMapManager();
         GetGrid().SetMonoInstance(mono);
         mapM.ClearMap();
-        rooms.Clear();
+        rooms.Clear(); 
         GetGrid().ClearData();    
-        DungeonDrawer.EraseDungeon(mono);       
+        DungeonDrawer.EraseDungeon(mono.gameObject);       
     }
 
-    public void SetMonoInstance(GameObject mono)
+    public void SetMonoInstance(MonoBehaviour mono)
     {
         this.mono = mono;
     }
@@ -233,4 +233,6 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
     {
         return roomOverrides;
     }
+
+
 }

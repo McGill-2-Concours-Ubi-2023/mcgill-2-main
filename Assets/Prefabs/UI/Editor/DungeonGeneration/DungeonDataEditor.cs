@@ -14,7 +14,7 @@ public class DungeonDataEditor : Editor
     {
         DrawDefaultInspector();
         dungeonData = ((DungeonData)target);
-        OnNullInitializeBehaviour(FindObjectOfType<DungeonGenerator>().gameObject);
+        OnNullInitializeBehaviour(FindObjectOfType<DungeonGenerator>());
 
         var mapManager = dungeonData.GetMapManager();
         var startingRoom = dungeonData.GetStartingRoom();
@@ -88,7 +88,7 @@ public class DungeonDataEditor : Editor
         }
     }
 
-    private void OnNullInitializeBehaviour(GameObject dungeonGenerator)
+    private void OnNullInitializeBehaviour(MonoBehaviour dungeonGenerator)
     {
         if (dungeonData.GetMonoInstance() == null)
         {
