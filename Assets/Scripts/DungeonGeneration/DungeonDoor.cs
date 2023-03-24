@@ -16,7 +16,6 @@ public class DungeonDoor : MonoBehaviour
     private Coroutine openCoroutine;
     private Coroutine closeCoroutine;
     private MeshCollider doorCollider;
-    private NavMeshObstacle doorObstacle;
     [SerializeField]
     private bool canOpen = true;
     private DungeonRoom bufferRoom;
@@ -24,7 +23,6 @@ public class DungeonDoor : MonoBehaviour
     private void Start()
     {
         doorCollider = transform.Find("Door").GetComponent<MeshCollider>();
-        doorObstacle = transform.Find("Door").GetComponent<NavMeshObstacle>();        
     }
 
     public bool CanOpen()
@@ -88,7 +86,6 @@ public class DungeonDoor : MonoBehaviour
         var openRate = FindObjectOfType<MainCharacterController>().doorOpenRate;
         while (skinnedMeshRenderer.GetBlendShapeWeight(0) > 0)
         {
-            doorObstacle.center -= new Vector3(0, 0, openRate / 100);
             skinnedMeshRenderer.SetBlendShapeWeight(0, skinnedMeshRenderer.GetBlendShapeWeight(0) - openRate);
             UpdateCollider();
             yield return new WaitForEndOfFrame();
@@ -101,7 +98,6 @@ public class DungeonDoor : MonoBehaviour
         var openRate = FindObjectOfType<MainCharacterController>().doorOpenRate;
         while (skinnedMeshRenderer.GetBlendShapeWeight(0) < 100)
         {
-            doorObstacle.center += new Vector3(0, 0, openRate / 100);
             skinnedMeshRenderer.SetBlendShapeWeight(0, skinnedMeshRenderer.GetBlendShapeWeight(0) + openRate);
             UpdateCollider();
             yield return new WaitForEndOfFrame();
