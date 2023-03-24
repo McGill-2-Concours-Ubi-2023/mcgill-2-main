@@ -222,7 +222,8 @@ public class DungeonRoom : MonoBehaviour
         var newRoom = roomObj.GetComponent<DungeonRoom>();
         newRoom.Initialize(gridMap, position, layout, type);
         data.AddRoom(newRoom);
-        newRoom.walls = DungeonDrawer.DrawSingleObject(newRoom.GetPosition(), data.GetWallPrefab(), newRoom.gameObject);
+        Vector3 offset = new Vector3(0, newRoom.transform.localScale.y / 2, 0);
+        newRoom.walls = DungeonDrawer.DrawSingleObject(newRoom.GetPosition() + offset, data.GetWallPrefab(), newRoom.gameObject);
         return newRoom;
     }
 
@@ -274,7 +275,8 @@ public class DungeonRoom : MonoBehaviour
         var loadedRoom = roomObj.GetComponent<DungeonRoom>();
         loadedRoom.Initialize(gridMap, roomData.GetPosition(), layout, roomData.GetRoomType());
         dungeonData.AddRoom(loadedRoom);
-        loadedRoom.walls = DungeonDrawer.DrawSingleObject(loadedRoom.GetPosition(), dungeonData.GetWallPrefab(), loadedRoom.gameObject);
+        Vector3 offset = new Vector3(0, loadedRoom.transform.localScale.y / 2, 0);
+        loadedRoom.walls = DungeonDrawer.DrawSingleObject(loadedRoom.GetPosition() + offset, dungeonData.GetWallPrefab(), loadedRoom.gameObject);
         loadedRoom.isIsolated = roomData.IsIsolated();
         return loadedRoom;
     }
