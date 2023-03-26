@@ -6,6 +6,8 @@ using System;
 public interface IHealthTriggers : ITrigger
 {
     void TakeDamage(int damage);
+    void GainHealth(int health);
+    void IncreaseMaxHealth(int amount);
 }
 
 public class Health : MonoBehaviour, IHealthTriggers
@@ -34,10 +36,11 @@ public class Health : MonoBehaviour, IHealthTriggers
     }
 
     public void GainHealth(int healthGain) {
-        if (currentHealth + healthGain >= MaxHealth)
+        if ((currentHealth + healthGain) >= MaxHealth)
         {
+            int difference = MaxHealth - currentHealth;
             currentHealth = MaxHealth;
-            OnHealthChange?.Invoke(healthGain, currentHealth);
+            OnHealthChange?.Invoke(difference, currentHealth);
         }
         else {
             currentHealth += healthGain;
@@ -56,6 +59,9 @@ public class Health : MonoBehaviour, IHealthTriggers
             ui.GenerateHearts(currentHealth);
         }
         
+    }
+    public void IncreaseMaxHealth(int amount) {
+        MaxHealth = MaxHealth += amount; 
     }
 }
 

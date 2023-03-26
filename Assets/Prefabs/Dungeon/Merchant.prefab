@@ -194,6 +194,8 @@ MonoBehaviour:
   canvas3: {fileID: 3411219502737628002}
   floatSpeed: 0.5
   floatHeight: 0.5
+  configs: {fileID: 0}
+  player: {fileID: 0}
 --- !u!65 &7626847543495284450
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -536,6 +538,8 @@ MonoBehaviour:
   canvas3: {fileID: 3411219502091761751}
   floatSpeed: 0.5
   floatHeight: 0.5
+  configs: {fileID: 0}
+  player: {fileID: 0}
 --- !u!65 &3994308108793738013
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -915,6 +919,8 @@ MonoBehaviour:
   canvas3: {fileID: 3411219502737628002}
   floatSpeed: 0.5
   floatHeight: 0.5
+  configs: {fileID: 0}
+  player: {fileID: 0}
 --- !u!1 &3411219502249749260
 GameObject:
   m_ObjectHideFlags: 0
@@ -1237,6 +1243,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3411219502648660793}
+  - component: {fileID: 8811616411061859277}
   m_Layer: 0
   m_Name: Merchant
   m_TagString: Untagged
@@ -1262,6 +1269,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8811616411061859277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3411219502648660794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fce7d3a35b02bb4581697a8e59b4b42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canvas1: {fileID: 3411219502359733834}
+  canvas2: {fileID: 3411219502091761751}
+  canvas3: {fileID: 3411219502737628002}
+  data: {fileID: 11400000, guid: 4658c46e2ccda6c44bf984d9826cbe96, type: 2}
+  player: {fileID: 0}
 --- !u!1 &3411219502737628002
 GameObject:
   m_ObjectHideFlags: 0

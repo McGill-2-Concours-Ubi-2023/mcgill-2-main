@@ -9,6 +9,8 @@ public interface IGunTriggers : ITrigger
 {
     void OnShootStartIntention();
     void OnShootStopIntention();
+    void IncreaseFireRate(float amount);
+    void ChangeBullet(GameObject bulletPrefab);
 }
 
 public class Gun : MonoBehaviour, IGunTriggers
@@ -40,7 +42,7 @@ public class Gun : MonoBehaviour, IGunTriggers
     {
         //GameObject bullet = GameObject.Instantiate(bulletPrefab, gunTip.position + transform.root.forward * 0.2f, Quaternion.identity);
         GameObject bullet = GameObject.Instantiate(bulletPrefab, gunTip.position, gunTip.rotation);
-        float3 vel = transform.root.GetComponent<Rigidbody>().velocity;
+        float3 vel = transform.root.GetComponent<Rigidbody>().velocity;// player velocity
         vel += (float3)(transform.root.forward * speed);
         if(overrideVel)
             bullet.GetComponent<Bullet>().SetDirectionAndSpeed(normalize(vel), length(vel));
@@ -83,4 +85,15 @@ public class Gun : MonoBehaviour, IGunTriggers
         Assert.IsNotNull(m_ShootCoroutine);
         m_ShootCoroutinePaused = true;
     }
+
+    public void IncreaseFireRate(float amount) {
+        this.bulletInterval = this.bulletInterval / amount;
+    }
+
+    public void ChangeBullet(GameObject bulletPrefab) {
+        this.bulletPrefab = bulletPrefab;
+    }
+
+
+
 }
