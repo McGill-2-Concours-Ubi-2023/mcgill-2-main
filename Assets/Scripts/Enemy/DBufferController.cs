@@ -18,8 +18,7 @@ public class DBufferController : MonoBehaviour
         health = GetComponent<Health>();
         health.OnDeath += OnDBufferDeath;
         rb = GetComponent<Rigidbody>();
-        StartCoroutine(ChangeDirection());
-        
+        StartCoroutine(ChangeDirection());     
     }
 
     private void Update()
@@ -99,6 +98,4 @@ public class DBufferController : MonoBehaviour
         return transform.position.x < -boundsSize || transform.position.x > boundsSize ||
                transform.position.z < -boundsSize || transform.position.z > boundsSize;
     }
-
-
 }
