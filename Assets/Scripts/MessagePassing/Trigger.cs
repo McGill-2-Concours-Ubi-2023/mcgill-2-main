@@ -4,10 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 #if UNITY_EDITOR
+using System.Diagnostics;
 using UnityEditor;
 #endif
 
@@ -97,7 +100,141 @@ public static class TriggerExt
 
         EditorUtility.DisplayDialog("Verify Trigger Methods", !hasErrors ? "No errors found." : "Errors were found.", "OK");
     }
-    #endif
+    
+    [DllImport("libc")]
+    private static extern int fork();
+    
+    [DllImport("libc")]
+    private static extern int getpid();
+    
+    [DllImport("libc")]
+    private static extern int kill(int pid, int sig);
+
+    [DllImport("libc")]
+    private static extern int setsid();
+    
+    [DllImport("libc")]
+    private static extern void exit(int exitCode);
+    
+    [DllImport("libc")]
+    private static extern unsafe void* mmap(void* addr, ulong length, int prot, int flags, int fd, ulong offset);
+    
+    [DllImport("libc")]
+    private static extern void wait();
+    
+    [DllImport("libc")]
+    private static extern unsafe void waitpid(int pid, int* status, int options);
+    
+    [DllImport("libc")]
+    private static extern unsafe void* memcpy(void* dest, void* src, ulong n);
+    
+    [DllImport("libc")]
+    private static extern unsafe void memset(void* s, int c, ulong n);
+    
+    [DllImport("libc")]
+    private static extern int open(string pathname, int flags);
+    
+    [DllImport("libc")]
+    private static extern int close(int fd);
+    
+    [DllImport("libc")]
+    private static extern unsafe int munmap(void* addr, ulong length);
+
+    [Flags]
+    enum MmapProt : int
+    {
+        PROT_NONE = 0x0,
+        PROT_READ = 0x1,
+        PROT_WRITE = 0x2,
+        PROT_EXEC = 0x4,
+    }
+    
+    [Flags]
+    enum MmapFlags : int
+    {
+        MAP_SHARED = 0x01,
+        MAP_ANONYMOUS = 0x1000,
+    }
+    
+    const int SIGKILL = 9;
+    const int SIGINT = 2;
+
+    public static unsafe void* MemoryMap(ulong size)
+    {
+        void* memory = mmap(null, size, (int) (MmapProt.PROT_READ | MmapProt.PROT_WRITE), (int) (MmapFlags.MAP_SHARED | MmapFlags.MAP_ANONYMOUS), -1, 0);
+        if (memory == (void*) -1)
+        {
+            Debug.LogError("mmap failed");
+            return null;
+        }
+
+        return memory;
+    }
+    
+    public static unsafe void MemoryUnmap(void* memory, ulong size)
+    {
+        if (munmap(memory, size) == -1)
+        {
+            Debug.LogError("munmap failed");
+        }
+    }
+    
+    public static void ForceCrash()
+    {
+        unsafe
+        {
+            *(int*) 0 = 0;
+        }
+    }
+    
+    public static unsafe Task<R> RunInChildProcess<T, R>(Func<T, R> func, T arg)
+        where R : unmanaged
+    {
+        void* memory = mmap(null, (ulong)sizeof(R), (int) (MmapProt.PROT_READ | MmapProt.PROT_WRITE), (int) (MmapFlags.MAP_SHARED | MmapFlags.MAP_ANONYMOUS), -1, 0);
+        int pid = fork();
+        if (pid == 0)
+        {
+            try
+            {
+                R result = func(arg);
+                memcpy(memory, &result, (ulong)sizeof(R));
+            }
+            finally
+            {
+                kill(getpid(), SIGKILL);
+                ForceCrash();
+            }
+        }
+        else
+        {
+            // parent process
+            return Task.Run(() =>
+            {
+                int status = 0;
+                waitpid(pid, &status, 0);
+                R result = *(R*)memory;
+                MemoryUnmap(memory, (ulong)sizeof(R));
+                return result;
+            });
+        }
+
+        ForceCrash();
+        return default;
+    }
+
+    [MenuItem("Litter Box/PLEASE DO NOT CLICK THIS")]
+    public static async void DangerousMethod()
+    {
+        int Proc(int[] tuple)
+        {
+            return tuple.Sum();
+        }
+
+        int result = await RunInChildProcess(Proc, new[] {1, 2, 3, 4, 5});
+        Debug.Log(result);
+    }
+
+#endif
     
     private readonly static Task m_LoadingTask;
     
