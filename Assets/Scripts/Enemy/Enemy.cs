@@ -9,12 +9,24 @@ public class Enemy : MonoBehaviour, I_AI_Trigger
     private Health enemyHealth;
     private EnemyAI ai;
     private NavMeshAgent agent;
+    private float cachedSpeed;
+    private float cachedAcceleration;
+    private float cachedAngularSpeed;
+    private Rigidbody rb;
 
     private void Start()
     {
         TryGetComponent<EnemyAI>(out ai);
         TryGetComponent<NavMeshAgent>(out agent);
-        enemyHealth.OnDeath += OnEnemyDeath; 
+        rb = GetComponent<Rigidbody>();
+        enemyHealth.OnDeath += OnEnemyDeath;
+        if(agent)
+        {
+            cachedSpeed = agent.speed;
+            cachedAcceleration = agent.acceleration;
+            cachedAngularSpeed = agent.angularSpeed;
+        }
+
     }
 
     public void OnEnemyDeath() {
@@ -26,11 +38,16 @@ public class Enemy : MonoBehaviour, I_AI_Trigger
 
     public void DisableAgent()
     {
-        //TODO
+        agent.angularSpeed = 0;
+        agent.speed = 0;
+        agent.acceleration = 0;
     }
 
     public void EnableAgent()
     {
-        //TODO
+        rb.isKinematic = true;
+        agent.speed = cachedSpeed;
+        agent.acceleration = cachedAcceleration;
+        agent.angularSpeed = cachedAngularSpeed;
     }
 }

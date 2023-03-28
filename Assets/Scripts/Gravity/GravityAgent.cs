@@ -57,7 +57,6 @@ public class GravityAgent : MonoBehaviour
         massCompression = currentField.GetMassCompressionForce();
         foreach (var effectiveField in FindObjectsOfType<GravityField>())
         {
-
             if (effectiveField != currentField) effectiveField.ReleaseAgent(this.gameObject);
         }
     }

@@ -9,6 +9,7 @@ using static Unity.Mathematics.math;
 using float2 = Unity.Mathematics.float2;
 using float3 = Unity.Mathematics.float3;
 using UnityEngine.VFX;
+using UnityEngine.SceneManagement;
 
 public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, ICrateTriggers, IGravityToCameraTrigger
 {
@@ -35,6 +36,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     [CanBeNull]
     private GameObject m_PauseMenu;
     public VisualEffect trailFollowEffect;
+    private Health health;
 
     public ISimpleInventory<SimpleCollectible> SimpleCollectibleInventory;
     
@@ -48,10 +50,17 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         m_InputActionAsset = GetComponent<PlayerInput>().actions;
         animator = GetComponent<Animator>();
         m_PauseMenu = GameObject.FindWithTag("PauseMenu");
+        health = GetComponent<Health>();
+        health.OnDeath += OnPlayerDeath;
         if (m_PauseMenu)
         {
             m_PauseMenu.SetActive(false);
         }
+    }
+
+    private void OnPlayerDeath()
+    {
+        SceneManager.LoadScene("Menu");
     }
 
     private void Start()
