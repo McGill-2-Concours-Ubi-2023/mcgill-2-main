@@ -106,6 +106,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1742232500132528955}
   - component: {fileID: 2004403469471870704}
+  - component: {fileID: 6068470348885662261}
   m_Layer: 0
   m_Name: slime
   m_TagString: Untagged
@@ -184,6 +185,23 @@ SkinnedMeshRenderer:
     m_Center: {x: -4.656613e-10, y: 6.9849193e-10, z: 0.002513695}
     m_Extent: {x: 0.0036530886, y: 0.003251796, z: 0.002516801}
   m_DirtyAABB: 0
+--- !u!114 &6068470348885662261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3354377995653487753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6db56945d5a9ce4290746be5fed477d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _renderers: []
+  deathMaterial: {fileID: 2100000, guid: aeab8f448be2a4043bad8f712aad9a4c, type: 2}
+  dissolveTime: 2
+  animator: {fileID: 7900891126559057590}
+  deathParticles: {fileID: 0}
 --- !u!1 &3634472010021956369
 GameObject:
   m_ObjectHideFlags: 0

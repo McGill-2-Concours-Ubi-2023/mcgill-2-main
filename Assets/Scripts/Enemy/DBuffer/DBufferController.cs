@@ -39,8 +39,7 @@ public class DBufferController : MonoBehaviour
 
     //triggered via animation event
     public void OnSlash()
-    {
-        
+    {        
         attackVFX.SendEvent("OnSwingStop");
         attackVFX.SendEvent("OnSlash");
     }
@@ -60,7 +59,8 @@ public class DBufferController : MonoBehaviour
 
     public void OnDBufferDeath()
     {
-        //Do something
+        health.deathRenderer.OnDeathRender();
+        enabled = false;
     }
 
     private IEnumerator ChangeDirection()

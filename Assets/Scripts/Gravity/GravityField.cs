@@ -16,7 +16,7 @@ public abstract class GravityField : MonoBehaviour
     protected float massCompression = 1.0f;
     private HashSet<Rigidbody> cachedRigidbodies = new HashSet<Rigidbody>();
 
-
+    
     protected abstract void ApplyGravity(Rigidbody rb);
     protected abstract void DetectCollision();
 
@@ -66,6 +66,7 @@ public abstract class GravityField : MonoBehaviour
                 {
                     agents.Add(other.gameObject);
                     cachedRigidbodies.Add(rb);
+                    agent.BindField(this);
                 }
             }
 
@@ -100,7 +101,7 @@ public abstract class GravityField : MonoBehaviour
     {
         if (isActive)
         {
-            ReleaseAgent(other.gameObject);           
+            ReleaseAgent(other.gameObject);  
         }
     }
 
