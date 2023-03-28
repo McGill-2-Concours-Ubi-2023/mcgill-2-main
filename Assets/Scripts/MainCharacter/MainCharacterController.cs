@@ -149,7 +149,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
                 newCamera.name = $"MainCamera_{Guid.NewGuid()}";
                 newCamera.SetActive(false);
                 CinemachineVirtualCamera newVirtualCamera = newCamera.GetComponent<CinemachineVirtualCamera>();
-                var targetTransform = m_LastRoom.transform;
+                var targetTransform = m_LastRoom.transform.Find("cameraRoot");
                 newVirtualCamera.m_Follow = targetTransform;
                 newVirtualCamera.m_LookAt = targetTransform;
                 newCamera.SetActive(true);

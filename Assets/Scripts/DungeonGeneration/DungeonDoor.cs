@@ -16,13 +16,13 @@ public class DungeonDoor : MonoBehaviour
     private Coroutine openCoroutine;
     private Coroutine closeCoroutine;
     private MeshCollider doorCollider;
-    private NavMeshObstacle doorObstacle;
+    [SerializeField]
     private bool canOpen = true;
+    private DungeonRoom bufferRoom;
 
     private void Start()
     {
         doorCollider = transform.Find("Door").GetComponent<MeshCollider>();
-        doorObstacle = transform.Find("Door").GetComponent<NavMeshObstacle>();
     }
 
     public bool CanOpen()
@@ -46,13 +46,14 @@ public class DungeonDoor : MonoBehaviour
         Vector3 diff = originRoom.transform.position - targetRoom.transform.position;
         Vector3 doorPosition = doorObj.transform.position - diff/2 + Y_Offset;
         var doorObject = DungeonDrawer.DrawSingleObject(doorPosition, data.GetDoorPrefab(), doorObj);
-        var doorComponent = doorObject.AddComponent<DungeonDoor>();
+        var doorComponent = doorObject.AddComponent<DungeonDoor>(); //canOpen = true by default;
         doorComponent.sharedRoom1 = originRoom;
         doorComponent.sharedRoom2 = targetRoom;
         var orientation = originRoom.transform.position - targetRoom.transform.position;
         var direction = new Vector3(orientation.x, 0, orientation.z);
         var angle = Vector3.SignedAngle(doorObj.transform.forward, direction, Vector3.up);
         doorObject.transform.Rotate(0, angle, 0);
+        if (originRoom.IsIsolated() || targetRoom.IsIsolated()) doorComponent.canOpen = false; //lock door is isolated
         return doorComponent;
     }
 
@@ -65,6 +66,14 @@ public class DungeonDoor : MonoBehaviour
     {
         if(other.gameObject.layer == LayerMask.NameToLayer("Player") && canOpen)
         {
+            if (sharedRoom1 == DungeonRoom.activeRoom) 
+            {
+                bufferRoom = sharedRoom2;
+            }
+            else
+            {
+                bufferRoom = sharedRoom1;
+            } 
             openCoroutine = StartCoroutine(Open());
             if (closeCoroutine != null) StopCoroutine(closeCoroutine);
             DungeonRoom.lastEnteredDoor = this;
@@ -77,7 +86,6 @@ public class DungeonDoor : MonoBehaviour
         var openRate = FindObjectOfType<MainCharacterController>().doorOpenRate;
         while (skinnedMeshRenderer.GetBlendShapeWeight(0) > 0)
         {
-            doorObstacle.center -= new Vector3(0, 0, openRate / 100);
             skinnedMeshRenderer.SetBlendShapeWeight(0, skinnedMeshRenderer.GetBlendShapeWeight(0) - openRate);
             UpdateCollider();
             yield return new WaitForEndOfFrame();
@@ -90,7 +98,6 @@ public class DungeonDoor : MonoBehaviour
         var openRate = FindObjectOfType<MainCharacterController>().doorOpenRate;
         while (skinnedMeshRenderer.GetBlendShapeWeight(0) < 100)
         {
-            doorObstacle.center += new Vector3(0, 0, openRate / 100);
             skinnedMeshRenderer.SetBlendShapeWeight(0, skinnedMeshRenderer.GetBlendShapeWeight(0) + openRate);
             UpdateCollider();
             yield return new WaitForEndOfFrame();
@@ -110,13 +117,16 @@ public class DungeonDoor : MonoBehaviour
         {
             closeCoroutine = StartCoroutine(Close());
             if (openCoroutine != null) StopCoroutine(openCoroutine);
-        }
-        if (other.CompareTag("Player")) {
-            GoThorouthDoor();
+
+            if (other.CompareTag("Player"))
+            {
+                if(DungeonRoom.activeRoom == bufferRoom)
+                GoThorouthDoor();
+            }
         }
     }
 
-    private void GoThorouthDoor() {
+    public void GoThorouthDoor() {
         MapManager map = GameObject.Find("LayoutMap").GetComponent<MapManager>();
         DungeonRoom currentRoom = map.dungeonData.GetActiveRoom();
         Vector2Int position = currentRoom.GridPosition();
@@ -126,10 +136,14 @@ public class DungeonDoor : MonoBehaviour
         if (sharedRoom1 == currentRoom)
         {
             Vector2Int pos = sharedRoom2.GridPosition();
+            sharedRoom1.SpawnEnemies();
+            sharedRoom2.StopSpawnEnemies();
             map.LeaveRoom(pos.x * gridSize + pos.y);
         }
         else {
             Vector2Int pos = sharedRoom1.GridPosition();
+            sharedRoom2.SpawnEnemies();
+            sharedRoom1.StopSpawnEnemies();
             map.LeaveRoom(pos.x * gridSize + pos.y);
         }
     }

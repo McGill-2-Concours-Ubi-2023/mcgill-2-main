@@ -8,16 +8,16 @@ public class DataContainer<T> : ScriptableObject
     protected List<Vector3> positionsBuffer = new List<Vector3>(); //use this buffer to store spacial data in your script
     [SerializeField]
     protected List<T> customMapBuffer = new List<T>();
-    protected GameObject mono;
+    protected GameObject monoObject;
 
-    public void SetMonoInstance(GameObject mono)
+    public void SetMonoInstance(MonoBehaviour mono)
     {
-        this.mono = mono;
+        this.monoObject = mono.gameObject;
     }
 
     public GameObject GetMonoInstance()
     {
-        return mono;
+        return monoObject;
     }
 
     public List<T> GetCustomMapBuffer()

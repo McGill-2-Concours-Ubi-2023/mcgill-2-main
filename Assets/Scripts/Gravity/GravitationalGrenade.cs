@@ -140,8 +140,7 @@ public class GravitationalGrenade : MonoBehaviour
     }
 
     private IEnumerator Despawn(float timer)
-    {
-        
+    {       
         float elapsedTime = 0.0f;
         if(timer < 5.0f) _explodeEffect.Stop();
         while (elapsedTime < timer)

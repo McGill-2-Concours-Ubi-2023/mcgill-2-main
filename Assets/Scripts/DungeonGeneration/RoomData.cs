@@ -9,12 +9,36 @@ public class RoomData
     private RoomTypes.RoomType type;
     [SerializeField]
     private int prefabIndex;
+    [SerializeField]
+    private bool isOverride = false;
+    [SerializeField]
+    private bool isIsolated = false;
 
     public RoomData(Vector3 position, RoomTypes.RoomType type, int prefabIndex)
     {
         this.position = position;
         this.type = type;
         this.prefabIndex = prefabIndex;
+    }
+
+    public void SetIsolated(bool isolate)
+    {
+        this.isIsolated = isolate;
+    }
+
+    public bool IsIsolated()
+    {
+        return isIsolated;
+    }
+
+    public void SetOverride(bool _override, int prefabIndex){
+        isOverride = _override;
+        this.prefabIndex = prefabIndex;
+    }
+
+    public bool IsOverride()
+    {
+        return isOverride;
     }
 
     public void SetRoomType(RoomTypes.RoomType type)
@@ -34,7 +58,7 @@ public class RoomData
 
     public int GetPrefabIndex()
     {
-        return prefabIndex;
+        return prefabIndex; 
     }
 }
 

@@ -780,6 +780,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHealth: 5
   ui: {fileID: 1580186184}
+  invulnerable: 0
 --- !u!136 &1093101415
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -985,6 +986,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHealth: 5
   ui: {fileID: 0}
+  invulnerable: 0
 --- !u!114 &1315884790
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1051,6 +1053,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHealth: 5
   ui: {fileID: 0}
+  invulnerable: 0
 --- !u!114 &1998780248
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1209,6 +1212,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Gun
       objectReference: {fileID: 0}
+    - target: {fileID: 2435986675446788181, guid: b5d03294d62926645bd790817082b95a,
+        type: 3}
+      propertyPath: gunTip
+      value: 
+      objectReference: {fileID: 70687979}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b5d03294d62926645bd790817082b95a, type: 3}
 --- !u!1001 &8212024037824522336

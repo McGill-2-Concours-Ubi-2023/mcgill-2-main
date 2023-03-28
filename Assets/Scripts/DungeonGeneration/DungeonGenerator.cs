@@ -4,16 +4,18 @@ using System.Linq;
 using UnityEngine;
 using Unity.AI.Navigation;
 
+[ExecuteInEditMode]
 public class DungeonGenerator : MonoBehaviour
 {
     [SerializeField]
     public DungeonData data;
     [SerializeField]
     private bool newDungeonOnPlay = false;
+    public DungeonRoom roomToReplace;
 
     private void Awake()
     {
-        data.SetMonoInstance(this.gameObject);
+        data.SetMonoInstance(this);
         if (newDungeonOnPlay)
         {
             data.GenerateDungeon();

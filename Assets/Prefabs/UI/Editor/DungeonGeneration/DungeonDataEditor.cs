@@ -14,7 +14,7 @@ public class DungeonDataEditor : Editor
     {
         DrawDefaultInspector();
         dungeonData = ((DungeonData)target);
-        OnNullInitializeBehaviour(FindObjectOfType<DungeonGenerator>().gameObject);
+        OnNullInitializeBehaviour(FindObjectOfType<DungeonGenerator>());
 
         var mapManager = dungeonData.GetMapManager();
         var startingRoom = dungeonData.GetStartingRoom();
@@ -67,10 +67,10 @@ public class DungeonDataEditor : Editor
                 }
             }       
         }
-        if (GUILayout.Button("Replace Start Room (testing)"))
+        if (GUILayout.Button("Replace Room (testing)"))
         {
             
-            DungeonDrawer.ReplaceRoom(dungeonData.GetStartingRoom(), dungeonData, dungeonData.specialRoomPrefab, RoomTypes.RoomType.Special);
+            DungeonDrawer.ReplaceRoomAndIsolate(FindObjectOfType<DungeonGenerator>().roomToReplace, dungeonData, dungeonData.GetRoomOverrides()[0], RoomTypes.RoomType.Special);
         }
 
 
@@ -88,7 +88,7 @@ public class DungeonDataEditor : Editor
         }
     }
 
-    private void OnNullInitializeBehaviour(GameObject dungeonGenerator)
+    private void OnNullInitializeBehaviour(MonoBehaviour dungeonGenerator)
     {
         if (dungeonData.GetMonoInstance() == null)
         {

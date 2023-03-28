@@ -529,6 +529,24 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3411219501192846892, guid: c9731aa3b5a5c0e4c88fa08ac5df6e16,
+        type: 3}
+      propertyPath: configs
+      value: 
+      objectReference: {fileID: 11400000, guid: 5f7dcd900b9d5fe40981924b3191d474,
+        type: 2}
+    - target: {fileID: 3411219501836878920, guid: c9731aa3b5a5c0e4c88fa08ac5df6e16,
+        type: 3}
+      propertyPath: configs
+      value: 
+      objectReference: {fileID: 11400000, guid: 5f7dcd900b9d5fe40981924b3191d474,
+        type: 2}
+    - target: {fileID: 3411219502169940764, guid: c9731aa3b5a5c0e4c88fa08ac5df6e16,
+        type: 3}
+      propertyPath: configs
+      value: 
+      objectReference: {fileID: 11400000, guid: 5f7dcd900b9d5fe40981924b3191d474,
+        type: 2}
     - target: {fileID: 3411219502648660793, guid: c9731aa3b5a5c0e4c88fa08ac5df6e16,
         type: 3}
       propertyPath: m_RootOrder
@@ -589,5 +607,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Merchant
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2435618933948208938, guid: c9731aa3b5a5c0e4c88fa08ac5df6e16, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: c9731aa3b5a5c0e4c88fa08ac5df6e16, type: 3}

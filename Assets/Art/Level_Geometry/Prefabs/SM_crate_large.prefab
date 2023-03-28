@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 7485568569602451430}
   - component: {fileID: -5608047333099132812}
   - component: {fileID: 6796948905564355603}
+  - component: {fileID: 2991773900549815928}
   m_Layer: 7
   m_Name: SM_crate_large
   m_TagString: Untagged
@@ -130,6 +131,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentField: {fileID: 0}
+  isBound: 0
 --- !u!114 &-5608047333099132812
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -162,3 +164,19 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+--- !u!208 &2991773900549815928
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7783365933817924897}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.625, y: 0.625, z: 0.625}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: -0.002, y: 0.628, z: 0}
+  m_TimeToStationary: 0.5

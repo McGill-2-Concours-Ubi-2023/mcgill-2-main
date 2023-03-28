@@ -25,7 +25,7 @@ public class DungeonGrid : DataContainer<RoomData>
         ClearGrid();
         this.data = data;
         gridMap = new Dictionary<Vector3, Vector2Int>();        
-        var currentPosition = mono.transform.position;
+        var currentPosition = monoObject.transform.position;
         var offsetx = (roomSize + cellsSpacing) * Vector3.forward;
         var offsetz = (roomSize + cellsSpacing) * Vector3.right;
 
@@ -187,7 +187,7 @@ public class DungeonGrid : DataContainer<RoomData>
     {
         ClearData();
         wallsPositions = new Dictionary<Vector3, GameObject>();
-        DungeonDrawer.EraseDungeon(mono);
+        DungeonDrawer.EraseDungeon(monoObject);
     }
 
     public void LoadRooms(List<RoomData> rooms, DungeonData data)

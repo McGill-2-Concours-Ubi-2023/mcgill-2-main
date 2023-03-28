@@ -11,7 +11,11 @@ public class ShowUI : MonoBehaviour
     public float floatSpeed = 1f;  // The speed of the floating motion
     public float floatHeight = 0.5f; // The maximum height of the float
     private Vector3 startPos;
-    private bool startFloat = false; 
+    private bool startFloat = false;
+    [SerializeField]
+    Configuration configs;
+    string description; 
+
     private void Start()
     {
         canvases.Add(self);
@@ -69,9 +73,19 @@ public class ShowUI : MonoBehaviour
 
     private void SelectCurrentConfiguration() {
         // TODO: player selected this room config
+        if (configs.configurations.ContainsKey(description)) {
+            {
+                List<GameObject> roomPrefabs = configs.configurations[description];
+                int count = roomPrefabs.Count;
+                GameObject prefab = roomPrefabs[Random.Range(0, count + 1)];
+                // TODO: replace the room with this prefab; 
+                
+            }
+        }
     }
 
     private void SetText(string description) {// set the description of the config 
-        self.transform.GetChild(0).GetComponentInChildren<TMP_Text>().text = description; 
+        self.transform.GetChild(0).GetComponentInChildren<TMP_Text>().text = description;
+        this.description = description;
     }
 }

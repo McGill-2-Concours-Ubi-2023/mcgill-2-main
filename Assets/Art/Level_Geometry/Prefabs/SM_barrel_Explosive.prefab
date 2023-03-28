@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7067090363877701500}
   - component: {fileID: 6951454347276676970}
   - component: {fileID: 6922089182437279056}
+  - component: {fileID: 9189408778174511201}
   m_Layer: 7
   m_Name: SM_barrel_Explosive
   m_TagString: Untagged
@@ -115,3 +116,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!208 &9189408778174511201
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8724498657978324649}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.36400002, y: 0.50200003, z: 0.36400002}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0.001, y: 0.50200003, z: 0.006}
+  m_TimeToStationary: 0.5

@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 1208228249197748607}
   - component: {fileID: 5631082765481774897}
   - component: {fileID: 1287420303597595477}
-  - component: {fileID: 2274948807861053902}
   - component: {fileID: 3149557022828004550}
   m_Layer: 0
   m_Name: Corner
@@ -62,22 +61,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.88297534, y: 3.7107582, z: 4.6838503}
   m_Center: {x: -0.048751473, y: 1.8571258, z: 1.8488512}
---- !u!114 &2274948807861053902
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1985996848027302853}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_OverrideArea: 1
-  m_Area: 1
-  m_IgnoreFromBuild: 0
-  m_AffectedAgents: ffffffff
 --- !u!95 &3149557022828004550
 Animator:
   serializedVersion: 5
@@ -172,6 +155,28 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f6644959c591c794b9a8748402a700cc, type: 3}
+--- !u!1 &7117960321107315979 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: f6644959c591c794b9a8748402a700cc,
+    type: 3}
+  m_PrefabInstance: {fileID: 7929003734152015962}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8561149207855618113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7117960321107315979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 1
+  m_Area: 1
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff
 --- !u!4 &7603135685920102321 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f6644959c591c794b9a8748402a700cc,
