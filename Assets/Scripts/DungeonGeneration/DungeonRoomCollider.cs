@@ -12,6 +12,7 @@ public class DungeonRoomCollider : MonoBehaviour
         if (DungeonRoom.lastEnteredDoor != null) DungeonRoom.lastEnteredDoor.ShowWalls();
     }
 
+
     private void OnTriggerStay(Collider other)
     {
         DungeonRoom.activeRoom = GetComponentInParent<DungeonRoom>();
