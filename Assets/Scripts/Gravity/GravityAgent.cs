@@ -63,8 +63,13 @@ public class GravityAgent : MonoBehaviour
 
     public void Release()
     {
-        gameObject.Trigger<I_AI_Trigger>("EnableAgent");
         isBound = false;
+        gameObject.Trigger<I_AI_Trigger>("EnableAgent");
+    }
+
+    private void FixedUpdate()
+    {
+        if (!currentField) Release();
     }
 
     private void OnTriggerExit(Collider other)
@@ -77,14 +82,6 @@ public class GravityAgent : MonoBehaviour
                 Release();
                 StopAllCoroutines();
             }
-        }
-    }
-
-    private void OnDestroy()
-    {
-        foreach(var field in FindObjectsOfType<GravityField>())
-        {
-            if (field.agents.Contains(this.gameObject)) field.ReleaseAgent(this.gameObject);
         }
     }
 }

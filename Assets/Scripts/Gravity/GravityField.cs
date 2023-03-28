@@ -123,13 +123,6 @@ public abstract class GravityField : MonoBehaviour
     {
         var player = GameObject.FindGameObjectWithTag("Player");
         if(player)player.GetComponent<Animator>().SetBool("IsFloating", false);
-        foreach (Rigidbody rb in cachedRigidbodies)
-        {
-            if (rb != null)
-            {
-                rb.gameObject.GetComponent<GravityAgent>().Release();
-            }
-        }
         cachedRigidbodies.Clear();
     }
 }

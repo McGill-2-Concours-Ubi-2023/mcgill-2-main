@@ -26,13 +26,12 @@ public class Enemy : MonoBehaviour, I_AI_Trigger
             cachedAcceleration = agent.acceleration;
             cachedAngularSpeed = agent.angularSpeed;
         }
-
     }
 
     public void OnEnemyDeath() {
         EnemyAI ai;
         TryGetComponent<EnemyAI>(out ai);
-        if (ai) ai.GetAttachedRoom().RemoveEnemy(ai);
+        //if (ai) ai.GetAttachedRoom().RemoveEnemy(ai);
         enemyHealth.deathRenderer.OnDeathRender();
     }
 

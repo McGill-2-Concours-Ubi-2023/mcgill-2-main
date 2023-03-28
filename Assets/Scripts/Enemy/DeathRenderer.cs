@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.VFX;
+using UnityEngine.AI;
 
 public class DeathRenderer : MonoBehaviour
 {
@@ -11,20 +12,34 @@ public class DeathRenderer : MonoBehaviour
     public float dissolveTime = 2.0f;
     public Animator animator;
     public VisualEffect deathParticles;
+    private NavMeshAgent agent;
+    private EnemyAI ai;
+    private Enemy enemy;
+    private Gun1 gun1;
+    private Gun gun;
+
+    private void Awake()
+    {
+        transform.root.TryGetComponent<NavMeshAgent>(out agent);
+        transform.root.TryGetComponent<Gun>(out gun);
+        transform.root.TryGetComponent<Gun1>(out gun1);
+        transform.root.TryGetComponent<Enemy>(out enemy);
+        transform.root.TryGetComponent<EnemyAI>(out ai);
+    }
 
     public void OnDeathRender()
     {
-        foreach(Renderer renderer in _renderers)
+        FreezeOnCurrentState();
+        DisableColliders();
+        foreach (Renderer renderer in _renderers)
         {
             renderer.material = deathMaterial;
         }
         StartCoroutine(Dissolve(dissolveTime));
-        FreezeOnCurrentState();
-        DisableColliders();
     }
 
     private IEnumerator Dissolve(float dissolveTime)
-    {
+    {       
         deathParticles.SetFloat("DissolveDuration", dissolveTime / 3);
         deathParticles.SendEvent("OnDeath");
         float elapsedTime = 0;
@@ -44,18 +59,16 @@ public class DeathRenderer : MonoBehaviour
 
     private void FreezeOnCurrentState()
     {
-        EnemyAI ai;
-        Enemy enemy;
-        Gun1 gun1;
-        Gun gun;
-        transform.root.TryGetComponent<Gun>(out gun);
-        transform.root.TryGetComponent<Gun1>(out gun1);
-        transform.root.TryGetComponent<Enemy>(out enemy);
-        transform.root.TryGetComponent<EnemyAI>(out ai);
         if (gun) gun.enabled = false;
         if (gun1) gun1.enabled = false;
         if (ai) ai.enabled = false;
         if (enemy) enemy.enabled = false;
+        if (agent)
+        {
+            agent.speed = 0;
+            agent.angularSpeed = 0;
+            agent.acceleration = 0;
+        }
         animator.enabled = false;
     }
 
