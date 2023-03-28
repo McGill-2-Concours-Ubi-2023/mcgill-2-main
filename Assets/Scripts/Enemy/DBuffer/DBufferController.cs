@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.VFX;
+using static Unity.Mathematics.math;
+using Unity.Mathematics;
+using Random = UnityEngine.Random;
 
 public class DBufferController : MonoBehaviour
 {
@@ -11,7 +14,13 @@ public class DBufferController : MonoBehaviour
     public float moveSpeed = 0.5f;
     private Rigidbody rb;
     public float boundsSize = 10f;
-    private Vector3 movementDirection;
+    private float3 movementDirection;
+    private GameObject m_Player;
+    [Range(0, float.PositiveInfinity)]
+    public float followDistance = 10f;
+    [Range(0, float.PositiveInfinity)]
+    public float attackDistance = 2f;
+    
     private void Awake()
     {
         animator = GetComponentInParent<Animator>();
@@ -19,6 +28,7 @@ public class DBufferController : MonoBehaviour
         health.OnDeath += OnDBufferDeath;
         rb = GetComponent<Rigidbody>();
         StartCoroutine(ChangeDirection());     
+        m_Player = GameObject.FindGameObjectWithTag("Player");
     }
 
     private void Update()
@@ -51,9 +61,10 @@ public class DBufferController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Player")) //if arm hits the player
+        if (collision.gameObject == m_Player) //if arm hits the player
         {
             //Unlucky, get better and dodge, stop blaming the developers for your lack of skills
+            m_Player.Trigger<IHealthTriggers, int>(nameof(IHealthTriggers.TakeDamage), 1);
         }
     }
 
@@ -74,20 +85,32 @@ public class DBufferController : MonoBehaviour
         StartCoroutine(ChangeDirection());
     }
 
-    private Vector3 GetRandomDirection()
+    private float3 GetRandomDirection()
     {
         float x = Random.Range(-1f, 1f);
         float z = Random.Range(-1f, 1f);
-        return new Vector3(x, 0f, z).normalized;
+        return normalize(float3(x, 0, z));
     }
 
-    public Vector3 GetMovementDirection()
+    public float3 GetMovementDirection()
     {
         return movementDirection;
     }
 
     private void FixedUpdate()
     {
+        // check distance
+        float dist = length(m_Player.transform.position - transform.position);
+        if (dist <= followDistance && dist > attackDistance)
+        {
+            movementDirection = normalize(m_Player.transform.position - transform.position);
+        }
+        else if (dist <= attackDistance)
+        {
+            movementDirection = Vector3.zero;
+            Attack();
+        }
+
         rb.velocity = movementDirection * moveSpeed;
         animator.SetFloat("Speed", rb.velocity.magnitude);
     }
