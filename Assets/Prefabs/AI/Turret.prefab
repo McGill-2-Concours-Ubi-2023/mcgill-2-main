@@ -114,6 +114,7 @@ MonoBehaviour:
   currentHealth: 5
   ui: {fileID: 0}
   invulnerable: 0
+  deathRenderer: {fileID: 0}
 --- !u!1 &8153731443243491382
 GameObject:
   m_ObjectHideFlags: 0
@@ -413,6 +414,7 @@ MonoBehaviour:
   drawPath: 0
   turningPart: {fileID: 0}
   lr: {fileID: 8153731444753709492}
+  attachedRoom: {fileID: 0}
 --- !u!120 &8153731444753709492
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -526,7 +528,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 14
+  m_Constraints: 94
   m_CollisionDetection: 0
 --- !u!114 &5825876448954427158
 MonoBehaviour:
@@ -543,6 +545,7 @@ MonoBehaviour:
   currentHealth: 5
   ui: {fileID: 0}
   invulnerable: 0
+  deathRenderer: {fileID: 0}
 --- !u!114 &5707665176391444532
 MonoBehaviour:
   m_ObjectHideFlags: 0

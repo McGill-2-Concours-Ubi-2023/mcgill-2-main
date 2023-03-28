@@ -222,7 +222,7 @@ public static class TriggerExt
         return default;
     }
 
-    [MenuItem("Litter Box/PLEASE DO NOT CLICK THIS")]
+    [MenuItem("Litter Box/🥺🥺🥺🥺🥺🥺")]
     public static async void DangerousMethod()
     {
         int Proc(int[] tuple)

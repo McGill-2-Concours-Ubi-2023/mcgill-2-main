@@ -18,6 +18,7 @@ public class Health : MonoBehaviour, IHealthTriggers
     [SerializeField]
     private HealthUI ui;
     public bool invulnerable;
+    public DeathRenderer deathRenderer;
 
     public void TakeDamage(int damage)
     {
