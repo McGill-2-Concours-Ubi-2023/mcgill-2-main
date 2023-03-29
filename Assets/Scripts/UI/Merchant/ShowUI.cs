@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System.Reflection;
+using UnityEngine.InputSystem;
 
 public class ShowUI : MonoBehaviour
 {
@@ -23,7 +24,8 @@ public class ShowUI : MonoBehaviour
     [SerializeField]
     GameObject gun;
     int points = 10000;
-    private bool soldout = false; 
+    private bool soldout = false;
+    private InputActionAsset m_InputActionAsset;
 
     private void Start()
     {
@@ -33,7 +35,10 @@ public class ShowUI : MonoBehaviour
         startPos = self.transform.position;
         player = GameObject.FindGameObjectWithTag("Player");
         gun = GameObject.FindGameObjectWithTag("Gun");
+        m_InputActionAsset = player.GetComponent<PlayerInput>().actions;
+        m_InputActionAsset["Interact"].performed += ctx => SelectCurrentItem();
     }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player")) {
@@ -63,7 +68,7 @@ public class ShowUI : MonoBehaviour
         else {
             Float(false); 
         }
-        if (Input.GetKeyDown(KeyCode.E) && startFloat) {
+        if ((Input.GetKeyDown(KeyCode.E))) {
             SelectCurrentItem(); 
         }
     }
@@ -96,7 +101,7 @@ public class ShowUI : MonoBehaviour
     private void SelectCurrentItem()
     {
         // TODO: player selected this item
-        if (data.merchantPrices.ContainsKey(description) && !soldout)
+        if (startFloat && data.merchantPrices.ContainsKey(description) && !soldout)
         {
             {
                 //TODO: check if player has enough points 
