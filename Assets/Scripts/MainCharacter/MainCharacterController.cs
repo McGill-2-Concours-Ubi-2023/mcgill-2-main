@@ -335,7 +335,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         Camera.GetComponent<CinemachineCameraShake>().StopCameraShake();
     }
 
-    public void OnPause()
+    /*public void OnPause()
     {
         m_GamePaused = !m_GamePaused;
         Time.timeScale = m_GamePaused ? 0.0f : 1.0f;
@@ -343,7 +343,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         {
             m_PauseMenu.SetActive(m_GamePaused);
         }
-    }
+    }*/
 
     public void OnShootPress()
     {
