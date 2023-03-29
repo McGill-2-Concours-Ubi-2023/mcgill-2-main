@@ -126,6 +126,12 @@ public class DungeonDoor : MonoBehaviour
         }
     }
 
+    public void SetRooms(DungeonRoom room1, DungeonRoom room2)
+    {
+        sharedRoom1 = room1;
+        sharedRoom2 = room2;
+    }
+
     public void GoThorouthDoor() {
         MapManager map = GameObject.Find("LayoutMap").GetComponent<MapManager>();
         DungeonRoom currentRoom = map.dungeonData.GetActiveRoom();

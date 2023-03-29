@@ -57,13 +57,14 @@ public static class DungeonDrawer
             }
         }
         obj.transform.position = roomData.GetPosition();
+        DungeonRoom newRoom = obj.AddComponent<DungeonRoom>();
+        newRoom.ReassignRoom(room, type);
         obj.transform.parent = FindDungeonDrawer(dungeonData.GetMonoInstance()).transform;
         roomData.SetOverride(true, newPrefabIndex);     
-        room.ReassignRoom(room, type);
-        room.GetWalls().transform.parent = room.transform;      
-        room.Isolate();
-        DungeonData.SafeDestroy(room.transform.Find("Floor").gameObject);
-        return obj;
+        newRoom.Isolate();
+        dungeonData.AllRooms().Remove(room);
+        DungeonData.SafeDestroy(room.gameObject);
+        return null;
     }
 
     public static GameObject DrawRoomFromData(RoomData roomData, DungeonData dungeonData)

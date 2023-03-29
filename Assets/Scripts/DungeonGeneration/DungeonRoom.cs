@@ -41,7 +41,7 @@ public class DungeonRoom : MonoBehaviour
         var allRooms = dungeonGenerator.data.AllRooms();
         foreach (var room in allRooms)
         {
-            if (!adjacentRooms.Contains(room) && room != this)
+            if (!adjacentRooms.Contains(room) && room != this && room !=  null)
             {
                 room.gameObject.SetActive(false);
             }
@@ -258,6 +258,20 @@ public class DungeonRoom : MonoBehaviour
         this.doors = existingRoom.doors;
         this.layout = existingRoom.layout;
         this.type = type;
+        this.occludableWalls = existingRoom.occludableWalls;
+        this.northWalls = existingRoom.northWalls;
+        this.walls = existingRoom.walls;
+        existingRoom.walls.transform.parent = this.transform;      
+        foreach(DungeonDoor door in existingRoom.doors)
+        {
+            door.transform.parent = this.transform;
+            var sharedRooms = door.GetSharedRooms();
+            foreach(DungeonRoom room in sharedRooms)
+            {
+                if (adjacentRooms.Contains(room))
+                    door.SetRooms(this, room);
+            }
+        }       
     }
 
     internal void RemoveEnemy(EnemyAI enemyAI)

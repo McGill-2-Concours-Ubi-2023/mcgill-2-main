@@ -193,7 +193,7 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
     public void LoadData()
     {
         ClearDungeon();
-        GetGrid().LoadRooms(GetActiveLayout().GetRoomsData(), this);
+        GetGrid().LoadRooms(this);
         FindStartingRoom();
         FindObjectOfType<MainCharacterController>().transform.position = startingRoom.transform.position;
         GetGrid().ReloadMiniMap(this);

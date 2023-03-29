@@ -190,7 +190,7 @@ public class DungeonGrid : DataContainer<RoomData>
         DungeonDrawer.EraseDungeon(monoObject);
     }
 
-    public void LoadRooms(List<RoomData> rooms, DungeonData data)
+    public void LoadRooms(DungeonData data)
     {
         GenerateGrid(data);
         foreach(var roomData in data.GetActiveLayout().GetRoomsData())
