@@ -10,9 +10,9 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] float attackRange=7.5f;
     Vector3 posCache;
     private NavMeshAgent navMeshAgent;
-    enum moveType { APPROACH, ASLEEP, RANDOM };
+    public enum moveType { APPROACH, ASLEEP, RANDOM };
     [SerializeField]
-    moveType move = moveType.ASLEEP;
+    public moveType move = moveType.ASLEEP;
     moveType moveCache = moveType.ASLEEP;
     [SerializeField] bool autoSleep = true;
     [SerializeField] float randomRadius;
@@ -62,52 +62,48 @@ public class EnemyAI : MonoBehaviour
 
     void FixedUpdate()
     {
-
-
-        
-        if (navMeshAgent.path.corners.Length > 0 && drawPath)
-        {
-            lr.positionCount = navMeshAgent.path.corners.Length;
-            for (int i = 0; i < navMeshAgent.path.corners.Length; i++)
+            if (navMeshAgent.path.corners.Length > 0 && drawPath)
             {
-                lr.SetPosition(i, navMeshAgent.path.corners[i]);
-            }
-        }// draws the path
-
-        //code below determines if player is reachable, awakens if they are, sleeps if they arent
-        Vector3 playerpt = RandomNavSphere(player.position, randomRadius, randomLayerMask);
-        navMeshAgent.CalculatePath(player.position, navMeshPath2);
-        if (navMeshPath2.status == NavMeshPathStatus.PathComplete && move == moveType.ASLEEP && autoSleep &&!waking)
-        {
-            StartCoroutine(awaken());
-        }
-        else if (navMeshPath.status != NavMeshPathStatus.PathComplete && move != moveType.ASLEEP && autoSleep)
-        {
-            moveCache = move;
-            move = moveType.ASLEEP;
-        }
-        if (move != moveType.ASLEEP)
-        {
-            if ((navMeshAgent.remainingDistance < repathDist && move == moveType.RANDOM) || (move == moveType.APPROACH && Vector3.Distance(navMeshAgent.destination, player.position) > randomRadius+0.5))
-            {
-                RandomTarget();//if we're close to the target position or the player has significantly changed position, recalculate target pos.
-            }
-
-            if (Vector3.Distance(transform.position, player.position) < attackRange)//attacks player when in range
-            {
-                if (lookAtPlayer)//might not necessarily want to shoot at player
+                lr.positionCount = navMeshAgent.path.corners.Length;
+                for (int i = 0; i < navMeshAgent.path.corners.Length; i++)
                 {
-                    FaceTarget(player.position);
+                    lr.SetPosition(i, navMeshAgent.path.corners[i]);
+                }
+            }// draws the path
 
-                }
-                if (gun != null)
-                {
-                    gun.Shoot();
-                    //Debug.Log("shot");
-                }
+            //code below determines if player is reachable, awakens if they are, sleeps if they arent
+            Vector3 playerpt = RandomNavSphere(player.position, randomRadius, randomLayerMask);
+            navMeshAgent.CalculatePath(player.position, navMeshPath2);
+            if (navMeshPath2.status == NavMeshPathStatus.PathComplete && move == moveType.ASLEEP && autoSleep && !waking)
+            {
+                StartCoroutine(awaken());
             }
-        }
+            else if (navMeshPath.status != NavMeshPathStatus.PathComplete && move != moveType.ASLEEP && autoSleep)
+            {
+                moveCache = move;
+                move = moveType.ASLEEP;
+            }
+            if (move != moveType.ASLEEP)
+            {
+                if ((navMeshAgent.remainingDistance < repathDist && move == moveType.RANDOM) || (move == moveType.APPROACH && Vector3.Distance(navMeshAgent.destination, player.position) > randomRadius + 0.5))
+                {
+                    RandomTarget();//if we're close to the target position or the player has significantly changed position, recalculate target pos.
+                }
 
+                if (Vector3.Distance(transform.position, player.position) < attackRange)//attacks player when in range
+                {
+                    if (lookAtPlayer)//might not necessarily want to shoot at player
+                    {
+                        FaceTarget(player.position);
+
+                    }
+                    if (gun != null)
+                    {
+                        gun.Shoot();
+                        //Debug.Log("shot");
+                    }
+                }
+            }       
     }
 
     void RandomTarget()
@@ -145,7 +141,8 @@ public class EnemyAI : MonoBehaviour
         Quaternion rotation = Quaternion.LookRotation(lookPos);
         transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * lookSpeed);
     }
-    IEnumerator awaken() {
+    IEnumerator awaken()
+    {
         waking = true;
         if (wokeOnce == false)
             yield return new WaitForSeconds(wakeTime);

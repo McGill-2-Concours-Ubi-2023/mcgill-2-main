@@ -25,7 +25,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4729426032762785399}
-  m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -53,8 +53,8 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -8468166111470757104, guid: e087261ed21b8034e99c22bb80204bf2, type: 3}
-  - {fileID: -1376009053751647419, guid: e087261ed21b8034e99c22bb80204bf2, type: 3}
+  - {fileID: 2100000, guid: 09c712133609a0d47875b5a0d6d52bc7, type: 2}
+  - {fileID: 2100000, guid: 52beefef81a9f6e4db2507d2e8c36926, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -101,7 +101,7 @@ MeshCollider:
   serializedVersion: 4
   m_Convex: 1
   m_CookingOptions: 30
-  m_Mesh: {fileID: 2619086233303812490, guid: d47e493f284020c4599e8a360e49b743, type: 3}
+  m_Mesh: {fileID: 2619086233303812490, guid: e087261ed21b8034e99c22bb80204bf2, type: 3}
 --- !u!1 &5725427899017443757
 GameObject:
   m_ObjectHideFlags: 0
@@ -129,7 +129,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5725427899017443757}
-  m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -165,8 +165,8 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -8468166111470757104, guid: e087261ed21b8034e99c22bb80204bf2, type: 3}
-  - {fileID: -1376009053751647419, guid: e087261ed21b8034e99c22bb80204bf2, type: 3}
+  - {fileID: 2100000, guid: 09c712133609a0d47875b5a0d6d52bc7, type: 2}
+  - {fileID: 2100000, guid: 52beefef81a9f6e4db2507d2e8c36926, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -244,7 +244,7 @@ Transform:
   m_GameObject: {fileID: 6731566312865161675}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.5527186, y: 2.4025588, z: 1.2012794}
+  m_LocalScale: {x: 1.7202028, y: 1.6190144, z: 0.8095072}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3839213836792527413}

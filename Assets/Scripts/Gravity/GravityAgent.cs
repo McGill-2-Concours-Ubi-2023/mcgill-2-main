@@ -41,16 +41,19 @@ public class GravityAgent : MonoBehaviour
         if(other.gameObject.name.Equals("DestructionBounds") 
             && gameObject.layer == LayerMask.NameToLayer("Destructible"))
         {
-            BindField(other.GetComponentInParent<GravityField>());
-            if (currentField.IsActive()) isBound = true;
+            if (currentField.IsActive()) 
+            {
+                isBound = true;
+            }
             GravitationalGrenade grenade = other.gameObject.GetComponentInParent<GravitationalGrenade>();
             StartCoroutine(OnWaitDestroy(grenade.GetDestructionTimer()));       
         }
     }
 
-    private void BindField(GravityField field)
+    public void BindField(GravityField field)
     {
         currentField = field;
+        gameObject.Trigger<I_AI_Trigger>("DisableAgent");
         massCompression = currentField.GetMassCompressionForce();
         foreach (var effectiveField in FindObjectsOfType<GravityField>())
         {
@@ -61,6 +64,12 @@ public class GravityAgent : MonoBehaviour
     public void Release()
     {
         isBound = false;
+        gameObject.Trigger<I_AI_Trigger>("EnableAgent");
+    }
+
+    private void FixedUpdate()
+    {
+        if (!currentField) Release();
     }
 
     private void OnTriggerExit(Collider other)
@@ -73,14 +82,6 @@ public class GravityAgent : MonoBehaviour
                 Release();
                 StopAllCoroutines();
             }
-        }
-    }
-
-    private void OnDestroy()
-    {
-        foreach(var field in FindObjectsOfType<GravityField>())
-        {
-            if (field.agents.Contains(this.gameObject)) field.ReleaseAgent(this.gameObject);
         }
     }
 }

@@ -117,7 +117,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 4467039506689872512}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 1
+  m_Radius: 0.5
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
@@ -171,6 +171,7 @@ MonoBehaviour:
   drawPath: 1
   turningPart: {fileID: 0}
   lr: {fileID: 4467039506689872513}
+  attachedRoom: {fileID: 0}
 --- !u!114 &4467039506689872514
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -303,7 +304,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 80
   m_CollisionDetection: 0
 --- !u!114 &2017727586027097123
 MonoBehaviour:
@@ -320,6 +321,7 @@ MonoBehaviour:
   currentHealth: 5
   ui: {fileID: 0}
   invulnerable: 0
+  deathRenderer: {fileID: 0}
 --- !u!114 &282724516381393665
 MonoBehaviour:
   m_ObjectHideFlags: 0
