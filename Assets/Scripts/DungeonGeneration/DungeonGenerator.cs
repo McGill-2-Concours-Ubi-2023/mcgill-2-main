@@ -8,6 +8,8 @@ using Unity.AI.Navigation;
 public class DungeonGenerator : MonoBehaviour
 {
     [SerializeField]
+    public List<DungeonRoom> activeRooms;
+    [SerializeField]
     public DungeonData data;
     [SerializeField]
     private bool newDungeonOnPlay = false;
@@ -22,6 +24,14 @@ public class DungeonGenerator : MonoBehaviour
         } else
         {
             data.LoadData();
+        }
+    }
+
+    public void AddActiveRoom(DungeonRoom room)
+    {
+        if (!activeRooms.Contains(room))
+        {
+            activeRooms.Add(room);
         }
     }
 }

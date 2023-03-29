@@ -5,9 +5,11 @@ using System.Linq;
 using Unity.Collections;
 using UnityEngine;
 
+
 [System.Serializable]
 public class DungeonRoom : MonoBehaviour
 {
+    public static DungeonGenerator dungeonGenerator;
     [SerializeField]
     private List<DungeonRoom> adjacentRooms = new List<DungeonRoom>();
     private Guid uniqueId;
@@ -23,9 +25,9 @@ public class DungeonRoom : MonoBehaviour
     private string layout;
     [SerializeField]
     private RoomTypes.RoomType type;
-    [SerializeField][HideInInspector]
+    [SerializeField]
     private List<OccludableWall> occludableWalls;
-    [SerializeField][HideInInspector]
+    [SerializeField]
     private List<OccludableWall> northWalls;
     [SerializeField][HideInInspector]
     private GameObject walls;
@@ -33,6 +35,19 @@ public class DungeonRoom : MonoBehaviour
     [SerializeField]
     private List<EnemyAI> enemies;
     private bool areEnemiesPresent;
+
+    internal void OccludeRooms()
+    {
+        var allRooms = dungeonGenerator.data.AllRooms();
+        foreach (var room in allRooms)
+        {
+            if (!adjacentRooms.Contains(room) && room != this)
+            {
+                room.gameObject.SetActive(false);
+            }
+            else room.gameObject.SetActive(true);
+        }
+    }
 
     public static DungeonRoom GetActiveRoom()
     {
@@ -44,6 +59,11 @@ public class DungeonRoom : MonoBehaviour
         return walls;
     }
 
+    private void Awake()
+    {
+        dungeonGenerator = FindObjectOfType<DungeonGenerator>();
+    }
+
     public void SpawnEnemies()
     {
         enemies = new List<EnemyAI>();
@@ -52,6 +72,25 @@ public class DungeonRoom : MonoBehaviour
         Vector3 detectionRange = transform.Find("RoomCollider").GetComponent<BoxCollider>().size;
         StartCoroutine(CheckForAI(detectionRange));
         Isolate();
+    }
+
+    public void UpdateWalls()
+    {      
+       foreach(OccludableWall wall in occludableWalls)
+        {
+            if (wall != null)
+            {
+                wall.Hide();
+                wall.ChangeRenderQueue(3001);
+            }
+            
+        }
+
+        if (northWalls == null) FindNorthWalls();
+        foreach(OccludableWall wall in northWalls)
+        {
+            if (wall != null) wall.ChangeRenderQueue(2998);
+        }    
     }
 
     IEnumerator CheckForAI(Vector3 detectionRange)
@@ -355,9 +394,10 @@ public class DungeonRoom : MonoBehaviour
         }
         return false; // We've searched all adjacent rooms and haven't found a path to the end room
     }
-    public static bool PathExists(DungeonRoom excludedRoom, DungeonRoom startRoom, DungeonRoom endRoom)
+    public static (bool, int) PathExists(DungeonRoom excludedRoom, DungeonRoom startRoom, DungeonRoom endRoom)
     {
         HashSet<DungeonRoom> visitedRooms = new HashSet<DungeonRoom>();
-        return DFS(excludedRoom, startRoom, endRoom, visitedRooms);
+        bool path = DFS(excludedRoom, startRoom, endRoom, visitedRooms);
+        return (path, visitedRooms.Count());
     }
 }

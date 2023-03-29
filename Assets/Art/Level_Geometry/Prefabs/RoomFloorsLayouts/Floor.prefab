@@ -58,6 +58,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Floor
       objectReference: {fileID: 0}
+    - target: {fileID: 2641455676594778132, guid: 60ae4d6464c80ee4cbb9bacdc0ad7ac5,
+        type: 3}
+      propertyPath: m_Layer
+      value: 17
+      objectReference: {fileID: 0}
     - target: {fileID: 3450748377328691886, guid: 60ae4d6464c80ee4cbb9bacdc0ad7ac5,
         type: 3}
       propertyPath: m_RootOrder
@@ -112,6 +117,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5713482875020525873, guid: 60ae4d6464c80ee4cbb9bacdc0ad7ac5,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 809334942eed8f44683c253f3a4a74a2, type: 2}
+    - target: {fileID: 6073845269232869604, guid: 60ae4d6464c80ee4cbb9bacdc0ad7ac5,
+        type: 3}
+      propertyPath: m_Layer
+      value: 17
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 60ae4d6464c80ee4cbb9bacdc0ad7ac5, type: 3}

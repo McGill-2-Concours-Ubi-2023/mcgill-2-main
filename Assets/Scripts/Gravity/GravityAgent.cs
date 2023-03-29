@@ -41,7 +41,7 @@ public class GravityAgent : MonoBehaviour
         if(other.gameObject.name.Equals("DestructionBounds") 
             && gameObject.layer == LayerMask.NameToLayer("Destructible"))
         {
-            if (currentField.IsActive()) 
+            if (currentField != null && currentField.IsActive()) 
             {
                 isBound = true;
             }
@@ -64,6 +64,7 @@ public class GravityAgent : MonoBehaviour
     public void Release()
     {
         isBound = false;
+        if(gameObject != null)
         gameObject.Trigger<I_AI_Trigger>("EnableAgent");
     }
 

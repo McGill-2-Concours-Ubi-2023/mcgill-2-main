@@ -14,16 +14,17 @@ public abstract class GravityField : MonoBehaviour
     [SerializeField]
     [Range(0.5f, 3.0f)]
     protected float massCompression = 1.0f;
-    private HashSet<Rigidbody> cachedRigidbodies = new HashSet<Rigidbody>();
+    protected List<Rigidbody> cachedRigidbodies = new List<Rigidbody>();
 
-    
     protected abstract void ApplyGravity(Rigidbody rb);
-    protected abstract void DetectCollision();
+   // protected abstract void ApplyGravityJob();
+   // protected abstract void DetectCollision();
 
     private void Awake()
     {
         if(agents == null)
         agents = new List<GameObject>();
+        UpdateLayerMask();
     }
 
     public int GetLayerMask()
@@ -77,14 +78,19 @@ public abstract class GravityField : MonoBehaviour
         }
     }
 
+    private void OnTriggerStay(Collider other)
+    {
+        ProcessCollision(other);
+    }
+
     private void FixedUpdate()
     {
-        UpdateLayerMask();
-        DetectCollision();
+        //DetectCollision();
         foreach (Rigidbody rb in cachedRigidbodies)
         {
             if (rb != null)
             {
+                //ApplyGravityJob(rb);
                 ApplyGravity(rb);
             }
         }

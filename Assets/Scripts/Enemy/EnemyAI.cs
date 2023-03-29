@@ -60,50 +60,50 @@ public class EnemyAI : MonoBehaviour
         return attachedRoom;
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
-            if (navMeshAgent.path.corners.Length > 0 && drawPath)
+        if (navMeshAgent.path.corners.Length > 0 && drawPath)
+        {
+            lr.positionCount = navMeshAgent.path.corners.Length;
+            for (int i = 0; i < navMeshAgent.path.corners.Length; i++)
             {
-                lr.positionCount = navMeshAgent.path.corners.Length;
-                for (int i = 0; i < navMeshAgent.path.corners.Length; i++)
-                {
-                    lr.SetPosition(i, navMeshAgent.path.corners[i]);
-                }
-            }// draws the path
-
-            //code below determines if player is reachable, awakens if they are, sleeps if they arent
-            Vector3 playerpt = RandomNavSphere(player.position, randomRadius, randomLayerMask);
-            navMeshAgent.CalculatePath(player.position, navMeshPath2);
-            if (navMeshPath2.status == NavMeshPathStatus.PathComplete && move == moveType.ASLEEP && autoSleep && !waking)
-            {
-                StartCoroutine(awaken());
+                lr.SetPosition(i, navMeshAgent.path.corners[i]);
             }
-            else if (navMeshPath.status != NavMeshPathStatus.PathComplete && move != moveType.ASLEEP && autoSleep)
+        }// draws the path
+
+        //code below determines if player is reachable, awakens if they are, sleeps if they arent
+        Vector3 playerpt = RandomNavSphere(player.position, randomRadius, randomLayerMask);
+        navMeshAgent.CalculatePath(player.position, navMeshPath2);
+        if (navMeshPath2.status == NavMeshPathStatus.PathComplete && move == moveType.ASLEEP && autoSleep && !waking)
+        {
+            StartCoroutine(awaken());
+        }
+        else if (navMeshPath.status != NavMeshPathStatus.PathComplete && move != moveType.ASLEEP && autoSleep)
+        {
+            moveCache = move;
+            move = moveType.ASLEEP;
+        }
+        if (move != moveType.ASLEEP)
+        {
+            if ((navMeshAgent.remainingDistance < repathDist && move == moveType.RANDOM) || (move == moveType.APPROACH && Vector3.Distance(navMeshAgent.destination, player.position) > randomRadius + 0.5))
             {
-                moveCache = move;
-                move = moveType.ASLEEP;
+                RandomTarget();//if we're close to the target position or the player has significantly changed position, recalculate target pos.
             }
-            if (move != moveType.ASLEEP)
+
+            if (Vector3.Distance(transform.position, player.position) < attackRange)//attacks player when in range
             {
-                if ((navMeshAgent.remainingDistance < repathDist && move == moveType.RANDOM) || (move == moveType.APPROACH && Vector3.Distance(navMeshAgent.destination, player.position) > randomRadius + 0.5))
+                if (lookAtPlayer)//might not necessarily want to shoot at player
                 {
-                    RandomTarget();//if we're close to the target position or the player has significantly changed position, recalculate target pos.
-                }
+                    FaceTarget(player.position);
 
-                if (Vector3.Distance(transform.position, player.position) < attackRange)//attacks player when in range
+                }
+                if (gun != null)
                 {
-                    if (lookAtPlayer)//might not necessarily want to shoot at player
-                    {
-                        FaceTarget(player.position);
-
-                    }
-                    if (gun != null)
-                    {
-                        gun.Shoot();
-                        //Debug.Log("shot");
-                    }
+                    gun.Shoot();
+                    //Debug.Log("shot");
                 }
-            }       
+            }
+        }
     }
 
     void RandomTarget()

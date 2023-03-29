@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class DungeonRoomCollider : MonoBehaviour
 {
+   
     // Start is called before the first frame update
     private void OnTriggerEnter(Collider other)
     {
         DungeonRoom.activeRoom = GetComponentInParent<DungeonRoom>();
-        DungeonRoom.activeRoom.GetOccludableWalls().ForEach(wall => { if (wall != null) wall.Hide(); });
+        DungeonRoom.activeRoom.UpdateWalls();
         if (DungeonRoom.lastEnteredDoor != null) DungeonRoom.lastEnteredDoor.ShowWalls();
+        DungeonRoom.activeRoom.OccludeRooms();
     }
 
 

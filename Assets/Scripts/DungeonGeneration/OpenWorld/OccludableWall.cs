@@ -5,6 +5,12 @@ using UnityEngine;
 public class OccludableWall : MonoBehaviour
 {
     private Animator animator;
+    private Material material;
+
+    private void Awake()
+    {
+        material = GetComponent<Renderer>().material;
+    }
 
     public void Hide()
     {
@@ -18,5 +24,10 @@ public class OccludableWall : MonoBehaviour
         if (animator == null) animator = GetComponentInParent<Animator>();
         animator.SetBool("Hide", false);
         animator.SetBool("Occlude", true);
+    }
+
+    public void ChangeRenderQueue(int queue)
+    {
+        material.renderQueue = queue;
     }
 }
