@@ -25,4 +25,15 @@ public class ClickSound : MonoBehaviour
             nextsoundtime = Time.time+soundGap;
         }
     }
+
+    public void Click(AudioClip ac)
+    {
+        if (!dontRandomize)
+            AS.pitch = Random.Range(0.95f, 1.05f);
+        if (Time.time > nextsoundtime)
+        {
+            AS.PlayOneShot(ac);
+            nextsoundtime = Time.time + soundGap;
+        }
+    }
 }
