@@ -62,7 +62,8 @@ public class Health : MonoBehaviour, IHealthTriggers
         
     }
     public void IncreaseMaxHealth(int amount) {
-        MaxHealth = MaxHealth += amount; 
+        MaxHealth = MaxHealth += amount;
+        GainHealth(1);
     }
 }
 

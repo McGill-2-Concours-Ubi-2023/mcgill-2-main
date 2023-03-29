@@ -26,10 +26,10 @@ public class Iframe : MonoBehaviour
     void Update()
     {
         //test code TODO: DELETE THIS
-        if (Input.GetKeyDown(KeyCode.P))
+       /* if (Input.GetKeyDown(KeyCode.P))
         {
             playerHealth.TakeDamage(1);
-        }
+        }*/
     }
 
     private void Start()
@@ -41,7 +41,7 @@ public class Iframe : MonoBehaviour
 
     public void flash(int change, int currentHealth)
     {
-        if (change > 0) return;
+        if (change >= 0) return;
         StartCoroutine(flash());
     }
 

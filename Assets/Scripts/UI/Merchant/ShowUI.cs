@@ -20,7 +20,10 @@ public class ShowUI : MonoBehaviour
     string description;
     [SerializeField]
     GameObject player;
+    [SerializeField]
+    GameObject gun;
     int points = 10000;
+    private bool soldout = false; 
 
     private void Start()
     {
@@ -29,15 +32,14 @@ public class ShowUI : MonoBehaviour
         canvases.Add(canvas3);
         startPos = self.transform.position;
         player = GameObject.FindGameObjectWithTag("Player");
+        gun = GameObject.FindGameObjectWithTag("Gun");
     }
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player")) {
-            foreach (GameObject c in canvases) {
-                c.SetActive(true);
-                startFloat = true;
-            }
-            
+            self.SetActive(true);
+            startFloat = true;
+
         }
     }
 
@@ -94,12 +96,15 @@ public class ShowUI : MonoBehaviour
     private void SelectCurrentItem()
     {
         // TODO: player selected this item
-        if (data.merchantPrices.ContainsKey(description))
+        if (data.merchantPrices.ContainsKey(description) && !soldout)
         {
             {
                 //TODO: check if player has enough points 
                 if (points > data.merchantPrices[description]) {
+                    points = points -= data.merchantPrices[description];
                     PickMethod(data.merchantMethods[description]);
+                    soldout = true;
+                    SetText("SOLD OUT!");
                 }
 
             }
@@ -126,10 +131,10 @@ public class ShowUI : MonoBehaviour
     }
 
     public void IncraseFireRateDouble() {
-        player.Trigger<IGunTriggers, float>(nameof(IGunTriggers.IncreaseFireRate), 2);
+        gun.Trigger<IGunTriggers, float>(nameof(IGunTriggers.IncreaseFireRate), 2);
     }
     public void IncraseFireOnePointFive() {
-        player.Trigger<IGunTriggers, float>(nameof(IGunTriggers.IncreaseFireRate), 1.5f);
+        gun.Trigger<IGunTriggers, float>(nameof(IGunTriggers.IncreaseFireRate), 1.5f);
     }
     public void ChangeBullet() {
         player.Trigger<IGunTriggers>(nameof(IGunTriggers.ChangeBullet));
