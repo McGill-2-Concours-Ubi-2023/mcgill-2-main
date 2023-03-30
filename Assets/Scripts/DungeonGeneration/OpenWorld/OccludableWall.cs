@@ -9,21 +9,27 @@ public class OccludableWall : MonoBehaviour
 
     private void Awake()
     {
+        animator = GetComponentInParent<Animator>();
         material = GetComponent<Renderer>().material;
     }
 
     public void Hide()
     {
-        if (animator == null) animator = GetComponentInParent<Animator>();
-        animator.SetBool("Hide", true);
-        animator.SetBool("Occlude", false);
+        if (animator != null)
+        {
+            animator.SetBool("Hide", true);
+            animator.SetBool("Occlude", false);
+        }        
     }
 
     public void Occlude()
     {
-        if (animator == null) animator = GetComponentInParent<Animator>();
-        animator.SetBool("Hide", false);
-        animator.SetBool("Occlude", true);
+        if (animator != null) 
+        {
+            animator.SetBool("Hide", false);
+            animator.SetBool("Occlude", true);
+        }
+        
     }
 
     public void ChangeRenderQueue(int queue)

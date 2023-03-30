@@ -42,7 +42,13 @@ public static class DungeonDrawer
     //Runtime function, won't work in Editor
     public static GameObject ReplaceRoomAndIsolate(DungeonRoom room, DungeonData dungeonData, GameObject roomPrefab, RoomTypes.RoomType type)
     {
+        room.MoveDoorsUp();
+        room.GetWalls().transform.parent = room.transform; //Move walls upwards
+        DungeonData.SafeDestroy(room.transform.Find("RoomRoot").gameObject);//delete the root
         RoomData roomData = dungeonData.GetActiveLayout().GetRoomData(room);
+        GameObject go = new GameObject("RoomRoot");
+        go.transform.position = room.GetPosition();
+        go.transform.parent = room.transform;
         GameObject obj = GameObject.Instantiate(roomPrefab);
         roomData.SetRoomType(type);
         roomData.SetIsolated(true);//Serialize it
@@ -56,15 +62,17 @@ public static class DungeonDrawer
                 break;
             }
         }
-        obj.transform.position = roomData.GetPosition();
-        DungeonRoom newRoom = obj.AddComponent<DungeonRoom>();
-        newRoom.ReassignRoom(room, type);
-        obj.transform.parent = FindDungeonDrawer(dungeonData.GetMonoInstance()).transform;
-        roomData.SetOverride(true, newPrefabIndex);     
-        newRoom.Isolate();
-        dungeonData.AllRooms().Remove(room);
-        DungeonData.SafeDestroy(room.gameObject);
-        return null;
+        roomData.SetOverride(true, newPrefabIndex);
+        obj.transform.position = go.transform.position;       
+        room.ReassignRoom( type);
+        obj.transform.parent = go.transform;
+        room.Isolate();
+        foreach (var door in room.GetDoors())
+        {
+            door.transform.parent = go.transform; //move doors upwards
+        }
+        room.GetWalls().transform.parent = go.transform;
+        return room.gameObject;
     }
 
     public static GameObject DrawRoomFromData(RoomData roomData, DungeonData dungeonData)

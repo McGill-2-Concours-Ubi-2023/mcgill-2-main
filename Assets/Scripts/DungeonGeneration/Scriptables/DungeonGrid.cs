@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -103,6 +104,15 @@ public class DungeonGrid : DataContainer<RoomData>
         }
         ConnectRooms();
         data.AllRooms().ForEach(room => room.GenerateDoors(data));
+    }
+
+    public void PlaceMerchant ()
+    {
+        int randomIndex = UnityEngine.Random.Range(0, data.AllRooms().Count);
+        var randomRoom = data.AllRooms()[randomIndex];
+        var merchant = DungeonDrawer.ReplaceRoomAndIsolate(randomRoom,data,
+            data.GetRoomOverrides()[0], RoomTypes.RoomType.Special);
+        //merchant.SetActive(false);
     }
 
     public int RoomSize()

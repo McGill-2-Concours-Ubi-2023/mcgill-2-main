@@ -128,6 +128,10 @@ public abstract class GravityField : MonoBehaviour
     private void OnDestroy()
     {
         var player = GameObject.FindGameObjectWithTag("Player");
+        foreach(var rb in cachedRigidbodies)
+        {
+            rb.gameObject.Trigger<I_AI_Trigger>("EnableAgent");
+        }
         if(player)player.GetComponent<Animator>().SetBool("IsFloating", false);
         cachedRigidbodies.Clear();
     }

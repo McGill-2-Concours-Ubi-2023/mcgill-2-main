@@ -67,10 +67,9 @@ public class DungeonDataEditor : Editor
                 }
             }       
         }
-        if (GUILayout.Button("Replace Room (testing)"))
+        if (GUILayout.Button("Place Merchant room"))
         {
-            
-            DungeonDrawer.ReplaceRoomAndIsolate(FindObjectOfType<DungeonGenerator>().roomToReplace, dungeonData, dungeonData.GetRoomOverrides()[0], RoomTypes.RoomType.Special);
+            dungeonData.PlaceMerchant();
         }
 
 

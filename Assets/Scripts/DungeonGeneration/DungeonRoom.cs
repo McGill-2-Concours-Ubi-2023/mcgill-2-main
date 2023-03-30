@@ -5,7 +5,6 @@ using System.Linq;
 using Unity.Collections;
 using UnityEngine;
 
-
 [System.Serializable]
 public class DungeonRoom : MonoBehaviour
 {
@@ -35,18 +34,29 @@ public class DungeonRoom : MonoBehaviour
     [SerializeField]
     private List<EnemyAI> enemies;
     private bool areEnemiesPresent;
+    private static List<DungeonRoom> allRooms;
+    private List<DungeonRoom> roomsBuffer;
 
-    internal void OccludeRooms()
+    private void OnDistanceRender()
     {
-        var allRooms = dungeonGenerator.data.AllRooms();
-        foreach (var room in allRooms)
+        if (roomsBuffer == null) roomsBuffer = new List<DungeonRoom>();
+        allRooms = dungeonGenerator.data.AllRooms();
+        roomsBuffer.Clear();
+        roomsBuffer.Add(this);
+        adjacentRooms.ForEach(room => roomsBuffer.Add(room));
+        allRooms.Except(roomsBuffer)
+            .ToList()
+            .ForEach(room => room.transform.Find("RoomRoot").gameObject.SetActive(false));
+        roomsBuffer.ForEach(room => 
         {
-            if (!adjacentRooms.Contains(room) && room != this && room !=  null)
-            {
-                room.gameObject.SetActive(false);
-            }
-            else room.gameObject.SetActive(true);
-        }
+            room.transform.Find("RoomRoot").gameObject.SetActive(true);
+            room.RetrieveDoors();
+        });
+    }
+
+    private void RetrieveDoors()
+    {
+        doors.ForEach(door => door.transform.parent = transform.Find("RoomRoot"));
     }
 
     public static DungeonRoom GetActiveRoom()
@@ -74,23 +84,23 @@ public class DungeonRoom : MonoBehaviour
         Isolate();
     }
 
-    public void UpdateWalls()
-    {      
-       foreach(OccludableWall wall in occludableWalls)
+    public void UpdateRoomsLayout()
+    {
+        OnDistanceRender();
+        foreach (OccludableWall wall in occludableWalls)
         {
-            if (wall != null)
+            if (wall != null && wall.gameObject.activeInHierarchy)
             {
                 wall.Hide();
                 wall.ChangeRenderQueue(3001);
             }
-            
         }
 
         if (northWalls == null) FindNorthWalls();
-        foreach(OccludableWall wall in northWalls)
+        foreach (OccludableWall wall in northWalls)
         {
-            if (wall != null) wall.ChangeRenderQueue(2998);
-        }    
+            if (wall != null && wall.gameObject.activeInHierarchy) wall.ChangeRenderQueue(2998);
+        }
     }
 
     IEnumerator CheckForAI(Vector3 detectionRange)
@@ -220,7 +230,7 @@ public class DungeonRoom : MonoBehaviour
             if(room.doors.Count != 0 && !room.HasAccessToRoom(this)
             || room.doors.Count == 0) 
             {               
-                var addedDoor = DungeonDoor.Create(gameObject, this, room, data);
+                var addedDoor = DungeonDoor.Create(transform.Find("RoomRoot").gameObject, this, room, data);
                 doors.Add(addedDoor);                
             } else if (room.HasAccessToRoom(this))
             {
@@ -253,26 +263,22 @@ public class DungeonRoom : MonoBehaviour
         return isIsolated;
     }
 
-    public void ReassignRoom(DungeonRoom existingRoom, RoomTypes.RoomType type)
+    public List<DungeonDoor> GetDoors()
     {
-        this.adjacentRooms = existingRoom.adjacentRooms;
-        this.doors = existingRoom.doors;
-        this.layout = existingRoom.layout;
-        this.type = type;
-        this.occludableWalls = existingRoom.occludableWalls;
-        this.northWalls = existingRoom.northWalls;
-        this.walls = existingRoom.walls;
-        existingRoom.walls.transform.parent = this.transform;      
-        foreach(DungeonDoor door in existingRoom.doors)
+        return doors;
+    }
+
+    public void MoveDoorsUp()
+    {
+        foreach (var door in doors)
         {
-            door.transform.parent = this.transform;
-            var sharedRooms = door.GetSharedRooms();
-            foreach(DungeonRoom room in sharedRooms)
-            {
-                if (adjacentRooms.Contains(room))
-                    door.SetRooms(this, room);
-            }
-        }       
+            door.transform.parent = transform; //move doors upwards
+        }
+    }
+
+    public void ReassignRoom(RoomTypes.RoomType type)
+    {
+        this.type = type;      
     }
 
     internal void RemoveEnemy(EnemyAI enemyAI)
@@ -333,7 +339,8 @@ public class DungeonRoom : MonoBehaviour
         newRoom.Initialize(gridMap, position, layout, type);
         data.AddRoom(newRoom);
         Vector3 offset = new Vector3(0, newRoom.transform.localScale.y / 2, 0);
-        newRoom.walls = DungeonDrawer.DrawSingleObject(newRoom.GetPosition() + offset, data.GetWallPrefab(), newRoom.gameObject);
+        newRoom.walls = DungeonDrawer.DrawSingleObject(newRoom.GetPosition() + offset, data.GetWallPrefab(),
+            newRoom.transform.Find("RoomRoot").gameObject);
         return newRoom;
     }
 
@@ -386,7 +393,8 @@ public class DungeonRoom : MonoBehaviour
         loadedRoom.Initialize(gridMap, roomData.GetPosition(), layout, roomData.GetRoomType());
         dungeonData.AddRoom(loadedRoom);
         Vector3 offset = new Vector3(0, loadedRoom.transform.localScale.y / 2, 0);
-        loadedRoom.walls = DungeonDrawer.DrawSingleObject(loadedRoom.GetPosition() + offset, dungeonData.GetWallPrefab(), loadedRoom.gameObject);
+        loadedRoom.walls = DungeonDrawer.DrawSingleObject(loadedRoom.GetPosition() + offset, dungeonData.GetWallPrefab(),
+            loadedRoom.transform.Find("RoomRoot").gameObject);
         loadedRoom.isIsolated = roomData.IsIsolated();
         return loadedRoom;
     }

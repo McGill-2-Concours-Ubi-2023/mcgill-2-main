@@ -25,6 +25,7 @@ public class DungeonGenerator : MonoBehaviour
         {
             data.LoadData();
         }
+        StartCoroutine(PlaceRandomMerchant());
     }
 
     public void AddActiveRoom(DungeonRoom room)
@@ -33,5 +34,11 @@ public class DungeonGenerator : MonoBehaviour
         {
             activeRooms.Add(room);
         }
+    }
+
+    IEnumerator PlaceRandomMerchant()
+    {
+        yield return new WaitForEndOfFrame();
+        data.PlaceMerchant();
     }
 }

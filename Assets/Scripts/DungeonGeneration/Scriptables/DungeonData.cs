@@ -4,6 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using Unity.AI.Navigation;
 using UnityEngine.AI;
+using System;
 
 [CreateAssetMenu(fileName = "New dungeon", menuName = "Dungeon asset")]
 public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
@@ -87,6 +88,11 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
         return minRoomCount;
     }
 
+    public void PlaceMerchant()
+    {
+        GetGrid().PlaceMerchant();
+    }
+
     public void SetStartingRoom(DungeonRoom room)
     {
         startingRoom = room;
@@ -100,6 +106,11 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
     public float RoomDensity()
     {
         return roomDensity;
+    }
+
+    public void RemoveRoom(DungeonRoom room) 
+    {
+        rooms.Remove(room);
     }
 
     public GameObject GetDoorPrefab()
@@ -139,7 +150,9 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
 
     public GameObject GetMonoInstance()
     {
+        if(mono != null)
         return mono.gameObject;
+        return null;
     }
 
     public void Cleanup()

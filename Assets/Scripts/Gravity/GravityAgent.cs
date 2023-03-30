@@ -64,8 +64,14 @@ public class GravityAgent : MonoBehaviour
     public void Release()
     {
         isBound = false;
-        if(gameObject != null)
-        gameObject.Trigger<I_AI_Trigger>("EnableAgent");
+        try
+        {
+            gameObject.Trigger<I_AI_Trigger>("EnableAgent");
+        }
+        catch
+        {
+            enabled = true;
+        }
     }
 
     private void FixedUpdate()

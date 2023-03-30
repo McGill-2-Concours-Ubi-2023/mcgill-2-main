@@ -40,18 +40,18 @@ public class DungeonDoor : MonoBehaviour
         canOpen = true;
     }
 
-    public static DungeonDoor Create(GameObject doorObj, DungeonRoom originRoom, DungeonRoom targetRoom, DungeonData data)
+    public static DungeonDoor Create(GameObject parentObj, DungeonRoom originRoom, DungeonRoom targetRoom, DungeonData data)
     {
         Vector3 Y_Offset = new Vector3(0, data.GetNormalRoomPrefabs()[0].transform.localScale.y / 2, 0);
         Vector3 diff = originRoom.transform.position - targetRoom.transform.position;
-        Vector3 doorPosition = doorObj.transform.position - diff/2 + Y_Offset;
-        var doorObject = DungeonDrawer.DrawSingleObject(doorPosition, data.GetDoorPrefab(), doorObj);
+        Vector3 doorPosition = parentObj.transform.position - diff/2 + Y_Offset;
+        var doorObject = DungeonDrawer.DrawSingleObject(doorPosition, data.GetDoorPrefab(), parentObj);
         var doorComponent = doorObject.AddComponent<DungeonDoor>(); //canOpen = true by default;
         doorComponent.sharedRoom1 = originRoom;
         doorComponent.sharedRoom2 = targetRoom;
         var orientation = originRoom.transform.position - targetRoom.transform.position;
         var direction = new Vector3(orientation.x, 0, orientation.z);
-        var angle = Vector3.SignedAngle(doorObj.transform.forward, direction, Vector3.up);
+        var angle = Vector3.SignedAngle(parentObj.transform.forward, direction, Vector3.up);
         doorObject.transform.Rotate(0, angle, 0);
         if (originRoom.IsIsolated() || targetRoom.IsIsolated()) doorComponent.canOpen = false; //lock door is isolated
         return doorComponent;
