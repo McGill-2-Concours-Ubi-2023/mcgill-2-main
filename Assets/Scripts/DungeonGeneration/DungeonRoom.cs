@@ -98,7 +98,7 @@ public class DungeonRoom : MonoBehaviour
         while (areEnemiesPresent)
         {
             //check every one second for enemies in the room
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(0.5f);
             Collider[] colliders = Physics.OverlapBox(transform.position, detectionRange);
             foreach (Collider collider in colliders)
             {
@@ -113,6 +113,7 @@ public class DungeonRoom : MonoBehaviour
                 }
                 areEnemiesPresent = enemies.Count > 0;
             }
+            enemies.RemoveAll(enemy => enemy == null);
         }
         OpenUp();
     }

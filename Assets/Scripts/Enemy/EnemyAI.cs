@@ -139,7 +139,7 @@ public class EnemyAI : MonoBehaviour
         Vector3 lookPos = destination - transform.position;
         lookPos.y = 0;
         Quaternion rotation = Quaternion.LookRotation(lookPos);
-        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * lookSpeed);
+        turningPart.rotation = Quaternion.Slerp(turningPart.rotation, rotation, Time.deltaTime * lookSpeed);
     }
     IEnumerator awaken()
     {
