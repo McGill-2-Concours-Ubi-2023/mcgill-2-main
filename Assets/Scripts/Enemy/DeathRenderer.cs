@@ -69,6 +69,7 @@ public class DeathRenderer : MonoBehaviour
             agent.angularSpeed = 0;
             agent.acceleration = 0;
         }
+        if(animator != null)
         animator.enabled = false;
     }
 
