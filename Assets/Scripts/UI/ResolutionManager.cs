@@ -66,7 +66,7 @@ public class ResolutionManager : MonoBehaviour
 
     public void SetText()
     {
-        resolutionText.text = resolutions[currentResolutionIndex].width + "x" + resolutions[currentResolutionIndex].height;
+        resolutionText.text = resolutions[currentResolutionIndex].width + " x " + resolutions[currentResolutionIndex].height;
     }
 
     public void Apply()
