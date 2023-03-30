@@ -268,6 +268,7 @@ MonoBehaviour:
   currentHealth: 5
   ui: {fileID: 0}
   invulnerable: 0
+  deathRenderer: {fileID: 0}
 --- !u!114 &568814263930457246
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -642,6 +643,12 @@ PrefabInstance:
       propertyPath: gunTip
       value: 
       objectReference: {fileID: 1125044346136704293}
+    - target: {fileID: 2435986675446788181, guid: b5d03294d62926645bd790817082b95a,
+        type: 3}
+      propertyPath: altBullet
+      value: 
+      objectReference: {fileID: 1607138812389393978, guid: 028625875f8961b41bd589ce2199581f,
+        type: 3}
     - target: {fileID: 2435986675446788181, guid: b5d03294d62926645bd790817082b95a,
         type: 3}
       propertyPath: playerGun

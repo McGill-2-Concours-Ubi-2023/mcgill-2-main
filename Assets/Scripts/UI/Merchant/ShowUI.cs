@@ -142,7 +142,7 @@ public class ShowUI : MonoBehaviour
         gun.Trigger<IGunTriggers, float>(nameof(IGunTriggers.IncreaseFireRate), 1.5f);
     }
     public void ChangeBullet() {
-        player.Trigger<IGunTriggers>(nameof(IGunTriggers.ChangeBullet));
+        gun.Trigger<IGunTriggers>(nameof(IGunTriggers.ChangeBullet));
     }
   /*  private void GainOneMaxGrenade() {
         this.gameObject.Trigger<IGrenadeTriggers, int>(nameof(IGrenadeTriggers.IncreaseMaxGrenade), 1);

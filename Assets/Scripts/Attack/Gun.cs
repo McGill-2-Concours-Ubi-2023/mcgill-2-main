@@ -10,7 +10,7 @@ public interface IGunTriggers : ITrigger
     void OnShootStartIntention();
     void OnShootStopIntention();
     void IncreaseFireRate(float amount);
-    void ChangeBullet(GameObject bulletPrefab);
+    void ChangeBullet();
 }
 
 public class Gun : MonoBehaviour, IGunTriggers
@@ -28,7 +28,8 @@ public class Gun : MonoBehaviour, IGunTriggers
     private bool m_ShootCoroutinePaused = true;
     [SerializeField] bool overrideVel;
     [SerializeField] bool playerGun;
-
+    [SerializeField]
+    private GameObject altBullet; 
     private MainCharacterController playerController;
 
 
@@ -90,8 +91,8 @@ public class Gun : MonoBehaviour, IGunTriggers
         this.bulletInterval = this.bulletInterval / amount;
     }
 
-    public void ChangeBullet(GameObject bulletPrefab) {
-        this.bulletPrefab = bulletPrefab;
+    public void ChangeBullet() {
+        this.bulletPrefab = altBullet;
     }
 
 
