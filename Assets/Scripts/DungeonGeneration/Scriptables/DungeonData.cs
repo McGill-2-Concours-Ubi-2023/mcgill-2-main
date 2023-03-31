@@ -4,7 +4,6 @@ using UnityEditor;
 using UnityEngine;
 using Unity.AI.Navigation;
 using UnityEngine.AI;
-using System;
 
 [CreateAssetMenu(fileName = "New dungeon", menuName = "Dungeon asset")]
 public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
