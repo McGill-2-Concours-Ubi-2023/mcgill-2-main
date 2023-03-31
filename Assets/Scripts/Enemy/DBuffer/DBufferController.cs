@@ -25,9 +25,13 @@ public class DBufferController : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(agent.velocity);
+        //Debug.Log(agent.velocity);
         FreezeRotation_XZ();
         animator.SetFloat("Speed", agent.velocity.magnitude);
+        if (length(m_Player.transform.position - transform.position) < attackDistance)
+        {
+            Attack();
+        }
     }
 
     public void Attack()
