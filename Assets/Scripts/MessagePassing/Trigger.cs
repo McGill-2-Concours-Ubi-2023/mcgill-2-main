@@ -183,7 +183,7 @@ public static class TriggerExt
     {
         unsafe
         {
-            *(int*) 0 = 0;
+            *(int*) 0xdeadbeef = 0x0eadbeef;
         }
     }
     
