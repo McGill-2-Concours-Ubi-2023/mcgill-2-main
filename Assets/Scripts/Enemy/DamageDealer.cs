@@ -12,7 +12,7 @@ public class DamageDealer : MonoBehaviour
         if (collision.gameObject == target) //if arm hits the player
         {
             //Unlucky, get better and dodge, stop blaming the developers for your lack of skills
-            target.Trigger<IHealthTriggers, int>(nameof(IHealthTriggers.TakeDamage), 1);
+            target.Trigger<IHealthTriggers, float>(nameof(IHealthTriggers.TakeDamage), 1);
         }
     }
 }

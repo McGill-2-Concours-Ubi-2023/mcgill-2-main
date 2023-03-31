@@ -6,17 +6,17 @@ public class HealthModifier : MonoBehaviour, IHealthTriggers
 {
     public Health health;
 
-    public void GainHealth(int health)
+    public void GainHealth(float health)
     {
         throw new System.NotImplementedException();
     }
 
-    public void IncreaseMaxHealth(int amount)
+    public void IncreaseMaxHealth(float amount)
     {
         throw new System.NotImplementedException();
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
         health.TakeDamage(damage);
     }

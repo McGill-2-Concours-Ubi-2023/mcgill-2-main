@@ -39,7 +39,7 @@ public class Iframe : MonoBehaviour
         originalHairMaterial = characterHairSR.material;
     }
 
-    public void flash(int change, int currentHealth)
+    public void flash(float change, float currentHealth)
     {
         if (change >= 0) return;
         StartCoroutine(flash());

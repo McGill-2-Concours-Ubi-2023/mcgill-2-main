@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.VFX;
+using static Unity.Mathematics.math;
 
 public class GravitationalGrenade : MonoBehaviour
 {
@@ -38,6 +40,11 @@ public class GravitationalGrenade : MonoBehaviour
     [SerializeField]
     private GameObject swarmEffectPrefab;
     private VisualEffect swarmEffect;
+    // e^{-\frac{ln(2)}{HealthDecayHalfLifeSeconds}}
+    [SerializeField]
+    private float HealthDecayHalfLifeSeconds = 1;
+    [SerializeField]
+    private float HealthDecayRadius = 2;
 
     private void Awake()
     {
@@ -100,7 +107,18 @@ public class GravitationalGrenade : MonoBehaviour
             StartCoroutine(InitializeVFX());
             StartCoroutine(ShakeCameraGravity());
             hasExploded = true;
-        }      
+        }
+        else
+        {
+            // get all objects within radius
+            Collider[] results = new Collider[100];
+            Physics.OverlapSphereNonAlloc(transform.position, HealthDecayRadius, results);
+            foreach (Collider result in results)
+            {
+                if (result == null) break;
+                GameObject obj = result.gameObject;
+            }
+        }
     }
 
     private IEnumerator ShakeCameraGravity()
