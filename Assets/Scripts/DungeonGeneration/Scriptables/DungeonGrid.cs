@@ -110,8 +110,8 @@ public class DungeonGrid : DataContainer<RoomData>
     {
         int randomIndex = UnityEngine.Random.Range(0, data.AllRooms().Count);
         var randomRoom = data.AllRooms()[randomIndex];
-        var merchant = DungeonDrawer.ReplaceRoomAndIsolate(randomRoom,data,
-            data.GetRoomOverrides()[0], RoomTypes.RoomType.Special);
+        var merchant = DungeonDrawer.ReplaceRoom(randomRoom,data,
+            data.GetRoomOverrides()[0], RoomTypes.RoomType.Special,false);
         //merchant.SetActive(false);
     }
 

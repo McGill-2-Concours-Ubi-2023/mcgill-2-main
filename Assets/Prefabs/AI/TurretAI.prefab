@@ -109,7 +109,7 @@ MonoBehaviour:
   autoSleep: 1
   randomRadius: 5
   gun: {fileID: 2993712898013995926}
-  lookSpeed: 5
+  lookSpeed: 3
   randomLayerMask:
     serializedVersion: 2
     m_Bits: 1
@@ -180,7 +180,7 @@ MonoBehaviour:
   bulletPrefab: {fileID: 3231657277267066154, guid: 5a7ab7794c88e8b4dbb95dc25a289b67,
     type: 3}
   gunTip: {fileID: 4840177573324095574}
-  bulletInterval: 0.2
+  bulletInterval: 0.5
 --- !u!1 &4840177573324095575
 GameObject:
   m_ObjectHideFlags: 0

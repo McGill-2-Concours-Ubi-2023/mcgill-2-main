@@ -4,17 +4,18 @@ using UnityEngine;
 
 public class OccludableWall : MonoBehaviour
 {
-    private Animator animator;
+    public Animator animator;
     private Material material;
 
     private void Awake()
     {
-        animator = GetComponentInParent<Animator>();
+        animator = transform.parent.GetComponentInParent<Animator>();
         material = GetComponent<Renderer>().material;
     }
 
     public void Hide()
     {
+        Debug.Log("HIDE");
         if (animator != null)
         {
             animator.SetBool("Hide", true);
@@ -24,6 +25,7 @@ public class OccludableWall : MonoBehaviour
 
     public void Occlude()
     {
+        Debug.Log("SHOW");
         if (animator != null) 
         {
             animator.SetBool("Hide", false);

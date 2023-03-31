@@ -28,7 +28,9 @@ public class DungeonRoom : MonoBehaviour
     private List<OccludableWall> occludableWalls;
     [SerializeField]
     private List<OccludableWall> northWalls;
-    [SerializeField][HideInInspector]
+    [SerializeField]
+    private List<OccludableWall> southWalls;
+    [SerializeField]
     private GameObject walls;
     private bool isIsolated;
     [SerializeField]
@@ -87,6 +89,7 @@ public class DungeonRoom : MonoBehaviour
     public void UpdateRoomsLayout()
     {
         OnDistanceRender();
+        Debug.Log("YOOO");
         foreach (OccludableWall wall in occludableWalls)
         {
             if (wall != null && wall.gameObject.activeInHierarchy)
@@ -133,20 +136,13 @@ public class DungeonRoom : MonoBehaviour
         GetComponent<EnemySpawn1>().enabled = false;
     }
 
-    public void GetBottomRoomOccludableWalls()
+    public void FindBottomRoomNorthWalls()
     {
         foreach(DungeonRoom room in adjacentRooms)
         {
             if ((room.transform.position - transform.position).normalized == -Vector3.forward)
             {
-                room.FindNorthWalls();
-                foreach (OccludableWall wall in room.northWalls)
-                {
-                    if (wall != null)
-                    {
-                        occludableWalls.Add(wall);
-                    }
-                }
+                occludableWalls.AddRange(room.FindNorthWalls());
             }
         }
     }
@@ -217,12 +213,6 @@ public class DungeonRoom : MonoBehaviour
         return false;
     } 
 
-    public void Enter()
-    {
-        activeRoom = this;
-        //TODO: add behaviour
-    }
-
     public void GenerateDoors(DungeonData data)
     {
         adjacentRooms.ForEach(room =>
@@ -245,6 +235,11 @@ public class DungeonRoom : MonoBehaviour
     {
         foreach(DungeonDoor door in doors)
         {
+            var lights = door.GetComponentsInChildren<DoorLight>();
+            foreach(DoorLight light in lights)
+            {
+                light.TurnRed();
+            }               
             door.Block();
         }
     }
@@ -254,6 +249,11 @@ public class DungeonRoom : MonoBehaviour
     {
         foreach (DungeonDoor door in doors)
         {
+            var lights = door.GetComponentsInChildren<DoorLight>();
+            foreach (DoorLight light in lights)
+            {
+                light.ResetColor();
+            }
             door.Unlock();
         }
     }
@@ -346,38 +346,23 @@ public class DungeonRoom : MonoBehaviour
 
     public void BindWalls(GameObject walls)
     {
-        //Debug.Log(walls == null);
-        var southWestCornerWall = walls.transform.Find("Corner");
-        var southEastCotnerWall = walls.transform.Find("Corner4");
-        var middleWallNoDoor = walls.transform.Find("PlainWall1");
-        var middleWallDoor = walls.transform.Find("DoorWall1");
         if (occludableWalls == null) occludableWalls = new List<OccludableWall>();
-        if(southWestCornerWall != null)
-        occludableWalls.Add(southWestCornerWall.GetComponentInChildren<OccludableWall>());
-        if(southEastCotnerWall != null)
-        occludableWalls.Add(southEastCotnerWall.GetComponentInChildren<OccludableWall>());
-        if(middleWallDoor != null)
-        occludableWalls.Add(middleWallDoor.GetComponentInChildren<OccludableWall>());
-        if(middleWallNoDoor != null)
-        occludableWalls.Add(middleWallNoDoor.GetComponentInChildren<OccludableWall>());
-        GetBottomRoomOccludableWalls();
+        FindSouthWalls();
+        FindBottomRoomNorthWalls();
     }
 
-    private void FindNorthWalls()
+    private List<OccludableWall> FindSouthWalls()
     {
-        var topEastCornerWall = walls.transform.Find("Corner2");
-        var topWestCornerWall = walls.transform.Find("Corner3");
-        var topMiddleWallDoor = walls.transform.Find("PlainWall2");
-        var topMiddleWallNoDoor = walls.transform.Find("DoorWall2");
+        if (southWalls == null) southWalls = new List<OccludableWall>();
+        southWalls = walls.GetComponent<DungeonWallAggregate>().southWalls.ToList();
+        occludableWalls.AddRange(southWalls);
+        return southWalls;
+    }
+    private List<OccludableWall> FindNorthWalls()
+    {
         if (northWalls == null) northWalls = new List<OccludableWall>();
-        if(topEastCornerWall != null)
-        northWalls.Add(topEastCornerWall.GetComponentInChildren<OccludableWall>());
-        if(topWestCornerWall != null)
-        northWalls.Add(topWestCornerWall.GetComponentInChildren<OccludableWall>());
-        if(topMiddleWallNoDoor)
-        northWalls.Add(topMiddleWallNoDoor.GetComponentInChildren<OccludableWall>());
-        if(topMiddleWallDoor != null)
-        northWalls.Add(topMiddleWallDoor.GetComponentInChildren<OccludableWall>());
+        northWalls = walls.GetComponent<DungeonWallAggregate>().northWalls.ToList();
+        return northWalls;
     }
 
     public List<OccludableWall> GetOccludableWalls()

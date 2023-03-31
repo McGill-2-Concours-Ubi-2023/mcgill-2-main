@@ -40,7 +40,8 @@ public static class DungeonDrawer
     }
 
     //Runtime function, won't work in Editor
-    public static GameObject ReplaceRoomAndIsolate(DungeonRoom room, DungeonData dungeonData, GameObject roomPrefab, RoomTypes.RoomType type)
+    public static GameObject ReplaceRoom(DungeonRoom room, DungeonData dungeonData,
+        GameObject roomPrefab, RoomTypes.RoomType type, bool isolate)
     {
         room.MoveDoorsUp();
         room.GetWalls().transform.parent = room.transform; //Move walls upwards
@@ -66,7 +67,7 @@ public static class DungeonDrawer
         obj.transform.position = go.transform.position;       
         room.ReassignRoom( type);
         obj.transform.parent = go.transform;
-        room.Isolate();
+        if(isolate) room.Isolate();
         foreach (var door in room.GetDoors())
         {
             door.transform.parent = go.transform; //move doors upwards
