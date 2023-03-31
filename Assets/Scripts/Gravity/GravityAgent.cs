@@ -4,6 +4,22 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+struct BulletAgent
+{
+    public static float bulletBendingForce = 20.0f;
+    public static int bulletMask = LayerMask.NameToLayer("Bullet"); // set the first layer mask 1"
+}
+
+struct PlayerAgent
+{
+    public static int playerMask = LayerMask.NameToLayer("Player"); // set the first layer mask 1"
+}
+
+struct Destructible
+{
+    public static int desctructibleMask = LayerMask.NameToLayer("Destructible");
+}
+
 public class GravityAgent : MonoBehaviour
 {
     private float massCompression;
@@ -17,7 +33,6 @@ public class GravityAgent : MonoBehaviour
         yield return new WaitForSeconds(timer);
         if (isBound)
         {
-            Animator animator;
             TryGetComponent<Animator>(out animator);
             if (animator)
             {
@@ -27,11 +42,6 @@ public class GravityAgent : MonoBehaviour
         }
     }
 
-    public bool IsBound()
-    {
-        return isBound;
-    }
-
     public void OnSelfDestroy()
     {
         Destroy(this.gameObject);
@@ -39,13 +49,10 @@ public class GravityAgent : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.name.Equals("DestructionBounds") 
-            && gameObject.layer == LayerMask.NameToLayer("Destructible"))
+        if(other.CompareTag("DestructionBounds") 
+            && gameObject.layer == Destructible.desctructibleMask)
         {
-            if (currentField != null && currentField.IsActive()) 
-            {
-                isBound = true;
-            }
+            isBound = true;
             GravitationalGrenade grenade = other.gameObject.GetComponentInParent<GravitationalGrenade>();
             StartCoroutine(OnWaitDestroy(grenade.GetDestructionTimer()));       
         }
@@ -64,12 +71,11 @@ public class GravityAgent : MonoBehaviour
 
     public void Release()
     {
-        isBound = false;
         try
         {
             gameObject.Trigger<I_AI_Trigger>("EnableAgent");
         }
-        catch(NullReferenceException e)
+        catch
         {
             gameObject.SetActive(true);
             enabled = true;
@@ -88,7 +94,7 @@ public class GravityAgent : MonoBehaviour
         {
             if (other.GetComponentInParent<GravityField>() == currentField)
             {
-                Release();
+                isBound = false;
                 StopAllCoroutines();
             }
         }

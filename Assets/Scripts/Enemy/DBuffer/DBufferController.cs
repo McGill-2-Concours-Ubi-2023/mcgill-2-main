@@ -11,33 +11,48 @@ public class DBufferController : MonoBehaviour
 {
     public VisualEffect attackVFX;
     private Animator animator;
-    private float3 movementDirection;
     private GameObject m_Player;
-    [Range(0, float.PositiveInfinity)]
+    [Range(0, 10)]
     public float attackDistance = 2f;
     public NavMeshAgent agent;
-    
+    [SerializeField][Range(0.5f, 3.0f)]
+    private float attackCooldown = 1.5f;
+    private bool canAttack = true;
+    private float cachedSpeed;
+
     private void Awake()
     {
-        animator = GetComponentInParent<Animator>();
+        animator = GetComponent<Animator>();
         m_Player = GameObject.FindGameObjectWithTag("Player");
     }
 
     private void Update()
     {
-        //Debug.Log(agent.velocity);
         FreezeRotation_XZ();
         animator.SetFloat("Speed", agent.velocity.magnitude);
-        if (length(m_Player.transform.position - transform.position) < attackDistance)
-        {
-            Attack();
-        }
+        float distanceToPlayer = (transform.position - m_Player.transform.position).magnitude;
+        if (distanceToPlayer <= attackDistance) Attack();
     }
+
 
     public void Attack()
     {
-        animator.SetTrigger("Attack");
+        if (canAttack)
+        {
+            animator.SetTrigger("Attack");
+            StartCoroutine(CoolDown());
+            FreezeOnCurrentState();
+        }
     }
+
+    private IEnumerator CoolDown()
+    {
+        canAttack = false;
+        yield return new WaitForSeconds(attackCooldown);
+        canAttack = true;
+    }
+
+
 
     //triggered via animation event
     public void OnAttackSwing()
@@ -57,12 +72,13 @@ public class DBufferController : MonoBehaviour
         transform.rotation = new Quaternion(0, transform.rotation.y, 0,transform.rotation.w);
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void FreezeOnCurrentState()
     {
-        if (collision.gameObject == m_Player) //if arm hits the player
-        {           
-            //Unlucky, get better and dodge, stop blaming the developers for your lack of skills
-            m_Player.Trigger<IHealthTriggers, int>(nameof(IHealthTriggers.TakeDamage), 1);
-        }
+        agent.isStopped = true;
+    }
+
+    public void UnFreeze()
+    {
+        agent.isStopped = false;
     }
 }

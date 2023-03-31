@@ -8,8 +8,6 @@ using Unity.AI.Navigation;
 public class DungeonGenerator : MonoBehaviour
 {
     [SerializeField]
-    public List<DungeonRoom> activeRooms;
-    [SerializeField]
     public DungeonData data;
     [SerializeField]
     private bool newDungeonOnPlay = false;
@@ -25,15 +23,7 @@ public class DungeonGenerator : MonoBehaviour
         {
             data.LoadData();
         }
-        StartCoroutine(PlaceRandomMerchant());
-    }
-
-    public void AddActiveRoom(DungeonRoom room)
-    {
-        if (!activeRooms.Contains(room))
-        {
-            activeRooms.Add(room);
-        }
+        //StartCoroutine(PlaceRandomMerchant());
     }
 
     IEnumerator PlaceRandomMerchant()

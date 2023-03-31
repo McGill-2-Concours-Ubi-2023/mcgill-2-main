@@ -8,11 +8,17 @@ public class Bullet : MonoBehaviour
     [SerializeField] float speed = 20f;
     Vector3 direction;
     [SerializeField]
-    int damage = 1; 
-    
+    int damage = 1;
+    int gravityLayer;
+
     private void Update()
     {
         Fly(direction, speed);
+    }
+
+    private void OnEnable()
+    {
+        gravityLayer = LayerMask.NameToLayer("GravityField");
     }
 
     private void Fly(Vector3 direction, float speed)
@@ -43,7 +49,9 @@ public class Bullet : MonoBehaviour
             }
         }
         
-        if (!(other.gameObject.CompareTag("EnemyBullet")|| other.gameObject.CompareTag("PlayerBullet"))) {
+        if (!(other.gameObject.CompareTag("EnemyBullet") 
+            && other.gameObject.CompareTag("PlayerBullet"))
+            && other.gameObject.layer != gravityLayer) {
             Destroy(gameObject);
         }
     }
