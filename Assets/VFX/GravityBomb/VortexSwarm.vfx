@@ -692,7 +692,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615457}
   - {fileID: 8926484042661615472}
   m_UIPosition: {x: 0, y: 0}
-  m_UICollapsed: 1
+  m_UICollapsed: 0
   m_UISuperCollapsed: 0
   m_MasterSlot: {fileID: 8926484042661615456}
   m_MasterData:
@@ -701,7 +701,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEditor.VFX.TArcSphere, Unity.VisualEffectGraph.Editor,
           Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"sphere":{"transform":{"position":{"x":0.0,"y":0.0,"z":0.0},"angles":{"x":0.0,"y":0.0,"z":0.0},"scale":{"x":1.0,"y":1.0,"z":1.0}},"radius":0.48937058448791506},"arc":6.275094985961914}'
+      m_SerializableObject: '{"sphere":{"transform":{"position":{"x":0.0,"y":0.0,"z":0.0},"angles":{"x":0.0,"y":0.0,"z":0.0},"scale":{"x":1.0,"y":1.0,"z":1.0}},"radius":0.6499999761581421},"arc":6.275094985961914}'
     m_Space: 0
   m_Property:
     name: arcSphere
@@ -728,7 +728,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615458}
   - {fileID: 8926484042661615471}
   m_UIPosition: {x: 0, y: 0}
-  m_UICollapsed: 1
+  m_UICollapsed: 0
   m_UISuperCollapsed: 0
   m_MasterSlot: {fileID: 8926484042661615456}
   m_MasterData:
@@ -2492,7 +2492,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615476}
   - {fileID: 8926484042661615498}
   dataType: 0
-  capacity: 5000
+  capacity: 4000
   stripCapacity: 16
   particlePerStripCount: 16
   needsComputeBounds: 0
@@ -2606,7 +2606,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 1000
+      m_SerializableObject: 800
     m_Space: 2147483647
   m_Property:
     name: Rate

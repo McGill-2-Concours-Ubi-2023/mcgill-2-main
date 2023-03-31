@@ -31,7 +31,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3231657277267066154}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.47787666, y: 0.5408708, z: -2.0299845}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -113,7 +113,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &8144264148901805161
 Rigidbody:
@@ -152,7 +152,7 @@ TrailRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -3258212522785882450, guid: ed95739d1b038744480f8fa9f846fe0e, type: 3}
+  - {fileID: -2653651044934150266, guid: ed95739d1b038744480f8fa9f846fe0e, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -182,7 +182,7 @@ TrailRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0
+        value: 0.035211273
         inSlope: 0.6855619
         outSlope: 0.6855619
         tangentMode: 0
@@ -190,8 +190,8 @@ TrailRenderer:
         inWeight: 0.33333334
         outWeight: 0.17833796
       - serializedVersion: 3
-        time: 0.049057007
-        value: 0.04563795
+        time: 0.045964226
+        value: 0.08084922
         inSlope: 0.021578366
         outSlope: 0.021578366
         tangentMode: 0
