@@ -15,6 +15,11 @@ struct PlayerAgent
     public static int playerMask = LayerMask.NameToLayer("Player"); // set the first layer mask 1"
 }
 
+struct Destructible
+{
+    public static int desctructibleMask = LayerMask.NameToLayer("Destructible");
+}
+
 public class GravityAgent : MonoBehaviour
 {
     private float massCompression;
@@ -37,11 +42,6 @@ public class GravityAgent : MonoBehaviour
         }
     }
 
-    public bool IsBound()
-    {
-        return isBound;
-    }
-
     public void OnSelfDestroy()
     {
         Destroy(this.gameObject);
@@ -49,13 +49,10 @@ public class GravityAgent : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.name.Equals("DestructionBounds") 
-            && gameObject.layer == LayerMask.NameToLayer("Destructible"))
+        if(other.CompareTag("DestructionBounds") 
+            && gameObject.layer == Destructible.desctructibleMask)
         {
-            if (currentField != null && currentField.IsActive()) 
-            {
-                isBound = true;
-            }
+            isBound = true;
             GravitationalGrenade grenade = other.gameObject.GetComponentInParent<GravitationalGrenade>();
             StartCoroutine(OnWaitDestroy(grenade.GetDestructionTimer()));       
         }
@@ -74,7 +71,6 @@ public class GravityAgent : MonoBehaviour
 
     public void Release()
     {
-        isBound = false;
         try
         {
             gameObject.Trigger<I_AI_Trigger>("EnableAgent");
@@ -98,7 +94,7 @@ public class GravityAgent : MonoBehaviour
         {
             if (other.GetComponentInParent<GravityField>() == currentField)
             {
-                Release();
+                isBound = false;
                 StopAllCoroutines();
             }
         }

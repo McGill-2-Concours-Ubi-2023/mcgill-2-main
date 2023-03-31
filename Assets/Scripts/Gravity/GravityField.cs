@@ -26,12 +26,6 @@ public abstract class GravityField : MonoBehaviour
         if (cachedRigidbodies == null) cachedRigidbodies = new List<Rigidbody>();
         fieldMask = PlayerAgent.playerMask;//add masks to ignore the field's rotation correction
         isActive = active;
-        destructionBounds.SetActive(active);       
-    }
-
-    public bool IsActive()
-    {
-        return isActive;
     }
 
     public void SetMassCompressionForce(float compressionForce)
@@ -45,12 +39,12 @@ public abstract class GravityField : MonoBehaviour
     }
 
     //collision condition set in collision matrix go to Edit > Project settings > Layer collision matrix
-    protected void ProcessCollision(Collider other)
+    public void ProcessCollision(Collider other)
     {
         if (isActive)
         {
             var agent = other.GetComponent<GravityAgent>();
-            if (!agents.Contains(other.gameObject) && agent && !agent.IsBound())
+            if (!agents.Contains(other.gameObject) && agent)
             {
                 Rigidbody rb = other.GetComponent<Rigidbody>();
                 if (rb.isKinematic) rb.isKinematic = false;
@@ -87,10 +81,7 @@ public abstract class GravityField : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (isActive)
-        {
-            ReleaseAgent(other.gameObject);  
-        }
+        ReleaseAgent(other.gameObject);  
     }
 
     public void ReleaseAgent(GameObject obj)
@@ -109,12 +100,16 @@ public abstract class GravityField : MonoBehaviour
 
     private void OnDestroy()
     {
-        var player = GameObject.FindGameObjectWithTag("Player");
-        /*foreach(var rb in cachedRigidbodies)
+        foreach(var rb in cachedRigidbodies)
         {
-            rb.gameObject.Trigger<I_AI_Trigger>("EnableAgent");
-        }*/
-        if(player)player.GetComponent<Animator>().SetBool("IsFloating", false);
+            if(rb != null)
+            {
+                rb.GetComponent<GravityAgent>().Release();
+            }
+        }
+        GameObject.Find("MainCharacter")
+            .GetComponent<Animator>()
+            .SetBool("IsFloating", false);
         cachedRigidbodies.Clear();
     }
 }

@@ -320,6 +320,14 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         }       
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            health.TakeDamage(1);
+        }
+    }
+
     public void OnCameraStandardShake(float intensity, float timer, float frequencyGain)
     {
         Camera.GetComponent<CinemachineCameraShake>().SantardCameraShake(intensity, timer, 1, 0);

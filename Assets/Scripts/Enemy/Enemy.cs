@@ -7,16 +7,17 @@ public class Enemy : MonoBehaviour, I_AI_Trigger
 {
     [SerializeField]
     private Health enemyHealth;
-    private EnemyAI ai;
+    //private EnemyAI ai;
     private NavMeshAgent agent;
     private float cachedSpeed;
     private float cachedAcceleration;
     private float cachedAngularSpeed;
     private Rigidbody rb;
+    public bool canMove = true;
 
     private void Start()
     {
-        TryGetComponent<EnemyAI>(out ai);
+        //TryGetComponent<EnemyAI>(out ai);
         TryGetComponent<NavMeshAgent>(out agent);
         rb = GetComponent<Rigidbody>();
         enemyHealth.OnDeath += OnEnemyDeath;
@@ -47,6 +48,6 @@ public class Enemy : MonoBehaviour, I_AI_Trigger
         rb.isKinematic = true;
         agent.speed = cachedSpeed;
         agent.acceleration = cachedAcceleration;
-        agent.angularSpeed = cachedAngularSpeed;
+        agent.angularSpeed = cachedAngularSpeed;     
     }
 }

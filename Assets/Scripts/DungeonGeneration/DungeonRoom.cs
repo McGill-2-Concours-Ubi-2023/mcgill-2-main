@@ -89,7 +89,6 @@ public class DungeonRoom : MonoBehaviour
     public void UpdateRoomsLayout()
     {
         OnDistanceRender();
-        Debug.Log("YOOO");
         foreach (OccludableWall wall in occludableWalls)
         {
             if (wall != null && wall.gameObject.activeInHierarchy)
