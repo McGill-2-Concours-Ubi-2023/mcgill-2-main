@@ -4,6 +4,17 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+struct BulletAgent
+{
+    public static float bulletBendingForce = 20.0f;
+    public static int bulletMask = LayerMask.NameToLayer("Bullet"); // set the first layer mask 1"
+}
+
+struct PlayerAgent
+{
+    public static int playerMask = LayerMask.NameToLayer("Player"); // set the first layer mask 1"
+}
+
 public class GravityAgent : MonoBehaviour
 {
     private float massCompression;
@@ -17,7 +28,6 @@ public class GravityAgent : MonoBehaviour
         yield return new WaitForSeconds(timer);
         if (isBound)
         {
-            Animator animator;
             TryGetComponent<Animator>(out animator);
             if (animator)
             {
@@ -69,7 +79,7 @@ public class GravityAgent : MonoBehaviour
         {
             gameObject.Trigger<I_AI_Trigger>("EnableAgent");
         }
-        catch(NullReferenceException e)
+        catch
         {
             gameObject.SetActive(true);
             enabled = true;

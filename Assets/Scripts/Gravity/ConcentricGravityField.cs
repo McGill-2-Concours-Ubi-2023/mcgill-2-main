@@ -4,8 +4,8 @@ using Unity.Jobs;
 using Unity.Collections;
 using Unity.Burst;
 
-[BurstCompile]
-public struct ApplyConcentricGravityJob : IJob
+//[BurstCompile]
+/*public struct ApplyConcentricGravityJob : IJob
 {
     private Vector3 fieldPosition;
     private Vector3 upVector;
@@ -78,10 +78,10 @@ public struct ApplyConcentricGravityJob : IJob
         velocityResult[index] = rbVelocity;
         rotationResult[index] = rbRotation;
     }
-}
+}*/
 
 public class ConcentricGravityField : GravityField
-{  
+{
     [Range(1, 10)]
     public float orientationSpeed;
     [Range(0.001f, 1f)]
@@ -91,14 +91,9 @@ public class ConcentricGravityField : GravityField
     [Range(0.1f, 5.0f)]
     public float mediumDensity;
     private float radius;
-    private JobHandle _jobHandle;
-    private NativeArray<Vector3> velocityResults;
-    private NativeArray<Quaternion> rotationResults;
 
     private void Awake()
     {
-        velocityResults = new NativeArray<Vector3>(30, Allocator.Persistent);
-        rotationResults = new NativeArray<Quaternion>(30, Allocator.Persistent);
         radius = GetComponent<SphereCollider>().radius;
     }
 
@@ -109,69 +104,33 @@ public class ConcentricGravityField : GravityField
 
     protected override void ApplyGravity(Rigidbody rb)
     {
+        float indirectForce = 1.0f; //None by default
         var forceDirection = transform.position - rb.transform.position;
         Debug.DrawRay(rb.transform.position, forceDirection, Color.red);
-        //First generate the quaternion (similar to a transformation matrix)
+
+        //Generate Quaternion transform
         Quaternion rotationQuaternion = Quaternion.FromToRotation(transform.up, forceDirection);
-        //Multiply the agent's rotation (also a quaternion) by the above quaternion
+        if (rb.gameObject.CompareTag("EnemyBullet") || rb.gameObject.CompareTag("PlayerBullet"))
+        {
+            indirectForce = BulletAgent.bulletBendingForce;
+            rotationQuaternion = Quaternion.FromToRotation(transform.forward, forceDirection);
+        }
+        //Multiply the agent's rotation by quaternion transform
         Quaternion targetRotation = rotationQuaternion * rb.transform.rotation;
-        //Finally, smoothly interpolate between the current rotation and the target rotation
-        if(rb.gameObject.layer != LayerMask.NameToLayer("Player") && !rb.CompareTag("Enemy"))
-        rb.transform.rotation = Quaternion.Lerp(rb.transform.rotation, targetRotation, orientationSpeed * Time.deltaTime);
+
+        //Rotate body accordingly                
+        if (rb.gameObject.layer != fieldMask && !rb.CompareTag("Enemy"))
+            rb.transform.rotation = Quaternion.Lerp(rb.transform.rotation, targetRotation, orientationSpeed * Time.deltaTime);
+
         //When approaching Kernel, attraction force intensifies
         var FgLerp = Mathf.Lerp(mediumDensity + attractionForce, mediumDensity, forceDirection.magnitude);
-        var velocityChange = forceDirection.normalized * gravity * FgLerp * Time.deltaTime;
+        var velocityChange = forceDirection.normalized * gravity * FgLerp * Time.deltaTime * indirectForce;
         rb.velocity += velocityChange;
+
         //Dampen over time to prevent sinusoidal behaviour
         var dampenLerp = Mathf.Lerp(0, dampeningForce, Mathf.Clamp01(forceDirection.magnitude));
         var velocityDampening = -dampenLerp * rb.velocity * Time.deltaTime;
-        rb.velocity += velocityDampening;        
-    }
-
-    /*protected override void ApplyGravityJob()
-    {
-        JobHandle dependency = _jobHandle;
-        int i;
-        for(i = 0; i < cachedRigidbodies.Count; i++)
-        {
-            bool isLayerMask = cachedRigidbodies[i].gameObject.layer != LayerMask.NameToLayer("Player") 
-                && !cachedRigidbodies[i].CompareTag("Enemy");
-            ApplyConcentricGravityJob job = new ApplyConcentricGravityJob(cachedRigidbodies[i].position,
-                cachedRigidbodies[i].rotation, isLayerMask, Time.deltaTime,
-                transform.position, transform.up, orientationSpeed, mediumDensity, attractionForce, gravity,
-                cachedRigidbodies[i].velocity, dampeningForce, velocityResults, rotationResults, i);
-            dependency = job.Schedule(dependency);
-        }
-        _jobHandle = dependency;
-        _jobHandle.Complete(); // Wait for the job to complete
-        UpdateRigidbodies();
-    }*/
-
-
-    /*private void UpdateRigidbodies()
-    {
-        _jobHandle.Complete();
-        int i;
-        for(i = 0; i < cachedRigidbodies.Count; i++)
-        {
-            cachedRigidbodies[i].velocity = velocityResults[i];
-            cachedRigidbodies[i].rotation = rotationResults[i];
-        }
-    }*/
-
-    /*protected override void DetectCollision()
-    {
-        Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
-        foreach (Collider collider in colliders)
-        {
-            ProcessCollision(collider);
-        }
-    }*/
-
-    private void OnDestroy()
-    {
-        velocityResults.Dispose();
-        rotationResults.Dispose();
+        rb.velocity += velocityDampening;
     }
 }
 

@@ -10,32 +10,23 @@ public abstract class GravityField : MonoBehaviour
     public float gravity;
     public List<GameObject> agents;
     protected bool isActive;
-    protected int layerMask;
+    protected int fieldMask;
     [SerializeField]
     [Range(0.5f, 3.0f)]
     protected float massCompression = 1.0f;
-    protected List<Rigidbody> cachedRigidbodies = new List<Rigidbody>();
+    protected List<Rigidbody> cachedRigidbodies;
 
     protected abstract void ApplyGravity(Rigidbody rb);
    // protected abstract void ApplyGravityJob();
    // protected abstract void DetectCollision();
 
-    private void Awake()
-    {
-        if(agents == null)
-        agents = new List<GameObject>();
-        UpdateLayerMask();
-    }
-
-    public int GetLayerMask()
-    {
-        return layerMask;
-    }
-
     public void SetActive(bool active)
     {
+        if (agents == null) agents = new List<GameObject>();
+        if (cachedRigidbodies == null) cachedRigidbodies = new List<Rigidbody>();
+        fieldMask = PlayerAgent.playerMask;//add masks to ignore the field's rotation correction
         isActive = active;
-        destructionBounds.SetActive(active);
+        destructionBounds.SetActive(active);       
     }
 
     public bool IsActive()
@@ -85,22 +76,13 @@ public abstract class GravityField : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //DetectCollision();
         foreach (Rigidbody rb in cachedRigidbodies)
         {
             if (rb != null)
             {
-                //ApplyGravityJob(rb);
                 ApplyGravity(rb);
             }
         }
-    }
-
-    private void UpdateLayerMask()
-    {
-        int layerMask1 = 1 << LayerMask.NameToLayer("Destructible"); // set the first layer mask 1"
-        int layerMask2 = 1 << LayerMask.NameToLayer("Player"); // set the second layer mask 
-        layerMask = layerMask1 | layerMask2; // combine the layer masks
     }
 
     private void OnTriggerExit(Collider other)
@@ -128,10 +110,10 @@ public abstract class GravityField : MonoBehaviour
     private void OnDestroy()
     {
         var player = GameObject.FindGameObjectWithTag("Player");
-        foreach(var rb in cachedRigidbodies)
+        /*foreach(var rb in cachedRigidbodies)
         {
             rb.gameObject.Trigger<I_AI_Trigger>("EnableAgent");
-        }
+        }*/
         if(player)player.GetComponent<Animator>().SetBool("IsFloating", false);
         cachedRigidbodies.Clear();
     }
