@@ -10,7 +10,7 @@ public interface IHealthTriggers : ITrigger
     void IncreaseMaxHealth(float amount);
 }
 
-public class Health : MonoBehaviour, IHealthTriggers
+public class Health : MonoBehaviour, IHealthTriggers, IGravityGrenadeHealthAdaptor
 {
     public event Action<float, float> OnHealthChange;
     public event Action OnDeath;

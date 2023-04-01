@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealthModifier : MonoBehaviour, IHealthTriggers
+public class HealthModifier : MonoBehaviour, IHealthTriggers, IGravityGrenadeHealthAdaptor
 {
     public Health health;
 

@@ -5,6 +5,13 @@ using UnityEngine;
 using UnityEngine.VFX;
 using static Unity.Mathematics.math;
 
+public interface IGravityGrenadeHealthAdaptor : ITrigger
+{
+    void TakeDamage(float damage);
+    void GainHealth(float health);
+    void IncreaseMaxHealth(float amount);
+}
+
 public class GravitationalGrenade : MonoBehaviour
 {
     [SerializeField] [Range(0, 10)]
@@ -40,9 +47,6 @@ public class GravitationalGrenade : MonoBehaviour
     [SerializeField]
     private GameObject swarmEffectPrefab;
     private VisualEffect swarmEffect;
-    // e^{-\frac{ln(2)}{HealthDecayHalfLifeSeconds}}
-    [SerializeField]
-    private float HealthDecayHalfLifeSeconds = 1;
     [SerializeField]
     private float HealthDecayRadius = 2;
 
@@ -117,6 +121,7 @@ public class GravitationalGrenade : MonoBehaviour
             {
                 if (result == null) break;
                 GameObject obj = result.gameObject;
+                obj.Trigger<IGravityGrenadeHealthAdaptor, float>(nameof(IGravityGrenadeHealthAdaptor.TakeDamage), 1.0f);
             }
         }
     }
