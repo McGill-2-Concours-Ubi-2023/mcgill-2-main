@@ -71,14 +71,8 @@ public class Gun : MonoBehaviour, IGunTriggers
 
     public void OnShootStartIntention()
     {
-        if (m_ShootCoroutine == null)
-        {
-            m_ShootCoroutine = StartCoroutine(ShootCoroutine());
-        }
-        else
-        {
-            m_ShootCoroutinePaused = false;
-        }
+        m_ShootCoroutinePaused = false;
+        m_ShootCoroutine ??= StartCoroutine(ShootCoroutine());
     }
     
     public void OnShootStopIntention()
