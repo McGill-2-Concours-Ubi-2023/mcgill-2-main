@@ -145,6 +145,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         gameObject.Trigger<IMainCharacterTriggers, float3>(nameof(IMainCharacterTriggers.OnPlayerFaceIntention), adjustedFaceDirection);
 
         m_MovementDirection = normalize(all(adjustedInput.xz == float2.zero) ? transform.forward : adjustedDirection);
+        Debug.DrawRay(transform.position + Vector3.up * 3, m_MovementDirection, Color.magenta);
         Debug.DrawRay(transform.position + Vector3.up, m_MovementDirection, Color.green);
 
         // update camera focus
@@ -224,10 +225,11 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     IEnumerator Dash()
     {
         isDashing = true;
+        float3 dashDirection = m_MovementDirection;
         float timer = 0f;
         while (timer < dashDuration)
         {
-            rb.velocity = (Vector3)m_MovementDirection * DashSpeed;
+            rb.velocity = (Vector3)dashDirection * DashSpeed;
             timer += Time.deltaTime;
             yield return null;
         }
