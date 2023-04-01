@@ -11,6 +11,7 @@ public class DungeonRoomCollider : MonoBehaviour
         DungeonRoom.activeRoom = transform.parent.GetComponentInParent<DungeonRoom>();
         DungeonRoom.activeRoom.UpdateRoomsLayout();
         if (DungeonRoom.lastEnteredDoor != null) DungeonRoom.lastEnteredDoor.ShowWalls();
+        
     }
 
 

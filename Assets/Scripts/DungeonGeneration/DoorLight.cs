@@ -18,7 +18,7 @@ public class DoorLight : MonoBehaviour
 
     private IEnumerator TriggerFlickerEvent()
     {
-        float randomWait = UnityEngine.Random.Range(8, 16);
+        float randomWait = UnityEngine.Random.Range(10, 20);
         yield return new WaitForSeconds(randomWait);
         int randomIndex = UnityEngine.Random.Range(1, 4);
         if (animator == null) animator = GetComponent<Animator>();

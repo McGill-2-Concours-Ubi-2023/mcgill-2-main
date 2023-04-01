@@ -28,8 +28,6 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] LineRenderer lr;
     bool waking;
     bool wokeOnce=false;
-    [SerializeField]
-    private DungeonRoom attachedRoom;
     // Start is called before the first frame update
     void Start()
     {
@@ -46,18 +44,6 @@ public class EnemyAI : MonoBehaviour
         if (move != moveType.ASLEEP) RandomTarget();
 
         lr = GetComponent<LineRenderer>();
-    }
-
-    // Update is called once per frame
-
-    public void AttachRoom(DungeonRoom room)
-    {
-        attachedRoom = room;
-    }
-
-    public DungeonRoom GetAttachedRoom()
-    {
-        return attachedRoom;
     }
 
     private void FixedUpdate()

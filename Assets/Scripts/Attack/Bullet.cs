@@ -44,7 +44,6 @@ public class Bullet : MonoBehaviour
         {
             if (other.gameObject.CompareTag("Enemy"))
             {
-                Debug.Log(other.name);
                 other.gameObject.Trigger<IHealthTriggers, float>(nameof(IHealthTriggers.TakeDamage), damage);
             }
         }

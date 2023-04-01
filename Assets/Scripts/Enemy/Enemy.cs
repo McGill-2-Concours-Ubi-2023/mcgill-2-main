@@ -14,6 +14,8 @@ public class Enemy : MonoBehaviour, I_AI_Trigger
     private float cachedAngularSpeed;
     private Rigidbody rb;
     public bool canMove = true;
+    public DungeonRoom attachedRoom;
+    public bool isDying = false;
 
     private void Start()
     {
@@ -32,8 +34,15 @@ public class Enemy : MonoBehaviour, I_AI_Trigger
     public void OnEnemyDeath() {
         EnemyAI ai;
         TryGetComponent<EnemyAI>(out ai);
+        isDying = true;
+        if(attachedRoom != null)
+        attachedRoom.TryRemoveEnemy(this);
         //if (ai) ai.GetAttachedRoom().RemoveEnemy(ai);
         enemyHealth.deathRenderer.OnDeathRender();
+        if (agent)
+        {
+            agent.isStopped = true;
+        }
     }
 
     public void DisableAgent()
