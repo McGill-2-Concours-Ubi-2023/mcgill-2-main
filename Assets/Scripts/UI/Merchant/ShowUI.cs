@@ -128,11 +128,11 @@ public class ShowUI : MonoBehaviour
     }
 
     public void GainOneHealth() {
-        player.Trigger<IHealthTriggers, int>(nameof(IHealthTriggers.GainHealth), 1);
+        player.Trigger<IHealthTriggers, float>(nameof(IHealthTriggers.GainHealth), 1);
     }
 
     public void GainOneMaxHealth() {
-        player.Trigger<IHealthTriggers, int>(nameof(IHealthTriggers.IncreaseMaxHealth), 1);
+        player.Trigger<IHealthTriggers, float>(nameof(IHealthTriggers.IncreaseMaxHealth), 1);
     }
 
     public void IncraseFireRateDouble() {

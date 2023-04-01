@@ -18,7 +18,7 @@ public class HealthSysTest : MonoBehaviour
         health.TakeDamage(3); 
     }
 
-    public void Testing_OnHealthChange(int change, int health) {
+    public void Testing_OnHealthChange(float change, float health) {
         Debug.Log(change + " " + health);
     }
 
