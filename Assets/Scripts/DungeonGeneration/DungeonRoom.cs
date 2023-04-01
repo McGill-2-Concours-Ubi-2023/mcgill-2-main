@@ -39,6 +39,7 @@ public class DungeonRoom : MonoBehaviour
     private static List<DungeonRoom> allRooms;
     private List<DungeonRoom> roomsBuffer;
     private bool cleared = false;
+    public static int clearedRoomsCount;
 
     private void OnDistanceRender()
     {
@@ -257,6 +258,7 @@ public class DungeonRoom : MonoBehaviour
     public void OpenUp()
     {
         cleared = true;
+        clearedRoomsCount++;
         foreach (DungeonDoor door in doors)
         {
             var lights = door.GetComponentsInChildren<DoorLight>();
