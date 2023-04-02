@@ -6,4 +6,5 @@ public class DungeonWallAggregate : MonoBehaviour
 {
     public OccludableWall[] southWalls;
     public OccludableWall[] northWalls;
+    public WallLight[] neons;
 }

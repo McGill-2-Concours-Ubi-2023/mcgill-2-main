@@ -40,6 +40,7 @@ public class DungeonRoom : MonoBehaviour
     private List<DungeonRoom> roomsBuffer;
     private bool cleared = false;
     public static int clearedRoomsCount;
+    private List<DungeonLight> cachedLights;
 
     private void OnDistanceRender()
     {
@@ -47,7 +48,11 @@ public class DungeonRoom : MonoBehaviour
         allRooms = dungeonGenerator.data.AllRooms();
         roomsBuffer.Clear();
         roomsBuffer.Add(this);
-        adjacentRooms.ForEach(room => roomsBuffer.Add(room));
+        adjacentRooms.ForEach(room => 
+        {
+            roomsBuffer.Add(room);
+            room.UpdateLights(transform.position);
+        });
         allRooms.Except(roomsBuffer)
             .ToList()
             .ForEach(room => room.transform.Find("RoomRoot").gameObject.SetActive(false));
@@ -56,6 +61,19 @@ public class DungeonRoom : MonoBehaviour
             room.transform.Find("RoomRoot").gameObject.SetActive(true);
             room.RetrieveDoors();
         });
+    }
+
+    private void UpdateLights(Vector3 position)
+    {
+        if (cachedLights == null) 
+        {
+            cachedLights = new List<DungeonLight>();
+            doors.ForEach(door => cachedLights.AddRange(door.GetLights()));
+            walls.GetComponent<DungeonWallAggregate>().neons
+                .ToList()
+                .ForEach(neon => cachedLights.Add(neon));          
+        }
+        cachedLights.ForEach(light => light.UpdateLight(position));
     }
 
     private void RetrieveDoors()
@@ -235,7 +253,10 @@ public class DungeonRoom : MonoBehaviour
             } else if (room.HasAccessToRoom(this))
             {
                 room.doors.Where(door => door.GetSharedRooms().Contains(this))
-                .ToList().ForEach(door => this.doors.Add(door));
+                .ToList().ForEach(door => 
+                {
+                    this.doors.Add(door);
+                });
             }                 
         });
         BindWalls(walls);
@@ -245,11 +266,12 @@ public class DungeonRoom : MonoBehaviour
     {
         foreach(DungeonDoor door in doors)
         {
-            var lights = door.GetComponentsInChildren<DoorLight>();
+            var lights = door.GetLights();
             foreach(DoorLight light in lights)
             {
                 light.TurnRed();
-            }               
+                light.UpdateLight(transform.position);
+            }
             door.Block();
         }
     }
@@ -261,10 +283,11 @@ public class DungeonRoom : MonoBehaviour
         clearedRoomsCount++;
         foreach (DungeonDoor door in doors)
         {
-            var lights = door.GetComponentsInChildren<DoorLight>();
+            var lights = door.GetLights();
             foreach (DoorLight light in lights)
             {
                 light.ResetColor();
+                light.UpdateLight(transform.position);
             }
             door.Unlock();
         }

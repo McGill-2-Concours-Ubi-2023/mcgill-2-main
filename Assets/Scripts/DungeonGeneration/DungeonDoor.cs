@@ -19,6 +19,8 @@ public class DungeonDoor : MonoBehaviour
     [SerializeField]
     private bool canOpen = true;
     private DungeonRoom bufferRoom;
+    private DoorLight[] lights;
+    private MapManager map;
 
     private void Start()
     {
@@ -28,6 +30,13 @@ public class DungeonDoor : MonoBehaviour
     public bool CanOpen()
     {
         return canOpen;
+    }
+
+    public DoorLight[] GetLights()
+    {
+        if(lights == null || lights.Length == 0) 
+            lights = GetComponentsInChildren<DoorLight>();
+        return lights;
     }
 
     public void Block()
@@ -133,7 +142,7 @@ public class DungeonDoor : MonoBehaviour
     }
 
     public void GoThorouthDoor() {
-        MapManager map = GameObject.Find("LayoutMap").GetComponent<MapManager>();
+        if(map == null) GameObject.Find("LayoutMap").TryGetComponent(out map);
         DungeonRoom currentRoom = map.dungeonData.GetActiveRoom();
         Vector2Int position = currentRoom.GridPosition();
         int gridSize = map.dungeonGrid.GridSize(); 

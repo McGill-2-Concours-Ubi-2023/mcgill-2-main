@@ -48,12 +48,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   destructionBounds: {fileID: 1421598444235042090}
   gravity: 9.81
-  agents: []
   massCompression: 1
-  fieldCollider: {fileID: 1421598444063381553}
   orientationSpeed: 2
   dampeningForce: 0.2
-  attractionForce: 5
+  attractionForce: 3.5
   mediumDensity: 2
 --- !u!135 &1421598444063381553
 SphereCollider:

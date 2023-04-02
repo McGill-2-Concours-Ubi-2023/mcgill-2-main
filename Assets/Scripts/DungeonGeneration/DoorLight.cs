@@ -2,16 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DoorLight : MonoBehaviour
+public class DoorLight : DungeonLight
 {
-    private Animator animator;
-    // Start is called before the first frame update
-    private void Awake()
+    private void OnEnable()
     {
         animator = GetComponent<Animator>();
     }
 
-    public void Flicker()
+    public override void Flicker()
     {
         StartCoroutine(TriggerFlickerEvent());
     }
