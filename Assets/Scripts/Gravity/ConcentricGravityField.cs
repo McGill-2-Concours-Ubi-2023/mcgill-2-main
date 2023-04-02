@@ -90,7 +90,7 @@ public class ConcentricGravityField : GravityField
     public float orientationSpeed;
     [Range(0.001f, 1f)]
     public float dampeningForce = 0.2f;
-    [Range(1f, 20f)]
+    [Range(0.1f, 5f)]
     public float attractionForce;
     [Range(0.1f, 5.0f)]
     public float mediumDensity;
