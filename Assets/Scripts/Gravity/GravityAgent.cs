@@ -6,13 +6,16 @@ using UnityEngine;
 
 struct BulletAgent
 {
-    public static float bulletBendingForce = 20.0f;
+    public static float bulletBendingForce = 5.0f;
     public static int bulletMask = LayerMask.NameToLayer("Bullet"); // set the first layer mask 1"
 }
 
-struct PlayerAgent
+struct GlobalAgent
 {
     public static int playerMask = LayerMask.NameToLayer("Player"); // set the first layer mask 1"
+    public static int playerBulletMask = LayerMask.NameToLayer("PlayerBullet");
+    public static int enemyBulletMask = LayerMask.NameToLayer("EnemyBullet");
+    public static float externalForce = 0.5f;
 }
 
 struct Destructible
@@ -37,8 +40,16 @@ public class GravityAgent : MonoBehaviour
             if (animator)
             {
                 animator.speed *= massCompression;
-                animator.SetTrigger("Despawn");
+                animator.SetTrigger("Despawn"); 
             }          
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (currentField)
+        {
+            currentField.agents.Remove(gameObject);
         }
     }
 
@@ -63,10 +74,6 @@ public class GravityAgent : MonoBehaviour
         currentField = field;
         gameObject.Trigger<I_AI_Trigger>("DisableAgent");
         massCompression = currentField.GetMassCompressionForce();
-        foreach (var effectiveField in FindObjectsOfType<GravityField>())
-        {
-            if (effectiveField != currentField) effectiveField.ReleaseAgent(this.gameObject);
-        }
     }
 
     public void Release()

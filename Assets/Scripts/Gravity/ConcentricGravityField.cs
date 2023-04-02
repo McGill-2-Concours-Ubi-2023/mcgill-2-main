@@ -3,82 +3,86 @@ using UnityEngine;
 using Unity.Jobs;
 using Unity.Collections;
 using Unity.Burst;
+using Unity.Mathematics;
 
-//[BurstCompile]
-/*public struct ApplyConcentricGravityJob : IJob
+[BurstCompile]
+public struct ApplyBulletGravityJob :IJobParallelFor
 {
-    private Vector3 fieldPosition;
-    private Vector3 upVector;
-    private Quaternion rbRotation;
-    private Vector3 rbPosition;
-    private bool isLayerMask;
+    private float3 fieldPosition;
     private float deltaTime;
     private float orientationSpeed;
     private float mediumDensity;
     private float attractionForce;
     private float gravity;
     private float dampeningForce;
-    private Vector3 rbVelocity;
-    private int index;
-    private NativeArray<Vector3> velocityResult;
-    private NativeArray<Quaternion> rotationResult;
+    private NativeArray<float3> velocityArray;
+    private NativeArray<Quaternion> rotationArray;
+    private NativeArray<float3> positionArray;
+    private NativeArray<float3> rotationAxisArray;
+    private float indirectForce;
+    private bool adjustRotation;
 
-    public ApplyConcentricGravityJob(Vector3 _rbPosition,
-        Quaternion _rbRotation,
-        bool _isLayerMask,
+    public ApplyBulletGravityJob(
         float _deltaTime,
-        Vector3 _fieldPosition,
-        Vector3 _upVector,
+        float3 _fieldPosition,
         float _orientationSpeed,
         float _mediumDensity,
         float _attractionForce,
         float _gravity,
-        Vector3 _velocity,
         float _dampeningForce,
-        NativeArray<Vector3> _velocityResult,
-        NativeArray<Quaternion> _rotationResult,
-        int _index
+        NativeArray<float3> _velocityArray,
+        NativeArray<Quaternion> _rotationArray,
+        NativeArray<float3> _positionArray,
+        NativeArray<float3> _forwardVectorArray,
+        float _indirectForce,
+        bool _adjustRotation
         )
     {
-        rbPosition = _rbPosition;
-        rbRotation = _rbRotation;
-        isLayerMask = _isLayerMask;
         deltaTime = _deltaTime;
         fieldPosition = _fieldPosition;
-        upVector = _upVector;
         orientationSpeed = _orientationSpeed;
         mediumDensity = _mediumDensity;
         attractionForce = _attractionForce;
         gravity = _gravity;
-        rbVelocity = _velocity;
         dampeningForce = _dampeningForce;
-        velocityResult = _velocityResult;
-        rotationResult = _rotationResult;
-        index = _index;
+        velocityArray = _velocityArray;
+        rotationArray = _rotationArray;
+        positionArray = _positionArray;
+        rotationAxisArray = _forwardVectorArray;
+        indirectForce = _indirectForce;
+        adjustRotation = _adjustRotation;
+
     }
-    public void Execute()
+    public void Execute(int index)
     {
-        var forceDirection = fieldPosition - rbPosition;
-        Debug.DrawRay(rbPosition, forceDirection, Color.red);
-        //First generate the quaternion (similar to a transformation matrix)
-        Quaternion rotationQuaternion = Quaternion.FromToRotation(upVector, forceDirection);
-        //Multiply the agent's rotation (also a quaternion) by the above quaternion
-        Quaternion targetRotation = rotationQuaternion * rbRotation;
-        //Finally, smoothly interpolate between the current rotation and the target rotation
-        if (isLayerMask)
-            rbRotation = Quaternion.Lerp(rbRotation, targetRotation, orientationSpeed * deltaTime);
+        var forceDirection = fieldPosition - positionArray[index];
+        Debug.DrawRay(positionArray[index], forceDirection, Color.red);
+
+        //Generate Quaternion transform
+        Quaternion rotationQuaternion;
+        //float indirectForce = BulletAgent.bulletBendingForce;
+        rotationQuaternion = Quaternion.FromToRotation(rotationAxisArray[index], forceDirection);
+        //Multiply the agent's rotation by quaternion transform
+        Quaternion targetRotation = rotationQuaternion * rotationArray[index];
+        bool nullQuaternion = rotationArray[index].x == 0 &&  rotationArray[index].y == 0
+            && rotationArray[index].z == 0 && rotationArray[index].w == 0;
+
+        if (nullQuaternion) rotationArray[index] = Quaternion.identity;
+        if(adjustRotation)
+        rotationArray[index] = Quaternion.Lerp(rotationArray[index], targetRotation, orientationSpeed * deltaTime);
+
         //When approaching Kernel, attraction force intensifies
-        var FgLerp = Mathf.Lerp(mediumDensity + attractionForce, mediumDensity, forceDirection.magnitude);
-        var velocityChange = forceDirection.normalized * gravity * FgLerp * deltaTime;
-        rbVelocity += velocityChange;
+        float forceMag = ((Vector3)forceDirection).magnitude;
+        var FgLerp = Mathf.Lerp(mediumDensity + attractionForce, mediumDensity, forceMag);
+        var velocityChange = forceDirection * gravity * FgLerp * deltaTime * indirectForce;
+        velocityArray[index] += velocityChange;
+
         //Dampen over time to prevent sinusoidal behaviour
-        var dampenLerp = Mathf.Lerp(0, dampeningForce, Mathf.Clamp01(forceDirection.magnitude));
-        var velocityDampening = -dampenLerp * rbVelocity * deltaTime;
-        rbVelocity += velocityDampening;
-        velocityResult[index] = rbVelocity;
-        rotationResult[index] = rbRotation;
+        var dampenLerp = Mathf.Lerp(0, dampeningForce, Mathf.Clamp01(forceMag));
+        var velocityDampening = -dampenLerp * velocityArray[index] * deltaTime;
+        velocityArray[index] += velocityDampening;
     }
-}*/
+}
 
 public class ConcentricGravityField : GravityField
 {
@@ -117,7 +121,7 @@ public class ConcentricGravityField : GravityField
         }
         //Multiply the agent's rotation by quaternion transform
         Quaternion targetRotation = rotationQuaternion * rb.transform.rotation;
-
+ 
         //Rotate body accordingly                
         if (rb.gameObject.layer != fieldMask && !rb.CompareTag("Enemy"))
             rb.transform.rotation = Quaternion.Lerp(rb.transform.rotation, targetRotation, orientationSpeed * Time.deltaTime);
