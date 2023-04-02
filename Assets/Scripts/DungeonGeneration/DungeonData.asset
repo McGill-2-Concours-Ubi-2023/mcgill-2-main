@@ -16,8 +16,10 @@ MonoBehaviour:
     type: 3}
   activeLayout: {fileID: 11400000, guid: cc77afc41768e9243b82ea23ac2ba356, type: 2}
   dungeonGrid: {fileID: 11400000, guid: e5f39597b8aa73542941172f235da76c, type: 2}
-  roomDensity: 0.502
+  roomDensity: 0.5
   rooms:
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -39,7 +41,7 @@ MonoBehaviour:
   - {fileID: 0}
   startingRoom: {fileID: 0}
   mapM: {fileID: 0}
-  minRoomCount: 14
+  minRoomCount: 20
   StartRoomPrefabs:
   - {fileID: 377485058429802400, guid: eaaea9ee7a4cc124da64a9d0f0c4959e, type: 3}
   NormalRoomPrefabs:
