@@ -37,9 +37,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     private GameObject m_PauseMenu;
     public VisualEffect trailFollowEffect;
     private Health health;
-    ClickSound cs;
-    [SerializeField] AudioClip dashSound;
-
+    public bool startFight;
 
     public ISimpleInventory<SimpleCollectible> SimpleCollectibleInventory;
     
@@ -48,7 +46,15 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody>();
+        Transform cameraRoot = transform.Find("CameraRoot");
+        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("BossScene"))
+        {
+            this.Camera.Follow = cameraRoot;
+            this.Camera.LookAt = cameraRoot;
+            this.Camera.m_Lens.FieldOfView = 25.0f;
+        }
+
+            rb = GetComponent<Rigidbody>();
         SimpleCollectibleInventory = new SimpleInventory<SimpleCollectible>();
         m_InputActionAsset = GetComponent<PlayerInput>().actions;
         animator = GetComponent<Animator>();
@@ -61,6 +67,15 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         }
     }
 
+    public void StartFight()
+    {
+        Transform targetGroup = GameObject.Find("CinemachineTargetGroup").transform;
+        this.Camera.Follow = targetGroup;
+        this.Camera.LookAt = targetGroup;
+        this.Camera.m_Lens.FieldOfView = 47.0f;
+    }
+
+
     private void OnPlayerDeath()
     {
         SceneManager.LoadScene("Menu");
@@ -68,7 +83,6 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
 
     private void Start()
     {
-        cs = GetComponent<ClickSound>();
         StartCoroutine(RandomDance());
     }
 
@@ -111,6 +125,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
 
     private void Update()
     {
+        if (startFight) StartFight();
         float2 input = m_InputActionAsset["Movement"].ReadValue<Vector2>();
         gameObject.Trigger<IMainCharacterTriggers, float2>(nameof(IMainCharacterTriggers.OnInput), input);
         float3 adjustedInput;
@@ -216,7 +231,6 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         GetComponent<DashMeshTrail>().ActivateTrail();
         if (!isDashing)
         {
-            cs.Click(dashSound);
             animator.SetTrigger("MovementToDash");
             StartCoroutine(Dash());
         }      
@@ -229,6 +243,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
 
     IEnumerator Dash()
     {
+
         isDashing = true;
         float3 dashDirection = m_MovementDirection;
         float timer = 0f;
@@ -240,6 +255,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         }
         rb.velocity = rb.velocity / 5;
         isDashing = false;
+
     }
 
     public CinemachineVirtualCameraBase GetActiveCamera()
