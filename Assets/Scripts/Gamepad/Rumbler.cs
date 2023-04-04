@@ -6,17 +6,17 @@ using UnityEngine.InputSystem;
 public class Rumbler : MonoBehaviour
 {
     private Gamepad gamepad;
-    private float vibrationDuration;
+   /* private float vibrationDuration;
     private float vibrationTimer;
     private float leftVibrationStrength;
-    private float rightVibrationStrength;
+    private float rightVibrationStrength;*/
 
-    void OnEnable()
+   /* void OnEnable()
     {
         gamepad = Gamepad.current;
-    }
+    }*/
 
-    void Update()
+   /* void Update()
     {
         if (gamepad != null)
         {
@@ -32,12 +32,29 @@ public class Rumbler : MonoBehaviour
             }
         }           
     }
+*/
+
 
     public void TriggerVibration(float duration, float leftStrength, float rightStrength)
     {
-        vibrationDuration = duration;
-        vibrationTimer = duration;
-        leftVibrationStrength = leftStrength;
+        gamepad = Gamepad.current;
+        if (gamepad != null) {
+            gamepad.SetMotorSpeeds(leftStrength, rightStrength);
+            StartCoroutine(StopRumble(duration, gamepad));
+        }
+        /*leftVibrationStrength = leftStrength;
         rightVibrationStrength = rightStrength;
+        vibrationDuration = duration;
+        vibrationTimer = duration;*/
+    }
+
+    private IEnumerator StopRumble(float duration, Gamepad pad) {
+        float elapsedTime = 0f;
+        while (elapsedTime < duration) {
+            elapsedTime += Time.deltaTime;
+            yield return null; 
+        }
+
+        pad.SetMotorSpeeds(0f, 0f);
     }
 }

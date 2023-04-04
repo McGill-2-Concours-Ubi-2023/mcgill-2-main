@@ -23,6 +23,7 @@ public class Health : MonoBehaviour, IHealthTriggers, IGravityGrenadeHealthAdapt
     public DeathRenderer deathRenderer;
     ClickSound cs;
     [SerializeField] AudioClip deathSound;
+    
 
     public void TakeDamage(float damage)
     {
@@ -36,8 +37,7 @@ public class Health : MonoBehaviour, IHealthTriggers, IGravityGrenadeHealthAdapt
         else {
             currentHealth -= damage;
             OnHealthChange?.Invoke(-damage, currentHealth);
-            
-        }        
+        }
     }
 
     public void GainHealth(float healthGain) {

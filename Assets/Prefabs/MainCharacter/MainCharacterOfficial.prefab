@@ -185,6 +185,7 @@ GameObject:
   - component: {fileID: 568814263930457246}
   - component: {fileID: 1838318121}
   - component: {fileID: 1838318120}
+  - component: {fileID: 11993199574767686}
   m_Layer: 3
   m_Name: MainCharacterOfficial
   m_TagString: Player
@@ -293,7 +294,7 @@ MonoBehaviour:
   doorOpenRate: 4
   dashDuration: 0.2
   trailFollowEffect: {fileID: 8965242885257460552}
-  dashSound: {fileID: 8300000, guid: 8a4ff076692a85d44a9b1c20f9f7b66e, type: 3}
+  startFight: 0
 --- !u!54 &5632912686277809512
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -376,6 +377,7 @@ MonoBehaviour:
   invulnerable: 0
   deathRenderer: {fileID: 0}
   deathSound: {fileID: 8300000, guid: 68699618dbaa39d439f4117f3d357130, type: 3}
+  rumbler: {fileID: 11993199574767686}
 --- !u!114 &568814263930457246
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -505,6 +507,18 @@ MonoBehaviour:
   AS: {fileID: 0}
   dontRandomize: 1
   soundGap: 0
+--- !u!114 &11993199574767686
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6715966069451885750}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 021f2f944a4944c41995a17aee0a5a44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2616147798799365750
 PrefabInstance:
   m_ObjectHideFlags: 0
