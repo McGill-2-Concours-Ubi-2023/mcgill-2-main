@@ -143,7 +143,7 @@ public class ShowUI : MonoBehaviour
             hologram = data.holograms[description];
             hologramObj = GameObject.Instantiate(hologram);
             hologramObj.transform.SetParent(transform);
-            hologramObj.transform.localPosition = new Vector3(0, 1.4f, 0);
+            hologramObj.transform.localPosition = new Vector3(0, 1.4f, 0);//below
             //hologramObj.transform.localPosition = new Vector3(0, 3.5f, 0);// above
             startHoloPos = hologramObj.transform.position;
             hologramObj.SetActive(false);
