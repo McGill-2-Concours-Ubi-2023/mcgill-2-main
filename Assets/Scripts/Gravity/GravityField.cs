@@ -93,9 +93,9 @@ public abstract class GravityField : MonoBehaviour
                 bufferGravityAgent.BindField(this);                
             }
 
-            if(other.tag == "Player")
+            if(other.CompareTag("Player"))
             {
-                playerAnimator.SetBool("IsFloating", true);
+                playerAnimator.SetBool("IsFloating", true);                
             }
         }
     }
@@ -159,7 +159,11 @@ public abstract class GravityField : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        ReleaseAgent(other.gameObject);  
+        ReleaseAgent(other.gameObject);
+        if (other.CompareTag("Player"))
+        {
+            //Stop vibration
+        }
     }
 
     public void ReleaseAgent(GameObject obj)
