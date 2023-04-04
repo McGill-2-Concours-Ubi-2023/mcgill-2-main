@@ -19,6 +19,12 @@ public class DBufferController : MonoBehaviour
     private float attackCooldown = 1.5f;
     private bool canAttack = true;
     private float cachedSpeed;
+    ClickSound cs;
+
+    private void Start()
+    {
+        cs = GetComponent<ClickSound>();
+    }
 
     private void Awake()
     {
@@ -39,6 +45,7 @@ public class DBufferController : MonoBehaviour
     {
         if (canAttack)
         {
+            cs.Click();
             animator.SetTrigger("Attack");
             StartCoroutine(CoolDown());
             FreezeOnCurrentState();

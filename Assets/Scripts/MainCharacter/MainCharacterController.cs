@@ -37,6 +37,9 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     private GameObject m_PauseMenu;
     public VisualEffect trailFollowEffect;
     private Health health;
+    ClickSound cs;
+    [SerializeField] AudioClip dashSound;
+
 
     public ISimpleInventory<SimpleCollectible> SimpleCollectibleInventory;
     
@@ -65,6 +68,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
 
     private void Start()
     {
+        cs = GetComponent<ClickSound>();
         StartCoroutine(RandomDance());
     }
 
@@ -212,6 +216,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         GetComponent<DashMeshTrail>().ActivateTrail();
         if (!isDashing)
         {
+            cs.Click(dashSound);
             animator.SetTrigger("MovementToDash");
             StartCoroutine(Dash());
         }      

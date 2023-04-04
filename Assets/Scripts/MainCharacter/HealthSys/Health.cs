@@ -21,6 +21,8 @@ public class Health : MonoBehaviour, IHealthTriggers, IGravityGrenadeHealthAdapt
     private HealthUI ui;
     public bool invulnerable;
     public DeathRenderer deathRenderer;
+    ClickSound cs;
+    [SerializeField] AudioClip deathSound;
 
     public void TakeDamage(float damage)
     {
@@ -33,6 +35,7 @@ public class Health : MonoBehaviour, IHealthTriggers, IGravityGrenadeHealthAdapt
         else {
             currentHealth -= damage;
             OnHealthChange?.Invoke(-damage, currentHealth);
+            cs.Click();
         }        
     }
 
@@ -51,6 +54,7 @@ public class Health : MonoBehaviour, IHealthTriggers, IGravityGrenadeHealthAdapt
     }
 
     public void Death() {
+        cs.Click(deathSound);
         OnDeath?.Invoke();
     }
 
@@ -59,7 +63,8 @@ public class Health : MonoBehaviour, IHealthTriggers, IGravityGrenadeHealthAdapt
         if (gameObject.CompareTag("Player")) {
             ui.GenerateHearts((int)currentHealth);
         }
-        
+        cs = GetComponent<ClickSound>();
+
     }
     public void IncreaseMaxHealth(float amount) {
         MaxHealth = MaxHealth += amount;
