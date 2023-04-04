@@ -8,11 +8,12 @@ using UnityEngine.InputSystem;
 public class ShowUI : MonoBehaviour
 {
     [SerializeField]
-    GameObject self, canvas2, canvas3;
+    GameObject self, canvas2, canvas3, hologramObj;
+    GameObject hologram;
     List<GameObject> canvases = new List<GameObject>();
     public float floatSpeed = 1f;  // The speed of the floating motion
     public float floatHeight = 0.5f; // The maximum height of the float
-    private Vector3 startPos;
+    private Vector3 startPos, startHoloPos;
     private bool startFloat = false;
     [SerializeField]
     Configuration configs;
@@ -45,6 +46,9 @@ public class ShowUI : MonoBehaviour
     {
         if (other.CompareTag("Player")) {
             self.SetActive(true);
+            if (hologramObj != null) {
+                hologramObj.SetActive(true);
+            }
             startFloat = true;
 
         }
@@ -58,6 +62,11 @@ public class ShowUI : MonoBehaviour
                 c.SetActive(false); ;
                 startFloat = false;
             }
+            if (hologramObj != null)
+            {
+                hologramObj.SetActive(false);
+            }
+
         }
     }
 
@@ -79,10 +88,19 @@ public class ShowUI : MonoBehaviour
         if (shouldFloat)
         {
             float newY = startPos.y + Mathf.Sin(Time.time * floatSpeed) * floatHeight;
+            float newYH = startHoloPos.y + Mathf.Sin(Time.time * floatSpeed) * floatHeight;
+           /* if (hologramObj != null)
+            {
+                hologramObj.transform.position = new Vector3(startHoloPos.x, newYH, startHoloPos.z);
+            }*/
             self.transform.position = new Vector3(startPos.x, newY, startPos.z);
         }
         else {
             self.transform.position = new Vector3(startPos.x, startPos.y, startPos.z);
+            if (hologramObj != null)
+            {
+                hologramObj.transform.position = new Vector3(startHoloPos.x, startHoloPos.y, startHoloPos.z);
+            }
         }
         
     }
@@ -119,8 +137,19 @@ public class ShowUI : MonoBehaviour
         }
     }
     public void SetText(string description) {// set the description of the config 
-        self.transform.GetChild(0).GetComponentInChildren<TMP_Text>().text = description;
+        self.transform.GetChild(0).GetComponentInChildren<TMP_Text>().text = description + "\n" + "cost: " + data.merchantPrices[description] + "pts";
         this.description = description;
+        if (data.holograms.ContainsKey(description)) {
+            hologram = data.holograms[description];
+            hologramObj = GameObject.Instantiate(hologram);
+            hologramObj.transform.SetParent(transform);
+            hologramObj.transform.localPosition = new Vector3(0, 1.4f, 0);
+            //hologramObj.transform.localPosition = new Vector3(0, 3.5f, 0);// above
+            startHoloPos = hologramObj.transform.position;
+            hologramObj.SetActive(false);
+
+
+        }
     }
 
     private void PickMethod(string method)

@@ -17,6 +17,7 @@ public class MerchantData : ScriptableObject
     public SerializableDict<string, string> merchantMethods = new SerializableDict<string, string>(); // map descriprion of the item to the id of the method to be called to get the effect of the item
     [SerializeField]
     public SerializableDict<int, string> descriptions = new SerializableDict<int, string>();
+    public SerializableDict<string, GameObject> holograms = new SerializableDict<string, GameObject>();
 
 }
 
