@@ -26,9 +26,11 @@ public class ShowUI : MonoBehaviour
     int points = 10000;
     private bool soldout = false;
     private InputActionAsset m_InputActionAsset;
+    ClickSound cs;
 
     private void Start()
     {
+        cs=GetComponent<ClickSound>();
         canvases.Add(self);
         canvases.Add(canvas2);
         canvases.Add(canvas3);
@@ -100,6 +102,7 @@ public class ShowUI : MonoBehaviour
 
     private void SelectCurrentItem()
     {
+        cs.Click();
         // TODO: player selected this item
         if (startFloat && data.merchantPrices.ContainsKey(description) && !soldout)
         {

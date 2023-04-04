@@ -27,6 +27,7 @@ public class Health : MonoBehaviour, IHealthTriggers, IGravityGrenadeHealthAdapt
     public void TakeDamage(float damage)
     {
         if (invulnerable) return;
+        cs.Click();
         if (currentHealth - damage <= 0)
         {
             currentHealth = 0;
@@ -35,7 +36,7 @@ public class Health : MonoBehaviour, IHealthTriggers, IGravityGrenadeHealthAdapt
         else {
             currentHealth -= damage;
             OnHealthChange?.Invoke(-damage, currentHealth);
-            cs.Click();
+            
         }        
     }
 
