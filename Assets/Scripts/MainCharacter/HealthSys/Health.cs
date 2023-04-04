@@ -15,7 +15,7 @@ public class Health : MonoBehaviour, IHealthTriggers, IGravityGrenadeHealthAdapt
     public event Action<float, float> OnHealthChange;
     public event Action OnDeath;
     [SerializeField]
-    private float currentHealth = 5;
+    public float currentHealth = 5;
     private float MaxHealth = 5;
     [SerializeField]
     private HealthUI ui;

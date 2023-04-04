@@ -25,6 +25,7 @@ public class Gun : MonoBehaviour, IGunTriggers
     private float bulletInterval = 0.2f;
 
     ClickSound cs;
+    ShotCounter sc;
     
     private Coroutine m_ShootCoroutine;
     private bool m_ShootCoroutinePaused = true;
@@ -40,6 +41,7 @@ public class Gun : MonoBehaviour, IGunTriggers
         if (playerGun)
             playerController = GetComponentInParent<MainCharacterController>();
         cs = GetComponent<ClickSound>();
+        sc= GetComponent<ShotCounter>();
     }
 
     private void Shoot()
@@ -54,6 +56,8 @@ public class Gun : MonoBehaviour, IGunTriggers
             playerController.GetComponent<Animator>().SetTrigger("Shoot");
         if (cs != null)
             cs.Click();
+        if (sc != null)
+            sc.shotsFired();
     }
     
     private IEnumerator ShootCoroutine()
