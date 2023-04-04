@@ -34,6 +34,7 @@ public class Gun : MonoBehaviour, IGunTriggers
     [SerializeField]
     private GameObject altBullet; 
     private MainCharacterController playerController;
+    private Vibration vibration;
 
 
     private void Start()
@@ -42,6 +43,7 @@ public class Gun : MonoBehaviour, IGunTriggers
             playerController = GetComponentInParent<MainCharacterController>();
         cs = GetComponent<ClickSound>();
         sc= GetComponent<ShotCounter>();
+        vibration = GameObject.Find("GamepadVib").GetComponent<Vibration>();
     }
 
     private void Shoot()
@@ -58,6 +60,7 @@ public class Gun : MonoBehaviour, IGunTriggers
             cs.Click();
         if (sc != null)
             sc.shotsFired();
+        vibration.SoftVibration();
     }
     
     private IEnumerator ShootCoroutine()

@@ -43,7 +43,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     
     private InputActionAsset m_InputActionAsset;
     private static readonly int InDebugMode = Animator.StringToHash("InDebugMode");
-
+    private Vibration vibration; 
     private void Awake()
     {
         Transform cameraRoot = transform.Find("CameraRoot");
@@ -53,7 +53,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
             this.Camera.LookAt = cameraRoot;
             this.Camera.m_Lens.FieldOfView = 25.0f;
         }
-
+        vibration = GameObject.Find("GamepadVib").GetComponent<Vibration>();
             rb = GetComponent<Rigidbody>();
         SimpleCollectibleInventory = new SimpleInventory<SimpleCollectible>();
         m_InputActionAsset = GetComponent<PlayerInput>().actions;
@@ -233,7 +233,8 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         {
             animator.SetTrigger("MovementToDash");
             StartCoroutine(Dash());
-        }      
+        }
+        vibration.SoftVibration();
     }
 
     public void StopDash() //triggered as an animation event at the last keyframe
@@ -292,6 +293,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     public void OnSpawnCrate()
     {
         gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnSpawnCrateIntention));
+        vibration.SoftVibration();
     }
 
     public void HasFaceDirectionInput(Ref<bool> hasInput)
@@ -379,6 +381,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     public void OnShootPress()
     {
         gameObject.TriggerDown<IGunTriggers>(nameof(IGunTriggers.OnShootStartIntention));
+        
     }
     
     public void OnShootRelease()

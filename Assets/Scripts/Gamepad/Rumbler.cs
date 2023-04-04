@@ -6,55 +6,93 @@ using UnityEngine.InputSystem;
 public class Rumbler : MonoBehaviour
 {
     private Gamepad gamepad;
-   /* private float vibrationDuration;
-    private float vibrationTimer;
+    private Coroutine rumbleCoroutine;
+    private List<VibrationRequest> vibrationRequests = new List<VibrationRequest>();
     private float leftVibrationStrength;
-    private float rightVibrationStrength;*/
+    private float rightVibrationStrength;
 
-   /* void OnEnable()
+    private void Update()
     {
-        gamepad = Gamepad.current;
-    }*/
+        if (gamepad == null)
+        {
+            gamepad = Gamepad.current;
+        }
 
-   /* void Update()
-    {
         if (gamepad != null)
         {
-            if (vibrationTimer > 0)
+            // Update all active vibration requests
+            for (int i = vibrationRequests.Count - 1; i >= 0; i--)
             {
-
-                gamepad.SetMotorSpeeds(leftVibrationStrength, rightVibrationStrength);
-                vibrationTimer -= Time.deltaTime;
+                VibrationRequest request = vibrationRequests[i];
+                if (request.IsComplete())
+                {
+                    vibrationRequests.RemoveAt(i);
+                }
+                else
+                {
+                    request.Update(gamepad);
+                }
             }
-            else
-            {
-                gamepad.SetMotorSpeeds(0, 0);
-            }
-        }           
+        }
     }
-*/
-
 
     public void TriggerVibration(float duration, float leftStrength, float rightStrength)
     {
         gamepad = Gamepad.current;
-        if (gamepad != null) {
+        if (gamepad != null)
+        {
+            // stop any previous rumble coroutine
+            if (rumbleCoroutine != null)
+            {
+                StopCoroutine(rumbleCoroutine);
+            }
+
+            // set new vibration strengths
+            leftVibrationStrength = leftStrength;
+            rightVibrationStrength = rightStrength;
+
+            // start new rumble coroutine
+            rumbleCoroutine = StartCoroutine(StopRumble(duration, gamepad));
             gamepad.SetMotorSpeeds(leftStrength, rightStrength);
-            StartCoroutine(StopRumble(duration, gamepad));
         }
-        /*leftVibrationStrength = leftStrength;
-        rightVibrationStrength = rightStrength;
-        vibrationDuration = duration;
-        vibrationTimer = duration;*/
     }
 
-    private IEnumerator StopRumble(float duration, Gamepad pad) {
-        float elapsedTime = 0f;
-        while (elapsedTime < duration) {
-            elapsedTime += Time.deltaTime;
-            yield return null; 
-        }
+    private IEnumerator StopRumble(float duration, Gamepad pad)
+    {
+        yield return new WaitForSeconds(duration);
 
         pad.SetMotorSpeeds(0f, 0f);
+
+        // reset rumble coroutine flag
+        rumbleCoroutine = null;
+    }
+
+    private class VibrationRequest
+    {
+        private float startTime;
+        private float duration;
+        private float leftStrength;
+        private float rightStrength;
+
+        public VibrationRequest(float duration, float leftStrength, float rightStrength)
+        {
+            this.startTime = Time.time;
+            this.duration = duration;
+            this.leftStrength = leftStrength;
+            this.rightStrength = rightStrength;
+        }
+
+        public void Update(Gamepad gamepad)
+        {
+            float elapsed = Time.time - startTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            float strength = Mathf.Lerp(0f, leftStrength, t);
+            gamepad.SetMotorSpeeds(strength, strength);
+        }
+
+        public bool IsComplete()
+        {
+            return Time.time >= startTime + duration;
+        }
     }
 }
