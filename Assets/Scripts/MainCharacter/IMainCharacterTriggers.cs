@@ -30,4 +30,6 @@ public interface IMainCharacterTriggers : ITrigger
     
     public void OnRoomCleared() { }
     public void OnPrimaryWeaponRelease() { }
+    
+    public void ResetInventory() { }
 }

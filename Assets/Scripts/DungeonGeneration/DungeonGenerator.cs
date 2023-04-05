@@ -27,6 +27,7 @@ public class DungeonGenerator : MonoBehaviour
         //StartCoroutine(PlaceRandomMerchant());
         
         GameManager.isLoading = false;
+        GameObject.FindWithTag("Player").Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.ResetInventory));
     }
 
     IEnumerator PlaceRandomMerchant()

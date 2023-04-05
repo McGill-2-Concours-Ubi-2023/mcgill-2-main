@@ -427,5 +427,10 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
             gcUI.UpdateGrenadeUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade));
         }
     }
+
+    public void ResetInventory()
+    {
+        SimpleCollectibleInventory.ResetAll();
+    }
 }
 
