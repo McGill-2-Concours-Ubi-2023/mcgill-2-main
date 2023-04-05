@@ -13,11 +13,17 @@ public class DungeonRoomCollider : MonoBehaviour
         {
             await Task.Yield();
         }
+
+        if (this == null)
+        {
+            return;
+        }
         
         DungeonRoom.activeRoom = transform.parent.GetComponentInParent<DungeonRoom>();
-        DungeonRoom.activeRoom.UpdateRoomsLayout();
-        if (DungeonRoom.lastEnteredDoor != null) DungeonRoom.lastEnteredDoor.ShowWalls();
-        
+        if (DungeonRoom.activeRoom)
+            await DungeonRoom.activeRoom.UpdateRoomsLayout();
+        if (DungeonRoom.lastEnteredDoor)
+            DungeonRoom.lastEnteredDoor.ShowWalls();
     }
 
 
