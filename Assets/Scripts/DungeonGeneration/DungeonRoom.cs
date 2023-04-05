@@ -43,25 +43,30 @@ public class DungeonRoom : MonoBehaviour
     public static int clearedRoomsCount;
     private List<DungeonLight> cachedLights;
 
-    private void OnDistanceRender()
+    private async Task OnDistanceRender()
     {
         if (roomsBuffer == null) roomsBuffer = new List<DungeonRoom>();
         allRooms = dungeonGenerator.data.AllRooms();
         roomsBuffer.Clear();
+        await Task.Yield();
         roomsBuffer.Add(this);
-        adjacentRooms.ForEach(room => 
+        foreach(DungeonRoom room in adjacentRooms)
         {
             roomsBuffer.Add(room);
-            room.UpdateLights(transform.position);
-        });
-        allRooms.Except(roomsBuffer)
-            .ToList()
-            .ForEach(room => room.transform.Find("RoomRoot").gameObject.SetActive(false));
-        roomsBuffer.ForEach(room => 
+            room.UpdateLights(transform.position);           
+        }
+        List<DungeonRoom> inter = allRooms.Except(roomsBuffer).ToList();
+        foreach(DungeonRoom room in inter)
+        {
+            room.transform.Find("RoomRoot").gameObject.SetActive(false);
+            await Task.Yield();
+        }
+        foreach(DungeonRoom room in roomsBuffer)
         {
             room.transform.Find("RoomRoot").gameObject.SetActive(true);
             room.RetrieveDoors();
-        });
+            await Task.Yield();
+        }
     }
 
     private void UpdateLights(Vector3 position)
@@ -111,25 +116,28 @@ public class DungeonRoom : MonoBehaviour
         }   
     }
 
-    public void UpdateRoomsLayout()
+    public async Task UpdateRoomsLayout()
     {
-        OnDistanceRender();
+        await OnDistanceRender();
         foreach (OccludableWall wall in occludableWalls)
         {
             if (wall != null && wall.gameObject.activeInHierarchy)
             {
                 wall.Hide();
                 wall.ChangeRenderQueue(3001);
+                await Task.Yield();
             }
         }
 
         if (northWalls == null) FindNorthWalls();
+        await Task.Yield();
         foreach (OccludableWall wall in northWalls)
         {
             if (wall != null && wall.gameObject.activeInHierarchy) wall.ChangeRenderQueue(2998);
+            await Task.Yield();
         }
     }
-
+    
     public void TryRemoveEnemy(Enemy enemy)
     {
         if (enemies.Contains(enemy)) enemies.Remove(enemy);

@@ -21,10 +21,12 @@ public class DungeonDoor : MonoBehaviour
     private DungeonRoom bufferRoom;
     private DoorLight[] lights;
     private MapManager map;
+    private BoxCollider boxCollider;
 
     private void Start()
     {
         doorCollider = transform.Find("Door").GetComponent<MeshCollider>();
+        boxCollider = GetComponent<BoxCollider>();
     }
 
     public bool CanOpen()
@@ -39,6 +41,13 @@ public class DungeonDoor : MonoBehaviour
         return lights;
     }
 
+    private void RefreshCollider()
+    {
+        if (boxCollider == null) boxCollider = GetComponent<BoxCollider>();
+        boxCollider.enabled = false;
+        boxCollider.enabled = true;
+    }
+
     public void Block()
     {
         canOpen = false;
@@ -46,6 +55,7 @@ public class DungeonDoor : MonoBehaviour
 
     public void Unlock()
     {
+        RefreshCollider();
         canOpen = true;
     }
 
