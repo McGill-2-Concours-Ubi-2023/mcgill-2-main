@@ -47,10 +47,10 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
     public async Task GenerateDungeon()
     {
         GameManager manager = GameManager.Instance;
-        manager.ReportProgress(0.0f, 0.5f);
+        manager.ReportProgress(0.5f, 0.6f);
         using Stopwatch sw = new Stopwatch(nameof(GenerateDungeon));
         await ClearDungeon();
-        manager.ReportProgress(0.5f, 0.7f);
+        manager.ReportProgress(0.6f, 0.7f);
         await GetGrid().GenerateGrid(this);
         manager.ReportProgress(0.7f, 0.8f);
         await GetGrid().GenerateRooms(this);

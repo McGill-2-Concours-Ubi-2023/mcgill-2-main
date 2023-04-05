@@ -56,24 +56,31 @@ public class GameManager : MonoBehaviour
         StartCoroutine(OnSceneLoadProgress(sceneId));
     }
 
+    private void UpdateProgress()
+    {
+        float remaining = m_NextProgress - m_CurrentProgress;
+        m_CurrentProgress += remaining * Time.deltaTime * 3;
+        loadingFillBar.fillAmount = m_CurrentProgress;
+    }
+
     IEnumerator OnSceneLoadProgress(int sceneId)
     {
         isLoading = true;
         m_CurrentProgress = 0.0f;
         m_NextProgress = 0.0f;
         loadingFillBar.fillAmount = m_CurrentProgress;
-        ReportProgress(0.0f, 0.0f);
+        const float sceneLoadProgressMax = 0.5f;
+        ReportProgress(0.0f, sceneLoadProgressMax);
         AsyncOperation loading = SceneManager.LoadSceneAsync(sceneId);
         while (!loading.isDone)
         {
+            UpdateProgress();
             yield return null;
         }
         
         while (isLoading)
         {
-            float remaining = m_NextProgress - m_CurrentProgress;
-            m_CurrentProgress += remaining * Time.deltaTime * 3;
-            loadingFillBar.fillAmount = m_CurrentProgress;
+            UpdateProgress();
             yield return null;
         }
         
