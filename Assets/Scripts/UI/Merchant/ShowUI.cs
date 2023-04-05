@@ -136,13 +136,16 @@ public class ShowUI : MonoBehaviour
             }
         }
     }
-    public void SetText(string description) {// set the description of the config 
+    public void SetText(string description)
+    {// set the description of the config 
         self.transform.GetChild(0).GetComponentInChildren<TMP_Text>().text = description + "\n" + "cost: " + data.merchantPrices[description] + "pts";
+
         this.description = description;
         if (data.holograms.ContainsKey(description)) {
             hologram = data.holograms[description];
             hologramObj = GameObject.Instantiate(hologram);
             hologramObj.transform.SetParent(transform);
+            hologramObj.transform.SetAsLastSibling();
             hologramObj.transform.localPosition = new Vector3(0, 1.4f, 0);//below
             //hologramObj.transform.localPosition = new Vector3(0, 3.5f, 0);// above
             startHoloPos = hologramObj.transform.position;

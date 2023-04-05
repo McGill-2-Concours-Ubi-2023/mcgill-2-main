@@ -29,4 +29,5 @@ public interface IMainCharacterTriggers : ITrigger
     public void IsDashing(Ref<bool> refIsDashing) { }
     
     public void OnRoomCleared() { }
+    public void OnPrimaryWeaponRelease() { }
 }
