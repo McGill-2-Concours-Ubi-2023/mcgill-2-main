@@ -46,6 +46,8 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     private InputActionAsset m_InputActionAsset;
     private static readonly int InDebugMode = Animator.StringToHash("InDebugMode");
     private Vibration vibration; 
+    private GrenadeCrateUI gcUI;
+
     private void Awake()
     {
         Transform cameraRoot = transform.Find("CameraRoot");
@@ -67,6 +69,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         {
             m_PauseMenu.SetActive(false);
         }
+        gcUI = GameObject.FindObjectOfType<GrenadeCrateUI>();
     }
 
     public void StartFight()
@@ -86,6 +89,8 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     private void Start()
     {
         StartCoroutine(RandomDance());
+        gcUI.UpdateCrateUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint));
+        gcUI.UpdateGrenadeUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade));
     }
 
     IEnumerator RandomDance()
@@ -127,6 +132,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
 
     private void Update()
     {
+        gcUI.UpdateGrenadeUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade));
         if (startFight) StartFight();
         float2 input = m_InputActionAsset["Movement"].ReadValue<Vector2>();
         gameObject.Trigger<IMainCharacterTriggers, float2>(nameof(IMainCharacterTriggers.OnInput), input);
@@ -279,13 +285,16 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         try
         {
             SimpleCollectibleInventory.RemoveItem(SimpleCollectible.Grenade);
+
         }
         catch (InventoryEmptyException<SimpleCollectible> e)
         {
             Debug.Log("No grenades left");
             return;
         }
-        Debug.Log($"{SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade)} grenades left");
+        int grenadeNum = SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade); 
+        Debug.Log($"{grenadeNum} grenades left");
+        gcUI.UpdateGrenadeUI(grenadeNum);
         int randomNumber = UnityEngine.Random.Range(1, 3);
         animator.SetTrigger("ThrowGrenade_" + randomNumber);
         GameObject grenade = Instantiate(GravityGrenadePrefab);
@@ -300,11 +309,15 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     public void OnCollectCrate()
     {
         SimpleCollectibleInventory.AddItem(SimpleCollectible.CratePoint);
+        int crateNum = SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint);
+        gcUI.UpdateCrateUI(crateNum);
     }
 
     public void OnSpawnCrate()
     {
         gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnSpawnCrateIntention));
+        int crateNum = SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint);
+        gcUI.UpdateCrateUI(crateNum);
     }
 
     public void HasFaceDirectionInput(Ref<bool> hasInput)
@@ -411,6 +424,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         if (m_RoomClearedCount % 2 == 0)
         {
             SimpleCollectibleInventory.AddItem(SimpleCollectible.Grenade);
+            gcUI.UpdateGrenadeUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade));
         }
     }
 }
