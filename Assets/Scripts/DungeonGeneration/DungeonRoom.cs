@@ -156,6 +156,8 @@ public class DungeonRoom : MonoBehaviour
             areEnemiesPresent = enemies.Count > 0;
             //check every one second for enemies in the room
         }
+        // room cleared
+        GameObject.FindWithTag("Player").Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnRoomCleared));
         OpenUp();
     }
 

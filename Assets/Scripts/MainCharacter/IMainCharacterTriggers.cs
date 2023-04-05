@@ -27,4 +27,6 @@ public interface IMainCharacterTriggers : ITrigger
     public void UpdateMovementDirection(Ref<float3> direction) { }
     
     public void IsDashing(Ref<bool> refIsDashing) { }
+    
+    public void OnRoomCleared() { }
 }

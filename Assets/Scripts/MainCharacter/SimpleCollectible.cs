@@ -1,4 +1,4 @@
 public enum SimpleCollectible
 {
-    Coin, CratePoint
+    Coin, CratePoint, Grenade
 }

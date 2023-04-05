@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Cinemachine;
 using JetBrains.Annotations;
 using Unity.Mathematics;
@@ -38,6 +39,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     public VisualEffect trailFollowEffect;
     private Health health;
     public bool startFight;
+    private int m_RoomClearedCount;
 
     public ISimpleInventory<SimpleCollectible> SimpleCollectibleInventory;
     
@@ -274,6 +276,16 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     
     public void OnPrimaryWeaponRelease()
     {
+        try
+        {
+            SimpleCollectibleInventory.RemoveItem(SimpleCollectible.Grenade);
+        }
+        catch (InventoryEmptyException<SimpleCollectible> e)
+        {
+            Debug.Log("No grenades left");
+            return;
+        }
+        Debug.Log($"{SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade)} grenades left");
         int randomNumber = UnityEngine.Random.Range(1, 3);
         animator.SetTrigger("ThrowGrenade_" + randomNumber);
         GameObject grenade = Instantiate(GravityGrenadePrefab);
@@ -392,6 +404,15 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     public void IsDashing(Ref<bool> refIsDashing)
     {
         refIsDashing.Value = this.isDashing;
+    }
+
+    public void OnRoomCleared()
+    {
+        m_RoomClearedCount++;
+        if (m_RoomClearedCount % 2 == 0)
+        {
+            SimpleCollectibleInventory.AddItem(SimpleCollectible.Grenade);
+        }
     }
 }
 
