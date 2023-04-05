@@ -46,14 +46,21 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
 
     public async Task GenerateDungeon()
     {
+        GameManager manager = GameManager.Instance;
+        manager.ReportProgress(0.0f, 0.5f);
         using Stopwatch sw = new Stopwatch(nameof(GenerateDungeon));
         await ClearDungeon();
+        manager.ReportProgress(0.5f, 0.7f);
         await GetGrid().GenerateGrid(this);
+        manager.ReportProgress(0.7f, 0.8f);
         await GetGrid().GenerateRooms(this);
+        manager.ReportProgress(0.8f, 0.9f);
         await SaveData();
+        manager.ReportProgress(0.9f, 1.0f);
         FindObjectOfType<MainCharacterController>().transform.position = GetActiveLayout().GetStartPosition();
         await InitializeNavMesh();
         await Cleanup();
+        manager.ReportProgress(1.0f, 1.0f);
     }
 
     public void AddRoom(DungeonRoom room)

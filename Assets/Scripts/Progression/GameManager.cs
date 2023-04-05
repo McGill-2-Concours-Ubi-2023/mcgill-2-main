@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour
     public Image loadingFillBar;
     public Canvas LoadingCanvas;
     private static bool m_IsLoading = false;
+    private float m_NextProgress = 0.0f;
+    private float m_CurrentProgress = 0.0f;
     
     public static bool isLoading
     {
@@ -25,6 +27,13 @@ public class GameManager : MonoBehaviour
             }
             m_IsLoading = value;
         }
+    }
+    
+    public void ReportProgress(float progress, float nextProgress)
+    {
+        //m_CurrentProgress = progress;
+        //loadingFillBar.fillAmount = progress;
+        m_NextProgress = nextProgress;
     }
 
     void Awake()
@@ -50,16 +59,21 @@ public class GameManager : MonoBehaviour
     IEnumerator OnSceneLoadProgress(int sceneId)
     {
         isLoading = true;
+        m_CurrentProgress = 0.0f;
+        m_NextProgress = 0.0f;
+        loadingFillBar.fillAmount = m_CurrentProgress;
+        ReportProgress(0.0f, 0.0f);
         AsyncOperation loading = SceneManager.LoadSceneAsync(sceneId);
         while (!loading.isDone)
         {
-            float progressValue = Mathf.Clamp01(loading.progress/0.9f);
-            loadingFillBar.fillAmount = progressValue;
             yield return null;
         }
         
         while (isLoading)
         {
+            float remaining = m_NextProgress - m_CurrentProgress;
+            m_CurrentProgress += remaining * Time.deltaTime * 3;
+            loadingFillBar.fillAmount = m_CurrentProgress;
             yield return null;
         }
         
