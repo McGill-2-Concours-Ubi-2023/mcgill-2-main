@@ -47,7 +47,9 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     private static readonly int InDebugMode = Animator.StringToHash("InDebugMode");
     private Vibration vibration; 
     private GrenadeCrateUI gcUI;
-
+    
+    public ClickSound cs;
+    public AudioClip dashSound;
     private void Awake()
     {
         Transform cameraRoot = transform.Find("CameraRoot");
@@ -70,6 +72,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
             m_PauseMenu.SetActive(false);
         }
         gcUI = GameObject.FindObjectOfType<GrenadeCrateUI>();
+        cs = GetComponent<ClickSound>();
     }
 
     public void StartFight()
@@ -240,6 +243,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         GetComponent<DashMeshTrail>().ActivateTrail();
         if (!isDashing)
         {
+            cs.Click(dashSound);
             animator.SetTrigger("MovementToDash");
             StartCoroutine(Dash());
         }
