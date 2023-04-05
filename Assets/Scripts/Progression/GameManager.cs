@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -10,7 +12,20 @@ public class GameManager : MonoBehaviour
     public GameObject loadingScreen;
     public Image loadingFillBar;
     public Canvas LoadingCanvas;
-    public static bool isLoading = false;
+    private static bool m_IsLoading = false;
+    
+    public static bool isLoading
+    {
+        get => m_IsLoading;
+        set
+        {
+            if (value == m_IsLoading)
+            {
+                throw new Exception("Illegal state change");
+            }
+            m_IsLoading = value;
+        }
+    }
 
     void Awake()
     {
@@ -42,5 +57,12 @@ public class GameManager : MonoBehaviour
             loadingFillBar.fillAmount = progressValue;
             yield return null;
         }
+        
+        while (isLoading)
+        {
+            yield return null;
+        }
+        
+        loadingScreen.gameObject.SetActive(false);
     }
 }

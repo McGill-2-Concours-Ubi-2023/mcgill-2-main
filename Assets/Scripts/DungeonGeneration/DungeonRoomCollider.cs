@@ -6,8 +6,9 @@ public class DungeonRoomCollider : MonoBehaviour
 {
    
     // Start is called before the first frame update
-    private void OnTriggerEnter(Collider other)
+    private async void OnTriggerEnter(Collider other)
     {
+        
         DungeonRoom.activeRoom = transform.parent.GetComponentInParent<DungeonRoom>();
         DungeonRoom.activeRoom.UpdateRoomsLayout();
         if (DungeonRoom.lastEnteredDoor != null) DungeonRoom.lastEnteredDoor.ShowWalls();

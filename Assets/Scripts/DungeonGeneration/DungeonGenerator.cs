@@ -25,6 +25,8 @@ public class DungeonGenerator : MonoBehaviour
             await data.LoadData();
         }
         //StartCoroutine(PlaceRandomMerchant());
+        
+        GameManager.isLoading = false;
     }
 
     IEnumerator PlaceRandomMerchant()

@@ -32,10 +32,10 @@ public class Menu : MonoBehaviour
         Application.OpenURL(url);
     }
     public void LoadScene(int i) {
-        SceneManager.LoadScene(i);
+        GameManager.Instance.LoadScene(i);
     }
     public void LoadScene(string s)
     {
-        SceneManager.LoadScene(s);
+        throw new System.NotImplementedException();
     }
 }
