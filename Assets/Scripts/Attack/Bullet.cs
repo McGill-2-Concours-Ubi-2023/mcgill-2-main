@@ -29,6 +29,7 @@ public class Bullet : MonoBehaviour
     public void SetDirectionAndSpeed(Vector3 direction, float speed) {
         this.speed = speed;
         this.direction = direction; 
+        transform.forward = direction;
     }
 
     private void OnTriggerEnter(Collider other)
