@@ -90,40 +90,19 @@ public class MainCharacterMovementStateBehaviour : GenericStateMachineMonoBehavi
         }
         m_FaceIntention = intention;
     }
-    
-    private readonly object m_SpawnCrateMutex = new object();
 
     public void OnSpawnCrateIntention()
     {
-        Debug.Log($"{nameof(OnSpawnCrateIntention)} triggered");
-        if (!Monitor.TryEnter(m_SpawnCrateMutex))
-        {
-            Debug.Log("Second time triggered, ignored");
-            return;
-        }
         try
         {
-            try
-            {
-                m_Controller.SimpleCollectibleInventory.RemoveItem(SimpleCollectible.CratePoint);
-                Debug.Log($"{DateTime.Now}Crate successfully spawned");
-                Instantiate(m_Controller.CratePrefab, transform.position + transform.forward + transform.up, Quaternion.identity);
-            }
-            catch (InventoryEmptyException<SimpleCollectible> e)
-            {
-                Debug.LogWarning(e);
-            }
-
-            Debug.Log($"{m_Controller.SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint)} crates left");
+            m_Controller.SimpleCollectibleInventory.RemoveItem(SimpleCollectible.CratePoint);
+            Instantiate(m_Controller.CratePrefab, transform.position + transform.forward + transform.up, Quaternion.identity);
         }
-        finally
+        catch (InventoryEmptyException<SimpleCollectible> e)
         {
-            // jesus fucking christ what the hell is going on here
-            Task.Run(() =>
-            {
-                Thread.Sleep(TimeSpan.FromMilliseconds(100));
-                Monitor.Exit(m_SpawnCrateMutex);
-            });
+            Debug.LogWarning(e);
         }
+
+        Debug.Log($"{m_Controller.SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint)} crates left");
     }
 }

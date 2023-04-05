@@ -1,9 +1,12 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 using Unity.AI.Navigation;
 using UnityEngine.AI;
+using Debug = UnityEngine.Debug;
 
 [CreateAssetMenu(fileName = "New dungeon", menuName = "Dungeon asset")]
 public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
@@ -41,15 +44,16 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
     [SerializeField][Header("Replace rooms")]
     private GameObject[] roomOverrides;
 
-    public void GenerateDungeon()
+    public async Task GenerateDungeon()
     {
-        ClearDungeon();
-        GetGrid().GenerateGrid(this);
-        GetGrid().GenerateRooms(this);
-        SaveData();
+        using Stopwatch sw = new Stopwatch(nameof(GenerateDungeon));
+        await ClearDungeon();
+        await GetGrid().GenerateGrid(this);
+        await GetGrid().GenerateRooms(this);
+        await SaveData();
         FindObjectOfType<MainCharacterController>().transform.position = GetActiveLayout().GetStartPosition();
-        InitializeNavMesh();
-        Cleanup();
+        await InitializeNavMesh();
+        await Cleanup();
     }
 
     public void AddRoom(DungeonRoom room)
@@ -154,24 +158,30 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
         return null;
     }
 
-    public void Cleanup()
-    {
-       foreach(DungeonRoom room in rooms)
-       {
-            room.RemovePlaceholders();
-            room.RemoveUnusedDoorWalls(); 
-       }
+    public async Task Cleanup()
+    { 
+        using Stopwatch sw = new Stopwatch(nameof(Cleanup));
+        foreach(DungeonRoom room in rooms)
+        {
+             room.RemovePlaceholders();
+             room.RemoveUnusedDoorWalls(); 
+             await Task.Yield();
+        }
     }
 
-    public void ClearDungeon()
+    public async Task ClearDungeon()
     {
+        using Stopwatch sw = new Stopwatch(nameof(ClearDungeon));
         if (rooms == null) rooms = new List<DungeonRoom>();
         FindMapManager();
+        await Task.Yield();
         GetGrid().SetMonoInstance(mono);
         mapM.ClearMap();
+        await Task.Yield();
         rooms.Clear(); 
-        GetGrid().ClearData();    
-        DungeonDrawer.EraseDungeon(mono.gameObject);       
+        GetGrid().ClearData();   
+        await Task.Yield();
+        await DungeonDrawer.EraseDungeon(mono.gameObject);       
     }
 
     public void SetMonoInstance(MonoBehaviour mono)
@@ -179,13 +189,15 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
         this.mono = mono;
     }
 
-    public void SaveData()
+    public async Task SaveData()
     {
+        using Stopwatch sw = new Stopwatch(nameof(SaveData));
         var roomsPositions = new List<Vector3>();
-        rooms.ForEach(room =>
+        foreach (DungeonRoom room in rooms)
         {
             roomsPositions.Add(room.transform.position);
-        });
+            await Task.Yield();
+        }
         GetActiveLayout().SaveRoomsData(GetGrid().GetCustomMapBuffer());
     }
 
@@ -194,23 +206,25 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
         GetGrid().AddData(data);
     }
 
-    private void InitializeNavMesh()
+    private async Task InitializeNavMesh()
     {
         NavMeshSurface navMeshSurface = mono.GetComponentInChildren<NavMeshSurface>();
         Debug.Assert(navMeshSurface);
+        await Task.Yield();
         navMeshSurface.BuildNavMesh();
+        await Task.Yield();
     }
 
     //Reload the whole dungeon
-    public void LoadData()
+    public async Task LoadData()
     {
-        ClearDungeon();
-        GetGrid().LoadRooms(this);
+        await ClearDungeon();
+        await GetGrid().LoadRooms(this);
         FindStartingRoom();
         FindObjectOfType<MainCharacterController>().transform.position = startingRoom.transform.position;
-        GetGrid().ReloadMiniMap(this);
-        Cleanup();
-        InitializeNavMesh();
+        await GetGrid().ReloadMiniMap(this);
+        await Cleanup();
+        await InitializeNavMesh();
     }
 
     public void PlaceMerchantRoom()

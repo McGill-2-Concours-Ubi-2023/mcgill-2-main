@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Unity.Collections;
 using UnityEngine;
 
@@ -360,12 +361,13 @@ public class DungeonRoom : MonoBehaviour
         }
     }
 
-    public static DungeonRoom CreateRandomRoom(DungeonData data, Vector3 position, Dictionary<Vector3, Vector2Int> gridMap,
+    public static async Task<DungeonRoom> CreateRandomRoom(DungeonData data, Vector3 position, Dictionary<Vector3, Vector2Int> gridMap,
         string layout, RoomTypes.RoomType type) 
     {
         //This is where the room gets instantiated, change the primitive and pass a prefab instead for the room
         //Eg: var roomObj = DungeonDrawer.DrawSingleObject(position, prefab, data.GetMonoInstance(), scale) as GameObject;
         var roomObj = DungeonDrawer.DrawRandomRoom(position, type, data);
+        await Task.Yield();
         roomObj.AddComponent<DungeonRoom>();
         var newRoom = roomObj.GetComponent<DungeonRoom>();
         newRoom.Initialize(gridMap, position, layout, type);

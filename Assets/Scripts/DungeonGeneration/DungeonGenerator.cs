@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using Unity.AI.Navigation;
 
@@ -13,15 +14,15 @@ public class DungeonGenerator : MonoBehaviour
     private bool newDungeonOnPlay = false;
     public DungeonRoom roomToReplace;
 
-    private void Awake()
+    private async void Awake()
     {
         data.SetMonoInstance(this);
         if (newDungeonOnPlay)
         {
-            data.GenerateDungeon();
+            await data.GenerateDungeon();
         } else
         {
-            data.LoadData();
+            await data.LoadData();
         }
         //StartCoroutine(PlaceRandomMerchant());
     }

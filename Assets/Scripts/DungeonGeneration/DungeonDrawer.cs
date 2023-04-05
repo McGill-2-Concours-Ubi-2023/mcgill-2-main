@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 public static class DungeonDrawer
 {
@@ -109,9 +111,10 @@ public static class DungeonDrawer
         return objList;
     }
 
-    public static void EraseDungeon(GameObject mono)  
+    public static async Task EraseDungeon(GameObject mono)  
     {
-        GameObject.DestroyImmediate(FindDungeonDrawer(mono));
+        Object.Destroy(FindDungeonDrawer(mono));
+        await Task.Yield();
     }
 
     private static GameObject FindDungeonDrawer(GameObject mono) //Find the dungeon "objects" under the current mono behaviour
