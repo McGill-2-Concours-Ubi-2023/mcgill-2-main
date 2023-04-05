@@ -85,7 +85,7 @@ public class Gun : MonoBehaviour, IGunTriggers
                 if (dist < minDist)
                 {
                     minDist = dist;
-                    closestEnemy = enemy.transform.root.gameObject;
+                    closestEnemy = enemy;
                 }
             }
             
