@@ -59,7 +59,7 @@ public class Gun : MonoBehaviour, IGunTriggers
             float3 forward = transform.root.forward;
             // sweep left and right 15 degrees
             RaycastHit[] hits = new RaycastHit[5];
-            for (float angle = -15; angle <= 15; angle += 3)
+            for (float angle = -15; angle <= 15; angle += 1)
             {
                 // rotate forward left by angle
                 float3 dir = mul(Quaternion.AxisAngle(up(), radians(angle)), forward);
