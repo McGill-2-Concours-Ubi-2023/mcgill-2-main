@@ -2,39 +2,56 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
 public class Bullet : MonoBehaviour
 {
-    float speed;
+    [SerializeField] float speed = 20f;
     Vector3 direction;
     [SerializeField]
-    int damage = 1; 
+    int damage = 1;
+    int gravityLayer;
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        fly(direction, speed);
+        Fly(direction, speed);
     }
 
-    public void fly(Vector3 direction, float speed)
+    private void OnEnable()
     {
-        this.GetComponent<Rigidbody>().velocity = direction * speed;
+        gravityLayer = LayerMask.NameToLayer("GravityField");
     }
 
-    public void SetDirectionASpeed(Vector3 direction, float speed) {
+    private void Fly(Vector3 direction, float speed)
+    {
+        GetComponent<Rigidbody>().velocity = transform.forward * speed;
+    }
+
+    public void SetDirectionAndSpeed(Vector3 direction, float speed) {
         this.speed = speed;
         this.direction = direction; 
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Collide"+ other.name);
-        if (other.CompareTag("Player") || other.CompareTag("Enemy"))// do damage to player/enemy
+        if(gameObject.CompareTag("EnemyBullet"))
         {
-            other.gameObject.GetComponent<Health>().TakeDamage(damage); 
+            if (other.gameObject.CompareTag("Player"))
+            {
+                other.gameObject.Trigger<IHealthTriggers, float>(nameof(IHealthTriggers.TakeDamage), damage);
+            }
         }
-        if (!other.CompareTag("Bullet")) {
-            GameObject.Destroy(this.gameObject);
+        else if (gameObject.CompareTag("PlayerBullet"))
+        {
+            if (other.gameObject.CompareTag("Enemy"))
+            {
+                other.gameObject.Trigger<IHealthTriggers, float>(nameof(IHealthTriggers.TakeDamage), damage);
+            }
         }
         
+        if (!(other.gameObject.CompareTag("EnemyBullet") 
+            && other.gameObject.CompareTag("PlayerBullet"))
+            && other.gameObject.layer != gravityLayer) {
+            Destroy(gameObject);
+        }
     }
 }

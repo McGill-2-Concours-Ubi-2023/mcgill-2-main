@@ -10,6 +10,7 @@ public class Menu : MonoBehaviour
 {
     public bool cursor;
     
+    
     void Start()
     {
        /* if (!cursor)
@@ -29,5 +30,12 @@ public class Menu : MonoBehaviour
     public void URL(string url)
     {
         Application.OpenURL(url);
+    }
+    public void LoadScene(int i) {
+        GameManager.Instance.LoadScene(i);
+    }
+    public void LoadScene(string s)
+    {
+        throw new System.NotImplementedException();
     }
 }

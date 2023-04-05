@@ -87,7 +87,43 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""id"": ""3539febd-3f2b-4b9f-87bd-bd3e284dc237"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
+                    ""interactions"": ""Press(pressPoint=0.5)"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Pause"",
+                    ""type"": ""Button"",
+                    ""id"": ""a526c386-5f46-4b2c-ae25-62c1f6521edd"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ShootPress"",
+                    ""type"": ""Button"",
+                    ""id"": ""c37f1f00-d62c-4267-93a5-689754d70c7f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
                     ""interactions"": ""Press"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ShootRelease"",
+                    ""type"": ""Button"",
+                    ""id"": ""d8d8ef58-4428-4e3d-85ea-9de080b7f781"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""bea1e645-bf71-4288-8416-7a377c9c1762"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
                     ""initialStateCheck"": false
                 }
             ],
@@ -271,7 +307,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""759957c4-8f51-47fa-bc46-a3facc0be721"",
-                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
@@ -375,6 +411,50 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""SpawnCrate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0e5b1be5-638c-4571-bea6-8b9b886c448a"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e613df50-b03c-4bc0-8222-65bf6eb4a0de"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShootPress"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e480fa61-5d54-4017-917f-beb43b4d5345"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": ""Press(behavior=1)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShootRelease"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3bbca96c-9f79-49ac-bc16-b6f7130f1836"",
+                    ""path"": ""<XInputController>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -657,6 +737,10 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         m_Player_PrimaryWeaponPress = m_Player.FindAction("PrimaryWeaponPress", throwIfNotFound: true);
         m_Player_PrimaryWeaponRelease = m_Player.FindAction("PrimaryWeaponRelease", throwIfNotFound: true);
         m_Player_SpawnCrate = m_Player.FindAction("SpawnCrate", throwIfNotFound: true);
+        m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
+        m_Player_ShootPress = m_Player.FindAction("ShootPress", throwIfNotFound: true);
+        m_Player_ShootRelease = m_Player.FindAction("ShootRelease", throwIfNotFound: true);
+        m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Point = m_UI.FindAction("Point", throwIfNotFound: true);
@@ -732,6 +816,10 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_PrimaryWeaponPress;
     private readonly InputAction m_Player_PrimaryWeaponRelease;
     private readonly InputAction m_Player_SpawnCrate;
+    private readonly InputAction m_Player_Pause;
+    private readonly InputAction m_Player_ShootPress;
+    private readonly InputAction m_Player_ShootRelease;
+    private readonly InputAction m_Player_Interact;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -743,6 +831,10 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         public InputAction @PrimaryWeaponPress => m_Wrapper.m_Player_PrimaryWeaponPress;
         public InputAction @PrimaryWeaponRelease => m_Wrapper.m_Player_PrimaryWeaponRelease;
         public InputAction @SpawnCrate => m_Wrapper.m_Player_SpawnCrate;
+        public InputAction @Pause => m_Wrapper.m_Player_Pause;
+        public InputAction @ShootPress => m_Wrapper.m_Player_ShootPress;
+        public InputAction @ShootRelease => m_Wrapper.m_Player_ShootRelease;
+        public InputAction @Interact => m_Wrapper.m_Player_Interact;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -773,6 +865,18 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @SpawnCrate.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSpawnCrate;
                 @SpawnCrate.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSpawnCrate;
                 @SpawnCrate.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSpawnCrate;
+                @Pause.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPause;
+                @Pause.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPause;
+                @Pause.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPause;
+                @ShootPress.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnShootPress;
+                @ShootPress.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnShootPress;
+                @ShootPress.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnShootPress;
+                @ShootRelease.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnShootRelease;
+                @ShootRelease.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnShootRelease;
+                @ShootRelease.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnShootRelease;
+                @Interact.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
+                @Interact.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
+                @Interact.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -798,6 +902,18 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @SpawnCrate.started += instance.OnSpawnCrate;
                 @SpawnCrate.performed += instance.OnSpawnCrate;
                 @SpawnCrate.canceled += instance.OnSpawnCrate;
+                @Pause.started += instance.OnPause;
+                @Pause.performed += instance.OnPause;
+                @Pause.canceled += instance.OnPause;
+                @ShootPress.started += instance.OnShootPress;
+                @ShootPress.performed += instance.OnShootPress;
+                @ShootPress.canceled += instance.OnShootPress;
+                @ShootRelease.started += instance.OnShootRelease;
+                @ShootRelease.performed += instance.OnShootRelease;
+                @ShootRelease.canceled += instance.OnShootRelease;
+                @Interact.started += instance.OnInteract;
+                @Interact.performed += instance.OnInteract;
+                @Interact.canceled += instance.OnInteract;
             }
         }
     }
@@ -919,6 +1035,10 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         void OnPrimaryWeaponPress(InputAction.CallbackContext context);
         void OnPrimaryWeaponRelease(InputAction.CallbackContext context);
         void OnSpawnCrate(InputAction.CallbackContext context);
+        void OnPause(InputAction.CallbackContext context);
+        void OnShootPress(InputAction.CallbackContext context);
+        void OnShootRelease(InputAction.CallbackContext context);
+        void OnInteract(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

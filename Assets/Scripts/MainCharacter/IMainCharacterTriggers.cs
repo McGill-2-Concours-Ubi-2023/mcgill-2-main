@@ -24,5 +24,12 @@ public interface IMainCharacterTriggers : ITrigger
     
     public void AdjustFaceDirection(float3 direction) { }
     
-    public void GetMovementDirection(Ref<float3> direction) { }
+    public void UpdateMovementDirection(Ref<float3> direction) { }
+    
+    public void IsDashing(Ref<bool> refIsDashing) { }
+    
+    public void OnRoomCleared() { }
+    public void OnPrimaryWeaponRelease() { }
+    
+    public void ResetInventory() { }
 }

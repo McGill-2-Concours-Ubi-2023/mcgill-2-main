@@ -1,73 +1,97 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+
+struct BulletAgent
+{
+    public static float bulletBendingForce = 5.0f;
+    public static int bulletMask = LayerMask.NameToLayer("Bullet"); // set the first layer mask 1"
+}
+
+struct GlobalAgent
+{
+    public static int playerMask = LayerMask.NameToLayer("Player"); // set the first layer mask 1"
+    public static int playerBulletMask = LayerMask.NameToLayer("PlayerBullet");
+    public static int enemyBulletMask = LayerMask.NameToLayer("EnemyBullet");
+    public static float externalForce = 0.5f;
+}
+
+struct Destructible
+{
+    public static int desctructibleMask = LayerMask.NameToLayer("Destructible");
+}
 
 public class GravityAgent : MonoBehaviour
 {
     private float massCompression;
     public GravityField currentField;
+    [SerializeField]
     private bool isBound = false;
-    private bool isVanishing = false;
+    private Animator animator;
 
     public IEnumerator OnWaitDestroy(float timer)
     {
         yield return new WaitForSeconds(timer);
         if (isBound)
         {
-            StartCoroutine(Disappear()); //spin the object for 1 second
+            TryGetComponent<Animator>(out animator);
+            if (animator)
+            {
+                animator.speed *= massCompression;
+                animator.SetTrigger("Despawn"); 
+            }          
         }
     }
 
-    public bool IsBound()
+    private void OnDestroy()
     {
-        return isBound;
-    }
-
-    private IEnumerator Disappear()
-    {
-        isVanishing = true;
-        massCompression = currentField.GetMassCompressionForce();
-        bool isVisible = true;
-        float startTime = Time.time;
-
-        while (isVisible && currentField != null) 
+        if (currentField)
         {
-            // Calculate the time elapsed since the start of the interpolation
-            float elapsedTime = Time.time - startTime;
-            // Calculate the new scale using an exponential decay function
-            transform.localScale *= Mathf.Exp(-elapsedTime*massCompression/100);
-            Vector3 deltaD = currentField.transform.position - transform.position;
-            transform.position += deltaD.normalized * massCompression * Time.deltaTime;
-            isVisible = transform.localScale.x > 0.5f && transform.localScale.y > 0.5f && transform.localScale.z > 0.5f;
-            yield return 0;
+            currentField.agents.Remove(gameObject);
         }
+    }
+
+    public void OnSelfDestroy()
+    {
         Destroy(this.gameObject);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.name.Equals("DestructionBounds") 
-            && gameObject.layer == LayerMask.NameToLayer("Destructible"))
+        if(other.CompareTag("DestructionBounds") 
+            && gameObject.layer == Destructible.desctructibleMask)
         {
-            BindField(other.GetComponentInParent<GravityField>());
             isBound = true;
-            StartCoroutine(OnWaitDestroy(other.gameObject.GetComponentInParent<GravitationalGrenade>()
-                .GetDestructionTimer()));       
+            GravitationalGrenade grenade = other.gameObject.GetComponentInParent<GravitationalGrenade>();
+            StartCoroutine(OnWaitDestroy(grenade.GetDestructionTimer()));       
         }
     }
 
-    private void BindField(GravityField field)
+    public void BindField(GravityField field)
     {
         currentField = field;
-        foreach(var effectiveField in FindObjectsOfType<GravityField>())
-        {
-            if (effectiveField != currentField) effectiveField.ReleaseAgent(this.gameObject);
-        }
+        gameObject.Trigger<I_AI_Trigger>("DisableAgent");
+        massCompression = currentField.GetMassCompressionForce();
     }
 
     public void Release()
     {
-        isBound = false;
+        try
+        {
+            gameObject.Trigger<I_AI_Trigger>("EnableAgent");
+        }
+        catch
+        {
+            gameObject.SetActive(true);
+            enabled = true;
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (!currentField) Release();
     }
 
     private void OnTriggerExit(Collider other)
@@ -78,17 +102,8 @@ public class GravityAgent : MonoBehaviour
             if (other.GetComponentInParent<GravityField>() == currentField)
             {
                 isBound = false;
-                if(!isVanishing)
                 StopAllCoroutines();
             }
-        }
-    }
-
-    private void OnDestroy()
-    {
-        foreach(var field in FindObjectsOfType<GravityField>())
-        {
-            if (field.agents.Contains(this.gameObject)) field.ReleaseAgent(this.gameObject);
         }
     }
 }

@@ -1,7 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.VFX;
+using static Unity.Mathematics.math;
+
+public interface IGravityGrenadeHealthAdaptor : ITrigger
+{
+    void TakeDamage(float damage);
+    void GainHealth(float health);
+    void IncreaseMaxHealth(float amount);
+}
 
 public class GravitationalGrenade : MonoBehaviour
 {
@@ -12,13 +21,9 @@ public class GravitationalGrenade : MonoBehaviour
     private Animator animator;
     private GravityField gravityField;
     [SerializeField]
-    private VisualEffect _explodeEffect;
+    private GameObject explodeEffectPrefab;
     [SerializeField]
     private Material mainMaterial;
-    //[SerializeField]
-    //private Material explosionMaterial;
-    [SerializeField]
-    private bool expandWithMass = false;
     private MeshRenderer meshRenderer;
     [SerializeField][ColorUsage(true, true)]
     private Color defaultColor;
@@ -26,7 +31,25 @@ public class GravitationalGrenade : MonoBehaviour
     private Color explosionColor;
     private Renderer _renderer;
     private bool hasExploded = false;
-    
+    [SerializeField][Range(0.5f, 10.0f)]
+    private float explosionShakeIntensity = 0.1f;
+    [SerializeField]
+    private float explosionShakeTime = 0.5f;
+    [SerializeField]
+    private float explosionInfluenceDistance = 10.0f;
+    [SerializeField]
+    private float wobbleShakeIntensity = 4.0f;
+    [SerializeField]
+    private float shakeDampening = 6.0f;
+    [SerializeField][Range(0.1f, 0.005f)]
+    private float particlesFadeRate = 0.1f;
+    private VisualEffect _explodeEffect;
+    [SerializeField]
+    private GameObject swarmEffectPrefab;
+    private VisualEffect swarmEffect;
+    [SerializeField]
+    private float HealthDecayRadius = 2;
+
     private void Awake()
     {
         animator = GetComponent<Animator>();
@@ -40,7 +63,7 @@ public class GravitationalGrenade : MonoBehaviour
 
     public VisualEffect GetVisualEffect()
     {
-        return _explodeEffect;
+        return explodeEffectPrefab.GetComponent<VisualEffect>();
     }
 
     public float GetDestructionTimer() { return destructionTimer; }
@@ -50,16 +73,35 @@ public class GravitationalGrenade : MonoBehaviour
         animator.SetTrigger("activate");
     }
 
+    public void StartSwarm()
+    {
+        GameObject obj = Instantiate(swarmEffectPrefab, transform.position, Quaternion.identity);
+        swarmEffect = obj.GetComponent<VisualEffect>();
+        swarmEffect.playRate = 2.5f;
+        swarmEffect.SendEvent("OnSwarmPlay");
+    }
+
+    public void StopSwarm()
+    {
+        swarmEffect.SendEvent("OnSwarmStop");
+    }
+
     public void Explode() //"Spawns" the gravity field object
     {
         if (!hasExploded)
         {
+            float distance = Vector3.Distance(GameObject.FindGameObjectWithTag("Player").transform.position, transform.position);
+            var intensity = Mathf.Lerp(0.1f, explosionShakeIntensity, 1 - Mathf.Clamp01(distance / explosionInfluenceDistance));
             _renderer.material.SetColor("_BaseColor", explosionColor);
             animator.SetTrigger("explode");
+            GameObject.FindGameObjectWithTag("Player").Trigger<IGravityToCameraTrigger, float, float, float>
+                (nameof(IGravityToCameraTrigger.OnCameraStandardShake), intensity, explosionShakeTime, 1);
             var kernel = gravityField.transform.position;
             //Slightly offset the y position of the field's kernel for better physics
             gravityField.transform.position = new Vector3(kernel.x, kernel.y + fieldVerticalOffset, kernel.z);
             gravityField.SetActive(true);
+            GameObject obj = Instantiate(explodeEffectPrefab, transform.position, Quaternion.identity);
+            _explodeEffect = obj.GetComponent<VisualEffect>();
             _explodeEffect.SetFloat("Field radius", ((ConcentricGravityField)gravityField).Radius());
             //meshRenderer.material = explosionMaterial;
             transform.Find("SphereMesh").GetComponent<SphereCollider>().enabled = false;
@@ -67,40 +109,81 @@ public class GravitationalGrenade : MonoBehaviour
             rb.constraints = RigidbodyConstraints.FreezeAll;
             rb.useGravity = false;
             StartCoroutine(InitializeVFX());
+            StartCoroutine(ShakeCameraGravity());
             hasExploded = true;
-        }      
+        }
+        else
+        {
+            // get all objects within radius
+            Collider[] results = new Collider[100];
+            Physics.OverlapSphereNonAlloc(transform.position, HealthDecayRadius, results);
+            foreach (Collider result in results)
+            {
+                if (result == null) break;
+                GameObject obj = result.gameObject;
+                obj.Trigger<IGravityGrenadeHealthAdaptor, float>(nameof(IGravityGrenadeHealthAdaptor.TakeDamage), 1.0f);
+            }
+        }
+    }
+
+    private IEnumerator ShakeCameraGravity()
+    {
+        while (true)
+        {
+            float distance = Vector3.Distance(GameObject.FindGameObjectWithTag("Player").transform.position, transform.position);
+            var intensity = Mathf.Lerp(0.1f, wobbleShakeIntensity, 1 - Mathf.Clamp01(distance / explosionInfluenceDistance));
+            var frequencyGain = intensity / (shakeDampening * 2);
+            GameObject.FindGameObjectWithTag("Player").Trigger<IGravityToCameraTrigger, float, float>
+               (nameof(IGravityToCameraTrigger.OnCameraWobbleShakeManualDecrement), intensity / shakeDampening, frequencyGain);
+            yield return new WaitForEndOfFrame();
+        }        
     }
 
     private IEnumerator InitializeVFX()
     {
         yield return new WaitForEndOfFrame();
         _explodeEffect.SendEvent("OnBurst");
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.1f);
         _explodeEffect.SendEvent("OnLoop");
     }
 
     public void DisappearOverTime(float timer)
     {
-        StartCoroutine(StopParticles(timer));       
+        StartCoroutine(Despawn(timer));  
     }
 
-    private IEnumerator StopParticles(float timer)
+    private IEnumerator StopParticles()
     {
-        yield return new WaitForSeconds(timer);
-        _explodeEffect.Stop();
-        StartCoroutine(Despawn());       
-    }
-
-    private IEnumerator Despawn()
-    {
-        yield return new WaitForSeconds(6.0f); //Life time of particle system is random between 1 and 5
-        //GameObject mesh = transform.Find("SphereMesh").gameObject;
-        animator.SetTrigger("despawn");
-    }
-
-    public void SelfDestroy()
-    {
+        while(_explodeEffect.GetFloat("Alpha") > 0)
+        {
+            _explodeEffect.SetFloat("Alpha", _explodeEffect.GetFloat("Alpha") - particlesFadeRate);
+            yield return new WaitForEndOfFrame();
+        }
         Destroy(this.gameObject);
+    }
+
+    private IEnumerator Despawn(float timer)
+    {       
+        float elapsedTime = 0.0f;
+        if(timer < 5.0f) _explodeEffect.Stop();
+        while (elapsedTime < timer)
+        {
+            elapsedTime += Time.deltaTime;
+            if (timer - elapsedTime < 5.0f) _explodeEffect.Stop();
+            yield return new WaitForEndOfFrame();
+        }
+        _explodeEffect.SendEvent("OnStop");
+        animator.SetTrigger("despawn");
+        swarmEffect.SendEvent("OnSwarmStop");
+        gravityField.SetActive(false);
+    }
+
+    public void SelfDestroy() //triggered in animator
+    {
+        StopAllCoroutines();
+        GameObject.FindGameObjectWithTag("Player").Trigger<IGravityToCameraTrigger>
+              (nameof(IGravityToCameraTrigger.StopCameraShake));
+        StartCoroutine(StopParticles());
     }
 
     private void OnCollisionEnter(Collision collision)

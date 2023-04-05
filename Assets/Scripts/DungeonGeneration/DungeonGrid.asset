@@ -12,6 +12,114 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9a6afb8a42fded4eb9fcc2abb5a16de, type: 3}
   m_Name: DungeonGrid
   m_EditorClassIdentifier: 
+  positionsBuffer:
+  - {x: 0, y: 0, z: 0}
+  - {x: 25, y: 0, z: 0}
+  - {x: 50, y: 0, z: 0}
+  - {x: 75, y: 0, z: 0}
+  - {x: 100, y: 0, z: 0}
+  - {x: 125, y: 0, z: 0}
+  - {x: 0, y: 0, z: 25}
+  - {x: 25, y: 0, z: 25}
+  - {x: 50, y: 0, z: 25}
+  - {x: 75, y: 0, z: 25}
+  - {x: 100, y: 0, z: 25}
+  - {x: 125, y: 0, z: 25}
+  - {x: 0, y: 0, z: 50}
+  - {x: 25, y: 0, z: 50}
+  - {x: 50, y: 0, z: 50}
+  - {x: 75, y: 0, z: 50}
+  - {x: 100, y: 0, z: 50}
+  - {x: 125, y: 0, z: 50}
+  - {x: 0, y: 0, z: 75}
+  - {x: 25, y: 0, z: 75}
+  - {x: 50, y: 0, z: 75}
+  - {x: 75, y: 0, z: 75}
+  - {x: 100, y: 0, z: 75}
+  - {x: 125, y: 0, z: 75}
+  - {x: 0, y: 0, z: 100}
+  - {x: 25, y: 0, z: 100}
+  - {x: 50, y: 0, z: 100}
+  - {x: 75, y: 0, z: 100}
+  - {x: 100, y: 0, z: 100}
+  - {x: 125, y: 0, z: 100}
+  - {x: 0, y: 0, z: 125}
+  - {x: 25, y: 0, z: 125}
+  - {x: 50, y: 0, z: 125}
+  - {x: 75, y: 0, z: 125}
+  - {x: 100, y: 0, z: 125}
+  - {x: 125, y: 0, z: 125}
+  customMapBuffer:
+  - position: {x: 100, y: 0, z: 0}
+    type: 4
+    prefabIndex: 0
+    isOverride: 0
+    isIsolated: 0
+  - position: {x: 125, y: 0, z: 0}
+    type: 0
+    prefabIndex: 5
+    isOverride: 0
+    isIsolated: 0
+  - position: {x: 100, y: 0, z: 25}
+    type: 0
+    prefabIndex: 8
+    isOverride: 0
+    isIsolated: 0
+  - position: {x: 125, y: 0, z: 25}
+    type: 2
+    prefabIndex: 0
+    isOverride: 0
+    isIsolated: 0
+  - position: {x: 125, y: 0, z: 50}
+    type: 0
+    prefabIndex: 12
+    isOverride: 0
+    isIsolated: 0
+  - position: {x: 125, y: 0, z: 75}
+    type: 3
+    prefabIndex: 0
+    isOverride: 0
+    isIsolated: 0
+  - position: {x: 125, y: 0, z: 100}
+    type: 0
+    prefabIndex: 6
+    isOverride: 0
+    isIsolated: 0
+  - position: {x: 100, y: 0, z: 100}
+    type: 0
+    prefabIndex: 13
+    isOverride: 0
+    isIsolated: 0
+  - position: {x: 75, y: 0, z: 100}
+    type: 0
+    prefabIndex: 14
+    isOverride: 0
+    isIsolated: 0
+  - position: {x: 75, y: 0, z: 125}
+    type: 0
+    prefabIndex: 3
+    isOverride: 0
+    isIsolated: 0
+  - position: {x: 100, y: 0, z: 125}
+    type: 0
+    prefabIndex: 14
+    isOverride: 0
+    isIsolated: 0
+  - position: {x: 125, y: 0, z: 125}
+    type: 0
+    prefabIndex: 10
+    isOverride: 0
+    isIsolated: 0
+  - position: {x: 75, y: 0, z: 0}
+    type: 2
+    prefabIndex: 0
+    isOverride: 0
+    isIsolated: 0
+  - position: {x: 100, y: 0, z: 50}
+    type: 3
+    prefabIndex: 0
+    isOverride: 0
+    isIsolated: 0
   gridSize: 6
-  roomSize: 13
+  roomSize: 15
   cellsSpacing: 0

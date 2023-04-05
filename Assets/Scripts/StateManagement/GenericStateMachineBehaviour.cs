@@ -12,6 +12,10 @@ public class GenericStateMachineBehaviour<TBehaviour> : StateMachineBehaviour
         AnimatorStateInfo stateInfo,
         int layerIndex)
     {
+        if (associatedBehaviour)
+        {
+            return;
+        }
         associatedBehaviour = animator.gameObject.AddComponent<TBehaviour>();
         associatedBehaviour.OnStateEnter(animator, stateInfo, layerIndex);
     }

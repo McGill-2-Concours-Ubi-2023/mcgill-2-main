@@ -6,10 +6,13 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Menu.unity
+    guid: 4218f6a5eb837b54a8fc4cf525c8e8b1
+  - enabled: 0
     path: Assets/Scenes/Lesley/LesleyMenuTesting.unity
     guid: b5064ad2bf98b024eb2b0b0dd047d5ee
-  - enabled: 1
-    path: Assets/Scenes/Game.unity
+  - enabled: 0
+    path: Assets/Scenes/DANGER_DoNotOpen.unity
     guid: f4f1cd2d40ca8a044975aa33b73cfd74
   - enabled: 0
     path: Assets/Scenes/SampleScene.unity
@@ -32,6 +35,12 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Alex/DungeonGenerationProt.unity
     guid: 1e551873c1abe6d44a61094986388581
+  - enabled: 1
+    path: Assets/Scenes/Game.unity
+    guid: 4b2e3709bcdbf1643a9adfbed8c41d74
+  - enabled: 1
+    path: Assets/Scenes/BossScene.unity
+    guid: 9eb9411ecf2ea854199681a77d0e10e8
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: b58ef95e547b84faebeeb65e42bf1692,
       type: 2}
