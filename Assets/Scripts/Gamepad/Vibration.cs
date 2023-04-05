@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Vibration : MonoBehaviour
+
+public class Vibration : MonoBehaviour, IVibrationTrigger
 {
     [SerializeField]
     Rumbler rumbler;
     [SerializeField]
-    Health health; 
+    Health health;
 
     private void Start()
     {
@@ -50,6 +51,16 @@ public class Vibration : MonoBehaviour
         else if (change < 0) {
             SharpVibration();
         }
+    }
+
+    public void StartRumbling() {// rumbles softly until stopRumbling  is called 
+        rumbler.StartVibration(0.1f, 0.1f);
+        Debug.Log("startVibration");
+    }
+
+    public void StopRumbling() {
+        rumbler.StopVibration();
+        Debug.Log("stopVibration");
     }
 
 }

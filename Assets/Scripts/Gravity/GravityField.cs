@@ -5,7 +5,12 @@ using Unity.Collections;
 using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
+public interface IVibrationTrigger : ITrigger
+{
+    void StartRumbling();
+    void StopRumbling();
 
+}
 public abstract class GravityField : MonoBehaviour
 {
     [SerializeField]
@@ -28,7 +33,8 @@ public abstract class GravityField : MonoBehaviour
     private Animator playerAnimator;
     private Rigidbody bufferRb;
     private GravityAgent bufferGravityAgent;
-
+    [SerializeField]
+    GameObject vib;
     protected abstract void ApplyGravity(Rigidbody rb);
 
     public void SetActive(bool active)
@@ -95,7 +101,8 @@ public abstract class GravityField : MonoBehaviour
 
             if(other.CompareTag("Player"))
             {
-                playerAnimator.SetBool("IsFloating", true);                
+                playerAnimator.SetBool("IsFloating", true);
+                vib.Trigger<IVibrationTrigger>(nameof(IVibrationTrigger.StartRumbling));
             }
         }
     }
@@ -129,6 +136,7 @@ public abstract class GravityField : MonoBehaviour
         fieldRadius = GetComponent<SphereCollider>().radius;
         genericSample = new GravityAgentSample(maxNumAgents, Allocator.Persistent);
         bulletsSample = new GravityAgentSample(maxNumAgents, Allocator.Persistent);
+        vib = GameObject.Find("GamepadVib"); 
     }
 
     private void FixedUpdate()
@@ -162,7 +170,7 @@ public abstract class GravityField : MonoBehaviour
         ReleaseAgent(other.gameObject);
         if (other.CompareTag("Player"))
         {
-            //Stop vibration
+            vib.Trigger<IVibrationTrigger>(nameof(IVibrationTrigger.StopRumbling));
         }
     }
 
@@ -188,7 +196,8 @@ public abstract class GravityField : MonoBehaviour
 
     private void OnDestroy()
     {
-        foreach(var rb in cachedGenericBodies)
+        vib.Trigger<IVibrationTrigger>(nameof(IVibrationTrigger.StopRumbling));
+        foreach (var rb in cachedGenericBodies)
         {
             if(rb != null)
             {
@@ -208,4 +217,5 @@ public abstract class GravityField : MonoBehaviour
         }
 
     }
+    
 }

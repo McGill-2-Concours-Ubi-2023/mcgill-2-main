@@ -57,6 +57,20 @@ public class Rumbler : MonoBehaviour
         }
     }
 
+    public void StartVibration(float leftStregth, float rightStrenth) {
+        gamepad = Gamepad.current;
+        if (gamepad != null) {
+            gamepad.SetMotorSpeeds(leftStregth, rightStrenth);
+        }
+    }
+
+    public void StopVibration() {
+        gamepad = Gamepad.current;
+        if (gamepad != null) {
+            gamepad.SetMotorSpeeds(0, 0);
+        }
+    }
+
     private IEnumerator StopRumble(float duration, Gamepad pad)
     {
         yield return new WaitForSeconds(duration);

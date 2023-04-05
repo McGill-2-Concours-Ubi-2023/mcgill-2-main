@@ -10,6 +10,7 @@ public class Menu : MonoBehaviour
 {
     public bool cursor;
     
+    
     void Start()
     {
        /* if (!cursor)
