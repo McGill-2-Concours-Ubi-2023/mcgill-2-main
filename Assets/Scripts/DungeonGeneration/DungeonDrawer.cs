@@ -113,7 +113,7 @@ public static class DungeonDrawer
 
     public static async Task EraseDungeon(GameObject mono)  
     {
-        Object.Destroy(FindDungeonDrawer(mono));
+        DungeonData.SafeDestroy(FindDungeonDrawer(mono));
         await Task.Yield();
     }
 
