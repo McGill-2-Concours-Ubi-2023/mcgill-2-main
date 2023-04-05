@@ -304,8 +304,8 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
 
     public void OnSpawnCrate()
     {
+        Debug.Log("Spawn crate message received");
         gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnSpawnCrateIntention));
-        vibration.SoftVibration();
     }
 
     public void HasFaceDirectionInput(Ref<bool> hasInput)

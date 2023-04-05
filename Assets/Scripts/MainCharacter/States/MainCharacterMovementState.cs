@@ -1,7 +1,11 @@
 using System;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 using Unity.Mathematics;
 using UnityEngine;
 using static Unity.Mathematics.math;
+using Debug = UnityEngine.Debug;
 using float2 = Unity.Mathematics.float2;
 using float3 = Unity.Mathematics.float3;
 
@@ -19,7 +23,7 @@ public class MainCharacterMovementStateBehaviour : GenericStateMachineMonoBehavi
     private readonly static int FreeFallShouldLand = Animator.StringToHash("FreeFallShouldLand");
     private readonly static int Speed = Animator.StringToHash("Speed");
     private readonly static int MovementToDash = Animator.StringToHash("MovementToDash");
-
+    
     private void Start()
     {
         m_Controller = GetComponent<MainCharacterController>();
@@ -86,17 +90,40 @@ public class MainCharacterMovementStateBehaviour : GenericStateMachineMonoBehavi
         }
         m_FaceIntention = intention;
     }
+    
+    private readonly object m_SpawnCrateMutex = new object();
 
     public void OnSpawnCrateIntention()
     {
+        Debug.Log($"{nameof(OnSpawnCrateIntention)} triggered");
+        if (!Monitor.TryEnter(m_SpawnCrateMutex))
+        {
+            Debug.Log("Second time triggered, ignored");
+            return;
+        }
         try
         {
-            m_Controller.SimpleCollectibleInventory.RemoveItem(SimpleCollectible.CratePoint);
-            Instantiate(m_Controller.CratePrefab, transform.position + transform.forward + transform.up, Quaternion.identity);
+            try
+            {
+                m_Controller.SimpleCollectibleInventory.RemoveItem(SimpleCollectible.CratePoint);
+                Debug.Log($"{DateTime.Now}Crate successfully spawned");
+                Instantiate(m_Controller.CratePrefab, transform.position + transform.forward + transform.up, Quaternion.identity);
+            }
+            catch (InventoryEmptyException<SimpleCollectible> e)
+            {
+                Debug.LogWarning(e);
+            }
+
+            Debug.Log($"{m_Controller.SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint)} crates left");
         }
-        catch (InventoryEmptyException<SimpleCollectible> e)
+        finally
         {
-            Debug.LogWarning(e);
+            // jesus fucking christ what the hell is going on here
+            Task.Run(() =>
+            {
+                Thread.Sleep(TimeSpan.FromMilliseconds(100));
+                Monitor.Exit(m_SpawnCrateMutex);
+            });
         }
     }
 }
