@@ -28,6 +28,8 @@ public class ShowUI : MonoBehaviour
     private bool soldout = false;
     private InputActionAsset m_InputActionAsset;
     ClickSound cs;
+    [SerializeField]
+    TMP_Text descriptionUI; 
 
     private void Start()
     {
@@ -40,6 +42,7 @@ public class ShowUI : MonoBehaviour
         gun = GameObject.FindGameObjectWithTag("Gun");
         m_InputActionAsset = player.GetComponent<PlayerInput>().actions;
         m_InputActionAsset["Interact"].performed += ctx => SelectCurrentItem();
+        //descriptionUI = self.transform.GetChild(0).GetComponentInChildren<TMP_Text>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -138,7 +141,11 @@ public class ShowUI : MonoBehaviour
     }
     public void SetText(string description)
     {// set the description of the config 
-        self.transform.GetChild(0).GetComponentInChildren<TMP_Text>().text = description + "\n" + "cost: " + data.merchantPrices[description] + "pts";
+        if (description == "SOLD OUT!") {
+            descriptionUI.text = description;
+            return;
+        }
+        descriptionUI.text = description + "\n" + "cost: " + data.merchantPrices[description] + "pts";
 
         this.description = description;
         if (data.holograms.ContainsKey(description)) {

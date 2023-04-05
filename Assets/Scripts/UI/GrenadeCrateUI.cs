@@ -35,7 +35,7 @@ public class GrenadeCrateUI : MonoBehaviour
             crateCount.text = count.ToString();
         }
         else {
-            grenadeCount.text = "0" + count.ToString();
+            crateCount.text = "0" + count.ToString();
         }
     }
 }

@@ -47,7 +47,9 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     private static readonly int InDebugMode = Animator.StringToHash("InDebugMode");
     private Vibration vibration; 
     private GrenadeCrateUI gcUI;
-
+    
+    public ClickSound cs;
+    public AudioClip dashSound;
     private void Awake()
     {
         Transform cameraRoot = transform.Find("CameraRoot");
@@ -70,6 +72,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
             m_PauseMenu.SetActive(false);
         }
         gcUI = GameObject.FindObjectOfType<GrenadeCrateUI>();
+        cs = GetComponent<ClickSound>();
     }
 
     public void StartFight()
@@ -132,7 +135,8 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
 
     private void Update()
     {
-        gcUI.UpdateGrenadeUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade));
+        //gcUI.UpdateGrenadeUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade));
+        gcUI.UpdateCrateUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint));
         if (startFight) StartFight();
         float2 input = m_InputActionAsset["Movement"].ReadValue<Vector2>();
         gameObject.Trigger<IMainCharacterTriggers, float2>(nameof(IMainCharacterTriggers.OnInput), input);
@@ -239,6 +243,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         GetComponent<DashMeshTrail>().ActivateTrail();
         if (!isDashing)
         {
+            cs.Click(dashSound);
             animator.SetTrigger("MovementToDash");
             StartCoroutine(Dash());
         }
@@ -420,12 +425,18 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
 
     public void OnRoomCleared()
     {
+        gcUI.UpdateCrateUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint));
         m_RoomClearedCount++;
         if (m_RoomClearedCount % 2 == 0)
         {
             SimpleCollectibleInventory.AddItem(SimpleCollectible.Grenade);
             gcUI.UpdateGrenadeUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade));
         }
+    }
+
+    public void ResetInventory()
+    {
+        SimpleCollectibleInventory.ResetAll();
     }
 }
 
