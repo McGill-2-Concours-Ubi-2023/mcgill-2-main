@@ -296,7 +296,7 @@
                 {
                     "name": "",
                     "id": "ca152de6-121c-4df9-aebe-5d988b30dcbe",
-                    "path": "<Keyboard>/x",
+                    "path": "<Keyboard>/c",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
@@ -383,11 +383,33 @@
                 },
                 {
                     "name": "",
+                    "id": "edc5a9a7-b5a4-4755-979c-ceb90bf01c89",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "PrimaryWeaponRelease",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "8fa1a432-528b-46bf-8f83-68c326295a0d",
                     "path": "<Gamepad>/leftShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
+                    "action": "SpawnCrate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "220985fc-d414-49e1-b86b-51b2c364e42e",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
                     "action": "SpawnCrate",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -416,6 +438,17 @@
                 },
                 {
                     "name": "",
+                    "id": "c6e44489-193a-46a0-8d36-fa2d870ee9d5",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ShootPress",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "e480fa61-5d54-4017-917f-beb43b4d5345",
                     "path": "<Gamepad>/rightTrigger",
                     "interactions": "Press(behavior=1)",
@@ -427,11 +460,33 @@
                 },
                 {
                     "name": "",
+                    "id": "cca2a6cb-5cb8-4ad2-abcd-e83b1c30ab8a",
+                    "path": "<Keyboard>/space",
+                    "interactions": "Press(behavior=1)",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "ShootRelease",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "3bbca96c-9f79-49ac-bc16-b6f7130f1836",
                     "path": "<XInputController>/buttonWest",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
+                    "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d4ba3d44-8851-4fd8-bc82-378f707f9abb",
+                    "path": "<Keyboard>/x",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
                     "action": "Interact",
                     "isComposite": false,
                     "isPartOfComposite": false
