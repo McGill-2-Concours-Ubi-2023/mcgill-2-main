@@ -71,7 +71,6 @@ public class ConfigurationEditor : Editor
                 AssetDatabase.Refresh();
             }
         }
-        serializedObject.ApplyModifiedProperties();
 
         GuiLine();
         GUILayout.Label("Remove description", subTitle);
@@ -86,6 +85,7 @@ public class ConfigurationEditor : Editor
                 AssetDatabase.Refresh();
             }
         }
+        serializedObject.ApplyModifiedProperties();
     }
     void GuiLine(int i_height = 5)
 

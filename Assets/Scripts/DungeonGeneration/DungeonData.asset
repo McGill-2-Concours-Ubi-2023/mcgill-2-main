@@ -16,7 +16,7 @@ MonoBehaviour:
     type: 3}
   activeLayout: {fileID: 11400000, guid: cc77afc41768e9243b82ea23ac2ba356, type: 2}
   dungeonGrid: {fileID: 11400000, guid: e5f39597b8aa73542941172f235da76c, type: 2}
-  roomDensity: 0.502
+  roomDensity: 0.5
   rooms:
   - {fileID: 0}
   - {fileID: 0}
@@ -41,7 +41,7 @@ MonoBehaviour:
   - {fileID: 0}
   startingRoom: {fileID: 0}
   mapM: {fileID: 0}
-  minRoomCount: 14
+  minRoomCount: 20
   StartRoomPrefabs:
   - {fileID: 377485058429802400, guid: eaaea9ee7a4cc124da64a9d0f0c4959e, type: 3}
   NormalRoomPrefabs:
@@ -65,13 +65,10 @@ MonoBehaviour:
   TreasureRoomPrefabs:
   - {fileID: 1875757394018087714, guid: cbbd56b5506054e4b84da44e4dfc5d41, type: 3}
   SpecialRoomPrefabs:
-  - {fileID: 5110280588690666644, guid: f44f4971a50e245479774a9d4dacc01a, type: 3}
-  doorPrefab: {fileID: 6731566312865161675, guid: aa2b6e35b7574c14f942f689d17ee94a,
+  - {fileID: 377485058429802400, guid: 129f768af43e3694b9ca44f8ce543fa8, type: 3}
+  doorPrefab: {fileID: 8624493319312643085, guid: bcf2a190c9d094e5786b9b80ea1022eb,
     type: 3}
   wallsPrefab: {fileID: 2473150105563206396, guid: 4146031f1c686f04783b8f615eb63b90,
     type: 3}
   roomOverrides:
-  - {fileID: 1804126293692566786, guid: 5b26442671c12144aa535b1f688c5499, type: 3}
-  - {fileID: 8970908679549358502, guid: f15e383744b0a3f468b26214aa481662, type: 3}
-  cachedRooms:
-  - {fileID: 0}
+  - {fileID: 377485058429802400, guid: 129f768af43e3694b9ca44f8ce543fa8, type: 3}

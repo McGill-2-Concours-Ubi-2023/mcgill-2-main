@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09e55008271d2a24db0793e9c01cac42, type: 3}
+  m_Name: MerchantData
+  m_EditorClassIdentifier: 
+  merchantPrices:
+    keys:
+    - Gain one health
+    - Gain one  maximum health
+    - '1.5 x current fire rate '
+    - Double fire rate
+    - fefefe
+    - '1.5x current fire rate '
+    - Change the bullet type
+    values: d007000088130000d0070000a00f0000050d0000d0070000d0070000
+  merchantMethods:
+    keys:
+    - Gain one health
+    - Gain one  maximum health
+    - '1.5 x current fire rate '
+    - Double fire rate
+    - fefefe
+    - '1.5x current fire rate '
+    - Change the bullet type
+    values:
+    - GainOneHealth
+    - GainOneMaxHealth
+    - IncraseFireOnePointFive
+    - IncraseFireRateDouble
+    - ece
+    - IncraseFireOnePointFive
+    - ChangeBullet
+  descriptions:
+    keys: 0000000001000000030000000200000004000000
+    values:
+    - Gain one health
+    - Gain one  maximum health
+    - Double fire rate
+    - '1.5x current fire rate '
+    - Change the bullet type
+  holograms:
+    keys:
+    - Change the bullet type
+    - '1.5x current fire rate '
+    - Double fire rate
+    values:
+    - {fileID: 3405183217678696997, guid: a0e2716eb5b80ec48a8521202a44dbd0, type: 3}
+    - {fileID: 3405183217678696997, guid: a0e2716eb5b80ec48a8521202a44dbd0, type: 3}
+    - {fileID: 3405183217678696997, guid: a0e2716eb5b80ec48a8521202a44dbd0, type: 3}

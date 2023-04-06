@@ -8,9 +8,12 @@ TagManager:
   - MapRoom
   - Destructible
   - Enemy
-  - Bullet
   - PauseMenu
   - DoorWall
+  - PlayerBullet
+  - EnemyBullet
+  - Gun
+  - DestructionBounds
   layers:
   - Default
   - TransparentFX
@@ -28,11 +31,11 @@ TagManager:
   - GravityGrenade
   - Wall
   - MeleeBullet
-  - 
-  - 
-  - 
-  - 
-  - 
+  - DBufferCollider
+  - Floor
+  - DungeonDoor
+  - PlayerBullet
+  - Ceiling
   - 
   - 
   - 

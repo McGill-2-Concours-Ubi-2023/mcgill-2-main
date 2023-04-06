@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Cinemachine;
 using JetBrains.Annotations;
 using Unity.Mathematics;
@@ -9,6 +10,7 @@ using static Unity.Mathematics.math;
 using float2 = Unity.Mathematics.float2;
 using float3 = Unity.Mathematics.float3;
 using UnityEngine.VFX;
+using UnityEngine.SceneManagement;
 
 public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, ICrateTriggers, IGravityToCameraTrigger
 {
@@ -35,28 +37,63 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     [CanBeNull]
     private GameObject m_PauseMenu;
     public VisualEffect trailFollowEffect;
+    private Health health;
+    public bool startFight;
+    private int m_RoomClearedCount;
 
     public ISimpleInventory<SimpleCollectible> SimpleCollectibleInventory;
     
     private InputActionAsset m_InputActionAsset;
     private static readonly int InDebugMode = Animator.StringToHash("InDebugMode");
-
+    private Vibration vibration; 
+    private GrenadeCrateUI gcUI;
+    
+    public ClickSound cs;
+    public AudioClip dashSound;
     private void Awake()
     {
-        rb = GetComponent<Rigidbody>();
+        Transform cameraRoot = transform.Find("CameraRoot");
+        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("BossScene"))
+        {
+            this.Camera.Follow = cameraRoot;
+            this.Camera.LookAt = cameraRoot;
+            this.Camera.m_Lens.FieldOfView = 25.0f;
+        }
+        vibration = GameObject.Find("GamepadVib").GetComponent<Vibration>();
+            rb = GetComponent<Rigidbody>();
         SimpleCollectibleInventory = new SimpleInventory<SimpleCollectible>();
         m_InputActionAsset = GetComponent<PlayerInput>().actions;
         animator = GetComponent<Animator>();
         m_PauseMenu = GameObject.FindWithTag("PauseMenu");
+        health = GetComponent<Health>();
+        health.OnDeath += OnPlayerDeath;
         if (m_PauseMenu)
         {
             m_PauseMenu.SetActive(false);
         }
+        gcUI = GameObject.FindObjectOfType<GrenadeCrateUI>();
+        cs = GetComponent<ClickSound>();
+    }
+
+    public void StartFight()
+    {
+        Transform targetGroup = GameObject.Find("CinemachineTargetGroup").transform;
+        this.Camera.Follow = targetGroup;
+        this.Camera.LookAt = targetGroup;
+        this.Camera.m_Lens.FieldOfView = 47.0f;
+    }
+
+
+    private void OnPlayerDeath()
+    {
+        SceneManager.LoadScene("Menu");
     }
 
     private void Start()
     {
         StartCoroutine(RandomDance());
+        gcUI.UpdateCrateUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint));
+        gcUI.UpdateGrenadeUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade));
     }
 
     IEnumerator RandomDance()
@@ -98,6 +135,9 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
 
     private void Update()
     {
+        //gcUI.UpdateGrenadeUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade));
+        gcUI.UpdateCrateUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint));
+        if (startFight) StartFight();
         float2 input = m_InputActionAsset["Movement"].ReadValue<Vector2>();
         gameObject.Trigger<IMainCharacterTriggers, float2>(nameof(IMainCharacterTriggers.OnInput), input);
         float3 adjustedInput;
@@ -136,6 +176,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         gameObject.Trigger<IMainCharacterTriggers, float3>(nameof(IMainCharacterTriggers.OnPlayerFaceIntention), adjustedFaceDirection);
 
         m_MovementDirection = normalize(all(adjustedInput.xz == float2.zero) ? transform.forward : adjustedDirection);
+        Debug.DrawRay(transform.position + Vector3.up * 3, m_MovementDirection, Color.magenta);
         Debug.DrawRay(transform.position + Vector3.up, m_MovementDirection, Color.green);
 
         // update camera focus
@@ -149,7 +190,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
                 newCamera.name = $"MainCamera_{Guid.NewGuid()}";
                 newCamera.SetActive(false);
                 CinemachineVirtualCamera newVirtualCamera = newCamera.GetComponent<CinemachineVirtualCamera>();
-                var targetTransform = m_LastRoom.transform;
+                var targetTransform = m_LastRoom.transform.Find("cameraRoot");
                 newVirtualCamera.m_Follow = targetTransform;
                 newVirtualCamera.m_LookAt = targetTransform;
                 newCamera.SetActive(true);
@@ -202,9 +243,11 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         GetComponent<DashMeshTrail>().ActivateTrail();
         if (!isDashing)
         {
+            cs.Click(dashSound);
             animator.SetTrigger("MovementToDash");
             StartCoroutine(Dash());
-        }      
+        }
+        vibration.SoftVibration();
     }
 
     public void StopDash() //triggered as an animation event at the last keyframe
@@ -214,16 +257,19 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
 
     IEnumerator Dash()
     {
+
         isDashing = true;
+        float3 dashDirection = m_MovementDirection;
         float timer = 0f;
         while (timer < dashDuration)
         {
-            rb.velocity = (Vector3)m_MovementDirection * DashSpeed;
+            rb.velocity = (Vector3)dashDirection * DashSpeed;
             timer += Time.deltaTime;
             yield return null;
         }
         rb.velocity = rb.velocity / 5;
         isDashing = false;
+
     }
 
     public CinemachineVirtualCameraBase GetActiveCamera()
@@ -241,6 +287,19 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     
     public void OnPrimaryWeaponRelease()
     {
+        try
+        {
+            SimpleCollectibleInventory.RemoveItem(SimpleCollectible.Grenade);
+
+        }
+        catch (InventoryEmptyException<SimpleCollectible> e)
+        {
+            Debug.Log("No grenades left");
+            return;
+        }
+        int grenadeNum = SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade); 
+        Debug.Log($"{grenadeNum} grenades left");
+        gcUI.UpdateGrenadeUI(grenadeNum);
         int randomNumber = UnityEngine.Random.Range(1, 3);
         animator.SetTrigger("ThrowGrenade_" + randomNumber);
         GameObject grenade = Instantiate(GravityGrenadePrefab);
@@ -255,11 +314,15 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     public void OnCollectCrate()
     {
         SimpleCollectibleInventory.AddItem(SimpleCollectible.CratePoint);
+        int crateNum = SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint);
+        gcUI.UpdateCrateUI(crateNum);
     }
 
     public void OnSpawnCrate()
     {
         gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnSpawnCrateIntention));
+        int crateNum = SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint);
+        gcUI.UpdateCrateUI(crateNum);
     }
 
     public void HasFaceDirectionInput(Ref<bool> hasInput)
@@ -311,6 +374,14 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         }       
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            health.TakeDamage(1);
+        }
+    }
+
     public void OnCameraStandardShake(float intensity, float timer, float frequencyGain)
     {
         Camera.GetComponent<CinemachineCameraShake>().SantardCameraShake(intensity, timer, 1, 0);
@@ -326,7 +397,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         Camera.GetComponent<CinemachineCameraShake>().StopCameraShake();
     }
 
-    public void OnPause()
+    /*public void OnPause()
     {
         m_GamePaused = !m_GamePaused;
         Time.timeScale = m_GamePaused ? 0.0f : 1.0f;
@@ -334,11 +405,12 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         {
             m_PauseMenu.SetActive(m_GamePaused);
         }
-    }
+    }*/
 
     public void OnShootPress()
     {
         gameObject.TriggerDown<IGunTriggers>(nameof(IGunTriggers.OnShootStartIntention));
+        
     }
     
     public void OnShootRelease()
@@ -349,6 +421,22 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     public void IsDashing(Ref<bool> refIsDashing)
     {
         refIsDashing.Value = this.isDashing;
+    }
+
+    public void OnRoomCleared()
+    {
+        gcUI.UpdateCrateUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint));
+        m_RoomClearedCount++;
+        if (m_RoomClearedCount % 2 == 0)
+        {
+            SimpleCollectibleInventory.AddItem(SimpleCollectible.Grenade);
+            gcUI.UpdateGrenadeUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade));
+        }
+    }
+
+    public void ResetInventory()
+    {
+        SimpleCollectibleInventory.ResetAll();
     }
 }
 

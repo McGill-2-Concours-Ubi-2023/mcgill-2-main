@@ -9,6 +9,7 @@ public interface ISimpleInventory<in TKey>
     public void RemoveInBulk(TKey key, int count);
     public int GetCount(TKey key);
     public int GetMax(TKey key);
+    public void ResetAll();
 }
 
 public class InventoryFullException<T> : System.Exception
@@ -101,6 +102,11 @@ public class SimpleInventory<TKey> : ISimpleInventory<TKey>
         {
             m_InventoryCounts[key] = 0;
         }
+    }
+
+    public void ResetAll()
+    {
+        m_InventoryCounts.Clear();
     }
 }
 

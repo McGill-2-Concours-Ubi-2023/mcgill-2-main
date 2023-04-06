@@ -8,7 +8,8 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: GrassDefault
-  m_Shader: {fileID: -6465566751694194690, guid: 854fe0c5e8cb22f459a3cec037716f45, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 854fe0c5e8cb22f459a3cec037716f45,
+    type: 3}
   m_ValidKeywords:
   - BOOLEAN_9EFAFD8F30434BF5AEB3D3E4E08FEB76_ON
   m_InvalidKeywords: []
@@ -81,15 +82,15 @@ Material:
     m_Floats:
     - BOOLEAN_6A96DA7D53044CD087EBAF293FECFE3C: 0
     - BOOLEAN_9EFAFD8F30434BF5AEB3D3E4E08FEB76: 1
-    - Vector1_2c3ef261fdea4fecaaf8c3b0866bb23f: 1.6
+    - Vector1_2c3ef261fdea4fecaaf8c3b0866bb23f: 0.5
     - Vector1_307112231aa94f2cbdb9c5ef55c2accd: 0
-    - Vector1_425b28274b5647ea909e43c5e0b0de4c: 0.18
-    - Vector1_4e0207aad98e44039728554f5fe1a121: 5
-    - Vector1_6d11a87d9b8c412ead003becaa7d5ff9: 0.89
+    - Vector1_425b28274b5647ea909e43c5e0b0de4c: 0.2
+    - Vector1_4e0207aad98e44039728554f5fe1a121: 7
+    - Vector1_6d11a87d9b8c412ead003becaa7d5ff9: -0.859
     - Vector1_7c09054c36994f008a333049b0906d32: 6.3
-    - Vector1_ad268a30d9664ca79fda2446278b1490: 1.28
-    - _Agitation_X_strength: 0.67
-    - _Agitation_Z_strength: 0.54
+    - Vector1_ad268a30d9664ca79fda2446278b1490: 1
+    - _Agitation_X_strength: 0.6
+    - _Agitation_Z_strength: 0.3
     - _Agitation_noise_scale: 1.34
     - _Agitation_speed: 3.65
     - _AlphaClip: 0
@@ -103,9 +104,11 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _EnvironmentReflections: 1
+    - _Fluorescency: 6
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _GradientPower: 3.86
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
@@ -115,14 +118,15 @@ Material:
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
-    - _Spread_smoothness: 2.8
+    - _Spread_smoothness: 5
     - _SrcBlend: 1
     - _Surface: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - Color_1: {r: 0.07232696, g: 1, b: 0.8208493, a: 0}
-    - Color_57c7306742fc4e6196a9eddb49f608e6: {r: 1, g: 0, b: 0.2281251, a: 0}
+    - Color_1: {r: 0.4392157, g: 5.364706, b: 5.992157, a: 0}
+    - Color_57c7306742fc4e6196a9eddb49f608e6: {r: 0, g: 0.24897666, b: 0.3490566,
+        a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

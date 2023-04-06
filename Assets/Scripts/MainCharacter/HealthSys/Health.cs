@@ -5,23 +5,30 @@ using System;
 
 public interface IHealthTriggers : ITrigger
 {
-    void TakeDamage(int damage);
+    void TakeDamage(float damage);
+    void GainHealth(float health);
+    void IncreaseMaxHealth(float amount);
 }
 
-public class Health : MonoBehaviour, IHealthTriggers
+public class Health : MonoBehaviour, IHealthTriggers, IGravityGrenadeHealthAdaptor
 {
-    public event Action<int,int> OnHealthChange;
+    public event Action<float, float> OnHealthChange;
     public event Action OnDeath;
     [SerializeField]
-    private int currentHealth = 5;
-    private int MaxHealth = 5;
+    public float currentHealth = 5;
+    private float MaxHealth = 5;
     [SerializeField]
     private HealthUI ui;
     public bool invulnerable;
+    public DeathRenderer deathRenderer;
+    ClickSound cs;
+    [SerializeField] AudioClip deathSound;
+    
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
         if (invulnerable) return;
+        cs.Click();
         if (currentHealth - damage <= 0)
         {
             currentHealth = 0;
@@ -30,14 +37,15 @@ public class Health : MonoBehaviour, IHealthTriggers
         else {
             currentHealth -= damage;
             OnHealthChange?.Invoke(-damage, currentHealth);
-        }        
+        }
     }
 
-    public void GainHealth(int healthGain) {
-        if (currentHealth + healthGain >= MaxHealth)
+    public void GainHealth(float healthGain) {
+        if ((currentHealth + healthGain) >= MaxHealth)
         {
+            float difference = MaxHealth - currentHealth;
             currentHealth = MaxHealth;
-            OnHealthChange?.Invoke(healthGain, currentHealth);
+            OnHealthChange?.Invoke(difference, currentHealth);
         }
         else {
             currentHealth += healthGain;
@@ -47,15 +55,21 @@ public class Health : MonoBehaviour, IHealthTriggers
     }
 
     public void Death() {
+        cs.Click(deathSound);
         OnDeath?.Invoke();
     }
 
     private void Start()
     {
         if (gameObject.CompareTag("Player")) {
-            ui.GenerateHearts(currentHealth);
+            ui.GenerateHearts((int)currentHealth);
         }
-        
+        cs = GetComponent<ClickSound>();
+
+    }
+    public void IncreaseMaxHealth(float amount) {
+        MaxHealth = MaxHealth += amount;
+        GainHealth(1);
     }
 }
 

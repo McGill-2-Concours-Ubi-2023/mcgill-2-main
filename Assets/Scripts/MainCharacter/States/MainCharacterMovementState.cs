@@ -1,7 +1,11 @@
 using System;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 using Unity.Mathematics;
 using UnityEngine;
 using static Unity.Mathematics.math;
+using Debug = UnityEngine.Debug;
 using float2 = Unity.Mathematics.float2;
 using float3 = Unity.Mathematics.float3;
 
@@ -19,7 +23,7 @@ public class MainCharacterMovementStateBehaviour : GenericStateMachineMonoBehavi
     private readonly static int FreeFallShouldLand = Animator.StringToHash("FreeFallShouldLand");
     private readonly static int Speed = Animator.StringToHash("Speed");
     private readonly static int MovementToDash = Animator.StringToHash("MovementToDash");
-
+    
     private void Start()
     {
         m_Controller = GetComponent<MainCharacterController>();
@@ -98,5 +102,7 @@ public class MainCharacterMovementStateBehaviour : GenericStateMachineMonoBehavi
         {
             Debug.LogWarning(e);
         }
+
+        Debug.Log($"{m_Controller.SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint)} crates left");
     }
 }

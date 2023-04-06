@@ -38,3 +38,22 @@ public static class Utils
         return scaledTexture;
     }
 }
+
+public class Stopwatch : IDisposable
+{
+    private System.Diagnostics.Stopwatch stopwatch;
+    private string name;
+
+    public Stopwatch(string name)
+    {
+        this.name = name;
+        stopwatch = new System.Diagnostics.Stopwatch();
+        stopwatch.Start();
+    }
+
+    public void Dispose()
+    {
+        stopwatch.Stop();
+        UnityEngine.Debug.Log(name + " took " + stopwatch.ElapsedMilliseconds + " ms");
+    }
+}

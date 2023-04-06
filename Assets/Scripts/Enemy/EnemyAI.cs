@@ -10,9 +10,9 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] float attackRange=7.5f;
     Vector3 posCache;
     private NavMeshAgent navMeshAgent;
-    enum moveType { APPROACH, ASLEEP, RANDOM };
+    public enum moveType { APPROACH, ASLEEP, RANDOM };
     [SerializeField]
-    moveType move = moveType.ASLEEP;
+    public moveType move = moveType.ASLEEP;
     moveType moveCache = moveType.ASLEEP;
     [SerializeField] bool autoSleep = true;
     [SerializeField] float randomRadius;
@@ -46,12 +46,8 @@ public class EnemyAI : MonoBehaviour
         lr = GetComponent<LineRenderer>();
     }
 
-    // Update is called once per frame
-    void FixedUpdate()
+    private void FixedUpdate()
     {
-
-
-        
         if (navMeshAgent.path.corners.Length > 0 && drawPath)
         {
             lr.positionCount = navMeshAgent.path.corners.Length;
@@ -64,7 +60,7 @@ public class EnemyAI : MonoBehaviour
         //code below determines if player is reachable, awakens if they are, sleeps if they arent
         Vector3 playerpt = RandomNavSphere(player.position, randomRadius, randomLayerMask);
         navMeshAgent.CalculatePath(player.position, navMeshPath2);
-        if (navMeshPath2.status == NavMeshPathStatus.PathComplete && move == moveType.ASLEEP && autoSleep &&!waking)
+        if (navMeshPath2.status == NavMeshPathStatus.PathComplete && move == moveType.ASLEEP && autoSleep && !waking)
         {
             StartCoroutine(awaken());
         }
@@ -75,7 +71,7 @@ public class EnemyAI : MonoBehaviour
         }
         if (move != moveType.ASLEEP)
         {
-            if ((navMeshAgent.remainingDistance < repathDist && move == moveType.RANDOM) || (move == moveType.APPROACH && Vector3.Distance(navMeshAgent.destination, player.position) > randomRadius+0.5))
+            if ((navMeshAgent.remainingDistance < repathDist && move == moveType.RANDOM) || (move == moveType.APPROACH && Vector3.Distance(navMeshAgent.destination, player.position) > randomRadius + 0.5))
             {
                 RandomTarget();//if we're close to the target position or the player has significantly changed position, recalculate target pos.
             }
@@ -90,18 +86,17 @@ public class EnemyAI : MonoBehaviour
                 if (gun != null)
                 {
                     gun.Shoot();
-                    Debug.Log("shot");
+                    //Debug.Log("shot");
                 }
             }
         }
-
     }
 
     void RandomTarget()
     {
         Vector3 ori = (move == moveType.RANDOM) ? this.transform.position : player.position;
         Vector3 randompt = RandomNavSphere(ori, randomRadius, randomLayerMask);
-        Debug.Log("pathing");
+        //Debug.Log("pathing");
         do//checking if the point is actually reachable(only works in random, theoretically if the player radius is too high it may mess up and try to go off screen but I'm stupid and this works okay)
         {
             randompt = RandomNavSphere(ori, randomRadius, randomLayerMask);
@@ -130,9 +125,10 @@ public class EnemyAI : MonoBehaviour
         Vector3 lookPos = destination - transform.position;
         lookPos.y = 0;
         Quaternion rotation = Quaternion.LookRotation(lookPos);
-        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * lookSpeed);
+        turningPart.rotation = Quaternion.Slerp(turningPart.rotation, rotation, Time.deltaTime * lookSpeed);
     }
-    IEnumerator awaken() {
+    IEnumerator awaken()
+    {
         waking = true;
         if (wokeOnce == false)
             yield return new WaitForSeconds(wakeTime);

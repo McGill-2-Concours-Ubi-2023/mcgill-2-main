@@ -16,20 +16,36 @@ public class DungeonDoor : MonoBehaviour
     private Coroutine openCoroutine;
     private Coroutine closeCoroutine;
     private MeshCollider doorCollider;
-    private NavMeshObstacle doorObstacle;
     [SerializeField]
     private bool canOpen = true;
     private DungeonRoom bufferRoom;
+    private DoorLight[] lights;
+    private MapManager map;
+    private BoxCollider boxCollider;
 
     private void Start()
     {
         doorCollider = transform.Find("Door").GetComponent<MeshCollider>();
-        doorObstacle = transform.Find("Door").GetComponent<NavMeshObstacle>();        
+        boxCollider = GetComponent<BoxCollider>();
     }
 
     public bool CanOpen()
     {
         return canOpen;
+    }
+
+    public DoorLight[] GetLights()
+    {
+        if(lights == null || lights.Length == 0) 
+            lights = GetComponentsInChildren<DoorLight>();
+        return lights;
+    }
+
+    private void RefreshCollider()
+    {
+        if (boxCollider == null) boxCollider = GetComponent<BoxCollider>();
+        boxCollider.enabled = false;
+        boxCollider.enabled = true;
     }
 
     public void Block()
@@ -39,21 +55,22 @@ public class DungeonDoor : MonoBehaviour
 
     public void Unlock()
     {
+        RefreshCollider();
         canOpen = true;
     }
 
-    public static DungeonDoor Create(GameObject doorObj, DungeonRoom originRoom, DungeonRoom targetRoom, DungeonData data)
+    public static DungeonDoor Create(GameObject parentObj, DungeonRoom originRoom, DungeonRoom targetRoom, DungeonData data)
     {
         Vector3 Y_Offset = new Vector3(0, data.GetNormalRoomPrefabs()[0].transform.localScale.y / 2, 0);
         Vector3 diff = originRoom.transform.position - targetRoom.transform.position;
-        Vector3 doorPosition = doorObj.transform.position - diff/2 + Y_Offset;
-        var doorObject = DungeonDrawer.DrawSingleObject(doorPosition, data.GetDoorPrefab(), doorObj);
+        Vector3 doorPosition = parentObj.transform.position - diff/2 + Y_Offset;
+        var doorObject = DungeonDrawer.DrawSingleObject(doorPosition, data.GetDoorPrefab(), parentObj);
         var doorComponent = doorObject.AddComponent<DungeonDoor>(); //canOpen = true by default;
         doorComponent.sharedRoom1 = originRoom;
         doorComponent.sharedRoom2 = targetRoom;
         var orientation = originRoom.transform.position - targetRoom.transform.position;
         var direction = new Vector3(orientation.x, 0, orientation.z);
-        var angle = Vector3.SignedAngle(doorObj.transform.forward, direction, Vector3.up);
+        var angle = Vector3.SignedAngle(parentObj.transform.forward, direction, Vector3.up);
         doorObject.transform.Rotate(0, angle, 0);
         if (originRoom.IsIsolated() || targetRoom.IsIsolated()) doorComponent.canOpen = false; //lock door is isolated
         return doorComponent;
@@ -88,7 +105,6 @@ public class DungeonDoor : MonoBehaviour
         var openRate = FindObjectOfType<MainCharacterController>().doorOpenRate;
         while (skinnedMeshRenderer.GetBlendShapeWeight(0) > 0)
         {
-            doorObstacle.center -= new Vector3(0, 0, openRate / 100);
             skinnedMeshRenderer.SetBlendShapeWeight(0, skinnedMeshRenderer.GetBlendShapeWeight(0) - openRate);
             UpdateCollider();
             yield return new WaitForEndOfFrame();
@@ -101,7 +117,6 @@ public class DungeonDoor : MonoBehaviour
         var openRate = FindObjectOfType<MainCharacterController>().doorOpenRate;
         while (skinnedMeshRenderer.GetBlendShapeWeight(0) < 100)
         {
-            doorObstacle.center += new Vector3(0, 0, openRate / 100);
             skinnedMeshRenderer.SetBlendShapeWeight(0, skinnedMeshRenderer.GetBlendShapeWeight(0) + openRate);
             UpdateCollider();
             yield return new WaitForEndOfFrame();
@@ -130,8 +145,14 @@ public class DungeonDoor : MonoBehaviour
         }
     }
 
+    public void SetRooms(DungeonRoom room1, DungeonRoom room2)
+    {
+        sharedRoom1 = room1;
+        sharedRoom2 = room2;
+    }
+
     public void GoThorouthDoor() {
-        MapManager map = GameObject.Find("LayoutMap").GetComponent<MapManager>();
+        if(map == null) GameObject.Find("LayoutMap").TryGetComponent(out map);
         DungeonRoom currentRoom = map.dungeonData.GetActiveRoom();
         Vector2Int position = currentRoom.GridPosition();
         int gridSize = map.dungeonGrid.GridSize(); 
@@ -140,10 +161,14 @@ public class DungeonDoor : MonoBehaviour
         if (sharedRoom1 == currentRoom)
         {
             Vector2Int pos = sharedRoom2.GridPosition();
+            sharedRoom1.SpawnEnemies();
+            sharedRoom2.StopSpawnEnemies();
             map.LeaveRoom(pos.x * gridSize + pos.y);
         }
         else {
             Vector2Int pos = sharedRoom1.GridPosition();
+            sharedRoom2.SpawnEnemies();
+            sharedRoom1.StopSpawnEnemies();
             map.LeaveRoom(pos.x * gridSize + pos.y);
         }
     }

@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 public static class DungeonDrawer
 {
@@ -40,9 +42,16 @@ public static class DungeonDrawer
     }
 
     //Runtime function, won't work in Editor
-    public static GameObject ReplaceRoomAndIsolate(DungeonRoom room, DungeonData dungeonData, GameObject roomPrefab, RoomTypes.RoomType type)
+    public static GameObject ReplaceRoom(DungeonRoom room, DungeonData dungeonData,
+        GameObject roomPrefab, RoomTypes.RoomType type, bool isolate)
     {
+        room.MoveDoorsUp();
+        room.GetWalls().transform.parent = room.transform; //Move walls upwards
+        DungeonData.SafeDestroy(room.transform.Find("RoomRoot").gameObject);//delete the root
         RoomData roomData = dungeonData.GetActiveLayout().GetRoomData(room);
+        GameObject go = new GameObject("RoomRoot");
+        go.transform.position = room.GetPosition();
+        go.transform.parent = room.transform;
         GameObject obj = GameObject.Instantiate(roomPrefab);
         roomData.SetRoomType(type);
         roomData.SetIsolated(true);//Serialize it
@@ -56,14 +65,17 @@ public static class DungeonDrawer
                 break;
             }
         }
-        obj.transform.position = roomData.GetPosition();
-        obj.transform.parent = FindDungeonDrawer(dungeonData.GetMonoInstance()).transform;
-        roomData.SetOverride(true, newPrefabIndex);     
-        room.ReassignRoom(room, type);
-        room.GetWalls().transform.parent = room.transform;      
-        room.Isolate();
-        DungeonData.SafeDestroy(room.transform.Find("Floor").gameObject);
-        return obj;
+        roomData.SetOverride(true, newPrefabIndex);
+        obj.transform.position = go.transform.position;       
+        room.ReassignRoom( type);
+        obj.transform.parent = go.transform;
+        if(isolate) room.Isolate();
+        foreach (var door in room.GetDoors())
+        {
+            door.transform.parent = go.transform; //move doors upwards
+        }
+        room.GetWalls().transform.parent = go.transform;
+        return room.gameObject;
     }
 
     public static GameObject DrawRoomFromData(RoomData roomData, DungeonData dungeonData)
@@ -99,9 +111,10 @@ public static class DungeonDrawer
         return objList;
     }
 
-    public static void EraseDungeon(GameObject mono)  
+    public static async Task EraseDungeon(GameObject mono)  
     {
-        GameObject.DestroyImmediate(FindDungeonDrawer(mono));
+        DungeonData.SafeDestroy(FindDungeonDrawer(mono));
+        await Task.Yield();
     }
 
     private static GameObject FindDungeonDrawer(GameObject mono) //Find the dungeon "objects" under the current mono behaviour

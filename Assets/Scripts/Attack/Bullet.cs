@@ -5,14 +5,20 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class Bullet : MonoBehaviour
 {
-    [SerializeField] float speed =20;
+    [SerializeField] float speed = 20f;
     Vector3 direction;
     [SerializeField]
-    int damage = 1; 
-    
+    int damage = 1;
+    int gravityLayer;
+
     private void Update()
     {
         Fly(direction, speed);
+    }
+
+    private void OnEnable()
+    {
+        gravityLayer = LayerMask.NameToLayer("GravityField");
     }
 
     private void Fly(Vector3 direction, float speed)
@@ -23,15 +29,29 @@ public class Bullet : MonoBehaviour
     public void SetDirectionAndSpeed(Vector3 direction, float speed) {
         this.speed = speed;
         this.direction = direction; 
+        transform.forward = direction;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Player") || other.gameObject.CompareTag("Enemy"))// do damage to player/enemy
+        if(gameObject.CompareTag("EnemyBullet"))
         {
-            other.gameObject.Trigger<IHealthTriggers, int>(nameof(IHealthTriggers.TakeDamage), damage);
+            if (other.gameObject.CompareTag("Player"))
+            {
+                other.gameObject.Trigger<IHealthTriggers, float>(nameof(IHealthTriggers.TakeDamage), damage);
+            }
         }
-        if (!other.gameObject.CompareTag("Bullet")) {
+        else if (gameObject.CompareTag("PlayerBullet"))
+        {
+            if (other.gameObject.CompareTag("Enemy"))
+            {
+                other.gameObject.Trigger<IHealthTriggers, float>(nameof(IHealthTriggers.TakeDamage), damage);
+            }
+        }
+        
+        if (!(other.gameObject.CompareTag("EnemyBullet") 
+            && other.gameObject.CompareTag("PlayerBullet"))
+            && other.gameObject.layer != gravityLayer) {
             Destroy(gameObject);
         }
     }

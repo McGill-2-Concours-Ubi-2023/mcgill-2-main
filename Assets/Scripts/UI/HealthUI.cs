@@ -25,7 +25,7 @@ public class HealthUI : MonoBehaviour
         }
     }
 
-    public void HealthChange(int change, int currentHealth) {
+    public void HealthChange(float change, float currentHealth) {
         if (change < 0)
         {
             if (hearts.Count <= 0) return;
@@ -36,7 +36,7 @@ public class HealthUI : MonoBehaviour
             
         }
         else {
-            GenerateHearts(change);
+            GenerateHearts((int)change);
         }    
     }
 

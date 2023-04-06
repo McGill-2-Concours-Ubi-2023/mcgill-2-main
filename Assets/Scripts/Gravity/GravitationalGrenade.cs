@@ -1,7 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.VFX;
+using static Unity.Mathematics.math;
+
+public interface IGravityGrenadeHealthAdaptor : ITrigger
+{
+    void TakeDamage(float damage);
+    void GainHealth(float health);
+    void IncreaseMaxHealth(float amount);
+}
 
 public class GravitationalGrenade : MonoBehaviour
 {
@@ -38,6 +47,8 @@ public class GravitationalGrenade : MonoBehaviour
     [SerializeField]
     private GameObject swarmEffectPrefab;
     private VisualEffect swarmEffect;
+    [SerializeField]
+    private float HealthDecayRadius = 2;
 
     private void Awake()
     {
@@ -100,7 +111,19 @@ public class GravitationalGrenade : MonoBehaviour
             StartCoroutine(InitializeVFX());
             StartCoroutine(ShakeCameraGravity());
             hasExploded = true;
-        }      
+        }
+        else
+        {
+            // get all objects within radius
+            Collider[] results = new Collider[100];
+            Physics.OverlapSphereNonAlloc(transform.position, HealthDecayRadius, results);
+            foreach (Collider result in results)
+            {
+                if (result == null) break;
+                GameObject obj = result.gameObject;
+                obj.Trigger<IGravityGrenadeHealthAdaptor, float>(nameof(IGravityGrenadeHealthAdaptor.TakeDamage), 1.0f);
+            }
+        }
     }
 
     private IEnumerator ShakeCameraGravity()

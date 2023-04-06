@@ -4,19 +4,38 @@ using UnityEngine;
 
 public class OccludableWall : MonoBehaviour
 {
-    private Animator animator;
+    public Animator animator;
+    private Material material;
+
+    private void Awake()
+    {
+        animator = transform.parent.GetComponentInParent<Animator>();
+        material = GetComponent<Renderer>().material;
+    }
 
     public void Hide()
     {
-        if (animator == null) animator = GetComponentInParent<Animator>();
-        animator.SetBool("Hide", true);
-        animator.SetBool("Occlude", false);
+        Debug.Log("HIDE");
+        if (animator != null)
+        {
+            animator.SetBool("Hide", true);
+            animator.SetBool("Occlude", false);
+        }        
     }
 
     public void Occlude()
     {
-        if (animator == null) animator = GetComponentInParent<Animator>();
-        animator.SetBool("Hide", false);
-        animator.SetBool("Occlude", true);
+        Debug.Log("SHOW");
+        if (animator != null) 
+        {
+            animator.SetBool("Hide", false);
+            animator.SetBool("Occlude", true);
+        }
+        
+    }
+
+    public void ChangeRenderQueue(int queue)
+    {
+        material.renderQueue = queue;
     }
 }
