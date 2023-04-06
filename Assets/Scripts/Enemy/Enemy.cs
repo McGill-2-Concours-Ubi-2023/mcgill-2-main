@@ -17,6 +17,9 @@ public class Enemy : MonoBehaviour, I_AI_Trigger
     public DungeonRoom attachedRoom;
     public bool isDying = false;
 
+    [SerializeField]
+    public GameObject scoringSystem;
+
     private void Start()
     {
         //TryGetComponent<EnemyAI>(out ai);
@@ -29,6 +32,7 @@ public class Enemy : MonoBehaviour, I_AI_Trigger
             cachedAcceleration = agent.acceleration;
             cachedAngularSpeed = agent.angularSpeed;
         }
+        scoringSystem = GameObject.Find("ScoringSystem");
     }
 
     public void OnEnemyDeath() {
@@ -43,6 +47,7 @@ public class Enemy : MonoBehaviour, I_AI_Trigger
         {
             agent.isStopped = true;
         }
+        scoringSystem.Trigger<IScoringSystemTriggers>(nameof(IScoringSystemTriggers.OnEnemyDeath));
     }
 
     public void DisableAgent()

@@ -23,12 +23,18 @@ public class Health : MonoBehaviour, IHealthTriggers, IGravityGrenadeHealthAdapt
     public DeathRenderer deathRenderer;
     ClickSound cs;
     [SerializeField] AudioClip deathSound;
-    
+
+    [SerializeField]
+    public GameObject scoringSystem;
 
     public void TakeDamage(float damage)
     {
         if (invulnerable) return;
         cs.Click();
+        if (gameObject.CompareTag("Player"))
+        {
+            scoringSystem.Trigger<IScoringSystemTriggers, float>(nameof(IScoringSystemTriggers.OnDamageTaken), damage);
+        }
         if (currentHealth - damage <= 0)
         {
             currentHealth = 0;
@@ -65,7 +71,7 @@ public class Health : MonoBehaviour, IHealthTriggers, IGravityGrenadeHealthAdapt
             ui.GenerateHearts((int)currentHealth);
         }
         cs = GetComponent<ClickSound>();
-
+        scoringSystem = GameObject.Find("ScoringSystem");
     }
     public void IncreaseMaxHealth(float amount) {
         MaxHealth = MaxHealth += amount;
