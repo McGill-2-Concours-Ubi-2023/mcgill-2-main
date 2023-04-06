@@ -20,8 +20,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: HologramMat
-  m_Shader: {fileID: -6465566751694194690, guid: 4e55ee90d012d964bb4f69964f7c462c,
+  m_Name: BasePillarMat
+  m_Shader: {fileID: -6465566751694194690, guid: 0b8596fe204c4ce4ead6a38c6688a159,
     type: 3}
   m_ValidKeywords:
   - _SURFACE_TYPE_TRANSPARENT
@@ -29,11 +29,12 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 5000
+  m_CustomRenderQueue: 3001
   stringTagMap:
     RenderType: Transparent
   disabledShaderPasses:
   - SHADOWCASTER
+  - DepthOnly
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -124,33 +125,34 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _HologramPower: 1
+    - _HologramPower: 0
     - _Intensity: 1
     - _Metallic: 0
     - _Occlusion: 0
     - _OcclusionStrength: 1
-    - _OutlinePower: 5.1
+    - _OutlinePower: 1.5
     - _Parallax: 0.005
     - _QueueControl: 1
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _ScrollSpeed: 0.15
+    - _ScrollSpeed: 0.28
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 5
-    - _Strength: 0.3
+    - _Strength: 1
     - _Surface: 1
     - _Transparency: 0
     - _WorkflowMode: 1
     - _ZTest: 4
-    - _ZWrite: 1
-    - _ZWriteControl: 1
+    - _ZWrite: 0
+    - _ZWriteControl: 0
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _MainColor: {r: 0, g: 1.2048879, b: 1.7287521, a: 0}
+    - _MainColor: {r: 0, g: 1.340314, b: 1.9999998, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _Tiling: {r: 1, g: 0.4, b: 0, a: 0}
     - _TransparencyColor: {r: 0.6431373, g: 1.3176471, b: 1.9215686, a: 0}
   m_BuildTextureStacks: []
