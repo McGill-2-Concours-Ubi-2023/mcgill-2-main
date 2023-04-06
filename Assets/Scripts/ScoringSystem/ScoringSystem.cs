@@ -12,7 +12,7 @@ public interface IScoringSystemTriggers : ITrigger
 
 public class ScoringSystem : MonoBehaviour, IScoringSystemTriggers
 {
-    private const float maxScore = System.Single.MaxValue;
+    private const float maxScore = 999999;
 
     [SerializeField]
     public float currScore = 0;
@@ -22,31 +22,6 @@ public class ScoringSystem : MonoBehaviour, IScoringSystemTriggers
 
     [SerializeField]
     public TextMeshProUGUI scoreText;
-
-    private void Start()
-    {
-        // Initializes dictionary with the given params
-        scoringFields = new Dictionary<string, ScoringField>()
-        {
-            { "MatchTime", new ScoringField(0, -1) },
-            { "LevelTime", new ScoringField(0, -1) },
-            { "DamageTaken", new ScoringField(0, -10) },
-            { "EnemiesKilled", new ScoringField(0, 100) }
-        };
-    }
-
-    // Note: Should probably be refactored to not recompute the score in Update
-    private void Update()
-    {
-        currScore = ComputeScore();
-        UpdateText();
-    }
-
-    // Updates the TextMeshProGUI element displaying the score
-    private void UpdateText()
-    {
-        scoreText.text = "SCORE\n" + currScore.ToString().PadLeft(6, '0');
-    }
 
     // Returns the data value of a scoring field
     public float GetScoringFieldData(string name)
@@ -103,22 +78,31 @@ public class ScoringSystem : MonoBehaviour, IScoringSystemTriggers
     public void OnEnemyDeath()
     {
         scoringFields["EnemiesKilled"].data += 1;
+        UpdateScore();
     }
 
     public void OnDamageTaken(float damage) 
     {
         scoringFields["DamageTaken"].data += damage;
+        UpdateScore();
     }
 
-    // TEMP: Debugging
-    public void Test_ScoringSystem()
+    private void Start()
+    {
+        // Initializes dictionary with the given params
+        scoringFields = new Dictionary<string, ScoringField>()
+        {
+            { "MatchTime", new ScoringField(0, -1) },
+            { "LevelTime", new ScoringField(0, -1) },
+            { "DamageTaken", new ScoringField(0, -10) },
+            { "EnemiesKilled", new ScoringField(0, 100) }
+        };
+    }
+
+    // Recomputes the score whenever a field is updated and updates the TextMeshProGUI element displaying the score
+    private void UpdateScore()
     {
         currScore = ComputeScore();
-        Debug.Log("\nScore Log\n=========\n" + 
-        "Total Score: " + currScore + "\n" +
-        "Match Time: " + scoringFields["MatchTime"] + "\n" + 
-        "Level Time: " + scoringFields["MatchTime"] + "\n" +
-        "Damage Taken: " + scoringFields["DamageTaken"] + "\n" +
-        "Enemies Killed: " + scoringFields["EnemiesKilled"]);
+        scoreText.text = "SCORE\n" + currScore.ToString().PadLeft(6, '0');
     }
 }
