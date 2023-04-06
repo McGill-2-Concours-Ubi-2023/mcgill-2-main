@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine; 
+using TMPro;
 
 public interface IScoringSystemTriggers : ITrigger
 {
@@ -14,11 +15,13 @@ public class ScoringSystem : MonoBehaviour, IScoringSystemTriggers
     private const float maxScore = System.Single.MaxValue;
 
     [SerializeField]
+    public float currScore = 0;
+
+    [SerializeField]
     public Dictionary<string, ScoringField> scoringFields;
 
-    // TEMP: DEBUGGING
     [SerializeField]
-    public float currScore = 0;
+    public TextMeshProUGUI scoreText;
 
     private void Start()
     {
@@ -32,23 +35,36 @@ public class ScoringSystem : MonoBehaviour, IScoringSystemTriggers
         };
     }
 
+    // Note: Should probably be refactored to not recompute the score in Update
+    private void Update()
+    {
+        currScore = ComputeScore();
+        UpdateText();
+    }
+
+    // Updates the TextMeshProGUI element displaying the score
+    private void UpdateText()
+    {
+        scoreText.text = "SCORE\n" + currScore.ToString().PadLeft(6, '0');
+    }
+
     // Returns the data value of a scoring field
     public float GetScoringFieldData(string name)
     {
-        return this.scoringFields[name].data;
+        return scoringFields[name].data;
     }
 
     // Returns the weight of a scoring field
     public float GetScoringFieldWeight(string name)
     {
-        return this.scoringFields[name].weight;
+        return scoringFields[name].weight;
     }
 
     // Sets the data and weight values of a scoring field
     public void SetScoringField(string name, float data, float weight)
     {
-        this.scoringFields[name].data = data;
-        this.scoringFields[name].weight = weight;
+        scoringFields[name].data = data;
+        scoringFields[name].weight = weight;
     }
 
     // Computes the current score based on the data and weight values of the scoring fields
@@ -59,7 +75,18 @@ public class ScoringSystem : MonoBehaviour, IScoringSystemTriggers
         {
             score += field.Value();
         }
-        return score > maxScore ? maxScore : score; 
+        if (score < 0)
+        {
+            return 0;
+        } 
+        else if (score > maxScore)
+        {
+            return maxScore;
+        } 
+        else 
+        {
+            return score;
+        }
     }
 
     public void UpdateMatchTime()
@@ -75,18 +102,12 @@ public class ScoringSystem : MonoBehaviour, IScoringSystemTriggers
     // TODO: Implement enum parameter in enemy script and corresponding checks in this function to allow for enemy type discrimination in scoring
     public void OnEnemyDeath()
     {
-        this.scoringFields["EnemiesKilled"].data += 1;
-
-        // TEMP: Debugging
-        Test_ScoringSystem();
+        scoringFields["EnemiesKilled"].data += 1;
     }
 
     public void OnDamageTaken(float damage) 
     {
-        this.scoringFields["DamageTaken"].data += damage;
-        
-        // TEMP: Debugging
-        Test_ScoringSystem();
+        scoringFields["DamageTaken"].data += damage;
     }
 
     // TEMP: Debugging
@@ -95,9 +116,9 @@ public class ScoringSystem : MonoBehaviour, IScoringSystemTriggers
         currScore = ComputeScore();
         Debug.Log("\nScore Log\n=========\n" + 
         "Total Score: " + currScore + "\n" +
-        "Match Time: " + this.scoringFields["MatchTime"] + "\n" + 
-        "Level Time: " + this.scoringFields["MatchTime"] + "\n" +
-        "Damage Taken: " + this.scoringFields["DamageTaken"] + "\n" +
-        "Enemies Killed: " + this.scoringFields["EnemiesKilled"]);
+        "Match Time: " + scoringFields["MatchTime"] + "\n" + 
+        "Level Time: " + scoringFields["MatchTime"] + "\n" +
+        "Damage Taken: " + scoringFields["DamageTaken"] + "\n" +
+        "Enemies Killed: " + scoringFields["EnemiesKilled"]);
     }
 }
