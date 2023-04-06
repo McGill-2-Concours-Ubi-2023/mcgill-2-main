@@ -60,6 +60,7 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
         FindObjectOfType<MainCharacterController>().transform.position = GetActiveLayout().GetStartPosition();
         await InitializeNavMesh();
         await Cleanup();
+        await GetGrid().ReloadMiniMap(this);
         manager.ReportProgress(1.0f, 1.0f);
     }
 
