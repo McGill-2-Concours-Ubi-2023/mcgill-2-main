@@ -115,7 +115,7 @@ public class ScoringSystem : MonoBehaviour, IScoringSystemTriggers
 
 
     // Recomputes the score whenever a field is updated and updates the TextMeshProGUI element displaying the score
-    private void UpdateScore()
+    public void UpdateScore()
     {
         currScore = ComputeScore();
         scoreText.text = "SCORE\n" + currScore.ToString().PadLeft(6, '0');
