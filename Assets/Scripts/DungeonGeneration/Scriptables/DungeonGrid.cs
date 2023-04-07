@@ -121,14 +121,12 @@ public class DungeonGrid : DataContainer<RoomData>
         List<DungeonRoom> adjacentRooms = randomRoom.GetConnectedRooms();
         foreach(DungeonRoom room in adjacentRooms)
         {
-            if(room.GetRoomType() == RoomTypes.RoomType.Special && room.GetRoomType() == RoomTypes.RoomType.Start)
+            if(room.GetRoomType() == RoomTypes.RoomType.Special || randomRoom.GetRoomType() == RoomTypes.RoomType.Start)
             {
                 PlaceMerchant();
+                return;
             }
         }
-        var merchant = DungeonDrawer.ReplaceRoom(randomRoom,data,
-            data.GetRoomOverrides()[0], RoomTypes.RoomType.Special,false);
-        //Selection.activeObject = merchant;
     }
 
     public int RoomSize()

@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 357179404422936326}
   - component: {fileID: 357179404422936327}
   - component: {fileID: 357179404422936324}
+  - component: {fileID: 5432122295830316683}
+  - component: {fileID: 2321924051497576452}
   m_Layer: 0
   m_Name: Portal
   m_TagString: Untagged
@@ -42,8 +44,8 @@ VisualEffect:
   m_GameObject: {fileID: 357179404422936325}
   m_Enabled: 1
   m_Asset: {fileID: 8926484042661614526, guid: 10d0aaccbe7c94d45859347decb63ed7, type: 3}
-  m_InitialEventName: OnPlay
-  m_InitialEventNameOverriden: 0
+  m_InitialEventName: 
+  m_InitialEventNameOverriden: 1
   m_StartSeed: 0
   m_ResetSeedOnPlay: 1
   m_ResourceVersion: 1
@@ -110,3 +112,28 @@ VFXRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &5432122295830316683
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 357179404422936325}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.124939, y: 17.552658, z: 2.2132587}
+  m_Center: {x: -0.014266968, y: 7.6977158, z: 0.07648063}
+--- !u!114 &2321924051497576452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 357179404422936325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc199a81b7df16b4c856872dbd7a8cd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
