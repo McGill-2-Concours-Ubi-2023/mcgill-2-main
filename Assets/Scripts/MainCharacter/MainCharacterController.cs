@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Cinemachine;
 using JetBrains.Annotations;
 using Unity.Mathematics;
@@ -61,7 +62,11 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         }
         vibration = GameObject.Find("GamepadVib").GetComponent<Vibration>();
             rb = GetComponent<Rigidbody>();
-        SimpleCollectibleInventory = new SimpleInventory<SimpleCollectible>();
+        SimpleCollectibleInventory = new SimpleInventory<SimpleCollectible>(new Dictionary<SimpleCollectible, int>
+        {
+            { SimpleCollectible.Grenade, 8 },
+            { SimpleCollectible.CratePoint, 20 }
+        });
         m_InputActionAsset = GetComponent<PlayerInput>().actions;
         animator = GetComponent<Animator>();
         m_PauseMenu = GameObject.FindWithTag("PauseMenu");
@@ -89,11 +94,18 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         SceneManager.LoadScene("Menu");
     }
 
-    private void Start()
+    private async void Start()
     {
         StartCoroutine(RandomDance());
         gcUI.UpdateCrateUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint));
         gcUI.UpdateGrenadeUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade));
+        while (GameManager.isLoading)
+        {
+            await Task.Yield();
+        }
+        SimpleCollectibleInventory.AddInBulk(SimpleCollectible.Grenade, 2);
+        SimpleCollectibleInventory.AddInBulk(SimpleCollectible.CratePoint, 5);
+        UpdateInventoryUI();
     }
 
     IEnumerator RandomDance()
@@ -430,8 +442,15 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         if (m_RoomClearedCount % 2 == 0)
         {
             SimpleCollectibleInventory.AddItem(SimpleCollectible.Grenade);
-            gcUI.UpdateGrenadeUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade));
+            SimpleCollectibleInventory.AddInBulk(SimpleCollectible.CratePoint, 5);
+            UpdateInventoryUI();
         }
+    }
+
+    private void UpdateInventoryUI()
+    {
+        gcUI.UpdateGrenadeUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade));
+        gcUI.UpdateCrateUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint));
     }
 
     public void ResetInventory()
