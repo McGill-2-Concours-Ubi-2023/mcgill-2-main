@@ -4,7 +4,7 @@ using System.Threading;
 using JetBrains.Annotations;
 using UnityEngine;
 
-public interface HSimpleInventoryLock : IDisposable
+public interface HSimpleInventoryLockGuard : IDisposable
 {
     
 }
@@ -18,7 +18,7 @@ public interface ISimpleInventory<in TKey>
     public int GetCount(TKey key);
     public int GetMax(TKey key);
     public void ResetAll();
-    public HSimpleInventoryLock Lock();
+    public HSimpleInventoryLockGuard Lock();
 }
 
 public class InventoryFullException<T> : System.Exception
@@ -39,29 +39,26 @@ public class SimpleInventory<TKey> : ISimpleInventory<TKey>
 {
     private readonly IDictionary<TKey, int> m_InventoryCounts;
     private readonly IReadOnlyDictionary<TKey, int> m_InventoryMaximums;
-    private bool m_SuppressWrites = false;
-    private readonly object m_Lock = new object();
+    private volatile int m_LockCount = 0;
 
-    private class SimpleInventoryLock : HSimpleInventoryLock
+    private class SimpleInventoryLockGuard : HSimpleInventoryLockGuard
     {
         private readonly SimpleInventory<TKey> m_Inventory;
 
-        internal SimpleInventoryLock([NotNull] SimpleInventory<TKey> inventory)
+        internal SimpleInventoryLockGuard([NotNull] SimpleInventory<TKey> inventory)
         {
             m_Inventory = inventory;
-            Monitor.Enter(m_Inventory.m_Lock);
-            m_Inventory.m_SuppressWrites = true;
+            m_Inventory.InternalLock();
         }
         
-        ~SimpleInventoryLock()
+        ~SimpleInventoryLockGuard()
         {
             Dispose();
         }
 
         public void Dispose()
         {
-            Monitor.Exit(m_Inventory.m_Lock);
-            m_Inventory.m_SuppressWrites = false;
+            m_Inventory.InternalUnlock();
             GC.SuppressFinalize(this);
         }
     }
@@ -80,7 +77,7 @@ public class SimpleInventory<TKey> : ISimpleInventory<TKey>
 
     public void AddItem(TKey key)
     {
-        if (m_SuppressWrites)
+        if (IsLocked())
         {
             return;
         }
@@ -94,7 +91,7 @@ public class SimpleInventory<TKey> : ISimpleInventory<TKey>
 
     public void RemoveItem(TKey key)
     {
-        if (m_SuppressWrites)
+        if (IsLocked())
         {
             return;
         }
@@ -108,7 +105,7 @@ public class SimpleInventory<TKey> : ISimpleInventory<TKey>
 
     public void AddInBulk(TKey key, int count)
     {
-        if (m_SuppressWrites)
+        if (IsLocked())
         {
             return;
         }
@@ -153,16 +150,31 @@ public class SimpleInventory<TKey> : ISimpleInventory<TKey>
 
     public void ResetAll()
     {
-        if (m_SuppressWrites)
+        if (IsLocked())
         {
             return;
         }
         m_InventoryCounts.Clear();
     }
 
-    public HSimpleInventoryLock Lock()
+    public HSimpleInventoryLockGuard Lock()
     {
-        return new SimpleInventoryLock(this);
+        return new SimpleInventoryLockGuard(this);
+    }
+
+    private void InternalLock()
+    {
+        Interlocked.Increment(ref m_LockCount);
+    }
+
+    private void InternalUnlock()
+    {
+        Interlocked.Decrement(ref m_LockCount);
+    }
+    
+    private bool IsLocked()
+    {
+        return m_LockCount > 0;
     }
 }
 
