@@ -63,7 +63,7 @@ public class LazerBeamCollider : MonoBehaviour
     private IEnumerator OnTriggerExitCoroutine(Collider other)
     {
         // Might want to check for other colliders first
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.1f);
         if (other.gameObject.layer == Destructible.desctructibleMask && obstacles.Count == 0 && !hasCollided)
         {
             transform.position = transform.parent.position;

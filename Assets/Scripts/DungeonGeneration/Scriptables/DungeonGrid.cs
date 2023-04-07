@@ -118,7 +118,15 @@ public class DungeonGrid : DataContainer<RoomData>
     public void PlaceMerchant ()
     {
         int randomIndex = UnityEngine.Random.Range(0, data.AllRooms().Count);
-        var randomRoom = data.AllRooms()[randomIndex];
+        DungeonRoom randomRoom = data.AllRooms()[randomIndex];
+        List<DungeonRoom> adjacentRooms = randomRoom.GetConnectedRooms();
+        foreach(DungeonRoom room in adjacentRooms)
+        {
+            if(room.GetRoomType() == RoomTypes.RoomType.Special)
+            {
+                PlaceMerchant();
+            }
+        }
         var merchant = DungeonDrawer.ReplaceRoom(randomRoom,data,
             data.GetRoomOverrides()[0], RoomTypes.RoomType.Special,false);
         Selection.activeObject = merchant;
