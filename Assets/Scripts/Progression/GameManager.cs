@@ -9,6 +9,10 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 public enum GameAssistLevel : int
 {
     Deactivated = 0,
@@ -152,4 +156,32 @@ public class GameManager : MonoBehaviour
         assistLevel = (GameAssistLevel)((int)(assistLevel + 3) % 4);
         onDifficultyChanged?.Invoke(assistLevel);
     }
+    
+    #if UNITY_EDITOR
+    [MenuItem("Litter Box/Load Game")]
+    public static void LoadGame()
+    {
+        if (EditorApplication.isPlaying)
+        {
+            Instance.LoadScene(1);
+        }
+        else
+        {
+            EditorUtility.DisplayDialog("Error", "You must be in play mode to load the game scene", "OK");
+        }
+    }
+    
+    [MenuItem("Litter Box/Load Boss")]
+    public static void LoadBoss()
+    {
+        if (EditorApplication.isPlaying)
+        {
+            Instance.LoadScene(2);
+        }
+        else
+        {
+            EditorUtility.DisplayDialog("Error", "You must be in play mode to load the boss scene", "OK");
+        }
+    }
+    #endif
 }
