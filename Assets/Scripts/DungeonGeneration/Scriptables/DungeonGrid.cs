@@ -121,7 +121,7 @@ public class DungeonGrid : DataContainer<RoomData>
         List<DungeonRoom> adjacentRooms = randomRoom.GetConnectedRooms();
         foreach(DungeonRoom room in adjacentRooms)
         {
-            if(room.GetRoomType() == RoomTypes.RoomType.Special)
+            if(room.GetRoomType() == RoomTypes.RoomType.Special && room.GetRoomType() == RoomTypes.RoomType.Start)
             {
                 PlaceMerchant();
             }

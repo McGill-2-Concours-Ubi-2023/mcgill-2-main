@@ -42,6 +42,7 @@ public class DungeonRoom : MonoBehaviour
     private bool cleared = false;
     public static int clearedRoomsCount;
     private List<DungeonLight> cachedLights;
+    private static bool spawnPortal = false;
 
     private async Task OnDistanceRender()
     {
@@ -66,6 +67,29 @@ public class DungeonRoom : MonoBehaviour
             room.transform.Find("RoomRoot").gameObject.SetActive(true);
             room.RetrieveDoors();
             await Task.Yield();
+        }
+    }
+
+
+    private void Update()
+    {
+        if(clearedRoomsCount >= 10 && spawnPortal == false)
+        {
+            spawnPortal = true;
+            SpawnBossPortal();
+        }
+    }
+
+    private void SpawnBossPortal()
+    {
+        int randInt = UnityEngine.Random.Range(0, allRooms.Count - 1);
+        DungeonRoom choosenRoom = allRooms[randInt];
+        if(PathExists(null, activeRoom, choosenRoom).Item2 > 3)
+        {
+            GameObject portalObj = Instantiate(dungeonGenerator.data.GetPortalPrefab());
+        } else
+        {
+            SpawnBossPortal(); //recursively call this function otherwise
         }
     }
 

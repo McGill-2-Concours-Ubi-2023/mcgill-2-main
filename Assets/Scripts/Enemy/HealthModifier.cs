@@ -16,6 +16,11 @@ public class HealthModifier : MonoBehaviour, IHealthTriggers, IGravityGrenadeHea
         throw new System.NotImplementedException();
     }
 
+    public void SetInvincible(bool invincible)
+    {
+        health.SetInvincible(invincible);
+    }
+
     public void TakeDamage(float damage)
     {
         health.TakeDamage(damage);
