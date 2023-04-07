@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -15,6 +17,7 @@ public class GameManager : MonoBehaviour
     private static bool m_IsLoading = false;
     private float m_NextProgress = 0.0f;
     private float m_CurrentProgress = 0.0f;
+    public GameObject coverUpScreen;
     
     public static bool isLoading
     {
@@ -85,5 +88,33 @@ public class GameManager : MonoBehaviour
         }
         
         loadingScreen.gameObject.SetActive(false);
+    }
+
+    private async void Update()
+    {
+        if (isLoading)
+        {
+            return;
+        }
+        
+        GameObject player = GameObject.FindWithTag("Player");
+        if (!player)
+        {
+            return;
+        }
+
+        float3 pos = player.transform.position;
+        
+        if (pos.y < -1)
+        {
+            coverUpScreen.gameObject.SetActive(true);
+            await Task.Yield();
+            pos.y = 0.5f;
+            float3 roomPos = DungeonRoom.GetActiveRoom().transform.position;
+            pos.xz = roomPos.xz;
+            player.transform.position = pos;
+            await Task.Delay(500);
+            coverUpScreen.gameObject.SetActive(false);
+        }
     }
 }
