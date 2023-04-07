@@ -18,7 +18,7 @@ struct GlobalAgent
     public static float externalForce = 0.5f;
 }
 
-struct Destructible
+public struct Destructible
 {
     public static int desctructibleMask = LayerMask.NameToLayer("Destructible");
 }
