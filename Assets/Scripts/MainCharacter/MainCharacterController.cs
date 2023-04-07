@@ -97,11 +97,12 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     private async void Start()
     {
         StartCoroutine(RandomDance());
-        gcUI.UpdateCrateUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint));
-        gcUI.UpdateGrenadeUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade));
-        while (GameManager.isLoading)
         {
-            await Task.Yield();
+            using HSimpleInventoryLock inventoryLock = SimpleCollectibleInventory.Lock();
+            while (GameManager.isLoading)
+            {
+                await Task.Yield();
+            }
         }
         SimpleCollectibleInventory.AddInBulk(SimpleCollectible.Grenade, 2);
         SimpleCollectibleInventory.AddInBulk(SimpleCollectible.CratePoint, 5);

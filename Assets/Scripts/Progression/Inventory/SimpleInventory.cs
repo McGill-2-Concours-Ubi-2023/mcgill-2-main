@@ -1,5 +1,13 @@
+using System;
 using System.Collections.Generic;
+using System.Threading;
+using JetBrains.Annotations;
 using UnityEngine;
+
+public interface HSimpleInventoryLock : IDisposable
+{
+    
+}
 
 public interface ISimpleInventory<in TKey>
 {
@@ -10,6 +18,7 @@ public interface ISimpleInventory<in TKey>
     public int GetCount(TKey key);
     public int GetMax(TKey key);
     public void ResetAll();
+    public HSimpleInventoryLock Lock();
 }
 
 public class InventoryFullException<T> : System.Exception
@@ -30,7 +39,33 @@ public class SimpleInventory<TKey> : ISimpleInventory<TKey>
 {
     private readonly IDictionary<TKey, int> m_InventoryCounts;
     private readonly IReadOnlyDictionary<TKey, int> m_InventoryMaximums;
-    
+    private bool m_SuppressWrites = false;
+    private readonly object m_Lock = new object();
+
+    private class SimpleInventoryLock : HSimpleInventoryLock
+    {
+        private readonly SimpleInventory<TKey> m_Inventory;
+
+        internal SimpleInventoryLock([NotNull] SimpleInventory<TKey> inventory)
+        {
+            m_Inventory = inventory;
+            Monitor.Enter(m_Inventory.m_Lock);
+            m_Inventory.m_SuppressWrites = true;
+        }
+        
+        ~SimpleInventoryLock()
+        {
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            Monitor.Exit(m_Inventory.m_Lock);
+            m_Inventory.m_SuppressWrites = false;
+            GC.SuppressFinalize(this);
+        }
+    }
+
     public SimpleInventory(IReadOnlyDictionary<TKey, int> inventoryMaximums)
     {
         m_InventoryCounts = new Dictionary<TKey, int>();
@@ -45,6 +80,10 @@ public class SimpleInventory<TKey> : ISimpleInventory<TKey>
 
     public void AddItem(TKey key)
     {
+        if (m_SuppressWrites)
+        {
+            return;
+        }
         EnsureKeyExists(key);
         if (m_InventoryCounts[key] >= GetMax(key))
         {
@@ -55,6 +94,10 @@ public class SimpleInventory<TKey> : ISimpleInventory<TKey>
 
     public void RemoveItem(TKey key)
     {
+        if (m_SuppressWrites)
+        {
+            return;
+        }
         EnsureKeyExists(key);
         if (m_InventoryCounts[key] <= 0)
         {
@@ -65,6 +108,10 @@ public class SimpleInventory<TKey> : ISimpleInventory<TKey>
 
     public void AddInBulk(TKey key, int count)
     {
+        if (m_SuppressWrites)
+        {
+            return;
+        }
         EnsureKeyExists(key);
         if (m_InventoryCounts[key] + count > GetMax(key))
         {
@@ -106,7 +153,16 @@ public class SimpleInventory<TKey> : ISimpleInventory<TKey>
 
     public void ResetAll()
     {
+        if (m_SuppressWrites)
+        {
+            return;
+        }
         m_InventoryCounts.Clear();
+    }
+
+    public HSimpleInventoryLock Lock()
+    {
+        return new SimpleInventoryLock(this);
     }
 }
 
