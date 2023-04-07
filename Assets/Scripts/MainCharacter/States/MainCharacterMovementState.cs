@@ -23,6 +23,7 @@ public class MainCharacterMovementStateBehaviour : GenericStateMachineMonoBehavi
     private readonly static int FreeFallShouldLand = Animator.StringToHash("FreeFallShouldLand");
     private readonly static int Speed = Animator.StringToHash("Speed");
     private readonly static int MovementToDash = Animator.StringToHash("MovementToDash");
+    private float3 m_AutoFaceIntention;
     
     private void Start()
     {
@@ -61,10 +62,25 @@ public class MainCharacterMovementStateBehaviour : GenericStateMachineMonoBehavi
         m_Rigidbody.AddForce(force, ForceMode.Force);
         Debug.DrawRay(transform.position + transform.up, force, Color.red);
 
-        Ref<bool> hasFaceIntention = false;
-        gameObject.Trigger<IMainCharacterTriggers, Ref<bool>>(nameof(IMainCharacterTriggers.HasFaceDirectionInput), hasFaceIntention);
-        gameObject.Trigger<IMainCharacterTriggers, float3>(nameof(IMainCharacterTriggers.AdjustFaceDirection),
-        hasFaceIntention ? m_FaceIntention : m_MovementIntention);
+        if (GameManager.Instance.assistLevel != GameAssistLevel.Full)
+        {
+            Ref<bool> hasFaceIntention = false;
+            gameObject.Trigger<IMainCharacterTriggers, Ref<bool>>(nameof(IMainCharacterTriggers.HasFaceDirectionInput), hasFaceIntention);
+            gameObject.Trigger<IMainCharacterTriggers, float3>(nameof(IMainCharacterTriggers.AdjustFaceDirection),
+            hasFaceIntention ? m_FaceIntention : m_MovementIntention);
+        }
+        else
+        {
+            if (all(m_MovementIntention.xz == float2.zero))
+            {
+                m_Rigidbody.angularVelocity = float3(0.0f);
+            }
+            else
+            {
+                gameObject.Trigger<IMainCharacterTriggers, float3>(nameof(IMainCharacterTriggers.AdjustFaceDirection),
+                !all(m_AutoFaceIntention.xz == float2.zero) ? m_AutoFaceIntention : m_MovementIntention);
+            }
+        }
     }
 
     public void OnMovementIntention(float3 intention)
@@ -84,6 +100,10 @@ public class MainCharacterMovementStateBehaviour : GenericStateMachineMonoBehavi
 
     public void OnPlayerFaceIntention(float3 intention)
     {
+        if (GameManager.Instance.assistLevel == GameAssistLevel.Full)
+        {
+            return;
+        }
         if (all(intention.xz == float2.zero))
         {
             return;
@@ -104,5 +124,10 @@ public class MainCharacterMovementStateBehaviour : GenericStateMachineMonoBehavi
         }
 
         Debug.Log($"{m_Controller.SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint)} crates left");
+    }
+
+    public void OnAutoFaceIntention(float3 intention)
+    {
+        m_AutoFaceIntention = intention;
     }
 }

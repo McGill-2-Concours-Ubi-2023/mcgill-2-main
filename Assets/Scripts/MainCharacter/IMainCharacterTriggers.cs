@@ -32,4 +32,6 @@ public interface IMainCharacterTriggers : ITrigger
     public void OnPrimaryWeaponRelease() { }
     
     public void ResetInventory() { }
+    
+    public void OnAutoFaceIntention(float3 intention) { }
 }
