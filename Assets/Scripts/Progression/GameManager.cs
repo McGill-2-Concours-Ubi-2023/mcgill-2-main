@@ -119,12 +119,24 @@ public class GameManager : MonoBehaviour
         if (pos.y < -1)
         {
             coverUpScreen.gameObject.SetActive(true);
+            player.Trigger<IHealthTriggers, bool>(nameof(IHealthTriggers.SetInvincible), true);
             await Task.Yield();
             pos.y = 0.5f;
-            float3 roomPos = DungeonRoom.GetActiveRoom().transform.position;
-            pos.xz = roomPos.xz;
+            float3? roomPos = SceneManager.GetActiveScene().name == "Game" ? DungeonRoom.GetActiveRoom()?.transform.position : null;
+            if (roomPos != null)
+            {
+                pos.xz = roomPos.Value.xz;
+            }
             player.transform.position = pos;
-            await Task.Delay(500);
+            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
+            while (sw.ElapsedMilliseconds < 5000)
+            {
+                player.Trigger<IHealthTriggers, bool>(nameof(IHealthTriggers.SetInvincible), true);
+                await Task.Yield();
+            }
+            sw.Stop();
+            player.Trigger<IHealthTriggers, bool>(nameof(IHealthTriggers.SetInvincible), false);
             coverUpScreen.gameObject.SetActive(false);
         }
     }

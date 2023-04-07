@@ -8,6 +8,7 @@ public interface IHealthTriggers : ITrigger
     void TakeDamage(float damage);
     void GainHealth(float health);
     void IncreaseMaxHealth(float amount);
+    void SetInvincible(bool invincible);
 }
 
 public class Health : MonoBehaviour, IHealthTriggers, IGravityGrenadeHealthAdaptor
@@ -58,6 +59,11 @@ public class Health : MonoBehaviour, IHealthTriggers, IGravityGrenadeHealthAdapt
             OnHealthChange?.Invoke(healthGain, currentHealth);
         }
         
+    }
+
+    public void SetInvincible(bool invincible)
+    {
+        invulnerable = invincible;
     }
 
     public void Death() {
