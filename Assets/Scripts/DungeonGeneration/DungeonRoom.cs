@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Unity.Collections;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.VFX;
 
 [System.Serializable]
 public class DungeonRoom : MonoBehaviour
@@ -42,7 +44,7 @@ public class DungeonRoom : MonoBehaviour
     private bool cleared = false;
     public static int clearedRoomsCount;
     private List<DungeonLight> cachedLights;
-    private static bool spawnPortal = false;
+    private static bool spawnPortal;
 
     private async Task OnDistanceRender()
     {
@@ -73,23 +75,31 @@ public class DungeonRoom : MonoBehaviour
 
     private void Update()
     {
-        if(clearedRoomsCount >= 10 && spawnPortal == false)
+        if(clearedRoomsCount >= 1 && spawnPortal == false)
         {
             spawnPortal = true;
-            SpawnBossPortal();
+           StartCoroutine(PlaceBossRoom());
         }
     }
 
-    private void SpawnBossPortal()
+    IEnumerator PlaceBossRoom()
     {
-        int randInt = UnityEngine.Random.Range(0, allRooms.Count - 1);
-        DungeonRoom choosenRoom = allRooms[randInt];
-        if(PathExists(null, activeRoom, choosenRoom).Item2 > 3)
+        bool isPlaced = false;
+        while (!isPlaced)
         {
-            GameObject portalObj = Instantiate(dungeonGenerator.data.GetPortalPrefab());
-        } else
-        {
-            SpawnBossPortal(); //recursively call this function otherwise
+            int randInt = UnityEngine.Random.Range(Mathf.FloorToInt(allRooms.Count / 2), allRooms.Count - 1);
+            DungeonRoom choosenRoom = allRooms[randInt];
+            foreach (DungeonRoom room in activeRoom.adjacentRooms)
+            {
+                if (PathExists(activeRoom, room, choosenRoom).Item2 > 2)
+                {
+                    DungeonDrawer.ReplaceRoom(choosenRoom, dungeonGenerator.data,
+                    dungeonGenerator.data.GetPortalPrefab(), RoomTypes.RoomType.Boss, false);
+                    isPlaced = true;
+                }
+                yield return new WaitForEndOfFrame();
+            }
+            yield return new WaitForEndOfFrame();
         }
     }
 
@@ -124,6 +134,8 @@ public class DungeonRoom : MonoBehaviour
     private void Awake()
     {
         dungeonGenerator = FindObjectOfType<DungeonGenerator>();
+        spawnPortal = false;
+        clearedRoomsCount = 0;
     }
 
     public void SpawnEnemies()
@@ -140,8 +152,19 @@ public class DungeonRoom : MonoBehaviour
         }   
     }
 
+    private void OpenBossPortal()
+    {
+        VisualEffect portalVFX = FindObjectOfType<Portal>()
+            .GetComponent<VisualEffect>();
+        portalVFX.SendEvent("OnPortalAppear");
+    }
+
     public async Task UpdateRoomsLayout()
     {
+        if(type == RoomTypes.RoomType.Boss)
+        {
+            OpenBossPortal();
+        }
         await OnDistanceRender();
         foreach (OccludableWall wall in occludableWalls)
         {
@@ -160,6 +183,8 @@ public class DungeonRoom : MonoBehaviour
             if (wall != null && wall.gameObject.activeInHierarchy) wall.ChangeRenderQueue(2998);
             await Task.Yield();
         }
+
+
     }
     
     public void TryRemoveEnemy(Enemy enemy)
