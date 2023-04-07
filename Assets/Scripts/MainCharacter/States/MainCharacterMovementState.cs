@@ -62,7 +62,7 @@ public class MainCharacterMovementStateBehaviour : GenericStateMachineMonoBehavi
         m_Rigidbody.AddForce(force, ForceMode.Force);
         Debug.DrawRay(transform.position + transform.up, force, Color.red);
 
-        /*if (GameManager.Instance.assistLevel != GameAssistLevel.Full)
+        if (GameManager.Instance.assistLevel != GameAssistLevel.Full)
         {
             Ref<bool> hasFaceIntention = false;
             gameObject.Trigger<IMainCharacterTriggers, Ref<bool>>(nameof(IMainCharacterTriggers.HasFaceDirectionInput), hasFaceIntention);
@@ -80,7 +80,7 @@ public class MainCharacterMovementStateBehaviour : GenericStateMachineMonoBehavi
                 gameObject.Trigger<IMainCharacterTriggers, float3>(nameof(IMainCharacterTriggers.AdjustFaceDirection),
                 !all(m_AutoFaceIntention.xz == float2.zero) ? m_AutoFaceIntention : m_MovementIntention);
             }
-        }*/
+        }
     }
 
     public void OnMovementIntention(float3 intention)
