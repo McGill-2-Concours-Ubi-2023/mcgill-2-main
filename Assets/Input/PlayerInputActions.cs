@@ -125,6 +125,15 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ToggleConsole"",
+                    ""type"": ""Button"",
+                    ""id"": ""3f74af5c-eb9b-4f41-83db-c157cf326927"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -512,6 +521,17 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f5370f6a-6dd6-43c8-8de9-fdf00743b7f1"",
+                    ""path"": ""<Keyboard>/period"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleConsole"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -796,6 +816,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         m_Player_ShootPress = m_Player.FindAction("ShootPress", throwIfNotFound: true);
         m_Player_ShootRelease = m_Player.FindAction("ShootRelease", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
+        m_Player_ToggleConsole = m_Player.FindAction("ToggleConsole", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Point = m_UI.FindAction("Point", throwIfNotFound: true);
@@ -875,6 +896,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_ShootPress;
     private readonly InputAction m_Player_ShootRelease;
     private readonly InputAction m_Player_Interact;
+    private readonly InputAction m_Player_ToggleConsole;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -890,6 +912,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         public InputAction @ShootPress => m_Wrapper.m_Player_ShootPress;
         public InputAction @ShootRelease => m_Wrapper.m_Player_ShootRelease;
         public InputAction @Interact => m_Wrapper.m_Player_Interact;
+        public InputAction @ToggleConsole => m_Wrapper.m_Player_ToggleConsole;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -932,6 +955,9 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @Interact.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
                 @Interact.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
                 @Interact.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
+                @ToggleConsole.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnToggleConsole;
+                @ToggleConsole.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnToggleConsole;
+                @ToggleConsole.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnToggleConsole;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -969,6 +995,9 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @Interact.started += instance.OnInteract;
                 @Interact.performed += instance.OnInteract;
                 @Interact.canceled += instance.OnInteract;
+                @ToggleConsole.started += instance.OnToggleConsole;
+                @ToggleConsole.performed += instance.OnToggleConsole;
+                @ToggleConsole.canceled += instance.OnToggleConsole;
             }
         }
     }
@@ -1094,6 +1123,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         void OnShootPress(InputAction.CallbackContext context);
         void OnShootRelease(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
+        void OnToggleConsole(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
