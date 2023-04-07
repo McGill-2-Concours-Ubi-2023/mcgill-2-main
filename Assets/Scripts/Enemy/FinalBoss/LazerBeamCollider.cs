@@ -6,16 +6,15 @@ using UnityEngine.VFX;
 
 public class LazerBeamCollider : MonoBehaviour
 {
-    private CapsuleCollider _collider;
+    private Collider _collider;
     public Transform beamEnd;
     public VisualEffect beamVFX;
     public List<GameObject> obstacles;
-    private GameObject currentObstacle;
     private bool hasCollided;
 
     private void OnEnable()
     {       
-        _collider = GetComponent<CapsuleCollider>();
+        _collider = GetComponent<Collider>();
         _collider.enabled = false;
         if (obstacles == null) obstacles = new List<GameObject>();
     }
@@ -32,26 +31,10 @@ public class LazerBeamCollider : MonoBehaviour
             obstacles.Add(other.gameObject);
         }
 
-        if (other.gameObject.layer == Destructible.desctructibleMask)
+        if (other.gameObject.layer == Destructible.desctructibleMask && !hasCollided)
         {
-            beamVFX.SetVector3("ObstaclePosition", other.transform.position);
-            beamVFX.SetFloat("ColliderSize", other.bounds.size.magnitude);
-            Vector3 diff = other.transform.position - beamEnd.transform.position;
-            transform.position = transform.parent.position - transform.forward * diff.magnitude;
             hasCollided = true;
         }       
-
-        if(obstacles.Count > 1)
-        {
-            Vector3 average = new Vector3(0,0,0);
-            foreach(GameObject obstacle in obstacles)
-            {
-                average += obstacle.transform.position;
-            }
-            Vector3 midPoint = average / obstacles.Count;
-            beamVFX.SetVector3("ObstaclePosition", midPoint);
-
-        }
     }
 
     private void OnTriggerStay(Collider other)
@@ -60,14 +43,31 @@ public class LazerBeamCollider : MonoBehaviour
         {
             other.GetComponent<Health>().TakeDamage(1);
         }
+        if (other.gameObject.layer == Destructible.desctructibleMask && hasCollided)
+        {
+            beamVFX.SetVector3("ObstaclePosition", other.transform.position);
+            beamVFX.SetFloat("ColliderSize", other.bounds.size.magnitude);
+            Vector3 diff = other.transform.position - beamEnd.transform.position;
+            beamVFX.SetFloat("ObstacleDistance", diff.magnitude);
+            transform.position = transform.parent.position - transform.forward * diff.magnitude;
+        }
     }
 
     private void OnTriggerExit(Collider other)
     {
+        // Start the coroutine to execute OnTriggerExit logic on the next frame
         obstacles.Remove(other.gameObject);
-        if (other.gameObject.layer == Destructible.desctructibleMask && obstacles.Count == 0)
+        hasCollided = false;
+        StartCoroutine(OnTriggerExitCoroutine(other));
+    }
+    private IEnumerator OnTriggerExitCoroutine(Collider other)
+    {
+        // Might want to check for other colliders first
+        yield return new WaitForSeconds(0.5f);
+        if (other.gameObject.layer == Destructible.desctructibleMask && obstacles.Count == 0 && !hasCollided)
         {
             transform.position = transform.parent.position;
         }
     }
+
 }

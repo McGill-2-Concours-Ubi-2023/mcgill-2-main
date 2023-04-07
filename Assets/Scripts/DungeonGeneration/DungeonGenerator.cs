@@ -20,6 +20,7 @@ public class DungeonGenerator : MonoBehaviour
         if (newDungeonOnPlay)
         {
             await data.GenerateDungeon();
+            data.PlaceMerchant();
         } else
         {
             await data.LoadData();
@@ -32,7 +33,6 @@ public class DungeonGenerator : MonoBehaviour
 
     IEnumerator PlaceRandomMerchant()
     {
-        yield return new WaitForEndOfFrame();
-        data.PlaceMerchant();
+        yield return new WaitForEndOfFrame();      
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using UnityEditor;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
@@ -120,7 +121,7 @@ public class DungeonGrid : DataContainer<RoomData>
         var randomRoom = data.AllRooms()[randomIndex];
         var merchant = DungeonDrawer.ReplaceRoom(randomRoom,data,
             data.GetRoomOverrides()[0], RoomTypes.RoomType.Special,false);
-        //merchant.SetActive(false);
+        Selection.activeObject = merchant;
     }
 
     public int RoomSize()
