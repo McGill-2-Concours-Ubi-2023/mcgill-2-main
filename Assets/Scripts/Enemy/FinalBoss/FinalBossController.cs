@@ -21,6 +21,7 @@ public class FinalBossController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        GameManager.isLoading = false;
     }
 
     // Update is called once per frame
