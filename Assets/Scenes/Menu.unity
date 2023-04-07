@@ -1621,6 +1621,7 @@ GameObject:
   - component: {fileID: 380113885}
   - component: {fileID: 380113884}
   - component: {fileID: 380113883}
+  - component: {fileID: 380113887}
   m_Layer: 5
   m_Name: insert
   m_TagString: Untagged
@@ -1764,6 +1765,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 120}
   m_SizeDelta: {x: 2100, y: 900}
   m_Pivot: {x: 0.5, y: 0}
+--- !u!114 &380113887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 380113882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ed3cacf884a83e44a76a3aeda053ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  flashSpeedOn: 0.75
+  flashSpeedOff: 0.5
 --- !u!224 &410237712 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8169453401239805320, guid: d83f1f0a018b13e44b97fdc5b45ca550,
@@ -9461,7 +9476,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Assist
+  m_text: Aim Assist
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c0411055e8aa8d542ba199f7e3613a73, type: 2}
   m_sharedMaterial: {fileID: 9150590582447317423, guid: c0411055e8aa8d542ba199f7e3613a73,
