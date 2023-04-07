@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Cinemachine;
 using JetBrains.Annotations;
@@ -51,8 +52,11 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     
     public ClickSound cs;
     public AudioClip dashSound;
-    private void Awake()
+    private bool m_Awake = true;
+
+    private async void Awake()
     {
+        m_Awake = true;
         Transform cameraRoot = transform.Find("CameraRoot");
         if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("BossScene"))
         {
@@ -67,17 +71,25 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
             { SimpleCollectible.Grenade, 8 },
             { SimpleCollectible.CratePoint, 20 }
         });
-        m_InputActionAsset = GetComponent<PlayerInput>().actions;
-        animator = GetComponent<Animator>();
-        m_PauseMenu = GameObject.FindWithTag("PauseMenu");
-        health = GetComponent<Health>();
-        health.OnDeath += OnPlayerDeath;
-        if (m_PauseMenu)
         {
-            m_PauseMenu.SetActive(false);
+            using HSimpleInventoryLockGuard inventoryLockGuard = SimpleCollectibleInventory.Lock();
+            m_InputActionAsset = GetComponent<PlayerInput>().actions;
+            animator = GetComponent<Animator>();
+            m_PauseMenu = GameObject.FindWithTag("PauseMenu");
+            health = GetComponent<Health>();
+            health.OnDeath += OnPlayerDeath;
+            if (m_PauseMenu)
+            {
+                m_PauseMenu.SetActive(false);
+            }
+            gcUI = GameObject.FindObjectOfType<GrenadeCrateUI>();
+            cs = GetComponent<ClickSound>();
+            while (GameManager.isLoading)
+            {
+                await Task.Yield();
+            }
         }
-        gcUI = GameObject.FindObjectOfType<GrenadeCrateUI>();
-        cs = GetComponent<ClickSound>();
+        m_Awake = false;
     }
 
     public void StartFight()
@@ -88,7 +100,6 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         this.Camera.m_Lens.FieldOfView = 47.0f;
     }
 
-
     private void OnPlayerDeath()
     {
         SceneManager.LoadScene("Menu");
@@ -97,9 +108,11 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     private async void Start()
     {
         StartCoroutine(RandomDance());
-        gcUI.UpdateCrateUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint));
-        gcUI.UpdateGrenadeUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade));
         while (GameManager.isLoading)
+        {
+            await Task.Yield();
+        }
+        while (m_Awake)
         {
             await Task.Yield();
         }
