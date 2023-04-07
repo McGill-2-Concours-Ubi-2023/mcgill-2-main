@@ -49,10 +49,11 @@ public static class DungeonDrawer
         room.GetWalls().transform.parent = room.transform; //Move walls upwards
         DungeonData.SafeDestroy(room.transform.Find("RoomRoot").gameObject);//delete the root
         RoomData roomData = dungeonData.GetActiveLayout().GetRoomData(room);
-        GameObject go = new GameObject("RoomRoot");
-        go.transform.position = room.GetPosition();
-        go.transform.parent = room.transform;
         GameObject obj = GameObject.Instantiate(roomPrefab);
+        GameObject roomRoot = obj.transform.Find("RoomRoot").gameObject;
+        roomRoot.transform.position = room.GetPosition();
+        roomRoot.transform.parent = room.transform;
+        DungeonData.SafeDestroy(obj);
         roomData.SetRoomType(type);
         roomData.SetIsolated(true);//Serialize it
         GameObject[] roomOptions = dungeonData.GetRoomOverrides();
@@ -66,16 +67,14 @@ public static class DungeonDrawer
             }
         }
         roomData.SetOverride(true, newPrefabIndex);
-        obj.transform.position = go.transform.position;       
         room.ReassignRoom( type);
-        obj.transform.parent = go.transform;
         if(isolate) room.Isolate();
         foreach (var door in room.GetDoors())
         {
-            door.transform.parent = go.transform; //move doors upwards
+            door.transform.parent = roomRoot.transform; //move doors upwards
         }
-        room.GetWalls().transform.parent = go.transform;
-        return room.gameObject;
+        room.GetWalls().transform.parent = roomRoot.transform;
+        return roomRoot;
     }
 
     public static GameObject DrawRoomFromData(RoomData roomData, DungeonData dungeonData)
