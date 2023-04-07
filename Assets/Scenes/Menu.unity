@@ -3370,6 +3370,7 @@ GameObject:
   - component: {fileID: 730793009}
   - component: {fileID: 730793011}
   - component: {fileID: 730793010}
+  - component: {fileID: 730793012}
   m_Layer: 5
   m_Name: Terminal
   m_TagString: Untagged
@@ -3435,6 +3436,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 730793008}
   m_CullTransparentMesh: 1
+--- !u!114 &730793012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 730793008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c88e898dd2c40088394f4204017e3ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &733509836
 GameObject:
   m_ObjectHideFlags: 0

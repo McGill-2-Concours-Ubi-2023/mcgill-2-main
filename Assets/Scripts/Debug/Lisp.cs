@@ -527,9 +527,9 @@ public static class NukataLisp {
             var version = assembly.GetName().Version;
             double iversion = version.Major + 0.1 * version.Minor +
                 0.01 * version.Build;
-            Globals[Sym.New("*version*")] =
-                new Cell(iversion,
-                         new Cell("C# 7", new Cell(product.Product, null)));
+            //Globals[Sym.New("*version*")] =
+            //    new Cell(iversion,
+            //             new Cell("C# 7", new Cell(product.Product, null)));
         }
 
         /// <summary>Define a built-in function by a name, an arity,
