@@ -43,6 +43,8 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
     private GameObject wallsPrefab;
     [SerializeField][Header("Replace rooms")]
     private GameObject[] roomOverrides;
+    [SerializeField]
+    private GameObject portalPrefab;
 
     public async Task GenerateDungeon()
     {
@@ -62,6 +64,11 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
         await Cleanup();
         await GetGrid().ReloadMiniMap(this);
         manager.ReportProgress(1.0f, 1.0f);
+    }
+
+    public GameObject GetPortalPrefab()
+    {
+        return portalPrefab;
     }
 
     public void AddRoom(DungeonRoom room)
