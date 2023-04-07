@@ -6,7 +6,16 @@ using System.Threading.Tasks;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
+
+public enum GameAssistLevel : int
+{
+    Deactivated = 0,
+    Default = 1,
+    Enhanced = 2,
+    Full = 3
+}
 
 public class GameManager : MonoBehaviour
 {
@@ -18,6 +27,8 @@ public class GameManager : MonoBehaviour
     private float m_NextProgress = 0.0f;
     private float m_CurrentProgress = 0.0f;
     public GameObject coverUpScreen;
+    public GameAssistLevel assistLevel = GameAssistLevel.Default;
+    public event Action<GameAssistLevel> onDifficultyChanged;
     
     public static bool isLoading
     {
@@ -116,5 +127,17 @@ public class GameManager : MonoBehaviour
             await Task.Delay(500);
             coverUpScreen.gameObject.SetActive(false);
         }
+    }
+
+    public void NextDifficulty()
+    {
+        assistLevel = (GameAssistLevel)((int)(assistLevel + 1) % 4);
+        onDifficultyChanged?.Invoke(assistLevel);
+    }
+
+    public void PreviousDifficulty()
+    {
+        assistLevel = (GameAssistLevel)((int)(assistLevel + 3) % 4);
+        onDifficultyChanged?.Invoke(assistLevel);
     }
 }
