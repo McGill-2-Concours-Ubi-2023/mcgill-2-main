@@ -27,6 +27,7 @@ public class ShowUI : MonoBehaviour
     int points = 10000;
     private bool soldout = false;
     private InputActionAsset m_InputActionAsset;
+    [SerializeField]
     ClickSound cs;
     [SerializeField]
     TMP_Text descriptionUI; 
@@ -123,13 +124,15 @@ public class ShowUI : MonoBehaviour
 
     private void SelectCurrentItem()
     {
-        cs.Click();
+        
         // TODO: player selected this item
         if (startFloat && data.merchantPrices.ContainsKey(description) && !soldout)
         {
             {
                 //TODO: check if player has enough points 
                 if (points > data.merchantPrices[description]) {
+                    cs = GetComponent<ClickSound>();
+                    cs.Click();
                     points = points -= data.merchantPrices[description];
                     PickMethod(data.merchantMethods[description]);
                     soldout = true;
