@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
-using Debug = UnityEngine.Debug;
 
 [CreateAssetMenu(fileName = "New grid", menuName = "Dungeon grid")]
 public class DungeonGrid : DataContainer<RoomData>
@@ -129,7 +128,7 @@ public class DungeonGrid : DataContainer<RoomData>
         }
         var merchant = DungeonDrawer.ReplaceRoom(randomRoom,data,
             data.GetRoomOverrides()[0], RoomTypes.RoomType.Special,false);
-        Selection.activeObject = merchant;
+        //Selection.activeObject = merchant;
     }
 
     public int RoomSize()
