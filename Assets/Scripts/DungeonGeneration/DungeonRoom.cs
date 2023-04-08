@@ -76,7 +76,7 @@ public class DungeonRoom : MonoBehaviour
 
     private void Update()
     {
-        if(clearedRoomsCount >= 1 && spawnPortal == false)
+        if(clearedRoomsCount >= 7 && spawnPortal == false)
         {
             spawnPortal = true;
            StartCoroutine(PlaceBossRoom());
