@@ -228,7 +228,14 @@ public class DungeonRoom : MonoBehaviour
             //check every one second for enemies in the room
         }
         // room cleared
-        GameObject.FindWithTag("Player").Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnRoomCleared));
+        try
+        {
+            GameObject.FindWithTag("Player").Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnRoomCleared));
+        }
+        catch (InventoryFullException<SimpleCollectible> e)
+        {
+            // ignored
+        }
         OpenUp();
     }
 

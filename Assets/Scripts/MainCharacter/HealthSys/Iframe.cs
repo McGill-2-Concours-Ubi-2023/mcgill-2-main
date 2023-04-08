@@ -50,7 +50,7 @@ public class Iframe : MonoBehaviour
 
         int i = 0;
         float timer = 0f;
-        playerHealth.invulnerable = true;
+        using HLockGuard healthLock = playerHealth.Lock();
         while (i < numOfFlashes)
         {
             if (timer < duration)
@@ -70,10 +70,6 @@ public class Iframe : MonoBehaviour
             }
             timer += Time.deltaTime;
             yield return null;
-
         }
-        playerHealth.invulnerable = false;
-
-
     }
 }

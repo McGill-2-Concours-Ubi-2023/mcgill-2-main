@@ -122,8 +122,8 @@ public class GameManager : MonoBehaviour
         
         if (pos.y < -1)
         {
+            using HLockGuard playerHealthGuard = player.GetComponent<Health>().Lock();
             coverUpScreen.gameObject.SetActive(true);
-            player.Trigger<IHealthTriggers, bool>(nameof(IHealthTriggers.SetInvincible), true);
             await Task.Yield();
             pos.y = 0.5f;
             float3? roomPos = SceneManager.GetActiveScene().name == "Game" ? DungeonRoom.GetActiveRoom()?.transform.position : null;
@@ -136,11 +136,9 @@ public class GameManager : MonoBehaviour
             sw.Start();
             while (sw.ElapsedMilliseconds < 5000)
             {
-                player.Trigger<IHealthTriggers, bool>(nameof(IHealthTriggers.SetInvincible), true);
                 await Task.Yield();
             }
             sw.Stop();
-            player.Trigger<IHealthTriggers, bool>(nameof(IHealthTriggers.SetInvincible), false);
             coverUpScreen.gameObject.SetActive(false);
         }
     }

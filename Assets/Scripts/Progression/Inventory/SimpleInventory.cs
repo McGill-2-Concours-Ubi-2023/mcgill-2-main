@@ -4,7 +4,7 @@ using System.Threading;
 using JetBrains.Annotations;
 using UnityEngine;
 
-public interface HSimpleInventoryLockGuard : IDisposable
+public interface HSimpleInventoryLockGuard : HLockGuard
 {
     
 }
