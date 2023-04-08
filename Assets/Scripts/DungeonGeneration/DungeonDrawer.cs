@@ -54,6 +54,7 @@ public static class DungeonDrawer
         GameObject obj = GameObject.Instantiate(roomPrefab);
         GameObject roomRoot = obj.transform.Find("RoomRoot").gameObject;
         visualEffect.gameObject.transform.parent = roomRoot.transform;
+        visualEffect.transform.position = roomRoot.transform.position;
         roomRoot.transform.position = room.GetPosition();
         roomRoot.transform.parent = room.transform;
         DungeonData.SafeDestroy(obj);
