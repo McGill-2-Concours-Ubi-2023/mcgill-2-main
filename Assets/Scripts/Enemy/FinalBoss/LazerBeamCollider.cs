@@ -8,6 +8,7 @@ public class LazerBeamCollider : MonoBehaviour
 {
     public Collider _collider;
     public Transform beamEnd;
+    public Transform colliderEnd;
     public VisualEffect beamVFX;
     public List<GameObject> obstacles;
     private bool hasCollided;
@@ -57,8 +58,9 @@ public class LazerBeamCollider : MonoBehaviour
         {
             beamVFX.SetVector3("ObstaclePosition", other.transform.position);
             beamVFX.SetFloat("ColliderSize", other.bounds.size.magnitude);
-            Vector3 diff = other.transform.position - beamEnd.transform.position;
-            beamVFX.SetFloat("ObstacleDistance", diff.magnitude);
+            Vector3 diff = other.transform.position - colliderEnd.transform.position;
+            Vector3 diff2 = other.transform.position - beamEnd.transform.position;
+            beamVFX.SetFloat("ObstacleDistance", diff2.magnitude);
             transform.position = transform.parent.position - transform.forward * diff.magnitude;
         }
     }

@@ -34,8 +34,8 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
         if (Attack)
         {
             Attack = !Attack;
-            LazerSweepAttack(topRightCorner.position, topLeftCorner.position);
-            //StartCoroutine(LazerBurst());
+            //LazerSweepAttack(topRightCorner.position, topLeftCorner.position);
+            StartCoroutine(LazerBurstSweep());
         }
     }
     
@@ -57,10 +57,8 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
         StartCoroutine(SweepLazers(lazer1, lazer2));
     }
 
-    IEnumerator SpawnTwoLazers(Vector3 endpoint1, Vector3 endpoint2)
+    IEnumerator SpawnTwoLazers(Vector3 endpoint1, Vector3 endpoint2, float lazerbeamDuration, float lazerChargeTime)
     {
-        const float lazerChargeTime = 0.5f;
-        const float lazerbeamDuration = 2.0f;
         var obj_1 = Instantiate(lazerPrefab);
         obj_1.transform.position = endpoint1;
         obj_1.transform.Rotate(0f, 180f, 0f);
@@ -84,6 +82,22 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
         Destroy(lazer2.gameObject);
     }
 
+    IEnumerator SpawnOneLazer(Vector3 position, float lazerChargeTime, float lazerbeamDuration)
+    {
+        var obj_1 = Instantiate(lazerPrefab);
+        obj_1.transform.position = position;
+        obj_1.transform.Rotate(0f, 180f, 0f);
+        VisualEffect lazer1 = obj_1.GetComponent<VisualEffect>();
+        lazer1.SendEvent("OnLazerCharge");
+        yield return new WaitForSeconds(lazerChargeTime);
+        lazer1.GetComponentInChildren<LazerBeamCollider>().ActivateCollider();
+        lazer1.SendEvent("OnLazerStart");
+        yield return new WaitForSeconds(lazerbeamDuration);
+        lazer1.SendEvent("OnLazerStop");
+        yield return new WaitForSeconds(2.0f);
+        Destroy(lazer1.gameObject);
+    }
+
     IEnumerator SweepLazers(VisualEffect lazer1, VisualEffect lazer2)
     {
         const float lazerChargeTime = 1.0f;
@@ -97,9 +111,6 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
         lazer1.SendEvent("OnLazerStart");
         lazer2.SendEvent("OnLazerStart");
         float elapsedTime = 0;
-        // Calculate rotation towards right direction
-        Quaternion lazerRotation = Quaternion.FromToRotation(lazer1.transform.forward, lazer2.transform.transform.position);
-       
         while (elapsedTime < lazerbeamDuration)
         {
             // Rotate towards right over time
@@ -116,23 +127,100 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
         Destroy(lazer2.gameObject);
     }
 
-    IEnumerator LazerBurst()
+    IEnumerator LazerBurstPeriodic_2()
     {
         Vector3 endpoint_2 = topRightCorner.position;
         Vector3 endpoint_1 = topLeftCorner.position;
         float distance = (endpoint_1 - endpoint_2).magnitude;
-        Vector3 endpoint_3 = endpoint_1 + new Vector3(distance / 6, 0, 0);
+        Vector3 endpoint_3 = endpoint_1 + new Vector3(distance / 7, 0, 0);
         Vector3 endpoint_4 = endpoint_1 + new Vector3(2 * distance / 7, 0, 0);
         Vector3 endpoint_5 = endpoint_1 + new Vector3(3 * distance / 7, 0, 0);
         Vector3 endpoint_6 = endpoint_1 + new Vector3(4 * distance / 7, 0, 0);
         Vector3 endpoint_7 = endpoint_1 + new Vector3(5 * distance / 7, 0, 0);
         Vector3 endpoint_8 = endpoint_1 + new Vector3(6 * distance / 7, 0, 0);
-        StartCoroutine(SpawnTwoLazers(endpoint_1, endpoint_2));
+        StartCoroutine(SpawnTwoLazers(endpoint_1, endpoint_2, 0.8f, 0.5f));
         yield return new WaitForSeconds(0.2f);
-        StartCoroutine(SpawnTwoLazers(endpoint_3, endpoint_8));
+        StartCoroutine(SpawnTwoLazers(endpoint_3, endpoint_8, 0.8f, 0.5f));
         yield return new WaitForSeconds(0.2f);
-        StartCoroutine(SpawnTwoLazers(endpoint_4, endpoint_7));
+        StartCoroutine(SpawnTwoLazers(endpoint_4, endpoint_7, 0.8f, 0.5f));
         yield return new WaitForSeconds(0.2f);
-        StartCoroutine(SpawnTwoLazers(endpoint_5, endpoint_6));
+        StartCoroutine(SpawnTwoLazers(endpoint_5, endpoint_6, 0.8f, 0.5f));
+    }
+
+    IEnumerator LazerBurstWave()
+    {
+        Vector3 endpoint_2 = topRightCorner.position;
+        Vector3 endpoint_1 = topLeftCorner.position;
+        float distance = (endpoint_1 - endpoint_2).magnitude;
+
+        // Set the number of waves and the amplitude of the wave motion
+        int numWaves = 6;
+
+        for (int i = 0; i < numWaves; i++)
+        {
+            // Calculate the endpoints for each wave
+            Vector3 waveStart = endpoint_1 + new Vector3((float)i * distance / numWaves, 0, 0);
+
+            // Offset the endpoints based on the wave motion
+            waveStart.y = endpoint_1.y;
+
+            // Clamp the endpoints within the bounds of endpoint_1 and endpoint_2 on the x-axis
+            waveStart.x = Mathf.Clamp(waveStart.x, endpoint_1.x, endpoint_2.x);
+
+            // Spawn the lasers for this wave
+            StartCoroutine(SpawnOneLazer(waveStart, 0.8f, 1.0f));
+            yield return new WaitForSeconds(0.2f);
+        }
+    }
+
+    IEnumerator LazerBurstSweep()
+    {
+        Vector3 endpoint_2 = topRightCorner.position;
+        Vector3 endpoint_1 = topLeftCorner.position;
+        float distance = (endpoint_1 - endpoint_2).magnitude;
+        float sweepTime = 1.0f;
+
+        // Spawn the first laser at the left endpoint
+        Vector3 laserPosition = endpoint_1;
+        StartCoroutine(SpawnOneLazer(laserPosition, 0.8f, sweepTime));
+
+        // Sweep the laser from left to right, one section at a time
+        for (int i = 1; i < 7; i++)
+        {
+            // Calculate the endpoint for this section of the sweep
+            float sectionX = endpoint_1.x + (i / 7.0f) * distance;
+            Vector3 sectionEndpoint = new Vector3(sectionX, endpoint_1.y, endpoint_1.z);
+
+            // Move the laser to the new endpoint over the sweep time
+            float startTime = Time.time;
+            while (Time.time - startTime < sweepTime)
+            {
+                float t = (Time.time - startTime) / sweepTime;
+                laserPosition = Vector3.Lerp(endpoint_1, sectionEndpoint, t);
+                yield return null;
+            }
+
+            // Spawn a new laser at the endpoint for this section
+            StartCoroutine(SpawnOneLazer(laserPosition, 0.8f, sweepTime));
+        }
+    }
+
+
+
+
+    IEnumerator MultiSweepLazers()
+    {
+        Vector3 point1 = topRightCorner.position;
+        Vector3 point2 = topLeftCorner.position;
+        LazerSweepAttack(point1, point2);
+        yield return new WaitForSeconds(1.0f);
+        LazerSweepAttack(point1, point2);
+        yield return new WaitForSeconds(1.0f);
+        LazerSweepAttack(point1, point2);
+        yield return new WaitForSeconds(1.0f);
+        LazerSweepAttack(point1, point2);
+        yield return new WaitForSeconds(1.0f);
+        LazerSweepAttack(point1, point2);
+        yield return new WaitForSeconds(1.0f);
     }
 }
