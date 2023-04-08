@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 
@@ -34,6 +36,7 @@ public class TerminalManager : MonoBehaviour
     
     private NukataLisp.Interp m_Interpreter;
     public TMP_InputField InputField;
+    public TMP_InputField OutputField;
     
     private static class LispBindings
     {
@@ -41,6 +44,12 @@ public class TerminalManager : MonoBehaviour
         {
             string s = args[0].ToString();
             return GameObject.Find(s);
+        }
+        
+        public static object GameObject_FindAllWithTag(object[] args)
+        {
+            string s = args[0].ToString();
+            return GameObject.FindGameObjectsWithTag(s);
         }
         
         public static object GameObject_GetTransform(object[] args)
@@ -113,6 +122,16 @@ public class TerminalManager : MonoBehaviour
             return GameObject.FindWithTag(args[0].ToString());
         }
         
+        public static object MonoBehaviour_GetTransform(object[] args)
+        {
+            return ((MonoBehaviour) args[0]).transform;
+        }
+        
+        public static object MonoBehaviour_GetGameObject(object[] args)
+        {
+            return ((MonoBehaviour) args[0]).gameObject;
+        }
+        
         public static object Object_ToString(object[] args)
         {
             return args[0].ToString();
@@ -137,21 +156,21 @@ public class TerminalManager : MonoBehaviour
         public static object Vector3_SetX(object[] args)
         {
             Vector3 v = (Vector3) args[0];
-            v.x = (float) args[1];
+            v.x = ToFloat(args[1]);
             return v;
         }
         
         public static object Vector3_SetY(object[] args)
         {
             Vector3 v = (Vector3) args[0];
-            v.y = (float) args[1];
+            v.y = ToFloat(args[1]);
             return v;
         }
         
         public static object Vector3_SetZ(object[] args)
         {
             Vector3 v = (Vector3) args[0];
-            v.z = (float) args[1];
+            v.z = ToFloat(args[1]);
             return v;
         }
         
@@ -168,6 +187,17 @@ public class TerminalManager : MonoBehaviour
             }
             return (float) o;
         }
+        
+        public static object Dungeon_GetActiveRoom(object[] args)
+        {
+            return DungeonRoom.GetActiveRoom();
+        }
+
+        public static object Debug_Log(object[] args)
+        {
+            Debug.Log(args[0]);
+            return args[0];
+        }
     }
 
     private async void Awake()
@@ -177,10 +207,13 @@ public class TerminalManager : MonoBehaviour
         DontDestroyOnLoad(transform.root);
         m_Interpreter = await NukataLisp.MakeInterp();
         m_Interpreter.Def("GameObject/Find", 1, LispBindings.GameObject_Find);
+        m_Interpreter.Def("GameObject/FindAllWithTag", 1, LispBindings.GameObject_FindAllWithTag);
         m_Interpreter.Def("Console/Hide", 0, LispBindings.Console_Hide);
         m_Interpreter.Def("GameObject/FindWithTag", 1, LispBindings.GameObject_FindWithTag);
         m_Interpreter.Def("Object/ToString", 1, LispBindings.Object_ToString);
         m_Interpreter.Def("GameObject/GetTransform", 1, LispBindings.GameObject_GetTransform);
+        m_Interpreter.Def("MonoBehaviour/GetTransform", 1, LispBindings.MonoBehaviour_GetTransform);
+        m_Interpreter.Def("MonoBehaviour/GetGameObject", 1, LispBindings.MonoBehaviour_GetGameObject);
         m_Interpreter.Def("Transform/GetPosition", 1, LispBindings.Transform_GetPosition);
         m_Interpreter.Def("Transform/SetPosition", 2, LispBindings.Transform_SetPosition);
         m_Interpreter.Def("Transform/GetRotation", 1, LispBindings.Transform_GetRotation);
@@ -198,25 +231,43 @@ public class TerminalManager : MonoBehaviour
         m_Interpreter.Def("Vector3/SetY", 2, LispBindings.Vector3_SetY);
         m_Interpreter.Def("Vector3/SetZ", 2, LispBindings.Vector3_SetZ);
         m_Interpreter.Def("Vector3/New", 3, LispBindings.Vector3_New);
+        m_Interpreter.Def("Dungeon/GetActiveRoom", 0, LispBindings.Dungeon_GetActiveRoom);
+        m_Interpreter.Def("Debug/Log", 1, LispBindings.Debug_Log);
 
         m_Interpreter.COut = new GenericUnityTextWriter(Debug.Log);
-        
-        InputField.onSubmit.AddListener(async textCmd =>
+       
+    }
+    
+    private void PrintToScreenConsole(string s)
+    {
+        OutputField.text += $"> {s}\n";
+    }
+
+    private async Task HandleText(string textCmd)
+    {
+        try
         {
-            try
-            {
-                object result = await NukataLisp.Run(m_Interpreter, new StringReader(textCmd));
-                Debug.Log(result);
-            }
-            catch (Exception e)
-            {
-                Debug.Log(e);
-                throw;
-            }
-            finally
-            {
-                InputField.text = "";
-            }
-        });
+            object result = await NukataLisp.Run(m_Interpreter, new StringReader(textCmd));
+            PrintToScreenConsole(result.ToString());
+        }
+        catch (Exception e)
+        {
+            PrintToScreenConsole(e.ToString());
+        }
+        finally
+        {
+            await Task.Yield();
+            InputField.text = "";
+        }
+    }
+    
+    public async Task TextSubmit()
+    {
+        await HandleText(InputField.text);
+    }
+
+    private async void Update()
+    {
+        
     }
 }

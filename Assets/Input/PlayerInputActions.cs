@@ -134,6 +134,15 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ConsoleSubmit"",
+                    ""type"": ""Button"",
+                    ""id"": ""1985c3ac-0744-4ac3-a750-4ec8df435882"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -532,6 +541,39 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""action"": ""ToggleConsole"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""One Modifier"",
+                    ""id"": ""77476d4f-6a71-485a-869c-4a94a2eb3350"",
+                    ""path"": ""OneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ConsoleSubmit"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""ba5b9f85-cab1-4fcd-bd32-84f6df3728a0"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ConsoleSubmit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""2ad6b2c5-4274-41a0-8a65-49a91f4edf3a"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ConsoleSubmit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -817,6 +859,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         m_Player_ShootRelease = m_Player.FindAction("ShootRelease", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
         m_Player_ToggleConsole = m_Player.FindAction("ToggleConsole", throwIfNotFound: true);
+        m_Player_ConsoleSubmit = m_Player.FindAction("ConsoleSubmit", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Point = m_UI.FindAction("Point", throwIfNotFound: true);
@@ -897,6 +940,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_ShootRelease;
     private readonly InputAction m_Player_Interact;
     private readonly InputAction m_Player_ToggleConsole;
+    private readonly InputAction m_Player_ConsoleSubmit;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -913,6 +957,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         public InputAction @ShootRelease => m_Wrapper.m_Player_ShootRelease;
         public InputAction @Interact => m_Wrapper.m_Player_Interact;
         public InputAction @ToggleConsole => m_Wrapper.m_Player_ToggleConsole;
+        public InputAction @ConsoleSubmit => m_Wrapper.m_Player_ConsoleSubmit;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -958,6 +1003,9 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @ToggleConsole.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnToggleConsole;
                 @ToggleConsole.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnToggleConsole;
                 @ToggleConsole.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnToggleConsole;
+                @ConsoleSubmit.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnConsoleSubmit;
+                @ConsoleSubmit.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnConsoleSubmit;
+                @ConsoleSubmit.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnConsoleSubmit;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -998,6 +1046,9 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @ToggleConsole.started += instance.OnToggleConsole;
                 @ToggleConsole.performed += instance.OnToggleConsole;
                 @ToggleConsole.canceled += instance.OnToggleConsole;
+                @ConsoleSubmit.started += instance.OnConsoleSubmit;
+                @ConsoleSubmit.performed += instance.OnConsoleSubmit;
+                @ConsoleSubmit.canceled += instance.OnConsoleSubmit;
             }
         }
     }
@@ -1124,6 +1175,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         void OnShootRelease(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
         void OnToggleConsole(InputAction.CallbackContext context);
+        void OnConsoleSubmit(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

@@ -16,4 +16,9 @@ public class TerminalInputHandler : MonoBehaviour
         m_IsTerminalActive = true;
         transform.GetChild(0).gameObject.SetActive(m_IsTerminalActive);
     }
+    
+    private async void OnConsoleSubmit()
+    {
+        await GetComponentInChildren<TerminalManager>().TextSubmit();
+    }
 }
