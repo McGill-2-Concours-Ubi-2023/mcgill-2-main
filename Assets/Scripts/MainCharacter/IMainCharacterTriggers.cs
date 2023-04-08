@@ -42,4 +42,8 @@ public interface IMainCharacterTriggers : ITrigger
     public void FreezeOnCurrentState() { }
 
     public void UnFreeze() { }
+
+    public void IncreaseMaxGrenade() { }
+
+    public void IncreaseMaxCrate() { }
 }

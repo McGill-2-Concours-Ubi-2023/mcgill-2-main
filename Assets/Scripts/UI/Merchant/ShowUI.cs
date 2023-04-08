@@ -194,7 +194,12 @@ public class ShowUI : MonoBehaviour
     public void ChangeBullet() {
         gun.Trigger<IGunTriggers>(nameof(IGunTriggers.ChangeBullet));
     }
-  /*  private void GainOneMaxGrenade() {
-        this.gameObject.Trigger<IGrenadeTriggers, int>(nameof(IGrenadeTriggers.IncreaseMaxGrenade), 1);
-    }*/
+    public void GainOneMaxGrenade()
+    {
+        player.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.IncreaseMaxGrenade));
+    }
+
+    public void GainOneMaxCrate() {
+        player.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.IncreaseMaxCrate));
+    }
 }

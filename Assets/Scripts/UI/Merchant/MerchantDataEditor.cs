@@ -27,19 +27,19 @@ public class MerchantDataEditor : Editor
         SerializableDict<string, GameObject> holograms = data.holograms;
         serializedObject.Update();
         GUILayout.Label("Hashtable:", title);
-        int index = 0;
         foreach (var kvp in descriptions)
         {
             GUILayout.Label(descriptions[kvp.Key] + ":");
             GUILayout.Label("- " + "price: " + prices[kvp.Value] + " pts");
             GUILayout.Label("- " + "method: " + methods[kvp.Value]);
-            GUILayout.Label("- " + "index: " + kvp.Key);
+
             if (holograms.ContainsKey(kvp.Value))
             {
                 GUILayout.Label("- " + "hologram: " + holograms[kvp.Value].ToString());
             }
             else GUILayout.Label("- " + "hologram: NONE");
-            index++; 
+            GUILayout.Label("- " + "index: " + kvp.Key);
+
         }
         GuiLine();
 
@@ -59,7 +59,10 @@ public class MerchantDataEditor : Editor
                         descriptions.Add(i, description);
                         prices.Add(description, price);
                         methods.Add(description, method);
-                        holograms.Add(description, hologram);
+                        if (hologram != null) {
+                            holograms.Add(description, hologram);
+                        }
+                        
                         break;
                     }
                 }
@@ -86,10 +89,10 @@ public class MerchantDataEditor : Editor
             {
                 prices.Remove(descriptions[entryIndexToRemove]);
                 methods.Remove(descriptions[entryIndexToRemove]);
+                holograms.Remove(descriptions[entryIndexToRemove]);
                 descriptions.Remove(entryIndexToRemove);
-                
+
             }
-            else Debug.Log("given description does not exist");
 
             entryIndexToRemove = -1;
             EditorUtility.SetDirty(target); // mark the scriptable object as dirty to save the changes
@@ -114,21 +117,38 @@ public class MerchantDataEditor : Editor
         {
             if (prices.ContainsKey(descriptions[entryIndexToRemove]))
             {
-                if (description != "") {
+                if (description != "")
+                {
+                    string oldDescription = descriptions[entryIndexToRemove];
                     descriptions[entryIndexToRemove] = description;
+                    int price = prices[oldDescription];
+                    prices.Remove(oldDescription);
+                    prices.Add(description, price);
+                    string methodName = methods[oldDescription];
+                    methods.Remove(oldDescription);
+                    methods.Add(description, methodName);
+                    GameObject hologram;
+                    if (holograms.ContainsKey(oldDescription))
+                    {
+                        hologram = holograms[oldDescription];
+                        holograms.Remove(oldDescription);
+                        holograms.Add(description, hologram);
+                    }
                 }
-                if (price != -1) {
+                if (price != -1)
+                {
                     prices[descriptions[entryIndexToRemove]] = price;
                 }
-                if (method != "") {
+                if (method != "")
+                {
                     methods[descriptions[entryIndexToRemove]] = method;
                 }
-                if (hologram != null) {
+                if (hologram != null)
+                {
                     holograms[descriptions[entryIndexToRemove]] = hologram;
                 }
 
             }
-            else Debug.Log("given description does not exist");
 
             entryIndexToRemove = -1;
             hologram = null;
