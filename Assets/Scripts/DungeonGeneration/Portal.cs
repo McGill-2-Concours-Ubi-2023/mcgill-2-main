@@ -20,7 +20,6 @@ public class Portal : MonoBehaviour
     {
         if (canTeleport)
         {
-            DontDestroyOnLoad(player.gameObject);
             player.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.FreezeOnCurrentState));
             player.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.Teleport));
             await Task.Delay(3000);
