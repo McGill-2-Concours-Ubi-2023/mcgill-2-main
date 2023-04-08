@@ -46,6 +46,7 @@ public static class DungeonDrawer
         GameObject roomPrefab, RoomTypes.RoomType type, bool isolate)
     {
         room.MoveDoorsUp();
+        room.GetComponent<EnemySpawn1>().volumeFog.gameObject.transform.parent = room.transform;
         room.GetWalls().transform.parent = room.transform; //Move walls upwards
         DungeonData.SafeDestroy(room.transform.Find("RoomRoot").gameObject);//delete the root
         RoomData roomData = dungeonData.GetActiveLayout().GetRoomData(room);

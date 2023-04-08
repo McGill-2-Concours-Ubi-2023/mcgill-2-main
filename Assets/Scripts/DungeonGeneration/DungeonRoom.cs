@@ -170,8 +170,9 @@ public class DungeonRoom : MonoBehaviour
     {
         if (type == RoomTypes.RoomType.Start)
             GetComponent<EnemySpawn1>().volumeFog.enabled = false;
-        if(type == RoomTypes.RoomType.Boss)
+        if (type == RoomTypes.RoomType.Boss)
         {
+            GetComponent<EnemySpawn1>().DissipateAmbientFog();
             OpenBossPortal();
         }
         await OnDistanceRender();

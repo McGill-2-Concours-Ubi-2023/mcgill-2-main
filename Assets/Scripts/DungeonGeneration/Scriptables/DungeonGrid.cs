@@ -123,10 +123,12 @@ public class DungeonGrid : DataContainer<RoomData>
         {
             if(room.GetRoomType() == RoomTypes.RoomType.Special || randomRoom.GetRoomType() == RoomTypes.RoomType.Start)
             {
+                //if you did not find a spot, recursively try again
                 PlaceMerchant();
                 return;
             }
         }
+        DungeonDrawer.ReplaceRoom(randomRoom, data, data.GetSpecialRoomPrefabs()[0], RoomTypes.RoomType.Special, false);
     }
 
     public int RoomSize()
