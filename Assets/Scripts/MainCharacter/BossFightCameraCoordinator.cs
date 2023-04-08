@@ -32,5 +32,11 @@ public class BossFightCameraCoordinator : MonoBehaviour, IBossFightTriggers
     private async void InternalStartBossFight()
     {
         m_CinematicDirector.Resume();
+        await Task.Yield();
+        while (m_CinematicDirector.state == PlayState.Paused)
+        {
+            await Task.Yield();
+        }
+        FightCam.Priority = 15;
     }
 }
