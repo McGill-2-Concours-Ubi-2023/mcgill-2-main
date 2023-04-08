@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Threading;
 
 public interface IHealthTriggers : ITrigger
 {
     void TakeDamage(float damage);
     void GainHealth(float health);
     void IncreaseMaxHealth(float amount);
-    void SetInvincible(bool invincible);
 }
 
 public class Health : MonoBehaviour, IHealthTriggers, IGravityGrenadeHealthAdaptor
@@ -20,17 +20,48 @@ public class Health : MonoBehaviour, IHealthTriggers, IGravityGrenadeHealthAdapt
     private float MaxHealth = 5;
     [SerializeField]
     private HealthUI ui;
-    public bool invulnerable;
     public DeathRenderer deathRenderer;
     ClickSound cs;
     [SerializeField] AudioClip deathSound;
 
     [SerializeField]
     public GameObject scoringSystem;
+    
+    private volatile int m_LockCount;
+
+    private class HealthLockGuard : HLockGuard
+    {
+        private readonly Health m_Health;
+        
+        internal HealthLockGuard(Health health)
+        {
+            m_Health = health;
+            m_Health.InternalLock();
+        }
+        
+        ~HealthLockGuard()
+        {
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+            if (m_Health)
+            {
+                m_Health.InternalUnLock();
+            }
+        }
+    }
+    
+    public HLockGuard Lock()
+    {
+        return new HealthLockGuard(this);
+    }
 
     public void TakeDamage(float damage)
     {
-        if (invulnerable) return;
+        if (IsInvincible()) return;
         cs.Click();
         if (gameObject.CompareTag("Player"))
         {
@@ -61,11 +92,6 @@ public class Health : MonoBehaviour, IHealthTriggers, IGravityGrenadeHealthAdapt
         
     }
 
-    public void SetInvincible(bool invincible)
-    {
-        invulnerable = invincible;
-    }
-
     public void Death() {
         cs.Click(deathSound);
         OnDeath?.Invoke();
@@ -82,6 +108,21 @@ public class Health : MonoBehaviour, IHealthTriggers, IGravityGrenadeHealthAdapt
     public void IncreaseMaxHealth(float amount) {
         MaxHealth = MaxHealth += amount;
         GainHealth(1);
+    }
+    
+    public bool IsInvincible()
+    {
+        return m_LockCount > 0;
+    }
+
+    private void InternalLock()
+    {
+        Interlocked.Increment(ref m_LockCount);
+    }
+
+    private void InternalUnLock()
+    {
+        Interlocked.Decrement(ref m_LockCount);
     }
 }
 
