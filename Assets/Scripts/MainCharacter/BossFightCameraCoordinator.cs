@@ -38,5 +38,6 @@ public class BossFightCameraCoordinator : MonoBehaviour, IBossFightTriggers
             await Task.Yield();
         }
         FightCam.Priority = 15;
+        m_Controller.Camera = FightCam;
     }
 }
