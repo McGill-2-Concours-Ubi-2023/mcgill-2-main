@@ -19,6 +19,7 @@ public interface ISimpleInventory<in TKey>
     public int GetMax(TKey key);
     public void ResetAll();
     public HSimpleInventoryLockGuard Lock();
+    public void ChangeMaximum(TKey key, int max);
 }
 
 public class InventoryFullException<T> : System.Exception
@@ -38,7 +39,7 @@ public class InventoryEmptyException<T> : System.Exception
 public class SimpleInventory<TKey> : ISimpleInventory<TKey>
 {
     private readonly IDictionary<TKey, int> m_InventoryCounts;
-    private readonly IReadOnlyDictionary<TKey, int> m_InventoryMaximums;
+    private readonly IDictionary<TKey, int> m_InventoryMaximums;
     private volatile int m_LockCount = 0;
 
     private class SimpleInventoryLockGuard : HSimpleInventoryLockGuard
@@ -63,7 +64,7 @@ public class SimpleInventory<TKey> : ISimpleInventory<TKey>
         }
     }
 
-    public SimpleInventory(IReadOnlyDictionary<TKey, int> inventoryMaximums)
+    public SimpleInventory(IDictionary<TKey, int> inventoryMaximums)
     {
         m_InventoryCounts = new Dictionary<TKey, int>();
         m_InventoryMaximums = inventoryMaximums;
@@ -160,6 +161,11 @@ public class SimpleInventory<TKey> : ISimpleInventory<TKey>
     public HSimpleInventoryLockGuard Lock()
     {
         return new SimpleInventoryLockGuard(this);
+    }
+
+    public void ChangeMaximum(TKey key, int max)
+    {
+        m_InventoryMaximums[key] = max;
     }
 
     private void InternalLock()

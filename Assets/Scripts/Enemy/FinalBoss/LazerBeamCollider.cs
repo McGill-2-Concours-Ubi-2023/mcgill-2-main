@@ -19,7 +19,7 @@ public class LazerBeamCollider : MonoBehaviour
         if (obstacles == null) obstacles = new List<GameObject>();
     }
 
-    public void ActivateCollider()
+    public async void ActivateCollider()
     {
         _collider.enabled = true;
     }
@@ -39,10 +39,6 @@ public class LazerBeamCollider : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (!obstacles.Contains(other.gameObject))
-        {
-            obstacles.Add(other.gameObject);
-        }
         if (other.CompareTag("Player"))
         {
             other.GetComponent<Health>().TakeDamage(1);
