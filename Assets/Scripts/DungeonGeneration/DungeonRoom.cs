@@ -144,7 +144,8 @@ public class DungeonRoom : MonoBehaviour
 
     public void SpawnEnemies()
     {
-        if(enemies == null)
+        GetComponent<EnemySpawn1>().DissipateAmbientFog();
+        if (enemies == null)
         enemies = new List<Enemy>();
         bool isValidRoom = type != RoomTypes.RoomType.Special && type != RoomTypes.RoomType.Start
             && type != RoomTypes.RoomType.Boss;
@@ -167,6 +168,8 @@ public class DungeonRoom : MonoBehaviour
 
     public async Task UpdateRoomsLayout()
     {
+        if (type == RoomTypes.RoomType.Start)
+            GetComponent<EnemySpawn1>().volumeFog.enabled = false;
         if(type == RoomTypes.RoomType.Boss)
         {
             OpenBossPortal();

@@ -57,6 +57,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     [SerializeField]
     private Material desintegrateMat;
     public bool desintegrate = false;
+    private bool isDead;
 
 
     public ISimpleInventory<SimpleCollectible> SimpleCollectibleInventory;
@@ -116,7 +117,15 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
 
     private void OnPlayerDeath()
     {
-        SceneManager.LoadScene("Menu");
+        if (!isDead)
+        {
+            desintegrateEffect.SendEvent("OnDesintegrate");
+            FreezeOnCurrentState();
+            animator.enabled = false;
+            GetComponent<Collider>().enabled = false;
+            StartCoroutine(Desintegrate(3.0f, true));
+            isDead = true;
+        }
     }
 
     private async void Start()
@@ -176,7 +185,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     {
         if (desintegrate)
         {
-            Desintegrate();
+            Teleport();
             desintegrate = false;
         }
         //gcUI.UpdateGrenadeUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade));
@@ -271,13 +280,13 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         outData.Value = m_NavActionData;
     }
 
-    public void Desintegrate()
+    public void Teleport()
     {
         desintegrateEffect.SendEvent("OnDesintegrate");
-        StartCoroutine(Teleport(2.0f));
+        StartCoroutine(Desintegrate(2.0f, false));
     }
 
-    IEnumerator Teleport(float timer)
+    IEnumerator Desintegrate(float timer, bool onDeath)
     {
         hairRend.material = desintegrateMat;
         bodyRend.material = desintegrateMat;
@@ -291,6 +300,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
             elapsedTime += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
+        if(onDeath) SceneManager.LoadScene("Menu");
     }
 
     public void StopTrail()
