@@ -1,11 +1,18 @@
+using System;
 using System.Threading.Tasks;
 using Cinemachine;
 using UnityEngine;
 
 public class BossFightCameraCoordinator : MonoBehaviour, IBossFightTriggers
 {
-    public CinemachineVirtualCamera CorridorCam, CutSceneCam, FightCam;
-    
+    public CinemachineVirtualCamera CorridorCam, FightCam;
+    private MainCharacterController m_Controller;
+
+    private void Awake()
+    {
+        m_Controller = GetComponent<MainCharacterController>();
+    }
+
     public void StartBossFight()
     {
         InternalStartBossFight();
@@ -13,8 +20,6 @@ public class BossFightCameraCoordinator : MonoBehaviour, IBossFightTriggers
     
     private async void InternalStartBossFight()
     {
-        CutSceneCam.gameObject.SetActive(true);
-        await Task.Delay(5000);
-        CorridorCam.gameObject.SetActive(false);
+
     }
 }
