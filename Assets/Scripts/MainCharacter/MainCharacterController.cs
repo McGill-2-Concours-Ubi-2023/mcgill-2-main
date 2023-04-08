@@ -38,10 +38,26 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     private bool m_GamePaused;
     [CanBeNull]
     private GameObject m_PauseMenu;
-    public VisualEffect trailFollowEffect;
+    public VisualEffect desintegrateEffect;
     private Health health;
     public bool startFight;
     private int m_RoomClearedCount;
+    [SerializeField]
+    private Renderer bodyRend;
+    [SerializeField]
+    private Renderer hairRend;
+    [SerializeField]
+    private Renderer gunRend;
+    [SerializeField]
+    private Material defaultMat;
+    [SerializeField]
+    private Material hairMat;
+    [SerializeField]
+    private Material gunMat;
+    [SerializeField]
+    private Material desintegrateMat;
+    public bool desintegrate = false;
+
 
     public ISimpleInventory<SimpleCollectible> SimpleCollectibleInventory;
     
@@ -56,6 +72,10 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
 
     private async void Awake()
     {
+        gunRend.material = gunMat;
+        bodyRend.material = defaultMat;
+        hairRend.material = hairMat;
+       
         m_Awake = true;
         Transform cameraRoot = transform.Find("CameraRoot");
         if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("BossScene"))
@@ -160,6 +180,11 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
 
     private void Update()
     {
+        if (desintegrate)
+        {
+            Desintegrate();
+            desintegrate = false;
+        }
         //gcUI.UpdateGrenadeUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade));
         gcUI.UpdateCrateUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint));
         if (startFight) StartFight();
@@ -252,14 +277,31 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         outData.Value = m_NavActionData;
     }
 
-    public void ActivateTrail()
+    public void Desintegrate()
     {
-        trailFollowEffect.SendEvent("OnFollowTrail");
+        desintegrateEffect.SendEvent("OnDesintegrate");
+        StartCoroutine(Teleport(2.0f));
+    }
+
+    IEnumerator Teleport(float timer)
+    {
+        hairRend.material = desintegrateMat;
+        bodyRend.material = desintegrateMat;
+        gunRend.material = desintegrateMat;
+        float elapsedTime = 0;
+        while (elapsedTime < timer)
+        {
+            float t = elapsedTime / timer;
+            float threshold = Mathf.Lerp(0, 1.5f, t);
+            desintegrateMat.SetFloat("_Dissolve_threshold", threshold);
+            elapsedTime += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
     }
 
     public void StopTrail()
     {
-        trailFollowEffect.SendEvent("OnStopTrail");
+        desintegrateEffect.SendEvent("OnStopTrail");
     }
 
     public void OnDash()

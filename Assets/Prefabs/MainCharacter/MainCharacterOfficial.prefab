@@ -293,8 +293,15 @@ MonoBehaviour:
     type: 3}
   doorOpenRate: 4
   dashDuration: 0.2
-  trailFollowEffect: {fileID: 8965242885257460552}
+  desintegrateEffect: {fileID: 0}
   startFight: 0
+  bodyRend: {fileID: 4423724896123970815}
+  hairRend: {fileID: 5728411879079684601}
+  gunRend: {fileID: 595279681800574958}
+  defaultMat: {fileID: 2100000, guid: b8eec9d2194ce1144b5fe7f1333d9901, type: 2}
+  hairMat: {fileID: 2100000, guid: 8a3842406eda90e4ab1a3c52ad075929, type: 2}
+  gunMat: {fileID: 2100000, guid: 8c2af5a374c10204eb861378c2475c11, type: 2}
+  desintegrateMat: {fileID: 2100000, guid: d5752366032ed434ea554d940125eb38, type: 2}
   cs: {fileID: 0}
   dashSound: {fileID: 0}
 --- !u!54 &5632912686277809512
@@ -340,7 +347,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentField: {fileID: 0}
-  isBound: 0
+  readyToDestroy: 0
 --- !u!114 &7140985454690971074
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -586,12 +593,12 @@ PrefabInstance:
     - target: {fileID: 2916513261366062581, guid: 136e04102ca6e724b8fce6a7e46a4fdd,
         type: 3}
       propertyPath: m_Name
-      value: FollowTrail
+      value: DesintegrationVFX
       objectReference: {fileID: 0}
     - target: {fileID: 2916513261366062581, guid: 136e04102ca6e724b8fce6a7e46a4fdd,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3441256998511020805, guid: 136e04102ca6e724b8fce6a7e46a4fdd,
         type: 3}
@@ -601,7 +608,7 @@ PrefabInstance:
     - target: {fileID: 3653597300438275922, guid: 136e04102ca6e724b8fce6a7e46a4fdd,
         type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6351373347666087230, guid: 136e04102ca6e724b8fce6a7e46a4fdd,
         type: 3}
@@ -743,12 +750,6 @@ PrefabInstance:
 --- !u!4 &2407852016887545220 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 370425643643505650, guid: 136e04102ca6e724b8fce6a7e46a4fdd,
-    type: 3}
-  m_PrefabInstance: {fileID: 2616147798799365750}
-  m_PrefabAsset: {fileID: 0}
---- !u!2083052967 &8965242885257460552 stripped
-VisualEffect:
-  m_CorrespondingSourceObject: {fileID: 6351373347666087230, guid: 136e04102ca6e724b8fce6a7e46a4fdd,
     type: 3}
   m_PrefabInstance: {fileID: 2616147798799365750}
   m_PrefabAsset: {fileID: 0}
@@ -1090,6 +1091,12 @@ MonoBehaviour:
 --- !u!4 &595279681800574955 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2435986675446788178, guid: b5d03294d62926645bd790817082b95a,
+    type: 3}
+  m_PrefabInstance: {fileID: 2993916625199835065}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &595279681800574958 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2435986675446788183, guid: b5d03294d62926645bd790817082b95a,
     type: 3}
   m_PrefabInstance: {fileID: 2993916625199835065}
   m_PrefabAsset: {fileID: 0}

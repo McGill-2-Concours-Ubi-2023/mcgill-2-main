@@ -94,7 +94,7 @@ public class DungeonRoom : MonoBehaviour
             {
                 //if the length from this room to the 
                 int shortesPathLength = DungeonRoom.ShortestPath(activeRoom, choosenRoom);
-                if ( shortesPathLength > 3)
+                if ( shortesPathLength > 4)
                 {
                     Debug.Log("Shortest path to portal: " + shortesPathLength);
                     DungeonDrawer.ReplaceRoom(choosenRoom, dungeonGenerator.data,

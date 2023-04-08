@@ -35,7 +35,7 @@ public interface IMainCharacterTriggers : ITrigger
     
     public void OnAutoFaceIntention(float3 intention) { }
 
-    public void ActivateTrail() { }
+    public void Desintegrate() { }
 
     public void StopTrail() { }
 

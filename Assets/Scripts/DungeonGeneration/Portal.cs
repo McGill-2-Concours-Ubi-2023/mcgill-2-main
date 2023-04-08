@@ -20,8 +20,9 @@ public class Portal : MonoBehaviour
     {
         if (canTeleport)
         {
+            DontDestroyOnLoad(player.gameObject);
             player.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.FreezeOnCurrentState));
-            player.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.ActivateTrail));
+            player.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.Desintegrate));
             await Task.Delay(3000);
             GameManager.Instance.LoadScene(2);
         }     
