@@ -201,7 +201,9 @@ public abstract class GravityField : MonoBehaviour
         {
             if(rb != null)
             {
-                rb.GetComponent<GravityAgent>().Release();
+                GravityAgent agent = rb.GetComponent<GravityAgent>();
+                agent.Release();
+                agent.TryStopDestroy();
             }
         }
         try

@@ -350,6 +350,20 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         gcUI.UpdateCrateUI(crateNum);
     }
 
+    public void FreezeOnCurrentState()
+    {
+        //Freeze player
+        rb.constraints = RigidbodyConstraints.FreezeAll;
+    }
+
+    public void UnFreeze()
+    {
+        //Unfreeze player
+        rb.constraints = RigidbodyConstraints.None;
+        rb.constraints = RigidbodyConstraints.FreezeRotationX;
+        rb.constraints = RigidbodyConstraints.FreezeRotationZ;
+    }
+
     public void HasFaceDirectionInput(Ref<bool> hasInput)
     {
         hasInput.Value = m_InputActionAsset["CameraMove"].ReadValue<Vector2>() != Vector2.zero;

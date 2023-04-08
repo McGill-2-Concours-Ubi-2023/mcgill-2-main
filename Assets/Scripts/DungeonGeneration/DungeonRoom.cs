@@ -61,6 +61,7 @@ public class DungeonRoom : MonoBehaviour
         List<DungeonRoom> inter = allRooms.Except(roomsBuffer).ToList();
         foreach(DungeonRoom room in inter)
         {
+            if(room.GetRoomType() != RoomTypes.RoomType.Boss)
             room.transform.Find("RoomRoot").gameObject.SetActive(false);
             await Task.Yield();
         }
@@ -142,7 +143,9 @@ public class DungeonRoom : MonoBehaviour
     {
         if(enemies == null)
         enemies = new List<Enemy>();
-        if(type != RoomTypes.RoomType.Special && !cleared)
+        bool isValidRoom = type != RoomTypes.RoomType.Special && type != RoomTypes.RoomType.Start
+            && type != RoomTypes.RoomType.Boss;
+        if (isValidRoom && !cleared)
         {
             GetComponent<EnemySpawn1>().enabled = true;
             areEnemiesPresent = true;
