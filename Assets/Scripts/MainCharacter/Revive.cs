@@ -15,10 +15,13 @@ public class Revive : MonoBehaviour
     [SerializeField]
     private GameObject button1, button2;
     private GameObject selectedButton;
+    [SerializeField]
+    private GrenadeCrateUI gcUI;
 
     private void Start()
     {
         //revivePanel = GameObject.Find("RevivePanel");
+        gcUI = GameObject.FindObjectOfType<GrenadeCrateUI>();
         gameObject.GetComponent<Health>().OnDeath += RevivePlayerPromt;
         scoreSys = GameObject.FindObjectOfType<ScoringSystem>();
     }
@@ -39,9 +42,12 @@ public class Revive : MonoBehaviour
             Debug.LogError("scoreSys doesn't have enough score??? How?");
         }
         scoreSys.UpdateScore();
-        GetComponent<MainCharacterController>().ResetInventory();
+        MainCharacterController mcc = GetComponent<MainCharacterController>();
+        mcc.ResetInventory();
+        mcc.SimpleCollectibleInventory.AddInBulk(SimpleCollectible.CratePoint, 5);
+        mcc.SimpleCollectibleInventory.AddInBulk(SimpleCollectible.Grenade, 2);
+        gcUI.UpdateGrenadeUI(mcc.SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade));
         gameObject.Trigger<IHealthTriggers, float>(nameof(IHealthTriggers.GainHealth), 100);
-        //TODO: change the number of grenades and crates to the starting game values;
         revivePanel.SetActive(false);
         EventSystem.current.SetSelectedGameObject(null);
     }
