@@ -70,6 +70,9 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     public ClickSound cs;
     public AudioClip dashSound;
     private bool m_Awake = true;
+    
+    private volatile int m_LockCount;
+    private readonly object m_Lock = new object();
 
     private async void Awake()
     {
@@ -497,7 +500,6 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     public void OnShootPress()
     {
         gameObject.TriggerDown<IGunTriggers>(nameof(IGunTriggers.OnShootStartIntention));
-        
     }
     
     public void OnShootRelease()
@@ -531,6 +533,65 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     public void ResetInventory()
     {
         SimpleCollectibleInventory.ResetAll();
+    }
+
+    private void InternalLock()
+    {
+        lock (m_Lock)
+        {
+            if (m_LockCount == 0)
+            {
+                FreezeOnCurrentState();
+            }
+            Interlocked.Increment(ref m_LockCount);
+        }
+    }
+    
+    private void InternalUnlock()
+    {
+        lock (m_Lock)
+        {
+            Interlocked.Decrement(ref m_LockCount);
+            if (m_LockCount == 0)
+            {
+                UnFreeze();
+            }
+        }
+    }
+    
+    private bool MovementsOverriden()
+    {
+        lock (m_Lock)
+        {
+            return m_LockCount > 0;
+        }
+    }
+
+    private class MainCharacterLockGuard : HLockGuard
+    {
+        private readonly MainCharacterController m_MainCharacter;
+        
+        internal MainCharacterLockGuard(MainCharacterController mainCharacter)
+        {
+            m_MainCharacter = mainCharacter;
+            m_MainCharacter.InternalLock();
+        }
+        
+        ~MainCharacterLockGuard()
+        {
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+            m_MainCharacter.InternalUnlock();
+        }
+    }
+    
+    public HLockGuard Lock()
+    {
+        return new MainCharacterLockGuard(this);
     }
 }
 
