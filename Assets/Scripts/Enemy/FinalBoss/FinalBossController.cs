@@ -34,8 +34,8 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
         if (Attack)
         {
             Attack = !Attack;
-            //LazerSweepAttack(topRightCorner.position, topLeftCorner.position);
-            StartCoroutine(LazerBurst());
+            LazerSweepAttack(topRightCorner.position, topLeftCorner.position);
+            //StartCoroutine(LazerBurst());
         }
     }
     

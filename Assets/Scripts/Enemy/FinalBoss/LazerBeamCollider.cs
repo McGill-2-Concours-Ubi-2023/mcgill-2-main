@@ -6,7 +6,7 @@ using UnityEngine.VFX;
 
 public class LazerBeamCollider : MonoBehaviour
 {
-    private Collider _collider;
+    public Collider _collider;
     public Transform beamEnd;
     public VisualEffect beamVFX;
     public List<GameObject> obstacles;
@@ -14,14 +14,19 @@ public class LazerBeamCollider : MonoBehaviour
 
     private void OnEnable()
     {       
-        _collider = GetComponent<Collider>();
-        _collider.enabled = false;
         if (obstacles == null) obstacles = new List<GameObject>();
     }
 
     public async void ActivateCollider()
     {
-        await Task.Delay(100);
+        int obstacleLayerMask = 1 << Destructible.desctructibleMask;
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, transform.forward, out hit, 100, obstacleLayerMask))
+        {
+            Vector3 diff = hit.transform.position - beamEnd.transform.position;
+            transform.position = transform.parent.position - transform.forward * diff.magnitude;
+            await Task.Delay(100);          
+        }
         _collider.enabled = true;
     }
 
@@ -43,6 +48,10 @@ public class LazerBeamCollider : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             other.GetComponent<Health>().TakeDamage(1);
+        }
+        if (!obstacles.Contains(other.gameObject))
+        {
+            obstacles.Add(other.gameObject);
         }
         if (other.gameObject.layer == Destructible.desctructibleMask && hasCollided)
         {
@@ -68,6 +77,7 @@ public class LazerBeamCollider : MonoBehaviour
         if (other.gameObject.layer == Destructible.desctructibleMask && obstacles.Count == 0 && !hasCollided)
         {
             transform.position = transform.parent.position;
+            beamVFX.SetFloat("ObstacleDistance", 0);
         }
     }
 
