@@ -21,7 +21,10 @@ MonoBehaviour:
     - fefefe
     - '1.5x current fire rate '
     - Change the bullet type
-    values: d007000088130000d0070000a00f0000050d0000d0070000d0070000
+    - Increase the max number of grenade by one
+    - Increase the number of grenades by one
+    - Increase the number of crates by one
+    values: d007000088130000d0070000a00f0000050d0000d0070000d0070000e8030000e8030000f4010000
   merchantMethods:
     keys:
     - Gain one health
@@ -31,6 +34,9 @@ MonoBehaviour:
     - fefefe
     - '1.5x current fire rate '
     - Change the bullet type
+    - Increase the max number of grenade by one
+    - Increase the number of grenades by one
+    - Increase the number of crates by one
     values:
     - GainOneHealth
     - GainOneMaxHealth
@@ -39,20 +45,29 @@ MonoBehaviour:
     - ece
     - IncraseFireOnePointFive
     - ChangeBullet
+    - GainOneMaxGrenade
+    - GainOneMaxGrenade
+    - GainOneMaxCrate
   descriptions:
-    keys: 0000000001000000030000000200000004000000
+    keys: 00000000010000000300000002000000040000000500000006000000
     values:
     - Gain one health
     - Gain one  maximum health
     - Double fire rate
     - '1.5x current fire rate '
     - Change the bullet type
+    - Increase the number of grenades by one
+    - Increase the number of crates by one
   holograms:
     keys:
     - Change the bullet type
     - '1.5x current fire rate '
     - Double fire rate
+    - Increase the max number of grenade by one
+    - Increase the number of grenades by one
     values:
     - {fileID: 3405183217678696997, guid: a0e2716eb5b80ec48a8521202a44dbd0, type: 3}
     - {fileID: 3405183217678696997, guid: a0e2716eb5b80ec48a8521202a44dbd0, type: 3}
     - {fileID: 3405183217678696997, guid: a0e2716eb5b80ec48a8521202a44dbd0, type: 3}
+    - {fileID: 6039972143628214040, guid: 15b5fd7c64c7aff4c97f03b0097a0714, type: 3}
+    - {fileID: 6039972143628214040, guid: 15b5fd7c64c7aff4c97f03b0097a0714, type: 3}
