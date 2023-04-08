@@ -680,6 +680,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3545684372846306567}
   - component: {fileID: 3545684372846306566}
+  - component: {fileID: 7584181254099608211}
   m_Layer: 0
   m_Name: FinalBoss
   m_TagString: FinalBoss
@@ -730,9 +731,23 @@ MonoBehaviour:
   Attack: 0
   lazerPrefab: {fileID: 76157801830837168, guid: 4ea91579480dec641925a4005cd6af6e,
     type: 3}
-  lazerbeamDuration: 8
-  lazerRotationSpeed: 8
-  lazerChargeTime: 1.5
+--- !u!114 &7584181254099608211
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3545684372846306584}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9486b327d3c33545a56e8d24d4e468b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHealth: 100
+  ui: {fileID: 0}
+  deathRenderer: {fileID: 0}
+  deathSound: {fileID: 0}
+  scoringSystem: {fileID: 0}
 --- !u!1 &3545684373495364642
 GameObject:
   m_ObjectHideFlags: 0

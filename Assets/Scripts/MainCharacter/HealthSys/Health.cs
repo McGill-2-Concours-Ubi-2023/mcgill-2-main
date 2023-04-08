@@ -62,7 +62,10 @@ public class Health : MonoBehaviour, IHealthTriggers, IGravityGrenadeHealthAdapt
     public void TakeDamage(float damage)
     {
         if (IsInvincible()) return;
-        cs.Click();
+        if (cs)
+        {
+            cs.Click();
+        }
         if (gameObject.CompareTag("Player"))
         {
             scoringSystem.Trigger<IScoringSystemTriggers, float>(nameof(IScoringSystemTriggers.OnDamageTaken), damage);

@@ -47,6 +47,10 @@ public class Bullet : MonoBehaviour
             {
                 other.gameObject.Trigger<IHealthTriggers, float>(nameof(IHealthTriggers.TakeDamage), damage);
             }
+            else if (other.gameObject.transform.root.gameObject.CompareTag("FinalBoss"))
+            {
+                other.gameObject.TriggerUp<IHealthTriggers, float>(nameof(IHealthTriggers.TakeDamage), damage);
+            }
         }
         
         if (!(other.gameObject.CompareTag("EnemyBullet") 
