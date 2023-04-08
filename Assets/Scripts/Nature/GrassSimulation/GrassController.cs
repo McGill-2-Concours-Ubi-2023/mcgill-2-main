@@ -6,13 +6,12 @@ using UnityEngine;
 public class GrassController : MonoBehaviour
 {
     private Renderer _renderer;
-    public List<GrassInteractor> interactors;
+    public GrassInteractor[] interactors;
     private static int maxNumAgents = 5;
     private int[] idData;
     // Start is called before the first frame update
     void Start()
     {
-        interactors.Add(GameObject.FindGameObjectWithTag("Player").GetComponent<GrassInteractor>());
         _renderer = GetComponentInChildren<Renderer>();
         idData = new int[maxNumAgents];
         //Initialize all interactors to 0, in case default shader values modified;
@@ -27,7 +26,7 @@ public class GrassController : MonoBehaviour
     void Update()
     {
         //Update ids data
-        for(int i = 0; i < interactors.Count; i++)
+        for(int i = 0; i < interactors.Length; i++)
         {
             idData[i] = interactors[i].id;           
         }
