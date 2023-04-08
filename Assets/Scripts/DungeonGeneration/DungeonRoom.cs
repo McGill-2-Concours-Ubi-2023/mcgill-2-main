@@ -203,6 +203,7 @@ public class DungeonRoom : MonoBehaviour
     public void TryRemoveEnemy(Enemy enemy)
     {
         if (enemies.Contains(enemy)) enemies.Remove(enemy);
+        enemies.RemoveAll(enemy => enemy == null);
     }
 
     IEnumerator CheckForEnemies(Vector3 detectionRange)
