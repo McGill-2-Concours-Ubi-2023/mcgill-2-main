@@ -13,7 +13,7 @@ public class TerminalInputHandler : MonoBehaviour
     
     private void OnToggleConsole()
     {
-        m_IsTerminalActive = !m_IsTerminalActive;
+        m_IsTerminalActive = true;
         transform.GetChild(0).gameObject.SetActive(m_IsTerminalActive);
     }
 }

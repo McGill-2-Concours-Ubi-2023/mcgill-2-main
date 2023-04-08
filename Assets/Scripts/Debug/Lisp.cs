@@ -1,7 +1,6 @@
 // H29.03.01/R01.10.27 by SUZUKI Hisao
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -9,6 +8,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using LittleArith;
+using UnityEngine;
+using Debug = System.Diagnostics.Debug;
+using Object = System.Object;
 
 // lisp.exe: csc -doc:lisp.xml -o -r:System.Numerics.dll lisp.cs arith.cs
 // doc: mdoc update -i lisp.xml -o xml lisp.exe; mdoc export-html -o html xml
@@ -513,8 +515,8 @@ public static class NukataLisp {
             Def("apply", 2, a =>
                 Eval(new Cell(a[0], MapCar((Cell) a[1], QqQuote)), null));
 
-            Def("exit", 1, a => {
-                    Environment.Exit((int) a[0]);
+            Def("exit", 0, a => {
+                    Application.Quit();
                     return null;
                 });
             Def("dump", 0, a =>

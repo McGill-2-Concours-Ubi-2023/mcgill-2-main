@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using TMPro;
 using UnityEngine;
 
 public class TerminalManager : MonoBehaviour
@@ -32,6 +33,7 @@ public class TerminalManager : MonoBehaviour
     }
     
     private NukataLisp.Interp m_Interpreter;
+    public TMP_InputField InputField;
 
     private async void Awake()
     {
@@ -45,8 +47,30 @@ public class TerminalManager : MonoBehaviour
             string s = args[0].ToString();
             return GameObject.Find(s);
         });
+        m_Interpreter.Def("Console/Hide", 0,
+        _ =>
+        {
+            gameObject.SetActive(false);
+            return null;
+        });
         m_Interpreter.COut = new GenericUnityTextWriter(Debug.Log);
-        object result = await NukataLisp.Run(m_Interpreter, new StringReader("(GameObject/Find \"Main Camera\")"));
-        Debug.Log(result);
+        
+        InputField.onSubmit.AddListener(async textCmd =>
+        {
+            try
+            {
+                object result = await NukataLisp.Run(m_Interpreter, new StringReader(textCmd));
+                Debug.Log(result);
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e);
+                throw;
+            }
+            finally
+            {
+                InputField.text = "";
+            }
+        });
     }
 }
