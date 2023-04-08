@@ -103,24 +103,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "ToggleConsole",
-                    "type": "Button",
-                    "id": "3f74af5c-eb9b-4f41-83db-c157cf326927",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "ConsoleSubmit",
-                    "type": "Button",
-                    "id": "1985c3ac-0744-4ac3-a750-4ec8df435882",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -508,50 +490,6 @@
                     "action": "Interact",
                     "isComposite": false,
                     "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "f5370f6a-6dd6-43c8-8de9-fdf00743b7f1",
-                    "path": "<Keyboard>/period",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ToggleConsole",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "One Modifier",
-                    "id": "77476d4f-6a71-485a-869c-4a94a2eb3350",
-                    "path": "OneModifier",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ConsoleSubmit",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "modifier",
-                    "id": "ba5b9f85-cab1-4fcd-bd32-84f6df3728a0",
-                    "path": "<Keyboard>/shift",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ConsoleSubmit",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "binding",
-                    "id": "2ad6b2c5-4274-41a0-8a65-49a91f4edf3a",
-                    "path": "<Keyboard>/enter",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ConsoleSubmit",
-                    "isComposite": false,
-                    "isPartOfComposite": true
                 }
             ]
         },
