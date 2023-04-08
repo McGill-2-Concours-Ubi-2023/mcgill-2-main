@@ -2,9 +2,24 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
+public enum GameAssistLevel : int
+{
+    Deactivated = 0,
+    Default = 1,
+    Enhanced = 2,
+    Full = 3
+}
 
 public class GameManager : MonoBehaviour
 {
@@ -15,6 +30,9 @@ public class GameManager : MonoBehaviour
     private static bool m_IsLoading = false;
     private float m_NextProgress = 0.0f;
     private float m_CurrentProgress = 0.0f;
+    public GameObject coverUpScreen;
+    public GameAssistLevel assistLevel = GameAssistLevel.Default;
+    public event Action<GameAssistLevel> onDifficultyChanged;
     
     public static bool isLoading
     {
@@ -86,4 +104,82 @@ public class GameManager : MonoBehaviour
         
         loadingScreen.gameObject.SetActive(false);
     }
+
+    private async void Update()
+    {
+        if (isLoading)
+        {
+            return;
+        }
+        
+        GameObject player = GameObject.FindWithTag("Player");
+        if (!player)
+        {
+            return;
+        }
+
+        float3 pos = player.transform.position;
+        
+        if (pos.y < -1)
+        {
+            using HLockGuard playerHealthGuard = player.GetComponent<Health>().Lock();
+            coverUpScreen.gameObject.SetActive(true);
+            await Task.Yield();
+            pos.y = 0.5f;
+            float3? roomPos = SceneManager.GetActiveScene().name == "Game" ? DungeonRoom.GetActiveRoom()?.transform.position : null;
+            if (roomPos != null)
+            {
+                pos.xz = roomPos.Value.xz;
+            }
+            player.transform.position = pos;
+            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
+            while (sw.ElapsedMilliseconds < 5000)
+            {
+                await Task.Yield();
+            }
+            sw.Stop();
+            coverUpScreen.gameObject.SetActive(false);
+        }
+    }
+
+    public void NextDifficulty()
+    {
+        assistLevel = (GameAssistLevel)((int)(assistLevel + 1) % 4);
+        onDifficultyChanged?.Invoke(assistLevel);
+    }
+
+    public void PreviousDifficulty()
+    {
+        assistLevel = (GameAssistLevel)((int)(assistLevel + 3) % 4);
+        onDifficultyChanged?.Invoke(assistLevel);
+    }
+    
+    #if UNITY_EDITOR
+    [MenuItem("Litter Box/Load Game")]
+    public static void LoadGame()
+    {
+        if (EditorApplication.isPlaying)
+        {
+            Instance.LoadScene(1);
+        }
+        else
+        {
+            EditorUtility.DisplayDialog("Error", "You must be in play mode to load the game scene", "OK");
+        }
+    }
+    
+    [MenuItem("Litter Box/Load Boss")]
+    public static void LoadBoss()
+    {
+        if (EditorApplication.isPlaying)
+        {
+            Instance.LoadScene(2);
+        }
+        else
+        {
+            EditorUtility.DisplayDialog("Error", "You must be in play mode to load the boss scene", "OK");
+        }
+    }
+    #endif
 }

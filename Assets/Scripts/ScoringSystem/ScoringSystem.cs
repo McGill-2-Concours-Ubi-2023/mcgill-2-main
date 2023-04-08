@@ -23,6 +23,8 @@ public class ScoringSystem : MonoBehaviour, IScoringSystemTriggers
     [SerializeField]
     public TextMeshProUGUI scoreText;
 
+    private float scoreSpent;
+
     // Returns the data value of a scoring field
     public float GetScoringFieldData(string name)
     {
@@ -50,6 +52,7 @@ public class ScoringSystem : MonoBehaviour, IScoringSystemTriggers
         {
             score += field.Value();
         }
+        score -= scoreSpent;
         if (score < 0)
         {
             return 0;
@@ -62,6 +65,17 @@ public class ScoringSystem : MonoBehaviour, IScoringSystemTriggers
         {
             return score;
         }
+    }
+
+    // Attempts to make a purchase of the specified cost, returning true (and updating the score accordingly) if the purchase could be made and false otherwise
+    public bool TryPurchase(float amount)
+    {
+        if (currScore < amount)
+        {
+            return false;
+        }
+        scoreSpent += amount;
+        return true;
     }
 
     public void UpdateMatchTime()
@@ -95,12 +109,13 @@ public class ScoringSystem : MonoBehaviour, IScoringSystemTriggers
             { "MatchTime", new ScoringField(0, -1) },
             { "LevelTime", new ScoringField(0, -1) },
             { "DamageTaken", new ScoringField(0, -10) },
-            { "EnemiesKilled", new ScoringField(0, 100) }
+            { "EnemiesKilled", new ScoringField(0, 100) },
         };
     }
 
+
     // Recomputes the score whenever a field is updated and updates the TextMeshProGUI element displaying the score
-    private void UpdateScore()
+    public void UpdateScore()
     {
         currScore = ComputeScore();
         scoreText.text = "SCORE\n" + currScore.ToString().PadLeft(6, '0');

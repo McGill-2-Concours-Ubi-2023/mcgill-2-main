@@ -62,6 +62,7 @@ MonoBehaviour:
   - {x: 5, y: 0, z: -5}
   - {x: -5, y: 0, z: 5}
   - {x: -5, y: 0, z: -5}
+  volumeFog: {fileID: 4756948575434844496}
 --- !u!1 &3416041994906259341
 GameObject:
   m_ObjectHideFlags: 0
@@ -5511,6 +5512,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f6f3ab36ee128454484562a81b0f88a7, type: 3}
+--- !u!2083052967 &4756948575434844496 stripped
+VisualEffect:
+  m_CorrespondingSourceObject: {fileID: 1525890172079998905, guid: f6f3ab36ee128454484562a81b0f88a7,
+    type: 3}
+  m_PrefabInstance: {fileID: 6280584691733933801}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7903759847790980204 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4217292524305056389, guid: f6f3ab36ee128454484562a81b0f88a7,

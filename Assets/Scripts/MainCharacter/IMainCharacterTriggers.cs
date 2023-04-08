@@ -32,4 +32,14 @@ public interface IMainCharacterTriggers : ITrigger
     public void OnPrimaryWeaponRelease() { }
     
     public void ResetInventory() { }
+    
+    public void OnAutoFaceIntention(float3 intention) { }
+
+    public void Teleport() { }
+
+    public void StopTrail() { }
+
+    public void FreezeOnCurrentState() { }
+
+    public void UnFreeze() { }
 }

@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Unity.Collections;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.VFX;
 
 [System.Serializable]
 public class DungeonRoom : MonoBehaviour
@@ -42,6 +44,7 @@ public class DungeonRoom : MonoBehaviour
     private bool cleared = false;
     public static int clearedRoomsCount;
     private List<DungeonLight> cachedLights;
+    private static bool spawnPortal;
 
     private async Task OnDistanceRender()
     {
@@ -58,6 +61,7 @@ public class DungeonRoom : MonoBehaviour
         List<DungeonRoom> inter = allRooms.Except(roomsBuffer).ToList();
         foreach(DungeonRoom room in inter)
         {
+            if(room.GetRoomType() != RoomTypes.RoomType.Boss)
             room.transform.Find("RoomRoot").gameObject.SetActive(false);
             await Task.Yield();
         }
@@ -66,6 +70,40 @@ public class DungeonRoom : MonoBehaviour
             room.transform.Find("RoomRoot").gameObject.SetActive(true);
             room.RetrieveDoors();
             await Task.Yield();
+        }
+    }
+
+
+    private void Update()
+    {
+        if(clearedRoomsCount >= 7 && spawnPortal == false)
+        {
+            spawnPortal = true;
+           StartCoroutine(PlaceBossRoom());
+        }
+    }
+
+    IEnumerator PlaceBossRoom()
+    {
+        bool isPlaced = false;
+        while (!isPlaced)
+        {
+            int randInt = UnityEngine.Random.Range(Mathf.FloorToInt(allRooms.Count / 2), allRooms.Count - 1);
+            DungeonRoom choosenRoom = allRooms[randInt];
+            foreach (DungeonRoom room in activeRoom.adjacentRooms)
+            {
+                //if the length from this room to the 
+                int shortesPathLength = DungeonRoom.ShortestPath(activeRoom, choosenRoom);
+                if ( shortesPathLength > 4)
+                {
+                    Debug.Log("Shortest path to portal: " + shortesPathLength);
+                    DungeonDrawer.ReplaceRoom(choosenRoom, dungeonGenerator.data,
+                    dungeonGenerator.data.GetPortalPrefab(), RoomTypes.RoomType.Boss, false);
+                    isPlaced = true;
+                }
+                yield return new WaitForEndOfFrame();              
+            }
+            yield return new WaitForEndOfFrame();
         }
     }
 
@@ -100,13 +138,18 @@ public class DungeonRoom : MonoBehaviour
     private void Awake()
     {
         dungeonGenerator = FindObjectOfType<DungeonGenerator>();
+        spawnPortal = false;
+        clearedRoomsCount = 0;
     }
 
     public void SpawnEnemies()
     {
-        if(enemies == null)
+        GetComponent<EnemySpawn1>().DissipateAmbientFog();
+        if (enemies == null)
         enemies = new List<Enemy>();
-        if(type != RoomTypes.RoomType.Special && !cleared)
+        bool isValidRoom = type != RoomTypes.RoomType.Special && type != RoomTypes.RoomType.Start
+            && type != RoomTypes.RoomType.Boss;
+        if (isValidRoom && !cleared)
         {
             GetComponent<EnemySpawn1>().enabled = true;
             areEnemiesPresent = true;
@@ -116,8 +159,25 @@ public class DungeonRoom : MonoBehaviour
         }   
     }
 
+    private void OpenBossPortal()
+    {
+        VisualEffect portalVFX = FindObjectOfType<Portal>()
+            .GetComponent<VisualEffect>();
+        portalVFX.SendEvent("OnPortalAppear");
+    }
+
     public async Task UpdateRoomsLayout()
     {
+        if (type == RoomTypes.RoomType.Start)
+            GetComponent<EnemySpawn1>().volumeFog.enabled = false;
+        if (type == RoomTypes.RoomType.Special || type == RoomTypes.RoomType.Boss)
+        {
+            GetComponent<EnemySpawn1>().DissipateAmbientFog();
+        }
+        if (type == RoomTypes.RoomType.Boss)
+        {
+            OpenBossPortal();
+        }    
         await OnDistanceRender();
         foreach (OccludableWall wall in occludableWalls)
         {
@@ -136,6 +196,8 @@ public class DungeonRoom : MonoBehaviour
             if (wall != null && wall.gameObject.activeInHierarchy) wall.ChangeRenderQueue(2998);
             await Task.Yield();
         }
+
+
     }
     
     public void TryRemoveEnemy(Enemy enemy)
@@ -426,11 +488,27 @@ public class DungeonRoom : MonoBehaviour
         return loadedRoom;
     }
 
-    public static bool DFS(DungeonRoom excludedRoom, DungeonRoom currentRoom, DungeonRoom endRoom, HashSet<DungeonRoom> visitedRooms)
+    public static int ShortestPath(DungeonRoom startRoom, DungeonRoom endRoom)
+    {
+        Dictionary<DungeonRoom, int> distances = new Dictionary<DungeonRoom, int>();
+        HashSet<DungeonRoom> visitedRooms = new HashSet<DungeonRoom>();
+
+        foreach (DungeonRoom room in allRooms)
+        {
+            distances[room] = int.MaxValue;
+        }
+        distances[startRoom] = 0;
+
+        DungeonRoom.DFS(startRoom, null, endRoom, visitedRooms, distances);
+
+        return distances[endRoom];
+    }
+
+    public static void DFS(DungeonRoom currentRoom, DungeonRoom excludedRoom, DungeonRoom endRoom, HashSet<DungeonRoom> visitedRooms, Dictionary<DungeonRoom, int> distances)
     {
         if (currentRoom == endRoom)
         {
-            return true; // We've already visited this room, so there's no path from the start to the end
+            return; // We've reached the end room, so we can stop searching
         }
 
         visitedRooms.Add(currentRoom);
@@ -439,15 +517,13 @@ public class DungeonRoom : MonoBehaviour
         {
             if (!visitedRooms.Contains(adjacentRoom) && adjacentRoom != excludedRoom)
             {
-                if (DFS(excludedRoom, adjacentRoom, endRoom, visitedRooms)) return true;
+                int newDistance = distances[currentRoom] + 1; // Each edge has a weight of 1
+                if (newDistance < distances[adjacentRoom])
+                {
+                    distances[adjacentRoom] = newDistance;
+                    DFS(adjacentRoom, currentRoom, endRoom, visitedRooms, distances);
+                }
             }
         }
-        return false; // We've searched all adjacent rooms and haven't found a path to the end room
-    }
-    public static (bool, int) PathExists(DungeonRoom excludedRoom, DungeonRoom startRoom, DungeonRoom endRoom)
-    {
-        HashSet<DungeonRoom> visitedRooms = new HashSet<DungeonRoom>();
-        bool path = DFS(excludedRoom, startRoom, endRoom, visitedRooms);
-        return (path, visitedRooms.Count());
     }
 }

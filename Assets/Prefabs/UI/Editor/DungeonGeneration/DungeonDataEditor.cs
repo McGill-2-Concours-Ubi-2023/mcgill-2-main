@@ -26,14 +26,14 @@ public class DungeonDataEditor : Editor
 
         if (GUILayout.Button("Load layout"))
         {
-            if (!dungeonData.GetActiveLayout().IsEmpty()) dungeonData.LoadData();
+            if (!dungeonData.GetActiveLayout().IsEmpty()) _ = dungeonData.LoadData();
         }
 
         if (GUILayout.Button("Track start room"))
         {
             if (!dungeonData.GetActiveLayout().IsEmpty())
             {
-                dungeonData.LoadData();
+                _ = dungeonData.LoadData();
                 startingRoom = dungeonData.GetStartingRoom();
                 EditorGUIUtility.PingObject(startingRoom);
                 Selection.activeGameObject = startingRoom.gameObject;
@@ -51,7 +51,7 @@ public class DungeonDataEditor : Editor
             bool dataEmpty = dungeonData.AllRooms().Count() == 0;
             if (dataEmpty)
             {
-                dungeonData.GenerateDungeon();
+                _ = dungeonData.GenerateDungeon();
                 EditorUtility.SetDirty(dungeonData.GetActiveLayout());
             } 
             else
@@ -61,7 +61,7 @@ public class DungeonDataEditor : Editor
                                         "OK", "Cancel");
                 if (result)
                 {
-                    dungeonData.GenerateDungeon();
+                    _ = dungeonData.GenerateDungeon();
                     EditorUtility.SetDirty(dungeonData.GetActiveLayout());
                     EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
                 }
@@ -80,7 +80,7 @@ public class DungeonDataEditor : Editor
                                         "OK", "Cancel");
             if (result)
             {              
-                dungeonData.ClearDungeon();
+                _ = dungeonData.ClearDungeon();
                 dungeonData.GetActiveLayout().ClearData();
                 EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
             }       
