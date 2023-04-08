@@ -86,8 +86,8 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
     IEnumerator SweepLazers(VisualEffect lazer1, VisualEffect lazer2)
     {
         const float lazerChargeTime = 1.0f;
-        const float lazerRotationSpeed = 5.0f;
-        const float lazerbeamDuration = 4.0f;
+        const float lazerRotationSpeed = 8.0f;
+        const float lazerbeamDuration = 9.0f;
         lazer1.SendEvent("OnLazerCharge");
         lazer2.SendEvent("OnLazerCharge");
         yield return new WaitForSeconds(lazerChargeTime);

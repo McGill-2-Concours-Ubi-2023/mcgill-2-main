@@ -31,6 +31,7 @@ public class BossFightCameraCoordinator : MonoBehaviour, IBossFightTriggers
     
     private async void InternalStartBossFight()
     {
+        using HLockGuard healthLock = m_Controller.GetComponent<Health>().Lock();
         m_CinematicDirector.Resume();
         await Task.Yield();
         GameObject.FindWithTag("FinalBoss").Trigger<IBossTriggers>(nameof(IBossTriggers.StartAttack));
