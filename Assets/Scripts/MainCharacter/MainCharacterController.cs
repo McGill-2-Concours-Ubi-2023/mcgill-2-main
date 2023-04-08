@@ -410,8 +410,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     {
         //Unfreeze player
         rb.constraints = RigidbodyConstraints.None;
-        rb.constraints = RigidbodyConstraints.FreezeRotationX;
-        rb.constraints = RigidbodyConstraints.FreezeRotationZ;
+        rb.constraints = RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationX;
         GetComponent<PlayerInput>().ActivateInput();
     }
 
