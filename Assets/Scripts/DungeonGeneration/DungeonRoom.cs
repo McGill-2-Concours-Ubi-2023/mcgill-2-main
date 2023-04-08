@@ -94,7 +94,7 @@ public class DungeonRoom : MonoBehaviour
             {
                 //if the length from this room to the 
                 int shortesPathLength = DungeonRoom.ShortestPath(activeRoom, choosenRoom);
-                if ( shortesPathLength > 4)
+                if ( shortesPathLength > 2 && shortesPathLength < 5)
                 {
                     Debug.Log("Shortest path to portal: " + shortesPathLength);
                     DungeonDrawer.ReplaceRoom(choosenRoom, dungeonGenerator.data,
@@ -203,6 +203,7 @@ public class DungeonRoom : MonoBehaviour
     public void TryRemoveEnemy(Enemy enemy)
     {
         if (enemies.Contains(enemy)) enemies.Remove(enemy);
+        enemies.RemoveAll(enemy => enemy == null);
     }
 
     IEnumerator CheckForEnemies(Vector3 detectionRange)

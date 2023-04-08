@@ -21,15 +21,12 @@ public class Vibration : MonoBehaviour, IVibrationTrigger
         else {
             health = GameObject.FindGameObjectWithTag("Player").GetComponent<Health>();
             health.OnHealthChange += HealthVibrate;
-            health.OnDeath += SharpVibration;
+            //health.OnDeath += SharpVibration;
         }
 
         
     }
 
-    private void Update()
-    {
-    }
     public void SoftVibration() {
         rumbler.TriggerVibration(0.1f, 0.1f, 0.1f);
     }
