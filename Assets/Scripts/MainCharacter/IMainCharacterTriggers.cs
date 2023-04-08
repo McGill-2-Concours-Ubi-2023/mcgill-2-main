@@ -34,4 +34,12 @@ public interface IMainCharacterTriggers : ITrigger
     public void ResetInventory() { }
     
     public void OnAutoFaceIntention(float3 intention) { }
+
+    public void ActivateTrail() { }
+
+    public void StopTrail() { }
+
+    public void FreezeOnCurrentState() { }
+
+    public void UnFreeze() { }
 }

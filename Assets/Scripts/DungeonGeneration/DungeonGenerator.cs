@@ -25,8 +25,6 @@ public class DungeonGenerator : MonoBehaviour
         {
             await data.LoadData();
         }
-        //StartCoroutine(PlaceRandomMerchant());
-        
         GameManager.isLoading = false;
         GameObject.FindWithTag("Player").Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.ResetInventory));
     }
