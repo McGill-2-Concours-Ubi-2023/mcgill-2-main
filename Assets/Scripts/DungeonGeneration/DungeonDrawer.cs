@@ -55,11 +55,12 @@ public static class DungeonDrawer
         GameObject roomRoot = obj.transform.Find("RoomRoot").gameObject;
         visualEffect.gameObject.transform.parent = roomRoot.transform;
         visualEffect.transform.position = roomRoot.transform.position;
+        visualEffect.transform.position += new Vector3(0, 1, 0);
         roomRoot.transform.position = room.GetPosition();
         roomRoot.transform.parent = room.transform;
         DungeonData.SafeDestroy(obj);
         roomData.SetRoomType(type);
-        roomData.SetIsolated(true);//Serialize it
+        roomData.SetIsolated(isolate);//Serialize it
         GameObject[] roomOptions = dungeonData.GetRoomOverrides();
         int newPrefabIndex = 0;
         for(int i = 0; i<roomOptions.Length; i++)

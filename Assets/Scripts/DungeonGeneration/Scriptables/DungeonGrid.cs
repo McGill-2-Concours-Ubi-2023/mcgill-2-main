@@ -128,7 +128,7 @@ public class DungeonGrid : DataContainer<RoomData>
                 return;
             }
         }
-        DungeonDrawer.ReplaceRoom(randomRoom, data, data.GetSpecialRoomPrefabs()[0], RoomTypes.RoomType.Special, false);
+        DungeonDrawer.ReplaceRoom(randomRoom, data, data.GetRoomOverrides()[0], RoomTypes.RoomType.Special, false);
     }
 
     public int RoomSize()
