@@ -8,7 +8,12 @@ public interface IBossFightTriggers : ITrigger
     void StartBossFight() { }
 }
 
-public class FinalBossController : MonoBehaviour
+public interface IBossTriggers : ITrigger
+{
+    void StartAttack() { }
+}
+
+public class FinalBossController : MonoBehaviour, IBossTriggers
 {
     [Header("Playground Properties")]
     public Transform topRightCorner;
@@ -37,6 +42,11 @@ public class FinalBossController : MonoBehaviour
             Attack = !Attack;
             LazerSweepAttack(topRightCorner.position, topLeftCorner.position);
         }
+    }
+    
+    public void StartAttack()
+    {
+        Attack = true;
     }
 
     public void LazerSweepAttack(Vector3 position1, Vector3 position2)

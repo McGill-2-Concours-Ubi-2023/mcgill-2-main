@@ -33,11 +33,13 @@ public class BossFightCameraCoordinator : MonoBehaviour, IBossFightTriggers
     {
         m_CinematicDirector.Resume();
         await Task.Yield();
-        while (m_CinematicDirector.state == PlayState.Paused)
+        GameObject.FindWithTag("FinalBoss").Trigger<IBossTriggers>(nameof(IBossTriggers.StartAttack));
+        await Task.Yield();
+        FightCam.Priority = 15;
+        m_Controller.Camera = FightCam;
+        while (m_CinematicDirector.state == PlayState.Playing)
         {
             await Task.Yield();
         }
-        FightCam.Priority = 15;
-        m_Controller.Camera = FightCam;
     }
 }
