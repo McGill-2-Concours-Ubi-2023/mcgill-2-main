@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.VFX;
 
+public interface IBossFightTriggers : ITrigger
+{
+    void StartBossFight() { }
+}
+
 public class FinalBossController : MonoBehaviour
 {
     [Header("Playground Properties")]
