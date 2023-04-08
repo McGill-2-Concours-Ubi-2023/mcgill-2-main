@@ -39,6 +39,10 @@ public class LazerBeamCollider : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
+        if (!obstacles.Contains(other.gameObject))
+        {
+            obstacles.Add(other.gameObject);
+        }
         if (other.CompareTag("Player"))
         {
             other.GetComponent<Health>().TakeDamage(1);
