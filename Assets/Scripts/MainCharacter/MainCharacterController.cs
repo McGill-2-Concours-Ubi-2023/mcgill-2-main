@@ -77,13 +77,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         hairRend.material = hairMat;
        
         m_Awake = true;
-        Transform cameraRoot = transform.Find("CameraRoot");
-        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("BossScene"))
-        {
-            this.Camera.Follow = cameraRoot;
-            this.Camera.LookAt = cameraRoot;
-            this.Camera.m_Lens.FieldOfView = 25.0f;
-        }
+
         vibration = GameObject.Find("GamepadVib").GetComponent<Vibration>();
             rb = GetComponent<Rigidbody>();
         SimpleCollectibleInventory = new SimpleInventory<SimpleCollectible>(new Dictionary<SimpleCollectible, int>
