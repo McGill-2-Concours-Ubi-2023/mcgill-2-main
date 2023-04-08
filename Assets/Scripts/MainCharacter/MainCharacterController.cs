@@ -354,6 +354,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     {
         //Freeze player
         rb.constraints = RigidbodyConstraints.FreezeAll;
+        GetComponent<PlayerInput>().DeactivateInput();
     }
 
     public void UnFreeze()
@@ -362,6 +363,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         rb.constraints = RigidbodyConstraints.None;
         rb.constraints = RigidbodyConstraints.FreezeRotationX;
         rb.constraints = RigidbodyConstraints.FreezeRotationZ;
+        GetComponent<PlayerInput>().ActivateInput();
     }
 
     public void HasFaceDirectionInput(Ref<bool> hasInput)
