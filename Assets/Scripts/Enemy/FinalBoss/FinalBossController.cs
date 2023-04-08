@@ -34,8 +34,8 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
         if (Attack)
         {
             Attack = !Attack;
-            LazerSweepAttack(topRightCorner.position, topLeftCorner.position);
-            //StartCoroutine(LazerBurst());
+            //LazerSweepAttack(topRightCorner.position, topLeftCorner.position);
+            StartCoroutine(LazerBurst());
         }
     }
     
@@ -57,9 +57,10 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
         StartCoroutine(SweepLazers(lazer1, lazer2));
     }
 
-    IEnumerator SpawnTwoLazers(Vector3 endpoint1, Vector3 endpoint2, float lazerbeamDuration)
+    IEnumerator SpawnTwoLazers(Vector3 endpoint1, Vector3 endpoint2)
     {
         const float lazerChargeTime = 0.5f;
+        const float lazerbeamDuration = 2.0f;
         var obj_1 = Instantiate(lazerPrefab);
         obj_1.transform.position = endpoint1;
         obj_1.transform.Rotate(0f, 180f, 0f);
@@ -96,7 +97,9 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
         lazer1.SendEvent("OnLazerStart");
         lazer2.SendEvent("OnLazerStart");
         float elapsedTime = 0;
-
+        // Calculate rotation towards right direction
+        Quaternion lazerRotation = Quaternion.FromToRotation(lazer1.transform.forward, lazer2.transform.transform.position);
+       
         while (elapsedTime < lazerbeamDuration)
         {
             // Rotate towards right over time
@@ -118,18 +121,18 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
         Vector3 endpoint_2 = topRightCorner.position;
         Vector3 endpoint_1 = topLeftCorner.position;
         float distance = (endpoint_1 - endpoint_2).magnitude;
-        Vector3 endpoint_3 = endpoint_1 + new Vector3(distance / 7, 0, 0);
+        Vector3 endpoint_3 = endpoint_1 + new Vector3(distance / 6, 0, 0);
         Vector3 endpoint_4 = endpoint_1 + new Vector3(2 * distance / 7, 0, 0);
         Vector3 endpoint_5 = endpoint_1 + new Vector3(3 * distance / 7, 0, 0);
         Vector3 endpoint_6 = endpoint_1 + new Vector3(4 * distance / 7, 0, 0);
         Vector3 endpoint_7 = endpoint_1 + new Vector3(5 * distance / 7, 0, 0);
         Vector3 endpoint_8 = endpoint_1 + new Vector3(6 * distance / 7, 0, 0);
-        StartCoroutine(SpawnTwoLazers(endpoint_1, endpoint_2, 0.7f));
-        yield return new WaitForSeconds(0.5f);
-        StartCoroutine(SpawnTwoLazers(endpoint_3, endpoint_8, 0.7f));
-        yield return new WaitForSeconds(0.5f);
-        StartCoroutine(SpawnTwoLazers(endpoint_4, endpoint_7, 0.7f));
-        yield return new WaitForSeconds(0.5f);
-        StartCoroutine(SpawnTwoLazers(endpoint_5, endpoint_6, 0.7f));
+        StartCoroutine(SpawnTwoLazers(endpoint_1, endpoint_2));
+        yield return new WaitForSeconds(0.2f);
+        StartCoroutine(SpawnTwoLazers(endpoint_3, endpoint_8));
+        yield return new WaitForSeconds(0.2f);
+        StartCoroutine(SpawnTwoLazers(endpoint_4, endpoint_7));
+        yield return new WaitForSeconds(0.2f);
+        StartCoroutine(SpawnTwoLazers(endpoint_5, endpoint_6));
     }
 }

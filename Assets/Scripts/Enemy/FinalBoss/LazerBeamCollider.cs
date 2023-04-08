@@ -21,6 +21,7 @@ public class LazerBeamCollider : MonoBehaviour
 
     public async void ActivateCollider()
     {
+        await Task.Delay(100);
         _collider.enabled = true;
     }
 
