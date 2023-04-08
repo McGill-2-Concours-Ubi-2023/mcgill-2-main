@@ -92,7 +92,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
             animator = GetComponent<Animator>();
             m_PauseMenu = GameObject.FindWithTag("PauseMenu");
             health = GetComponent<Health>();
-            health.OnDeath += OnPlayerDeath;
+            //health.OnDeath += OnPlayerDeath;
             if (m_PauseMenu)
             {
                 m_PauseMenu.SetActive(false);
@@ -115,7 +115,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         this.Camera.m_Lens.FieldOfView = 47.0f;
     }
 
-    private void OnPlayerDeath()
+    public void OnPlayerDeath()
     {
         if (!isDead)
         {
