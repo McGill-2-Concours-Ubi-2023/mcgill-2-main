@@ -9,9 +9,10 @@ public class Portal : MonoBehaviour
     private bool canTeleport;
 
     private void OnEnable()
-    {
-        m_InputActionAsset["Interact"].performed += ctx => EnterPortal();
+    {      
         player = GameObject.FindGameObjectWithTag("Player");
+        m_InputActionAsset = player.GetComponent<PlayerInput>().actions;
+        m_InputActionAsset["Interact"].performed += ctx => EnterPortal();
         canTeleport = false;
     }
 
