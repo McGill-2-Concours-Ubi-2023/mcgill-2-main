@@ -17,6 +17,8 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
 {
 
     [Header("Playground Properties")]
+    [Range(1.0f, 10.0f)]
+    public float attackFrequency = 5.0f;
     public Transform topRightCorner;
     public CinemachineCameraShake cameraShake;
     public Transform topLeftCorner;
@@ -186,7 +188,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
                     functionCallCounts[calledFunction]++;
                 }
             }
-            yield return new WaitForSeconds(Random.Range(6.0f, 12.0f));
+            yield return new WaitForSeconds(Random.Range(3 + attackFrequency, 6 + attackFrequency));
         }
     }
 
