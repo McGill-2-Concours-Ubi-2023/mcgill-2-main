@@ -31,8 +31,11 @@ public class Music : MonoBehaviour {
 	}
 	void Song () {
 		int RandomClip = Random.Range (0, clips.Length);
-        while (RandomClip == currentsong)
-            RandomClip = Random.Range(0, clips.Length);
+		if (clips.Length > 1)
+		{
+			while (RandomClip == currentsong)
+				RandomClip = Random.Range(0, clips.Length);
+		}
         source.clip =  clips[RandomClip];
         currentsong = RandomClip;
 		source.Play ();
