@@ -39,7 +39,7 @@ public class EnemySpawn1 : MonoBehaviour
 
     public void DissipateAmbientFog()
     {
-        StartCoroutine(DissipateFog(0.5f));
+        StartCoroutine(TryDisableFog());
     }
 
     IEnumerator DissipateFog(float timer)
@@ -56,6 +56,18 @@ public class EnemySpawn1 : MonoBehaviour
             elapsedTime += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
-        //Destroy(volumeFog.gameObject);
+        yield return new WaitForSeconds(1.0f);
+        volumeFog.enabled = false;
+    }
+
+    IEnumerator TryDisableFog()
+    {
+        bool fogEnabled = volumeFog.enabled;
+        while (fogEnabled)
+        {
+            StartCoroutine(DissipateFog(0.5f));
+            yield return new WaitForSeconds(0.5f);
+        }
+        StopAllCoroutines();
     }
 }
