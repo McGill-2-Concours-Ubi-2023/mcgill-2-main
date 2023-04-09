@@ -26,7 +26,11 @@ public class LazerBeamCollider : MonoBehaviour
         {
             Vector3 diff = hit.transform.position - beamEnd.transform.position;
             transform.position = transform.parent.position - transform.forward * diff.magnitude;
-            await Task.Delay(100);          
+            beamVFX.SetVector3("ObstaclePosition", hit.transform.position);
+            beamVFX.SetFloat("ColliderSize", hit.collider.bounds.size.magnitude);
+            Vector3 diff2 = hit.transform.position - beamEnd.transform.position;
+            beamVFX.SetFloat("ObstacleDistance", diff2.magnitude);
+            await Task.Delay(500);          
         }
         _collider.enabled = true;
     }
@@ -56,13 +60,18 @@ public class LazerBeamCollider : MonoBehaviour
         }
         if (other.gameObject.layer == Destructible.desctructibleMask && hasCollided)
         {
-            beamVFX.SetVector3("ObstaclePosition", other.transform.position);
-            beamVFX.SetFloat("ColliderSize", other.bounds.size.magnitude);
-            Vector3 diff = other.transform.position - colliderEnd.transform.position;
-            Vector3 diff2 = other.transform.position - beamEnd.transform.position;
-            beamVFX.SetFloat("ObstacleDistance", diff2.magnitude);
-            transform.position = transform.parent.position - transform.forward * diff.magnitude;
+            UpdateLazer(other);
         }
+    }
+
+    private void UpdateLazer(Collider other)
+    {
+        beamVFX.SetVector3("ObstaclePosition", other.transform.position);
+        beamVFX.SetFloat("ColliderSize", other.bounds.size.magnitude);
+        Vector3 diff = other.transform.position - colliderEnd.transform.position;
+        Vector3 diff2 = other.transform.position - beamEnd.transform.position;
+        beamVFX.SetFloat("ObstacleDistance", diff2.magnitude);
+        transform.position = transform.parent.position - transform.forward * diff.magnitude;
     }
 
     private void OnTriggerExit(Collider other)
