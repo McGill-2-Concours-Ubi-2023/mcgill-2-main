@@ -43,7 +43,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
     {
         LazerSweepAttack(topRightCorner.position, topLeftCorner.position);
         tentacleAnimator.SetTrigger("Shield");
-        //StartCoroutine(FightCoroutine());
+        StartCoroutine(FightCoroutine());
     }
 
     private void MakeInvinsible()
