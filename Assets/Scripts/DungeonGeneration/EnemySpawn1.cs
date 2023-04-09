@@ -39,7 +39,7 @@ public class EnemySpawn1 : MonoBehaviour
 
     public void DissipateAmbientFog()
     {
-        StartCoroutine(DissipateFog(1.0f));
+        StartCoroutine(DissipateFog(0.5f));
     }
 
     IEnumerator DissipateFog(float timer)

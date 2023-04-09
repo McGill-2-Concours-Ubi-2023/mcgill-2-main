@@ -36,7 +36,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
         {
             Attack = !Attack;
             //LazerSweepAttack(topRightCorner.position, topLeftCorner.position);
-            StartCoroutine(TargetLazer());
+            StartCoroutine(WaveLasers());
         }
     }
     
@@ -83,11 +83,11 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
         Destroy(lazer2.gameObject);
     }
 
-    private GameObject GetOneLazer(Vector3 position, float lazerChargeTime, float lazerbeamDuration)
+    private GameObject GetOneLazer(Vector3 position, float lazerChargeTime, float lazerbeamDuration, float YRotation)
     {
         var obj_1 = Instantiate(lazerPrefab);
         obj_1.transform.position = position;
-        obj_1.transform.Rotate(0f, 180f, 0f);
+        obj_1.transform.Rotate(0f, YRotation, 0f);
         StartCoroutine(AwakeLazer(obj_1, lazerChargeTime, lazerbeamDuration));
         return obj_1;
     }
@@ -105,29 +105,21 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
         Destroy(lazer1.gameObject);
     }
 
-    IEnumerator TargetLazer()
+    IEnumerator WaveLasers()
     {
-        Vector3 playerPos = GameObject.FindGameObjectWithTag("Player").transform.position;
-        float speed = 5.0f;
-        float waveTime = 6.0f;
+        float waveTime = 8.0f;
         Vector3 center = new Vector3(playeGround.transform.position.x,
            playeGround.transform.position.y + 3.0f, playeGround.transform.position.z);
 
         while (waveTime > 0)
         {
-            float time = Time.time;
-            Quaternion rotation = Quaternion.FromToRotation(center, playerPos);
-
-            GameObject lazer1 = GetOneLazer(center, 0.5f, 1.0f);
-            lazer1.transform.rotation *= rotation;
-            GameObject lazer2 = GetOneLazer(center + Vector3.left * 1.5f, 1.5f, 1.0f);
-            lazer2.transform.rotation *= rotation;
-            GameObject lazer3 = GetOneLazer(center + Vector3.right * 1.5f, 1.5f, 1.0f);
-            lazer3.transform.rotation *= rotation;
-
-            yield return new WaitForSeconds(0.5f);
-            waveTime -= Time.deltaTime;
-            playerPos += Vector3.forward * Time.deltaTime * speed;
+            Vector3 playerPos = GameObject.FindGameObjectWithTag("Player").transform.position;          
+            GameObject lazer = GetOneLazer(center, 0.5f, 1.0f, 0);
+            Quaternion rotation = Quaternion.FromToRotation(-lazer.transform.forward, playerPos);
+            lazer.transform.rotation *= rotation;
+            float randWait = Random.Range(1.0f, 2.0f);
+            waveTime -= randWait;
+            yield return new WaitForSeconds(randWait);
         }
     }
 
@@ -233,7 +225,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
         for(int i = 0; i < 10; i++)
         {
             float YRotation = Mathf.Lerp(0, 360, (float)i / 10);
-            GameObject laser = GetOneLazer(center, 1.0f, 7.0f);
+            GameObject laser = GetOneLazer(center, 1.0f, 7.0f, 180);
             laser.transform.Rotate(0,YRotation,0);
             lasers.Add(laser);
         }
@@ -266,7 +258,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
             Vector3 position = new Vector3(xPosition, endpoint_1.y, endpoint_1.z);
 
             // Spawn the lazer
-            lazers[i] = GetOneLazer(position, 0.8f, 8.0f);
+            lazers[i] = GetOneLazer(position, 0.8f, 8.0f, 180);
 
             // Wait for a short period before spawning the next lazer
             yield return new WaitForSeconds(0.2f);
