@@ -594,14 +594,14 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     }
     public void IncreaseMaxGrenade()
     {
-        SimpleCollectibleInventory.ChangeMaximum(SimpleCollectible.Grenade, SimpleCollectibleInventory.GetMax(SimpleCollectible.Grenade) + 1);
+        SimpleCollectibleInventory.ChangeMaximum(SimpleCollectible.Grenade, SimpleCollectibleInventory.GetMax(SimpleCollectible.Grenade) + 2);
         Debug.Log("grenade max:" + SimpleCollectibleInventory.GetMax(SimpleCollectible.Grenade));
         UpdateInventoryUI();
     }
 
     public void IncreaseMaxCrate()
     {
-        SimpleCollectibleInventory.ChangeMaximum(SimpleCollectible.CratePoint, SimpleCollectibleInventory.GetMax(SimpleCollectible.CratePoint) + 1);
+        SimpleCollectibleInventory.ChangeMaximum(SimpleCollectible.CratePoint, SimpleCollectibleInventory.GetMax(SimpleCollectible.CratePoint) + 5);
         Debug.Log("crate max:" + SimpleCollectibleInventory.GetMax(SimpleCollectible.CratePoint));
         UpdateInventoryUI();
     }
