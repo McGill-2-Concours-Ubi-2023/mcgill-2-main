@@ -35,7 +35,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
         {
             Attack = !Attack;
             //LazerSweepAttack(topRightCorner.position, topLeftCorner.position);
-            StartCoroutine(ScanPlayground());
+            StartCoroutine(SpawnRandomLazers_3());
         }
     }
     
@@ -219,22 +219,46 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
             yield return new WaitForSeconds(0.2f);
         }
 
-        float scanTimer = 5.0f;
-        float scanSpeed = 2.0f;
+        yield return new WaitForSeconds(0.5f);
+
+        float scanTimer = 4.0f;
+        float scanSpeed = 5.0f;
         while(scanTimer > 0)
         {
             foreach (GameObject lazer in lazers)
             {
                 if(lazer != null)
-                lazer.transform.Translate(new Vector3(Time.deltaTime * scanSpeed, 0, 0));
+                lazer.transform.Translate(new Vector3(-Time.deltaTime * scanSpeed, 0, 0));
             }
             yield return null;
         }      
     }
 
+    IEnumerator SpawnRandomLazers_3()
+    {
+        int numRepetitions = 5;
+        Vector3 endpoint1 = topLeftCorner.position;
+        Vector3 endpoint2 = topRightCorner.position;
+        float distance = (endpoint2 - endpoint1).magnitude;
 
+        for (int i = 0; i < numRepetitions; i++)
+        {
+            // Randomly select three positions on the x-axis within the range of the endpoints
+            float randomPos1 = Random.Range(endpoint1.x, endpoint2.x - distance / 3f);
+            float randomPos2 = Random.Range(randomPos1 + distance / 3f, endpoint2.x - distance / 3f);
+            float randomPos3 = Random.Range(randomPos2 + distance / 3f, endpoint2.x);
 
-    IEnumerator MultiSweepLazers()
+            // Spawn three lazers at the random positions
+            Debug.Log("YOO");
+            SpawnOneLazer(new Vector3(randomPos1, endpoint1.y, endpoint1.z), 1.0f, 2.0f);
+            SpawnOneLazer(new Vector3(randomPos2, endpoint1.y, endpoint1.z), 1.0f, 2.0f);
+            SpawnOneLazer(new Vector3(randomPos3, endpoint1.y, endpoint1.z), 1.0f, 2.0f);
+
+            yield return new WaitForSeconds(2.5f);
+        }
+    }
+
+    IEnumerator SweepLazers_5()
     {
         Vector3 point1 = topRightCorner.position;
         Vector3 point2 = topLeftCorner.position;
