@@ -13,7 +13,7 @@ public interface IBossTriggers : ITrigger
     void StartFight() { }
 }
 
-public class FinalBossController : MonoBehaviour, IBossTriggers
+public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
 {
 
     [Header("Playground Properties")]
@@ -27,11 +27,27 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
     [Header("LazerProperties")]
     public GameObject lazerPrefab;
     public Health health;
+    private HealthObserverAdapter m_HealthObserverAdapter;
 
     // Start is called before the first frame update
     void Start()
     {
         GameManager.isLoading = false;
+        m_HealthObserverAdapter = gameObject.AddComponent<HealthObserverAdapter>();
+        m_HealthObserverAdapter.ConcreteObserver = this;
+    }
+    
+    public void OnHealthChange(float change, float currentHealth)
+    {
+        // send to UI
+        Debug.Log($"Boss health change : {change} to : {currentHealth}");
+    }
+
+    public void OnDeath()
+    {
+        Debug.Log("Boss Death");
+        // TODO
+        Destroy(gameObject);
     }
 
     private void Update()
@@ -173,7 +189,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
     {
         float waveTime = 8.0f;
         Vector3 center = new Vector3(playGround.transform.position.x,
-           playGround.transform.position.y + 5.0f, playGround.transform.position.z);
+           playGround.transform.position.y + 2.0f, playGround.transform.position.z);
 
         while (waveTime > 0)
         {
@@ -207,7 +223,6 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
             lazer1.transform.Rotate(0f, Time.deltaTime * lazerRotationSpeed, 0f);
             lazer2.transform.Rotate(0f, -Time.deltaTime * lazerRotationSpeed, 0f);
             elapsedTime += Time.deltaTime;
-            Debug.Log(elapsedTime);
             yield return new WaitForEndOfFrame();
         }
         lazer1.SendEvent("OnLazerStop");

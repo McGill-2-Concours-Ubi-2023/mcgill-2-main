@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Threading;
+using JetBrains.Annotations;
 
 public interface IHealthTriggers : ITrigger
 {
@@ -21,6 +22,7 @@ public class Health : MonoBehaviour, IHealthTriggers, IGravityGrenadeHealthAdapt
     [SerializeField]
     private HealthUI ui;
     public DeathRenderer deathRenderer;
+    [CanBeNull]
     ClickSound cs;
     [SerializeField] AudioClip deathSound;
 
@@ -96,7 +98,10 @@ public class Health : MonoBehaviour, IHealthTriggers, IGravityGrenadeHealthAdapt
     }
 
     public void Death() {
-        cs.Click(deathSound);
+        if (cs)
+        {
+            cs.Click();
+        }
         OnDeath?.Invoke();
     }
 
