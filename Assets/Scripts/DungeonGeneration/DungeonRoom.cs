@@ -45,6 +45,7 @@ public class DungeonRoom : MonoBehaviour
     public static int clearedRoomsCount;
     private List<DungeonLight> cachedLights;
     private static bool spawnPortal;
+    public RoomFog fog;
 
     private async Task OnDistanceRender()
     {
@@ -144,7 +145,8 @@ public class DungeonRoom : MonoBehaviour
 
     public void SpawnEnemies()
     {
-        GetComponent<EnemySpawn1>().DissipateAmbientFog();
+        if (fog == null) FindFog();
+        if (fog != null) fog.DissipateAmbientFog();
         if (enemies == null)
         enemies = new List<Enemy>();
         bool isValidRoom = type != RoomTypes.RoomType.Special && type != RoomTypes.RoomType.Start
@@ -166,13 +168,21 @@ public class DungeonRoom : MonoBehaviour
         portalVFX.SendEvent("OnPortalAppear");
     }
 
+    private void FindFog()
+    {
+        fog = transform.Find(DungeonDrawer.persistentFogPath)
+                .GetComponent<RoomFog>();
+    }
+
     public async Task UpdateRoomsLayout()
     {
         if (type == RoomTypes.RoomType.Start)
-            GetComponent<EnemySpawn1>().volumeFog.enabled = false;
+            if (fog == null) FindFog();
+            if (fog != null) fog.DissipateAmbientFog();
         if (type == RoomTypes.RoomType.Special || type == RoomTypes.RoomType.Boss)
         {
-            GetComponent<EnemySpawn1>().DissipateAmbientFog();
+            if (fog == null) FindFog();
+            if (fog != null) fog.DissipateAmbientFog();
         }
         if (type == RoomTypes.RoomType.Boss)
         {
@@ -196,10 +206,8 @@ public class DungeonRoom : MonoBehaviour
             if (wall != null && wall.gameObject.activeInHierarchy) wall.ChangeRenderQueue(2998);
             await Task.Yield();
         }
-
-
     }
-    
+
     public void TryRemoveEnemy(Enemy enemy)
     {
         if (enemies.Contains(enemy)) enemies.Remove(enemy);

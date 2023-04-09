@@ -8,6 +8,7 @@ using Object = UnityEngine.Object;
 
 public static class DungeonDrawer
 {
+    public static string persistentFogPath = "RoomRoot/Floor/BoxVolumeFog";
     public static void DrawWithPrimitive(List<Vector3> data, GameObject parentObj, PrimitiveType type)
     {
         foreach (var position in data)
@@ -46,16 +47,11 @@ public static class DungeonDrawer
         GameObject roomPrefab, RoomTypes.RoomType type, bool isolate)
     {
         room.MoveDoorsUp();
-        var visualEffect = room.GetComponent<EnemySpawn1>().volumeFog;
-        visualEffect.gameObject.transform.parent = room.transform;
         room.GetWalls().transform.parent = room.transform; //Move walls upwards
         DungeonData.SafeDestroy(room.transform.Find("RoomRoot").gameObject);//delete the root
         RoomData roomData = dungeonData.GetActiveLayout().GetRoomData(room);
         GameObject obj = GameObject.Instantiate(roomPrefab);
         GameObject roomRoot = obj.transform.Find("RoomRoot").gameObject;
-        visualEffect.gameObject.transform.parent = roomRoot.transform;
-        visualEffect.transform.position = roomRoot.transform.position;
-        visualEffect.transform.position += new Vector3(0, 1, 0);
         roomRoot.transform.position = room.GetPosition();
         roomRoot.transform.parent = room.transform;
         DungeonData.SafeDestroy(obj);
