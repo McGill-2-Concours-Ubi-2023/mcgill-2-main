@@ -18,51 +18,21 @@ public class LazerBeamCollider : MonoBehaviour
         if (obstacles == null) obstacles = new List<GameObject>();
     }
 
-    public  void ActivateCollider()
+    public async void ActivateCollider()
     {
         int obstacleLayerMask = 1 << Destructible.desctructibleMask;
-        OnSpawnDetectCollision(obstacleLayerMask);
-    }
-
-    private async void OnSpawnDetectCollision(int layerMask)
-    {
-        // Cast a ray from the current position in the forward direction
         RaycastHit hit;
-        Vector3 origin = transform.position;
-        Vector3 direction = transform.forward;
-
-        GameObject lastHitObject = null; // Variable to store the last hit object
-
-        int maxHits = 10; ;
-        int hits = 0;
-        while (hits < maxHits)
+        if (Physics.Raycast(transform.position, transform.forward, out hit, 100, obstacleLayerMask))
         {
-            if (Physics.Raycast(origin, direction, out hit, Mathf.Infinity, layerMask))
-            {
-                // Store the current hit object as the last hit object
-                lastHitObject = hit.collider.gameObject;
-
-                // Move the origin of the ray to the point of collision to continue casting
-                origin = hit.point + direction * 0.001f;
-
-                hits++;
-            }
-            else
-            {
-                break;
-            }
-            if(lastHitObject != null)
-            {
-                Vector3 diff = hit.transform.position - beamEnd.transform.position;
-                transform.position = transform.parent.position - transform.forward * diff.magnitude;
-                beamVFX.SetVector3("ObstaclePosition", hit.transform.position);
-                beamVFX.SetFloat("ColliderSize", hit.collider.bounds.size.magnitude);
-                Vector3 diff2 = hit.transform.position - beamEnd.transform.position;
-                beamVFX.SetFloat("ObstacleDistance", diff2.magnitude);
-                await Task.Delay(500);
-            }
-            _collider.enabled = true;
+            Vector3 diff = hit.transform.position - beamEnd.transform.position;
+            transform.position = transform.parent.position - transform.forward * diff.magnitude;
+            beamVFX.SetVector3("ObstaclePosition", hit.transform.position);
+            beamVFX.SetFloat("ColliderSize", hit.collider.bounds.size.magnitude);
+            Vector3 diff2 = hit.transform.position - beamEnd.transform.position;
+            beamVFX.SetFloat("ObstacleDistance", diff2.magnitude);
+            await Task.Delay(500);          
         }
+        _collider.enabled = true;
     }
 
     private void OnTriggerEnter(Collider other)
