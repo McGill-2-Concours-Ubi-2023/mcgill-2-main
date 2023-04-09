@@ -4824,6 +4824,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 1
   influenceRadius: 1.5
+--- !u!4 &1783582761 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5064672678348464435, guid: 8ec2e42d0d78cc4428ba4c4a4ea46336,
+    type: 3}
+  m_PrefabInstance: {fileID: 1783582758}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1783582762 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1838318120, guid: 8ec2e42d0d78cc4428ba4c4a4ea46336,
@@ -5132,6 +5138,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3545684372846306566, guid: 6083596616c082244b6f36ce44d4bb13,
         type: 3}
+      propertyPath: playGround
+      value: 
+      objectReference: {fileID: 243591131}
+    - target: {fileID: 3545684372846306566, guid: 6083596616c082244b6f36ce44d4bb13,
+        type: 3}
       propertyPath: playeGround
       value: 
       objectReference: {fileID: 243591131}
@@ -5145,6 +5156,11 @@ PrefabInstance:
       propertyPath: topRightCorner
       value: 
       objectReference: {fileID: 1674399929}
+    - target: {fileID: 3545684372846306566, guid: 6083596616c082244b6f36ce44d4bb13,
+        type: 3}
+      propertyPath: playerTransform
+      value: 
+      objectReference: {fileID: 1783582761}
     - target: {fileID: 3545684372846306567, guid: 6083596616c082244b6f36ce44d4bb13,
         type: 3}
       propertyPath: m_RootOrder

@@ -18,8 +18,9 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
     [Header("Playground Properties")]
     public Transform topRightCorner;
     public Transform topLeftCorner;
-    public Transform playeGround;
+    public Transform playGround;
     public bool Attack = false;
+    public Transform playerTransform;
     [Header("LazerProperties")]
     public GameObject lazerPrefab;
 
@@ -44,20 +45,14 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
     {
         Attack = true;
     }
-
-    public void LazerSweepAttack(Vector3 position1, Vector3 position2)
+    private GameObject GetOneLazer(Vector3 position, float lazerChargeTime, float lazerbeamDuration, float YRotation)
     {
-        var obj_1 =Instantiate(lazerPrefab);
-        obj_1.transform.position = position1;
-        obj_1.transform.Rotate(0f, 180f, 0f);
-        GameObject obj_2 = Instantiate(lazerPrefab);
-        obj_2.transform.position = position2;
-        obj_2.transform.Rotate(0f, 180f, 0f);
-        VisualEffect lazer1 = obj_1.GetComponent<VisualEffect>();
-        VisualEffect lazer2 = obj_2.GetComponent<VisualEffect>();
-        StartCoroutine(SweepLazers(lazer1, lazer2));
+        var obj_1 = Instantiate(lazerPrefab);
+        obj_1.transform.position = position;
+        obj_1.transform.Rotate(0f, YRotation, 0f);
+        StartCoroutine(AwakeLazer(obj_1, lazerChargeTime, lazerbeamDuration));
+        return obj_1;
     }
-
     IEnumerator SpawnTwoLazers(Vector3 endpoint1, Vector3 endpoint2, float lazerbeamDuration, float lazerChargeTime)
     {
         var obj_1 = Instantiate(lazerPrefab);
@@ -82,14 +77,35 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
         Destroy(lazer1.gameObject);
         Destroy(lazer2.gameObject);
     }
-
-    private GameObject GetOneLazer(Vector3 position, float lazerChargeTime, float lazerbeamDuration, float YRotation)
+    IEnumerator SpawnOneLazer(Vector3 position, float lazerChargeTime, float lazerbeamDuration)
     {
         var obj_1 = Instantiate(lazerPrefab);
         obj_1.transform.position = position;
-        obj_1.transform.Rotate(0f, YRotation, 0f);
-        StartCoroutine(AwakeLazer(obj_1, lazerChargeTime, lazerbeamDuration));
-        return obj_1;
+        obj_1.transform.Rotate(0f, 180f, 0f);
+        VisualEffect lazer1 = obj_1.GetComponent<VisualEffect>();
+        lazer1.SendEvent("OnLazerCharge");
+        yield return new WaitForSeconds(lazerChargeTime);
+        lazer1.GetComponentInChildren<LazerBeamCollider>().ActivateCollider();
+        lazer1.SendEvent("OnLazerStart");
+        yield return new WaitForSeconds(lazerbeamDuration);
+        lazer1.SendEvent("OnLazerStop");
+        yield return new WaitForSeconds(2.0f);
+        Destroy(lazer1.gameObject);
+    }
+
+    //USE THOSE FUNCTIONS BELOW
+
+    public void LazerSweepAttack(Vector3 position1, Vector3 position2)
+    {
+        var obj_1 =Instantiate(lazerPrefab);
+        obj_1.transform.position = position1;
+        obj_1.transform.Rotate(0f, 180f, 0f);
+        GameObject obj_2 = Instantiate(lazerPrefab);
+        obj_2.transform.position = position2;
+        obj_2.transform.Rotate(0f, 180f, 0f);
+        VisualEffect lazer1 = obj_1.GetComponent<VisualEffect>();
+        VisualEffect lazer2 = obj_2.GetComponent<VisualEffect>();
+        StartCoroutine(SweepLazers(lazer1, lazer2));
     }
 
     IEnumerator AwakeLazer(GameObject lazer, float lazerChargeTime, float lazerbeamDuration)
@@ -108,35 +124,19 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
     IEnumerator WaveLasers()
     {
         float waveTime = 8.0f;
-        Vector3 center = new Vector3(playeGround.transform.position.x,
-           playeGround.transform.position.y + 3.0f, playeGround.transform.position.z);
 
         while (waveTime > 0)
         {
-            Vector3 playerPos = GameObject.FindGameObjectWithTag("Player").transform.position;          
-            GameObject lazer = GetOneLazer(center, 0.5f, 1.0f, 0);
-            Quaternion rotation = Quaternion.FromToRotation(-lazer.transform.forward, playerPos);
+            Vector3 playerPos = playerTransform.position;
+            Vector3 start = new Vector3(playerPos.x, playerPos.y + 0.5f, playerPos.z);
+            GameObject lazer = GetOneLazer(playerPos, 0.3f, 1.0f, 0);
+            Quaternion rotation = Quaternion.FromToRotation(lazer.transform.forward,
+                (start - lazer.transform.position).normalized);
             lazer.transform.rotation *= rotation;
             float randWait = Random.Range(1.0f, 2.0f);
             waveTime -= randWait;
             yield return new WaitForSeconds(randWait);
         }
-    }
-
-    IEnumerator SpawnOneLazer(Vector3 position, float lazerChargeTime, float lazerbeamDuration)
-    {
-        var obj_1 = Instantiate(lazerPrefab);
-        obj_1.transform.position = position;
-        obj_1.transform.Rotate(0f, 180f, 0f);
-        VisualEffect lazer1 = obj_1.GetComponent<VisualEffect>();
-        lazer1.SendEvent("OnLazerCharge");
-        yield return new WaitForSeconds(lazerChargeTime);
-        lazer1.GetComponentInChildren<LazerBeamCollider>().ActivateCollider();
-        lazer1.SendEvent("OnLazerStart");
-        yield return new WaitForSeconds(lazerbeamDuration);
-        lazer1.SendEvent("OnLazerStop");
-        yield return new WaitForSeconds(2.0f);
-        Destroy(lazer1.gameObject);
     }
 
     IEnumerator SweepLazers(VisualEffect lazer1, VisualEffect lazer2)
@@ -216,8 +216,8 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
 
     IEnumerator StarLazer()
     {
-        Vector3 center = new Vector3(playeGround.transform.position.x,
-            playeGround.transform.position.y + 3.0f, playeGround.transform.position.z);
+        Vector3 center = new Vector3(playGround.transform.position.x,
+            playGround.transform.position.y + 5.0f, playGround.transform.position.z);
         float rotatingTime = 6.0f;
         float rotatingSpeed =   8.0f;
         List<GameObject> lasers = new List<GameObject>();
