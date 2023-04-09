@@ -17,6 +17,8 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
 {
 
     [Header("Playground Properties")]
+    [Range(1.0f, 10.0f)]
+    public float attackFrequency = 5.0f;
     public Transform topRightCorner;
     public CinemachineCameraShake cameraShake;
     public Transform topLeftCorner;
@@ -50,35 +52,77 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         Destroy(gameObject);
     }
 
-    private void Update()
-    {
-       
-    }
-  
+
     public void StartFight()
     {
         LazerSweepAttack(topRightCorner.position, topLeftCorner.position);
-        tentacleAnimator.SetTrigger("Shield");
+        //tentacleAnimator.SetTrigger("Shield");
         StartCoroutine(FightCoroutine());
     }
 
-    IEnumerator Shield(float shieldTime)
-    {
-        tentacleAnimator.SetTrigger("Shield");
-        {
-            using HLockGuard guard = health.Lock();
-            yield return new WaitForSeconds(shieldTime);
-        }
-        tentacleAnimator.SetTrigger("StopShield");
-    }
-
+    private Dictionary<System.Func<IEnumerator>, int> functionCallCounts = new Dictionary<System.Func<IEnumerator>, int>();
+    private int totalFunctionCalls = 0;
     IEnumerator FightCoroutine()
     {
         yield return new WaitForSeconds(15.0f);
+
         while (true)
         {
-            int patternIndex = Random.Range(0, 7); // Select a random pattern index
+            // Create a list of function indices
+            List<int> functionIndices = new List<int>();
+            for (int i = 0; i < 7; i++)
+            {
+                if (i == 1 || i == 7)
+                {
+                    // Always include tentacle attack
+                    functionIndices.Add(i);
+                }
+                else
+                {
+                    System.Func<IEnumerator> function = null;
+                    switch (i)
+                    {
+                        case 0:
+                            function = WaveLasers;
+                            break;
+                        case 2:
+                            function = LazerBurstPeriodic_2;
+                            break;
+                        case 3:
+                            function = LazerBurstWave;
+                            break;
+                        case 4:
+                            function = StarLazer;
+                            break;
+                        case 5:
+                            function = ScanPlayground;
+                            break;
+                        case 6:
+                            function = SweepLazers_5;
+                            break;
+                        default:
+                            break;
+                    }
 
+                    if (function != null)
+                    {
+                        // Add function index to list according to its probability
+                        int functionCalls = functionCallCounts.ContainsKey(function) ? functionCallCounts[function] : 0;
+                        float probability = Mathf.Pow(0.5f, functionCalls);
+                        int numIndicesToAdd = Mathf.FloorToInt(probability * 100.0f);
+                        for (int j = 0; j < numIndicesToAdd; j++)
+                        {
+                            functionIndices.Add(i);
+                        }
+                    }
+                }
+            }
+
+            // Select a random function index from the list
+            int randomIndex = Random.Range(0, functionIndices.Count);
+            int patternIndex = functionIndices[randomIndex];
+
+            // Call the selected function
             switch (patternIndex)
             {
                 case 0:
@@ -107,9 +151,58 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
                     break;
             }
 
-            yield return new WaitForSeconds(Random.Range(4.0f, 8.0f)); // Wait for a random amount of time before selecting a new pattern
+            // Update function call counts
+            System.Func<IEnumerator> calledFunction = null;
+            switch (patternIndex)
+            {
+                case 0:
+                    calledFunction = WaveLasers;
+                    break;
+                case 2:
+                    calledFunction = LazerBurstPeriodic_2;
+                    break;
+                case 3:
+                    calledFunction = LazerBurstWave;
+                    break;
+                case 4:
+                    calledFunction = StarLazer;
+                    break;
+                case 5:
+                    calledFunction = ScanPlayground;
+                    break;
+                case 6:
+                    calledFunction = SweepLazers_5;
+                    break;
+                default:
+                    break;
+            }
+            if (calledFunction != null)
+            {
+                totalFunctionCalls++;
+                if (!functionCallCounts.ContainsKey(calledFunction))
+                {
+                    functionCallCounts[calledFunction] = 1;
+                }
+                else
+                {
+                    functionCallCounts[calledFunction]++;
+                }
+            }
+            yield return new WaitForSeconds(Random.Range(3 + attackFrequency, 6 + attackFrequency));
         }
     }
+
+
+    IEnumerator Shield(float shieldTime)
+    {
+        tentacleAnimator.SetTrigger("Shield");
+        {
+            using HLockGuard guard = health.Lock();
+            yield return new WaitForSeconds(shieldTime);
+        }
+        tentacleAnimator.SetTrigger("StopShield");
+    }
+
     private GameObject GetOneLazer(Vector3 position, float lazerChargeTime, float lazerbeamDuration, float YRotation)
     {
         var obj_1 = Instantiate(lazerPrefab);
