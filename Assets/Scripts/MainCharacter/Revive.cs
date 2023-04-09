@@ -46,7 +46,7 @@ public class Revive : MonoBehaviour
         mcc.ResetInventory();
         mcc.SimpleCollectibleInventory.AddInBulk(SimpleCollectible.CratePoint, 5);
         mcc.SimpleCollectibleInventory.AddInBulk(SimpleCollectible.Grenade, 2);
-        gcUI.UpdateGrenadeUI(mcc.SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade));
+        gcUI.UpdateGrenadeUI(mcc.SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade), +mcc.SimpleCollectibleInventory.GetMax(SimpleCollectible.Grenade)); ;
         gameObject.Trigger<IHealthTriggers, float>(nameof(IHealthTriggers.GainHealth), 100);
         revivePanel.SetActive(false);
         EventSystem.current.SetSelectedGameObject(null);
