@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.VFX;
 
@@ -18,6 +17,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
     [Header("Playground Properties")]
     public Transform topRightCorner;
     public Transform topLeftCorner;
+    public Transform playeGround;
     public bool Attack = false;
     [Header("LazerProperties")]
     public GameObject lazerPrefab;
@@ -35,7 +35,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
         {
             Attack = !Attack;
             //LazerSweepAttack(topRightCorner.position, topLeftCorner.position);
-            StartCoroutine(SpawnRandomLazers_3());
+            StartCoroutine(SpiralLazer());
         }
     }
     
@@ -194,6 +194,30 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
             yield return new WaitForSeconds(0.2f);
         }
     }
+    IEnumerator SpiralLazer()
+    {
+        Vector3 center = playeGround.transform.position;
+        float radius = 2.0f;
+        float speed = 2.0f;
+        float angle = 0.0f;
+
+        while (angle < 10 * Mathf.PI)
+        {
+            float x = center.x + radius * Mathf.Cos(angle);
+            float y = center.y;
+            float z = center.z + radius * Mathf.Sin(angle);
+
+            Vector3 pos = new Vector3(x, y, z);
+
+            GetOneLazer(pos, 1.0f, 2.0f);
+
+            angle += Time.deltaTime * speed;
+            radius += Time.deltaTime * 0.2f;
+
+            yield return null;
+        }
+    }
+
 
 
     IEnumerator ScanPlayground()
@@ -232,30 +256,6 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
             }
             yield return null;
         }      
-    }
-
-    IEnumerator SpawnRandomLazers_3()
-    {
-        int numRepetitions = 5;
-        Vector3 endpoint1 = topLeftCorner.position;
-        Vector3 endpoint2 = topRightCorner.position;
-        float distance = (endpoint2 - endpoint1).magnitude;
-
-        for (int i = 0; i < numRepetitions; i++)
-        {
-            // Randomly select three positions on the x-axis within the range of the endpoints
-            float randomPos1 = Random.Range(endpoint1.x, endpoint2.x - distance / 3f);
-            float randomPos2 = Random.Range(randomPos1 + distance / 3f, endpoint2.x - distance / 3f);
-            float randomPos3 = Random.Range(randomPos2 + distance / 3f, endpoint2.x);
-
-            // Spawn three lazers at the random positions
-            Debug.Log("YOO");
-            SpawnOneLazer(new Vector3(randomPos1, endpoint1.y, endpoint1.z), 1.0f, 2.0f);
-            SpawnOneLazer(new Vector3(randomPos2, endpoint1.y, endpoint1.z), 1.0f, 2.0f);
-            SpawnOneLazer(new Vector3(randomPos3, endpoint1.y, endpoint1.z), 1.0f, 2.0f);
-
-            yield return new WaitForSeconds(2.5f);
-        }
     }
 
     IEnumerator SweepLazers_5()
