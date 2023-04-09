@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.VFX;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Bullet : MonoBehaviour
@@ -10,6 +11,9 @@ public class Bullet : MonoBehaviour
     [SerializeField]
     int damage = 1;
     int gravityLayer;
+    [SerializeField]
+    public VisualEffect shieldImpactVFX;
+
 
     private void Update()
     {
@@ -52,11 +56,26 @@ public class Bullet : MonoBehaviour
                 other.gameObject.TriggerUp<IHealthTriggers, float>(nameof(IHealthTriggers.TakeDamage), damage);
             }
         }
-        
+
+        if (other.gameObject.layer == LayerMask.NameToLayer("BossShield"))
+        {
+            Debug.Log("HIT");
+            VisualEffect shieldVFX = Instantiate(shieldImpactVFX);
+            shieldVFX.transform.position = transform.position;
+            StartCoroutine(OnShieldImpact(shieldVFX));
+        }
+
         if (!(other.gameObject.CompareTag("EnemyBullet") 
             && other.gameObject.CompareTag("PlayerBullet"))
             && other.gameObject.layer != gravityLayer) {
             Destroy(gameObject);
-        }
+        }       
+    }
+
+    IEnumerator OnShieldImpact(VisualEffect vfx)
+    {
+        vfx.SendEvent("OnShieldImpact");
+        yield return new WaitForSeconds(2.0f);
+        Destroy(vfx.gameObject);
     }
 }

@@ -15,8 +15,10 @@ public interface IBossTriggers : ITrigger
 
 public class FinalBossController : MonoBehaviour, IBossTriggers
 {
+
     [Header("Playground Properties")]
     public Transform topRightCorner;
+    public CinemachineCameraShake cameraShake;
     public Transform topLeftCorner;
     public Transform playGround;
     public bool Attack = false;
@@ -24,6 +26,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
     public Animator tentacleAnimator;
     [Header("LazerProperties")]
     public GameObject lazerPrefab;
+    public Health health;
 
     // Start is called before the first frame update
     void Start()
@@ -31,20 +34,44 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
         GameManager.isLoading = false;
     }
 
-    
+    private void Update()
+    {
+       
+    }
+  
     public void StartFight()
     {
-
         LazerSweepAttack(topRightCorner.position, topLeftCorner.position);
-        StartCoroutine(FightCoroutine());
+        tentacleAnimator.SetTrigger("Shield");
+        //StartCoroutine(FightCoroutine());
     }
+
+    private void MakeInvinsible()
+    {
+        //Make boss invincible
+    }
+
+    IEnumerator Shield(float shieldTime)
+    {
+        tentacleAnimator.SetTrigger("Shield");
+        MakeInvinsible();
+        yield return new WaitForSeconds(shieldTime);
+        MakeVulnerable();
+        tentacleAnimator.SetTrigger("StopShield");
+    }
+
+    private void MakeVulnerable()
+    {
+        //MakeBoss vulnerable
+    }
+
 
     IEnumerator FightCoroutine()
     {
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(15.0f);
         while (true)
         {
-            int patternIndex = Random.Range(0, 6); // Select a random pattern index
+            int patternIndex = Random.Range(0, 7); // Select a random pattern index
 
             switch (patternIndex)
             {
@@ -52,6 +79,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
                     StartCoroutine(WaveLasers());
                     break;
                 case 1:
+                case 7:
                     tentacleAnimator.SetTrigger("Attack");
                     break;
                 case 2:
@@ -73,7 +101,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
                     break;
             }
 
-            yield return new WaitForSeconds(Random.Range(2f, 5f)); // Wait for a random amount of time before selecting a new pattern
+            yield return new WaitForSeconds(Random.Range(4.0f, 8.0f)); // Wait for a random amount of time before selecting a new pattern
         }
     }
     private GameObject GetOneLazer(Vector3 position, float lazerChargeTime, float lazerbeamDuration, float YRotation)
@@ -160,7 +188,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
         while (waveTime > 0)
         {
             Vector3 playerPos = playerTransform.position;
-            GameObject lazer = GetOneLazer(center, 0.3f, 1.0f, 0);
+            GameObject lazer = GetOneLazer(center, 1.0f, 1.0f, 0);
             Quaternion rotation = Quaternion.FromToRotation(lazer.transform.forward,
                 (playerPos - lazer.transform.position).normalized);
             lazer.transform.rotation *= rotation;
@@ -248,7 +276,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
     IEnumerator StarLazer()
     {
         Vector3 center = new Vector3(playGround.transform.position.x,
-            playGround.transform.position.y + 5.0f, playGround.transform.position.z);
+            playGround.transform.position.y + 2.0f, playGround.transform.position.z);
         float rotatingTime = 6.0f;
         float rotatingSpeed =   8.0f;
         List<GameObject> lasers = new List<GameObject>();
