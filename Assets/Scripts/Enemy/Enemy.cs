@@ -77,19 +77,20 @@ public class Enemy : MonoBehaviour, I_AI_Trigger
     IEnumerator Flash() {
         int i = 0;
         float timer = 0f;
-        using HLockGuard healthLock = enemyHealth.Lock();
         while (i < numOfFlashes)
         {
-            if (timer < duration)
+            if (timer < duration/2)
             {
+                if (isDying) yield break;
                 if (mr != null)
                 {
                     mr.material = hurtMaterial;
                 }
                 else mr2.material = hurtMaterial;
             }
-            else if (timer < duration * 2)
+            else if (timer < duration)
             {
+                if (isDying) yield break;
                 if (mr != null)
                 {
                     mr.material = originalMaterial;
