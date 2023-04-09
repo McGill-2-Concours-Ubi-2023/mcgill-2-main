@@ -21,6 +21,7 @@ public class BossFightCameraCoordinator : MonoBehaviour, IBossFightTriggers
         await Task.Delay(500);
         m_CinematicDirector.Play();
         await Task.Delay(500);
+        CorridorCam.Priority = 10;
         m_CinematicDirector.Pause();
     }
 
