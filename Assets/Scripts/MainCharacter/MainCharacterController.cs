@@ -192,7 +192,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
             desintegrate = false;
         }
         //gcUI.UpdateGrenadeUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade));
-        gcUI.UpdateCrateUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint));
+        gcUI.UpdateCrateUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint), SimpleCollectibleInventory.GetMax(SimpleCollectible.CratePoint));
         if (startFight) StartFight();
         float2 input = m_InputActionAsset["Movement"].ReadValue<Vector2>();
         gameObject.Trigger<IMainCharacterTriggers, float2>(nameof(IMainCharacterTriggers.OnInput), input);
@@ -373,7 +373,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         }
         int grenadeNum = SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade); 
         Debug.Log($"{grenadeNum} grenades left");
-        gcUI.UpdateGrenadeUI(grenadeNum);
+        gcUI.UpdateGrenadeUI(grenadeNum, SimpleCollectibleInventory.GetMax(SimpleCollectible.Grenade));
         int randomNumber = UnityEngine.Random.Range(1, 3);
         animator.SetTrigger("ThrowGrenade_" + randomNumber);
         GameObject grenade = Instantiate(GravityGrenadePrefab);
@@ -389,14 +389,14 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     {
         SimpleCollectibleInventory.AddItem(SimpleCollectible.CratePoint);
         int crateNum = SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint);
-        gcUI.UpdateCrateUI(crateNum);
+        gcUI.UpdateCrateUI(crateNum, SimpleCollectibleInventory.GetMax(SimpleCollectible.CratePoint));
     }
 
     public void OnSpawnCrate()
     {
         gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnSpawnCrateIntention));
         int crateNum = SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint);
-        gcUI.UpdateCrateUI(crateNum);
+        gcUI.UpdateCrateUI(crateNum, SimpleCollectibleInventory.GetMax(SimpleCollectible.CratePoint));
     }
 
     public void FreezeOnCurrentState()
@@ -410,8 +410,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     {
         //Unfreeze player
         rb.constraints = RigidbodyConstraints.None;
-        rb.constraints = RigidbodyConstraints.FreezeRotationX;
-        rb.constraints = RigidbodyConstraints.FreezeRotationZ;
+        rb.constraints = RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationX;
         GetComponent<PlayerInput>().ActivateInput();
     }
 
@@ -514,7 +513,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
 
     public void OnRoomCleared()
     {
-        gcUI.UpdateCrateUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint));
+        gcUI.UpdateCrateUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint), SimpleCollectibleInventory.GetMax(SimpleCollectible.CratePoint));
         m_RoomClearedCount++;
         if (m_RoomClearedCount % 2 == 0)
         {
@@ -526,8 +525,8 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
 
     private void UpdateInventoryUI()
     {
-        gcUI.UpdateGrenadeUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade));
-        gcUI.UpdateCrateUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint));
+        gcUI.UpdateGrenadeUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade), SimpleCollectibleInventory.GetMax(SimpleCollectible.Grenade));
+        gcUI.UpdateCrateUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint), SimpleCollectibleInventory.GetMax(SimpleCollectible.CratePoint));
     }
 
     public void ResetInventory()
@@ -595,14 +594,16 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     }
     public void IncreaseMaxGrenade()
     {
-        SimpleCollectibleInventory.ChangeMaximum(SimpleCollectible.Grenade, SimpleCollectibleInventory.GetMax(SimpleCollectible.Grenade) + 1);
+        SimpleCollectibleInventory.ChangeMaximum(SimpleCollectible.Grenade, SimpleCollectibleInventory.GetMax(SimpleCollectible.Grenade) + 2);
         Debug.Log("grenade max:" + SimpleCollectibleInventory.GetMax(SimpleCollectible.Grenade));
+        UpdateInventoryUI();
     }
 
     public void IncreaseMaxCrate()
     {
-        SimpleCollectibleInventory.ChangeMaximum(SimpleCollectible.CratePoint, SimpleCollectibleInventory.GetMax(SimpleCollectible.CratePoint) + 1);
+        SimpleCollectibleInventory.ChangeMaximum(SimpleCollectible.CratePoint, SimpleCollectibleInventory.GetMax(SimpleCollectible.CratePoint) + 5);
         Debug.Log("crate max:" + SimpleCollectibleInventory.GetMax(SimpleCollectible.CratePoint));
+        UpdateInventoryUI();
     }
 }
 

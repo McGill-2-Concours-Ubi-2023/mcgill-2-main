@@ -35,7 +35,7 @@ public class BossFightCameraCoordinator : MonoBehaviour, IBossFightTriggers
         using HLockGuard playerLock = m_Controller.Lock();
         m_CinematicDirector.Resume();
         await Task.Yield();
-        GameObject.FindWithTag("FinalBoss").Trigger<IBossTriggers>(nameof(IBossTriggers.StartAttack));
+        GameObject.FindWithTag("FinalBoss").Trigger<IBossTriggers>(nameof(IBossTriggers.StartFight));
         await Task.Yield();
         FightCam.Priority = 15;
         m_Controller.Camera = FightCam;

@@ -13,6 +13,7 @@ public class HealthUI : MonoBehaviour
 
     private void Start()
     {
+        playerHealth = GameObject.FindObjectOfType<MainCharacterController>().GetComponent<Health>();
         playerHealth.OnHealthChange += HealthChange;
         playerHealth.OnDeath += Death;
     }

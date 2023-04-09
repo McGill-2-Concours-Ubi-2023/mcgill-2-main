@@ -233,6 +233,13 @@ MonoBehaviour:
   canMove: 1
   attachedRoom: {fileID: 0}
   isDying: 0
+  scoringSystem: {fileID: 0}
+  hurtMaterial: {fileID: 2100000, guid: 0f7bdb458895bc346b927896dec75e22, type: 2}
+  originalMaterial: {fileID: 2100000, guid: 90a39e0edc5d18545b6a72b63bc0856b, type: 2}
+  duration: 0.1
+  numOfFlashes: 1
+  mr: {fileID: 7934358426772718499}
+  mr2: {fileID: 0}
 --- !u!114 &6948398992708779287
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -309,9 +316,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHealth: 3
   ui: {fileID: 0}
-  invulnerable: 0
   deathRenderer: {fileID: 2448299068054976358}
   deathSound: {fileID: 8300000, guid: 094b7fc526e4c4f4b844672125af2ece, type: 3}
+  scoringSystem: {fileID: 0}
 --- !u!114 &6809372961070476437
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -325,7 +332,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentField: {fileID: 0}
-  isBound: 0
+  readyToDestroy: 0
 --- !u!82 &1492676584335759979
 AudioSource:
   m_ObjectHideFlags: 0
@@ -743,6 +750,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6948398992708779293}
     m_Modifications:
+    - target: {fileID: 2004403469471870704, guid: bc817baf73769194f92b3c69c335167f,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 90a39e0edc5d18545b6a72b63bc0856b, type: 2}
     - target: {fileID: 6068470348885662261, guid: bc817baf73769194f92b3c69c335167f,
         type: 3}
       propertyPath: dissolveTime

@@ -20,7 +20,7 @@ public class Revive : MonoBehaviour
 
     private void Start()
     {
-        //revivePanel = GameObject.Find("RevivePanel");
+        revivePanel = GameObject.FindObjectOfType<Canvas>().transform.Find("RevivePanel").gameObject;
         gcUI = GameObject.FindObjectOfType<GrenadeCrateUI>();
         gameObject.GetComponent<Health>().OnDeath += RevivePlayerPromt;
         scoreSys = GameObject.FindObjectOfType<ScoringSystem>();
@@ -31,7 +31,7 @@ public class Revive : MonoBehaviour
         revivePanel.SetActive(true);
         TMP_Text text = revivePanel.GetComponentInChildren<TMP_Text>();
         halfScore = (int)scoreSys.currScore / 2;
-        text.text = "Do you want to revive with half of your points?\n" + "cost: "+ halfScore + "pts";
+        text.text = "Do you want to revive with half of your points?\n\n" + "cost: "+ halfScore + "pts";
         EventSystem.current.SetSelectedGameObject(button1);
     }
 
@@ -46,7 +46,7 @@ public class Revive : MonoBehaviour
         mcc.ResetInventory();
         mcc.SimpleCollectibleInventory.AddInBulk(SimpleCollectible.CratePoint, 5);
         mcc.SimpleCollectibleInventory.AddInBulk(SimpleCollectible.Grenade, 2);
-        gcUI.UpdateGrenadeUI(mcc.SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade));
+        gcUI.UpdateGrenadeUI(mcc.SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade), +mcc.SimpleCollectibleInventory.GetMax(SimpleCollectible.Grenade)); ;
         gameObject.Trigger<IHealthTriggers, float>(nameof(IHealthTriggers.GainHealth), 100);
         revivePanel.SetActive(false);
         EventSystem.current.SetSelectedGameObject(null);

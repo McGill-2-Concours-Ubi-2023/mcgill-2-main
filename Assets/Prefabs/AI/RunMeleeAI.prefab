@@ -79,6 +79,13 @@ MonoBehaviour:
   canMove: 1
   attachedRoom: {fileID: 0}
   isDying: 0
+  scoringSystem: {fileID: 0}
+  hurtMaterial: {fileID: 2100000, guid: 0f7bdb458895bc346b927896dec75e22, type: 2}
+  originalMaterial: {fileID: 0}
+  duration: 0.1
+  numOfFlashes: 1
+  mr: {fileID: 3127071986715116525}
+  mr2: {fileID: 0}
 --- !u!114 &7109587307864313103
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -136,7 +143,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentField: {fileID: 0}
-  isBound: 0
+  readyToDestroy: 0
 --- !u!114 &762322855164360532
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -151,9 +158,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHealth: 10
   ui: {fileID: 0}
-  invulnerable: 0
   deathRenderer: {fileID: 5296333888248064055}
   deathSound: {fileID: 8300000, guid: 094b7fc526e4c4f4b844672125af2ece, type: 3}
+  scoringSystem: {fileID: 0}
 --- !u!136 &5446690378065912488
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -806,6 +813,16 @@ PrefabInstance:
       propertyPath: health
       value: 
       objectReference: {fileID: 762322855164360532}
+    - target: {fileID: 6662987755623713257, guid: fc449e88a699da74083e9d9bbdff8522,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.00007999855
+      objectReference: {fileID: 0}
+    - target: {fileID: 6662987755623713257, guid: fc449e88a699da74083e9d9bbdff8522,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.00064000336
+      objectReference: {fileID: 0}
     - target: {fileID: 7633848832520814477, guid: fc449e88a699da74083e9d9bbdff8522,
         type: 3}
       propertyPath: health
@@ -823,6 +840,12 @@ PrefabInstance:
       objectReference: {fileID: 762322855164360532}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fc449e88a699da74083e9d9bbdff8522, type: 3}
+--- !u!137 &3127071986715116525 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5992617083440198901, guid: fc449e88a699da74083e9d9bbdff8522,
+    type: 3}
+  m_PrefabInstance: {fileID: 8669317252196677400}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &5296333888248064055 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3589300217540419375, guid: fc449e88a699da74083e9d9bbdff8522,

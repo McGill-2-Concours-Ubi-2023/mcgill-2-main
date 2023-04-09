@@ -7,35 +7,28 @@ public class GrenadeCrateUI : MonoBehaviour
 {
     [SerializeField]
     GameObject player;
-    public ISimpleInventory<SimpleCollectible> SimpleCollectibleInventory;
     [SerializeField]
     private TMP_Text grenadeCount, crateCount; 
 
-
-    
-    private void Start()
-    {
-        player = GameObject.FindGameObjectWithTag("Player");
-        
-    }
-
-    public void UpdateGrenadeUI(int count) {
-        if (count > 9)
+    public void UpdateGrenadeUI(int count, int max) {
+        /*if (count > 9)
         {
-            grenadeCount.text = count.ToString();
+            grenadeCount.text = count.ToString() + "/" + max.ToString();
         }
         else {
-            grenadeCount.text = "0" + count.ToString();
-        }
+            grenadeCount.text = "0" + count.ToString() + "/" + max.ToString();
+        }*/
+        grenadeCount.text = count.ToString().PadLeft(2, '0') + "/" + max.ToString().PadLeft(2, '0');
     }
 
-    public void UpdateCrateUI(int count) {
-        if (count > 9)
+    public void UpdateCrateUI(int count, int max) {
+       /* if (count > 9)
         {
-            crateCount.text = count.ToString();
+            crateCount.text = count.ToString() + "/" + max.ToString();
         }
         else {
-            crateCount.text = "0" + count.ToString();
-        }
+            crateCount.text = "0" + count.ToString() + "/" + max.ToString();
+        }*/
+        crateCount.text = count.ToString().PadLeft(2,'0') + "/" + max.ToString().PadLeft(2, '0');
     }
 }

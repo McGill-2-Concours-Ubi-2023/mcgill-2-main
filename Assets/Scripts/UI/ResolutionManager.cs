@@ -11,6 +11,8 @@ public class ResolutionManager : MonoBehaviour
     private const string RESOLUTION_KEY = "resolution";
     [SerializeField]
     private TextMeshProUGUI resolutionText;
+    [SerializeField]
+    private bool windowed;
 
     private void Start()
     {
@@ -71,7 +73,14 @@ public class ResolutionManager : MonoBehaviour
 
     public void Apply()
     {
-        Screen.SetResolution(resolutions[currentResolutionIndex].width, resolutions[currentResolutionIndex].height, false);
+        Screen.SetResolution(resolutions[currentResolutionIndex].width, resolutions[currentResolutionIndex].height, !windowed);
         PlayerPrefs.SetInt(RESOLUTION_KEY, currentResolutionIndex);
     }
+
+    public void SetWindowed(bool tog)
+    {
+        windowed = tog;
+    }
+
+
 }
