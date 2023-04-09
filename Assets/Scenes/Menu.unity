@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.30692244, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2115,7 +2115,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 380113882}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -79}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2135,7 +2135,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 380113882}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1ed3cacf884a83e44a76a3aeda053ade, type: 3}
   m_Name: 
@@ -3554,9 +3554,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'LESLEY MENG
 
-    ALEXANDRE CHIASERA
-
     LILLIE MARTENS-WALLACE
+
+    ALEXANDRE CHIASERA
 
     EMILIE
     CHEN
@@ -5077,7 +5077,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Credits
+  m_text: CREDITS
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c0411055e8aa8d542ba199f7e3613a73, type: 2}
   m_sharedMaterial: {fileID: 9150590582447317423, guid: c0411055e8aa8d542ba199f7e3613a73,
@@ -6993,12 +6993,12 @@ MonoBehaviour:
 
     PROGRAMMER
 
-    PROGRAMMER
+    TECH ARTIST & PROGRAMMER
 
-    TEAM LEAD & PROGRAMMER
-
-    DESIGNER
+    TEAM LEAD
     & PROGRAMMER
+
+    DESIGNER & PROGRAMMER
 
     ARTIST
 
@@ -9777,7 +9777,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'External Assets:'
+  m_text: 'External Assets:
+
+    MUSIC BY IANMIRROR, LOOBZ & KARL CASEY @ WHITE BAT
+    AUDIO'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c0411055e8aa8d542ba199f7e3613a73, type: 2}
   m_sharedMaterial: {fileID: 9150590582447317423, guid: c0411055e8aa8d542ba199f7e3613a73,
@@ -9872,6 +9875,21 @@ PrefabInstance:
       propertyPath: m_Navigation.m_SelectOnUp
       value: 
       objectReference: {fileID: 1550739289}
+    - target: {fileID: 8169453400463563978, guid: d83f1f0a018b13e44b97fdc5b45ca550,
+        type: 3}
+      propertyPath: m_Colors.m_SelectedColor.b
+      value: 0.84313726
+      objectReference: {fileID: 0}
+    - target: {fileID: 8169453400463563978, guid: d83f1f0a018b13e44b97fdc5b45ca550,
+        type: 3}
+      propertyPath: m_Colors.m_SelectedColor.g
+      value: 0.84313726
+      objectReference: {fileID: 0}
+    - target: {fileID: 8169453400463563978, guid: d83f1f0a018b13e44b97fdc5b45ca550,
+        type: 3}
+      propertyPath: m_Colors.m_SelectedColor.r
+      value: 0.84313726
+      objectReference: {fileID: 0}
     - target: {fileID: 8169453400463563978, guid: d83f1f0a018b13e44b97fdc5b45ca550,
         type: 3}
       propertyPath: m_Navigation.m_SelectOnDown
@@ -10024,6 +10042,21 @@ PrefabInstance:
       objectReference: {fileID: 1550739289}
     - target: {fileID: 8169453401274491159, guid: d83f1f0a018b13e44b97fdc5b45ca550,
         type: 3}
+      propertyPath: m_Colors.m_SelectedColor.b
+      value: 0.84313726
+      objectReference: {fileID: 0}
+    - target: {fileID: 8169453401274491159, guid: d83f1f0a018b13e44b97fdc5b45ca550,
+        type: 3}
+      propertyPath: m_Colors.m_SelectedColor.g
+      value: 0.84313726
+      objectReference: {fileID: 0}
+    - target: {fileID: 8169453401274491159, guid: d83f1f0a018b13e44b97fdc5b45ca550,
+        type: 3}
+      propertyPath: m_Colors.m_SelectedColor.r
+      value: 0.84313726
+      objectReference: {fileID: 0}
+    - target: {fileID: 8169453401274491159, guid: d83f1f0a018b13e44b97fdc5b45ca550,
+        type: 3}
       propertyPath: m_Navigation.m_SelectOnDown
       value: 
       objectReference: {fileID: 110967732}
@@ -10062,6 +10095,21 @@ PrefabInstance:
       propertyPath: m_Navigation.m_SelectOnUp
       value: 
       objectReference: {fileID: 419257046}
+    - target: {fileID: 8169453402475808363, guid: d83f1f0a018b13e44b97fdc5b45ca550,
+        type: 3}
+      propertyPath: m_Colors.m_SelectedColor.b
+      value: 0.84313726
+      objectReference: {fileID: 0}
+    - target: {fileID: 8169453402475808363, guid: d83f1f0a018b13e44b97fdc5b45ca550,
+        type: 3}
+      propertyPath: m_Colors.m_SelectedColor.g
+      value: 0.84313726
+      objectReference: {fileID: 0}
+    - target: {fileID: 8169453402475808363, guid: d83f1f0a018b13e44b97fdc5b45ca550,
+        type: 3}
+      propertyPath: m_Colors.m_SelectedColor.r
+      value: 0.84313726
+      objectReference: {fileID: 0}
     - target: {fileID: 8169453402475808363, guid: d83f1f0a018b13e44b97fdc5b45ca550,
         type: 3}
       propertyPath: m_Navigation.m_SelectOnDown
@@ -10637,6 +10685,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2283303907330448407, guid: ac9068b592a1c71478967d2ee6f0e14b,
+        type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 2814269190319479023, guid: ac9068b592a1c71478967d2ee6f0e14b,
         type: 3}
       propertyPath: m_Name
@@ -10753,7 +10806,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.84313726, g: 0.84313726, b: 0.84313726, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_SelectedColor: {r: 0.84313726, g: 0.84313726, b: 0.84313726, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -11096,7 +11149,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.84313726, g: 0.84313726, b: 0.84313726, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_SelectedColor: {r: 0.84313726, g: 0.84313726, b: 0.84313726, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
