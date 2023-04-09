@@ -10,7 +10,7 @@ public interface IBossFightTriggers : ITrigger
 
 public interface IBossTriggers : ITrigger
 {
-    void StartAttack() { }
+    void StartFight() { }
 }
 
 public class FinalBossController : MonoBehaviour, IBossTriggers
@@ -21,6 +21,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
     public Transform playGround;
     public bool Attack = false;
     public Transform playerTransform;
+    public Animator tentacleAnimator;
     [Header("LazerProperties")]
     public GameObject lazerPrefab;
 
@@ -30,20 +31,50 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
         GameManager.isLoading = false;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (Attack)
-        {
-            Attack = !Attack;
-            //LazerSweepAttack(topRightCorner.position, topLeftCorner.position);
-            StartCoroutine(WaveLasers());
-        }
-    }
     
-    public void StartAttack()
+    public void StartFight()
     {
-        Attack = true;
+
+        LazerSweepAttack(topRightCorner.position, topLeftCorner.position);
+        StartCoroutine(FightCoroutine());
+    }
+
+    IEnumerator FightCoroutine()
+    {
+        yield return new WaitForSeconds(2.0f);
+        while (true)
+        {
+            int patternIndex = Random.Range(0, 6); // Select a random pattern index
+
+            switch (patternIndex)
+            {
+                case 0:
+                    StartCoroutine(WaveLasers());
+                    break;
+                case 1:
+                    tentacleAnimator.SetTrigger("Attack");
+                    break;
+                case 2:
+                    StartCoroutine(LazerBurstPeriodic_2());
+                    break;
+                case 3:
+                    StartCoroutine(LazerBurstWave());
+                    break;
+                case 4:
+                    StartCoroutine(StarLazer());
+                    break;
+                case 5:
+                    StartCoroutine(ScanPlayground());
+                    break;
+                case 6:
+                    StartCoroutine(SweepLazers_5());
+                    break;
+                default:
+                    break;
+            }
+
+            yield return new WaitForSeconds(Random.Range(2f, 5f)); // Wait for a random amount of time before selecting a new pattern
+        }
     }
     private GameObject GetOneLazer(Vector3 position, float lazerChargeTime, float lazerbeamDuration, float YRotation)
     {
@@ -92,22 +123,6 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
         yield return new WaitForSeconds(2.0f);
         Destroy(lazer1.gameObject);
     }
-
-    //USE THOSE FUNCTIONS BELOW
-
-    public void LazerSweepAttack(Vector3 position1, Vector3 position2)
-    {
-        var obj_1 =Instantiate(lazerPrefab);
-        obj_1.transform.position = position1;
-        obj_1.transform.Rotate(0f, 180f, 0f);
-        GameObject obj_2 = Instantiate(lazerPrefab);
-        obj_2.transform.position = position2;
-        obj_2.transform.Rotate(0f, 180f, 0f);
-        VisualEffect lazer1 = obj_1.GetComponent<VisualEffect>();
-        VisualEffect lazer2 = obj_2.GetComponent<VisualEffect>();
-        StartCoroutine(SweepLazers(lazer1, lazer2));
-    }
-
     IEnumerator AwakeLazer(GameObject lazer, float lazerChargeTime, float lazerbeamDuration)
     {
         VisualEffect lazer1 = lazer.GetComponent<VisualEffect>();
@@ -121,17 +136,33 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
         Destroy(lazer1.gameObject);
     }
 
+    //USE THOSE FUNCTIONS BELOW
+    
+    public void LazerSweepAttack(Vector3 position1, Vector3 position2)
+    {
+        var obj_1 =Instantiate(lazerPrefab);
+        obj_1.transform.position = position1;
+        obj_1.transform.Rotate(0f, 180f, 0f);
+        GameObject obj_2 = Instantiate(lazerPrefab);
+        obj_2.transform.position = position2;
+        obj_2.transform.Rotate(0f, 180f, 0f);
+        VisualEffect lazer1 = obj_1.GetComponent<VisualEffect>();
+        VisualEffect lazer2 = obj_2.GetComponent<VisualEffect>();
+        StartCoroutine(SweepLazers(lazer1, lazer2));
+    }
+
     IEnumerator WaveLasers()
     {
         float waveTime = 8.0f;
+        Vector3 center = new Vector3(playGround.transform.position.x,
+           playGround.transform.position.y + 5.0f, playGround.transform.position.z);
 
         while (waveTime > 0)
         {
             Vector3 playerPos = playerTransform.position;
-            Vector3 start = new Vector3(playerPos.x, playerPos.y + 0.5f, playerPos.z);
-            GameObject lazer = GetOneLazer(playerPos, 0.3f, 1.0f, 0);
+            GameObject lazer = GetOneLazer(center, 0.3f, 1.0f, 0);
             Quaternion rotation = Quaternion.FromToRotation(lazer.transform.forward,
-                (start - lazer.transform.position).normalized);
+                (playerPos - lazer.transform.position).normalized);
             lazer.transform.rotation *= rotation;
             float randWait = Random.Range(1.0f, 2.0f);
             waveTime -= randWait;
