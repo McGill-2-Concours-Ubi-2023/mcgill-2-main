@@ -27,11 +27,14 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
     [Header("LazerProperties")]
     public GameObject lazerPrefab;
     public Health health;
+    private HealthObserverAdapter m_HealthObserverAdapter;
 
     // Start is called before the first frame update
     void Start()
     {
         GameManager.isLoading = false;
+        m_HealthObserverAdapter = gameObject.AddComponent<HealthObserverAdapter>();
+        m_HealthObserverAdapter.ConcreteObserver = new FinalBossHealthObserver();
     }
 
     private void Update()
