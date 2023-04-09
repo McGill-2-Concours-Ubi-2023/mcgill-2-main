@@ -24,14 +24,14 @@ public class LazerBeamCollider : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(transform.position, transform.forward, out hit, 100, obstacleLayerMask))
         {
-            Vector3 diff = hit.transform.position - beamEnd.transform.position;
+            Vector3 diff = hit.transform.position - colliderEnd.transform.position;
             transform.position = transform.parent.position - transform.forward * diff.magnitude;
             beamVFX.SetVector3("ObstaclePosition", hit.transform.position);
             beamVFX.SetFloat("ColliderSize", hit.collider.bounds.size.magnitude);
             Vector3 diff2 = hit.transform.position - beamEnd.transform.position;
             beamVFX.SetFloat("ObstacleDistance", diff2.magnitude);
-            await Task.Delay(500);          
         }
+        await Task.Delay(100);
         _collider.enabled = true;
     }
 
@@ -74,22 +74,16 @@ public class LazerBeamCollider : MonoBehaviour
         transform.position = transform.parent.position - transform.forward * diff.magnitude;
     }
 
-    private void OnTriggerExit(Collider other)
+    private async void OnTriggerExit(Collider other)
     {
-        // Start the coroutine to execute OnTriggerExit logic on the next frame
         obstacles.Remove(other.gameObject);
-        hasCollided = false;
-        StartCoroutine(OnTriggerExitCoroutine(other));
-    }
-    private IEnumerator OnTriggerExitCoroutine(Collider other)
-    {
-        // Might want to check for other colliders first
-        yield return new WaitForSeconds(0.1f);
-        if (other.gameObject.layer == Destructible.desctructibleMask && obstacles.Count == 0 && !hasCollided)
+        // Start the coroutine to execute OnTriggerExit logic on the next frame       
+        if (other.gameObject.layer == Destructible.desctructibleMask && obstacles.Count == 0)
         {
+            hasCollided = false;
+            await Task.Delay(100);
             transform.position = transform.parent.position;
             beamVFX.SetFloat("ObstacleDistance", 0);
         }
-    }
-
+    }        
 }
