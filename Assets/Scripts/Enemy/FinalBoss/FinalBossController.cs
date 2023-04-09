@@ -173,7 +173,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
     {
         float waveTime = 8.0f;
         Vector3 center = new Vector3(playGround.transform.position.x,
-           playGround.transform.position.y + 5.0f, playGround.transform.position.z);
+           playGround.transform.position.y + 2.0f, playGround.transform.position.z);
 
         while (waveTime > 0)
         {
