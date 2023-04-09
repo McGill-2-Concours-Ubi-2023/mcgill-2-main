@@ -125,6 +125,15 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ToggleMute"",
+                    ""type"": ""Button"",
+                    ""id"": ""6aa4f7d5-0ddf-4c1b-940c-3d9800ef7f80"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -512,6 +521,28 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""026fff80-cabe-4121-bcf1-0b02fa98edc8"",
+                    ""path"": ""<Keyboard>/m"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleMute"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""319675aa-b9ab-4b7d-b914-86cac14d811f"",
+                    ""path"": ""<Gamepad>/select"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleMute"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -796,6 +827,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         m_Player_ShootPress = m_Player.FindAction("ShootPress", throwIfNotFound: true);
         m_Player_ShootRelease = m_Player.FindAction("ShootRelease", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
+        m_Player_ToggleMute = m_Player.FindAction("ToggleMute", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Point = m_UI.FindAction("Point", throwIfNotFound: true);
@@ -875,6 +907,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_ShootPress;
     private readonly InputAction m_Player_ShootRelease;
     private readonly InputAction m_Player_Interact;
+    private readonly InputAction m_Player_ToggleMute;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -890,6 +923,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         public InputAction @ShootPress => m_Wrapper.m_Player_ShootPress;
         public InputAction @ShootRelease => m_Wrapper.m_Player_ShootRelease;
         public InputAction @Interact => m_Wrapper.m_Player_Interact;
+        public InputAction @ToggleMute => m_Wrapper.m_Player_ToggleMute;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -932,6 +966,9 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @Interact.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
                 @Interact.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
                 @Interact.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
+                @ToggleMute.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnToggleMute;
+                @ToggleMute.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnToggleMute;
+                @ToggleMute.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnToggleMute;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -969,6 +1006,9 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @Interact.started += instance.OnInteract;
                 @Interact.performed += instance.OnInteract;
                 @Interact.canceled += instance.OnInteract;
+                @ToggleMute.started += instance.OnToggleMute;
+                @ToggleMute.performed += instance.OnToggleMute;
+                @ToggleMute.canceled += instance.OnToggleMute;
             }
         }
     }
@@ -1094,6 +1134,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         void OnShootPress(InputAction.CallbackContext context);
         void OnShootRelease(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
+        void OnToggleMute(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
