@@ -95,6 +95,13 @@ MonoBehaviour:
   canMove: 1
   attachedRoom: {fileID: 0}
   isDying: 0
+  scoringSystem: {fileID: 0}
+  hurtMaterial: {fileID: 2100000, guid: 0f7bdb458895bc346b927896dec75e22, type: 2}
+  originalMaterial: {fileID: 0}
+  duration: 0.1
+  numOfFlashes: 1
+  mr: {fileID: 0}
+  mr2: {fileID: 6417739731171360589}
 --- !u!114 &4840177572134145592
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -153,9 +160,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHealth: 5
   ui: {fileID: 0}
-  invulnerable: 0
   deathRenderer: {fileID: 6225338550227644096}
   deathSound: {fileID: 8300000, guid: 094b7fc526e4c4f4b844672125af2ece, type: 3}
+  scoringSystem: {fileID: 0}
 --- !u!114 &9023436203399684026
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -169,7 +176,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentField: {fileID: 0}
-  isBound: 0
+  readyToDestroy: 0
 --- !u!114 &2993712898013995926
 MonoBehaviour:
   m_ObjectHideFlags: 0
