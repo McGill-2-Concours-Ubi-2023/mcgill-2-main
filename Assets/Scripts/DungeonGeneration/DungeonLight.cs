@@ -6,7 +6,7 @@ public abstract class DungeonLight : MonoBehaviour
 {
     protected Animator animator;
     protected Light _light;
-    protected static float maxRenderDistance = 12.0f;
+    protected static float maxRenderDistance = 14.0f;
     // Start is called before the first frame update
 
     private void OnEnable()
