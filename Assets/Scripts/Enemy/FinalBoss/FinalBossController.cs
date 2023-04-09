@@ -36,7 +36,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
         {
             Attack = !Attack;
             //LazerSweepAttack(topRightCorner.position, topLeftCorner.position);
-            StartCoroutine(WaveLaser());
+            StartCoroutine(TargetLazer());
         }
     }
     
@@ -105,27 +105,28 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
         Destroy(lazer1.gameObject);
     }
 
-    IEnumerator WaveLaser()
+    IEnumerator TargetLazer()
     {
         Vector3 playerPos = GameObject.FindGameObjectWithTag("Player").transform.position;
-        float frequency = 3.0f;
-        float amplitude = 3.0f;
         float speed = 5.0f;
+        float waveTime = 6.0f;
+        Vector3 center = new Vector3(playeGround.transform.position.x,
+           playeGround.transform.position.y + 3.0f, playeGround.transform.position.z);
 
-        while (true)
+        while (waveTime > 0)
         {
             float time = Time.time;
-            Vector3 offset = new Vector3(Mathf.Sin(time * frequency) * amplitude, 0, 0);
+            Quaternion rotation = Quaternion.FromToRotation(center, playerPos);
 
-            Vector3 start = playerPos + offset;
-            Vector3 end = start + Vector3.forward * 10;
+            GameObject lazer1 = GetOneLazer(center, 0.5f, 1.0f);
+            lazer1.transform.rotation *= rotation;
+            GameObject lazer2 = GetOneLazer(center + Vector3.left * 1.5f, 1.5f, 1.0f);
+            lazer2.transform.rotation *= rotation;
+            GameObject lazer3 = GetOneLazer(center + Vector3.right * 1.5f, 1.5f, 1.0f);
+            lazer3.transform.rotation *= rotation;
 
-            GetOneLazer(start, 0.5f, 1.0f);
-            GetOneLazer(start + Vector3.left * 1.5f, 0.5f, 1.0f);
-            GetOneLazer(start + Vector3.right * 1.5f, 0.5f, 1.0f);
-
-            yield return new WaitForSeconds(0.2f);
-
+            yield return new WaitForSeconds(0.5f);
+            waveTime -= Time.deltaTime;
             playerPos += Vector3.forward * Time.deltaTime * speed;
         }
     }
