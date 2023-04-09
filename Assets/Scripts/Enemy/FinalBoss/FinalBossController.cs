@@ -46,25 +46,15 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
         StartCoroutine(FightCoroutine());
     }
 
-    private void MakeInvinsible()
-    {
-        //Make boss invincible
-    }
-
     IEnumerator Shield(float shieldTime)
     {
         tentacleAnimator.SetTrigger("Shield");
-        MakeInvinsible();
-        yield return new WaitForSeconds(shieldTime);
-        MakeVulnerable();
+        {
+            using HLockGuard guard = health.Lock();
+            yield return new WaitForSeconds(shieldTime);
+        }
         tentacleAnimator.SetTrigger("StopShield");
     }
-
-    private void MakeVulnerable()
-    {
-        //MakeBoss vulnerable
-    }
-
 
     IEnumerator FightCoroutine()
     {
