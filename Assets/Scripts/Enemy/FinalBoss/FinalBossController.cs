@@ -35,7 +35,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
         {
             Attack = !Attack;
             //LazerSweepAttack(topRightCorner.position, topLeftCorner.position);
-            StartCoroutine(LazerBurstSweep());
+            StartCoroutine(ScanPlayground());
         }
     }
     
@@ -80,6 +80,28 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
         yield return new WaitForSeconds(2.0f);
         Destroy(lazer1.gameObject);
         Destroy(lazer2.gameObject);
+    }
+
+    private GameObject GetOneLazer(Vector3 position, float lazerChargeTime, float lazerbeamDuration)
+    {
+        var obj_1 = Instantiate(lazerPrefab);
+        obj_1.transform.position = position;
+        obj_1.transform.Rotate(0f, 180f, 0f);
+        StartCoroutine(AwakeLazer(obj_1, lazerChargeTime, lazerbeamDuration));
+        return obj_1;
+    }
+
+    IEnumerator AwakeLazer(GameObject lazer, float lazerChargeTime, float lazerbeamDuration)
+    {
+        VisualEffect lazer1 = lazer.GetComponent<VisualEffect>();
+        lazer1.SendEvent("OnLazerCharge");
+        yield return new WaitForSeconds(lazerChargeTime);
+        lazer1.GetComponentInChildren<LazerBeamCollider>().ActivateCollider();
+        lazer1.SendEvent("OnLazerStart");
+        yield return new WaitForSeconds(lazerbeamDuration);
+        lazer1.SendEvent("OnLazerStop");
+        yield return new WaitForSeconds(2.0f);
+        Destroy(lazer1.gameObject);
     }
 
     IEnumerator SpawnOneLazer(Vector3 position, float lazerChargeTime, float lazerbeamDuration)
@@ -173,38 +195,42 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
         }
     }
 
-    IEnumerator LazerBurstSweep()
+
+    IEnumerator ScanPlayground()
     {
-        Vector3 endpoint_2 = topRightCorner.position;
+        Vector3 rightCorner = topRightCorner.position;
         Vector3 endpoint_1 = topLeftCorner.position;
-        float distance = (endpoint_1 - endpoint_2).magnitude;
-        float sweepTime = 1.0f;
+        float distance = (rightCorner - endpoint_1).magnitude;
+        Vector3 endpoint_2 = endpoint_1 + new Vector3(distance/3, 0, 0);
 
-        // Spawn the first laser at the left endpoint
-        Vector3 laserPosition = endpoint_1;
-        StartCoroutine(SpawnOneLazer(laserPosition, 0.8f, sweepTime));
+        int numLasers = 4; // or 5
+        GameObject[] lazers = new GameObject[4];
 
-        // Sweep the laser from left to right, one section at a time
-        for (int i = 1; i < 7; i++)
+        for (int i = 0; i < numLasers; i++)
         {
-            // Calculate the endpoint for this section of the sweep
-            float sectionX = endpoint_1.x + (i / 7.0f) * distance;
-            Vector3 sectionEndpoint = new Vector3(sectionX, endpoint_1.y, endpoint_1.z);
+            // Calculate the position of the lazer based on the number of lazers and the distance
+            float xPosition = Mathf.Lerp(endpoint_1.x, endpoint_2.x, (float)i / (numLasers - 1));
+            Vector3 position = new Vector3(xPosition, endpoint_1.y, endpoint_1.z);
 
-            // Move the laser to the new endpoint over the sweep time
-            float startTime = Time.time;
-            while (Time.time - startTime < sweepTime)
-            {
-                float t = (Time.time - startTime) / sweepTime;
-                laserPosition = Vector3.Lerp(endpoint_1, sectionEndpoint, t);
-                yield return null;
-            }
+            // Spawn the lazer
+            lazers[i] = GetOneLazer(position, 0.8f, 8.0f);
 
-            // Spawn a new laser at the endpoint for this section
-            StartCoroutine(SpawnOneLazer(laserPosition, 0.8f, sweepTime));
+            // Wait for a short period before spawning the next lazer
+            yield return new WaitForSeconds(0.2f);
         }
-    }
 
+        float scanTimer = 5.0f;
+        float scanSpeed = 2.0f;
+        while(scanTimer > 0)
+        {
+            foreach (GameObject lazer in lazers)
+            {
+                if(lazer != null)
+                lazer.transform.Translate(new Vector3(Time.deltaTime * scanSpeed, 0, 0));
+            }
+            yield return null;
+        }      
+    }
 
 
 
