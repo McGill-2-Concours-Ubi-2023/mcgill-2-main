@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.VFX;
 
@@ -35,7 +36,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
         {
             Attack = !Attack;
             //LazerSweepAttack(topRightCorner.position, topLeftCorner.position);
-            StartCoroutine(SpiralLazer());
+            StartCoroutine(WaveLaser());
         }
     }
     
@@ -102,6 +103,31 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
         lazer1.SendEvent("OnLazerStop");
         yield return new WaitForSeconds(2.0f);
         Destroy(lazer1.gameObject);
+    }
+
+    IEnumerator WaveLaser()
+    {
+        Vector3 playerPos = GameObject.FindGameObjectWithTag("Player").transform.position;
+        float frequency = 3.0f;
+        float amplitude = 3.0f;
+        float speed = 5.0f;
+
+        while (true)
+        {
+            float time = Time.time;
+            Vector3 offset = new Vector3(Mathf.Sin(time * frequency) * amplitude, 0, 0);
+
+            Vector3 start = playerPos + offset;
+            Vector3 end = start + Vector3.forward * 10;
+
+            GetOneLazer(start, 0.5f, 1.0f);
+            GetOneLazer(start + Vector3.left * 1.5f, 0.5f, 1.0f);
+            GetOneLazer(start + Vector3.right * 1.5f, 0.5f, 1.0f);
+
+            yield return new WaitForSeconds(0.2f);
+
+            playerPos += Vector3.forward * Time.deltaTime * speed;
+        }
     }
 
     IEnumerator SpawnOneLazer(Vector3 position, float lazerChargeTime, float lazerbeamDuration)
@@ -194,31 +220,33 @@ public class FinalBossController : MonoBehaviour, IBossTriggers
             yield return new WaitForSeconds(0.2f);
         }
     }
-    IEnumerator SpiralLazer()
+
+    IEnumerator StarLazer()
     {
-        Vector3 center = playeGround.transform.position;
-        float radius = 2.0f;
-        float speed = 2.0f;
-        float angle = 0.0f;
+        Vector3 center = new Vector3(playeGround.transform.position.x,
+            playeGround.transform.position.y + 3.0f, playeGround.transform.position.z);
+        float rotatingTime = 6.0f;
+        float rotatingSpeed =   8.0f;
+        List<GameObject> lasers = new List<GameObject>();
 
-        while (angle < 10 * Mathf.PI)
+        for(int i = 0; i < 10; i++)
         {
-            float x = center.x + radius * Mathf.Cos(angle);
-            float y = center.y;
-            float z = center.z + radius * Mathf.Sin(angle);
+            float YRotation = Mathf.Lerp(0, 360, (float)i / 10);
+            GameObject laser = GetOneLazer(center, 1.0f, 7.0f);
+            laser.transform.Rotate(0,YRotation,0);
+            lasers.Add(laser);
+        }
 
-            Vector3 pos = new Vector3(x, y, z);
-
-            GetOneLazer(pos, 1.0f, 2.0f);
-
-            angle += Time.deltaTime * speed;
-            radius += Time.deltaTime * 0.2f;
-
+        while (rotatingTime > 0)
+        {
+            rotatingTime -= Time.deltaTime;
+            foreach (GameObject laser in lasers)
+            {
+                laser.transform.Rotate(0, Time.deltaTime * rotatingSpeed, 0);
+            }
             yield return null;
         }
     }
-
-
 
     IEnumerator ScanPlayground()
     {
