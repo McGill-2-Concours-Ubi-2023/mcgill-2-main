@@ -216,7 +216,6 @@ public class DungeonRoom : MonoBehaviour
     public void TryRemoveEnemy(Enemy enemy)
     {
         if (enemies.Contains(enemy)) enemies.Remove(enemy);
-        enemies.RemoveAll(enemy => enemy == null);
     }
 
     IEnumerator CheckForEnemies(Vector3 detectionRange)
@@ -238,6 +237,7 @@ public class DungeonRoom : MonoBehaviour
                     }
                 }
             }
+            enemies.RemoveAll(enemy => enemy == null);
             areEnemiesPresent = enemies.Count > 0;
             //check every one second for enemies in the room
         }
