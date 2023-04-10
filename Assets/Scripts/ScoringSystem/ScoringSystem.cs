@@ -121,7 +121,10 @@ public class ScoringSystem : MonoBehaviour, IScoringSystemTriggers
     public void UpdateScore()
     {
         currScore = ComputeScore();
-        scoreText.text = "SCORE\n" + currScore.ToString().PadLeft(6, '0');
+        if (scoreText)
+        {
+            scoreText.text = "SCORE\n" + currScore.ToString().PadLeft(6, '0');
+        }
     }
 
     void OnEnable()
