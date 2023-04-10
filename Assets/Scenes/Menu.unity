@@ -133,6 +133,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 12416079}
+  - component: {fileID: 12416080}
   m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
@@ -167,6 +168,22 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &12416080
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 12416078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e3d3bea2345f394ba537c09f1c659f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  position: {x: 0, y: 0}
+  max: 10
+  min: -10
+  time: 3
 --- !u!1 &70933709
 GameObject:
   m_ObjectHideFlags: 0
@@ -2618,7 +2635,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveModifier: -15
-  modifier2: 0.25
+  modifier2: 0.02
+  controllerModifier: 0.4
+  positionDecider: {fileID: 12416078}
 --- !u!1 &441613179
 GameObject:
   m_ObjectHideFlags: 0
@@ -4455,7 +4474,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveModifier: 10
-  modifier2: 0.25
+  modifier2: 0.02
+  controllerModifier: 0.4
+  positionDecider: {fileID: 12416078}
 --- !u!1 &754496758
 GameObject:
   m_ObjectHideFlags: 0
@@ -4818,7 +4839,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveModifier: -10
-  modifier2: 0.25
+  modifier2: 0.02
+  controllerModifier: 0.4
+  positionDecider: {fileID: 12416078}
 --- !u!1 &836267423
 GameObject:
   m_ObjectHideFlags: 0
@@ -9156,7 +9179,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveModifier: 15
-  modifier2: 0.25
+  modifier2: 0.02
+  controllerModifier: 0.4
+  positionDecider: {fileID: 12416078}
 --- !u!1 &1788547937
 GameObject:
   m_ObjectHideFlags: 0
@@ -9247,7 +9272,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveModifier: 5
-  modifier2: 0.25
+  modifier2: 0.02
+  controllerModifier: 0.4
+  positionDecider: {fileID: 12416078}
 --- !u!1 &1813373056
 GameObject:
   m_ObjectHideFlags: 0
@@ -10813,7 +10840,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveModifier: 0
-  modifier2: 0.25
+  modifier2: 0.02
+  controllerModifier: 0.4
+  positionDecider: {fileID: 12416078}
 --- !u!114 &2055898795 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8169453400463563978, guid: d83f1f0a018b13e44b97fdc5b45ca550,
