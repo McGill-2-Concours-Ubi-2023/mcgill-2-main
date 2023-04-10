@@ -47,9 +47,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
 
     public void OnDeath()
     {
-        Debug.Log("Boss Death");
-        // TODO
-        Destroy(gameObject);
+        health.deathRenderer.OnDeathRender();
     }
 
 
