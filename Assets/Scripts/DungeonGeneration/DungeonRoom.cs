@@ -143,10 +143,9 @@ public class DungeonRoom : MonoBehaviour
         clearedRoomsCount = 0;
     }
 
-    public void SpawnEnemies()
+    public async void SpawnEnemies()
     {
-        if (fog == null) FindFog();
-        if (fog != null) fog.DissipateAmbientFog();
+        await TryDissipateFog();
         if (enemies == null)
         enemies = new List<Enemy>();
         bool isValidRoom = type != RoomTypes.RoomType.Special && type != RoomTypes.RoomType.Start
@@ -168,21 +167,24 @@ public class DungeonRoom : MonoBehaviour
         portalVFX.SendEvent("OnPortalAppear");
     }
 
-    private void FindFog()
+    private async Task TryDissipateFog()
     {
-        fog = transform.Find(DungeonDrawer.persistentFogPath)
+        while(fog == null)
+        {
+           fog = transform.Find(DungeonDrawer.persistentFogPath)
                 .GetComponent<RoomFog>();
+            await Task.Yield();
+        }
+        fog.DissipateAmbientFog();
     }
 
     public async Task UpdateRoomsLayout()
-    {
+    {       
         if (type == RoomTypes.RoomType.Start)
-            if (fog == null) FindFog();
-            if (fog != null) fog.DissipateAmbientFog();
+            await TryDissipateFog();
         if (type == RoomTypes.RoomType.Special || type == RoomTypes.RoomType.Boss)
         {
-            if (fog == null) FindFog();
-            if (fog != null) fog.DissipateAmbientFog();
+            await TryDissipateFog();
         }
         if (type == RoomTypes.RoomType.Boss)
         {
