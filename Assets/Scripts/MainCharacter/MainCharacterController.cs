@@ -116,6 +116,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
                 await Task.Yield();
             }
         }
+        UpdateInventoryUI();
         m_Awake = false;
     }
 
@@ -292,8 +293,31 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         outData.Value = m_NavActionData;
     }
 
+    public class InventoryPersistenceSynchronizationMechanism
+    {
+        internal readonly object Lock = new object();
+        internal bool Cond = false;
+    }
+
+    public static InventoryPersistenceSynchronizationMechanism s_InventoryPersistenceSynchronizationMechanism;
+
     public void Teleport()
     {
+        s_InventoryPersistenceSynchronizationMechanism = new InventoryPersistenceSynchronizationMechanism();
+        Thread inventoryPersistenceThread = new Thread(() =>
+        {
+            Debug.Log("Inventory persistence thread started");
+            using HLockGuard guard = SimpleCollectibleInventory.Lock();
+            lock (s_InventoryPersistenceSynchronizationMechanism.Lock)
+            {
+                while (!s_InventoryPersistenceSynchronizationMechanism.Cond)
+                {
+                    Monitor.Wait(s_InventoryPersistenceSynchronizationMechanism.Lock);
+                }
+            }
+            Debug.Log("Inventory persistence thread finished");
+        });
+        inventoryPersistenceThread.Start();
         desintegrateEffect.SendEvent("OnDesintegrate");
         StartCoroutine(Desintegrate(2.0f, false));
     }

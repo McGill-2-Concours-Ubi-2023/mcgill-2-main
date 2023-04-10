@@ -1,9 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.VFX;
+using Random = UnityEngine.Random;
 
 public interface IBossFightTriggers : ITrigger
 {
@@ -40,6 +43,17 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     private bool isLockedShield;
     public Canvas bossHealthCanvas;
     public Image fillBar;
+
+    private void Awake()
+    {
+        if (MainCharacterController.s_InventoryPersistenceSynchronizationMechanism != null)
+        {
+            lock (MainCharacterController.s_InventoryPersistenceSynchronizationMechanism.Lock)
+            {
+                Monitor.Pulse(MainCharacterController.s_InventoryPersistenceSynchronizationMechanism.Lock);
+            }
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
