@@ -57,6 +57,16 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         }
     }
 
+    public void PushPlayer( float forceMagnitude)
+    {
+        Vector3 diff = playGround.transform.position - playerTransform.position;
+        Rigidbody rb;
+        rb = playerTransform.GetComponent<Rigidbody>();
+        playerTransform.GetComponent<MainCharacterController>().FreezeOnCurrentState();
+        Vector3 force = diff.normalized * forceMagnitude; 
+        rb.AddForce(force, ForceMode.Impulse);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -256,6 +266,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
 
     IEnumerator Shield(float shieldTime)
     {
+        PushPlayer(2.0f);
         tentacleAnimator.SetTrigger("Shield");
         {
             using HLockGuard guard = health.Lock();
