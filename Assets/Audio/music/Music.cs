@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,6 +9,7 @@ public class Music : MonoBehaviour {
 	public AudioClip[] clips;
 	public AudioSource source;
     int currentsong = -1;
+	private bool isLocked;
 
 	void Start()
 	{
@@ -16,10 +18,9 @@ public class Music : MonoBehaviour {
 	}
 	void Update()
 	{
-		if (source.isPlaying==false)
+		if (source.isPlaying==false && !isLocked)
 		Song();
 		
-
 
 		if (Input.GetKeyDown(KeyCode.M)){
 		source.mute = !source.mute;
@@ -30,6 +31,7 @@ public class Music : MonoBehaviour {
 		}
 	}
 	void Song () {
+		isLocked = true;
 		int RandomClip = Random.Range (0, clips.Length);
 		if (clips.Length > 1)
 		{
@@ -39,5 +41,13 @@ public class Music : MonoBehaviour {
         source.clip =  clips[RandomClip];
         currentsong = RandomClip;
 		source.Play ();
+		LockSong();
 	}
+
+	async void LockSong()
+    {
+		isLocked = true;
+		await Task.Delay(System.TimeSpan.FromSeconds(source.clip.length));
+		isLocked = false;
+    }
 }

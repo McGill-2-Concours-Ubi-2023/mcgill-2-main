@@ -82,7 +82,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     {
         // send to UI
         Debug.Log($"Boss health change : {change} to : {currentHealth}");
-        fillBar.fillAmount = currentHealth;
+        fillBar.fillAmount = Mathf.Clamp01(currentHealth / 300);
     }
 
     public async void OnDeath()
@@ -293,7 +293,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         yield return new WaitForSeconds(lazerbeamDuration);
         lazer1.SendEvent("OnLazerStop");
         lazer2.SendEvent("OnLazerStop");
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1.0f);
         Destroy(lazer1.gameObject);
         Destroy(lazer2.gameObject);
     }
@@ -314,7 +314,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         vibration.SoftVibration();
         yield return new WaitForSeconds(lazerbeamDuration);
         lazer1.SendEvent("OnLazerStop");
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1.0f);
         Destroy(lazer1.gameObject);
     }
     IEnumerator AwakeLazer(GameObject lazer, float lazerChargeTime, float lazerbeamDuration)
@@ -330,7 +330,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         vibration.SoftVibration();
         yield return new WaitForSeconds(lazerbeamDuration);
         lazer1.SendEvent("OnLazerStop");
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1.0f);
         Destroy(lazer1.gameObject);
     }
 
@@ -391,7 +391,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         }
         lazer1.SendEvent("OnLazerStop");
         lazer2.SendEvent("OnLazerStop");
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1.0f);
         Destroy(lazer1.gameObject);
         Destroy(lazer2.gameObject);
     }
