@@ -115,7 +115,7 @@ public class MainCharacterMovementStateBehaviour : GenericStateMachineMonoBehavi
     {
         try
         {
-            m_Controller.SimpleCollectibleInventory.RemoveItem(SimpleCollectible.CratePoint);
+            MainCharacterController.SimpleCollectibleInventory.RemoveItem(SimpleCollectible.CratePoint);
             Instantiate(m_Controller.CratePrefab, transform.position + transform.forward + transform.up, Quaternion.identity);
         }
         catch (InventoryEmptyException<SimpleCollectible> e)
@@ -123,7 +123,7 @@ public class MainCharacterMovementStateBehaviour : GenericStateMachineMonoBehavi
             Debug.LogWarning(e);
         }
 
-        Debug.Log($"{m_Controller.SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint)} crates left");
+        Debug.Log($"{MainCharacterController.SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint)} crates left");
     }
 
     public void OnAutoFaceIntention(float3 intention)

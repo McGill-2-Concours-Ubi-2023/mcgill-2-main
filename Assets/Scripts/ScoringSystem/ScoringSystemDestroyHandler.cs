@@ -10,5 +10,10 @@ public class ScoringSystemDestroyHandler : MonoBehaviour
         {
             Destroy(go);
         }
+        ISimpleInventory<SimpleCollectible> inventory = MainCharacterController.SimpleCollectibleInventory;
+        if (inventory != null)
+        {
+            MainCharacterController.SimpleCollectibleInventory = null;
+        }
     }
 }
