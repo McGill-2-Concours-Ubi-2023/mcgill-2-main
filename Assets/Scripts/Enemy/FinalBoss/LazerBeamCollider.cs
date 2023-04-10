@@ -90,15 +90,17 @@ public class LazerBeamCollider : MonoBehaviour
 
     private async void OnTriggerExit(Collider other)
     {
-        obstacles.Remove(other.gameObject);
-        // Start the coroutine to execute OnTriggerExit logic on the next frame       
-        if (other.gameObject.layer == Destructible.desctructibleMask && obstacles.Count == 0)
+        if (isActiveAndEnabled)
         {
-            hasCollided = false;
-            await Task.Delay(100);
-            if(isActiveAndEnabled && this != null)
-            transform.position = transform.parent.position;
-            beamVFX.SetFloat("ObstacleDistance", 0);
-        }
+            obstacles.Remove(other.gameObject);
+            // Start the coroutine to execute OnTriggerExit logic on the next frame       
+            if (other.gameObject.layer == Destructible.desctructibleMask && obstacles.Count == 0)
+            {
+                hasCollided = false;
+                await Task.Delay(100);
+                transform.position = transform.parent.position;
+                beamVFX.SetFloat("ObstacleDistance", 0);
+            }
+        }       
     }        
 }

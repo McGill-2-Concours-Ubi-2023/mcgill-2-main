@@ -73,14 +73,12 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         {
             laser.GetComponentInParent<VisualEffect>()
                 .SendEvent("OnLazerStop");
+            await Task.Delay(2000);
             Destroy(laser.transform.parent.gameObject);
         }
         await Task.Delay(3000);
         health.deathRenderer.OnDeathRender();
     }
-
-
-
 
     public void StartFight()
     {
