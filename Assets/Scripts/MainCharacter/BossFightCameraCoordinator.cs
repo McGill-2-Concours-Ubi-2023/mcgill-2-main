@@ -9,6 +9,7 @@ public class BossFightCameraCoordinator : MonoBehaviour, IBossFightTriggers
     public CinemachineVirtualCamera CorridorCam, FightCam;
     private MainCharacterController m_Controller;
     private PlayableDirector m_CinematicDirector;
+    public PlayableDirector EntranceUIDirector;
 
     private void Awake()
     {
@@ -35,6 +36,7 @@ public class BossFightCameraCoordinator : MonoBehaviour, IBossFightTriggers
         using HLockGuard healthLock = m_Controller.GetComponent<Health>().Lock();
         using HLockGuard playerLock = m_Controller.Lock();
         m_CinematicDirector.Resume();
+        EntranceUIDirector.Play();
         await Task.Yield();
         GameObject.FindWithTag("FinalBoss").Trigger<IBossTriggers>(nameof(IBossTriggers.StartFight));
         await Task.Yield();
