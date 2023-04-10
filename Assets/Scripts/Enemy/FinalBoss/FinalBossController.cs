@@ -74,6 +74,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
             laser.GetComponentInParent<VisualEffect>()
                 .SendEvent("OnLazerStop");
             await Task.Delay(2000);
+            if(laser != null)
             Destroy(laser.transform.parent.gameObject);
         }
         await Task.Delay(3000);
@@ -86,69 +87,14 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         StartCoroutine(FightCoroutine());
     }
 
-    private Dictionary<System.Func<IEnumerator>, int> functionCallCounts = new Dictionary<System.Func<IEnumerator>, int>();
-    private int totalFunctionCalls = 0;
     IEnumerator FightCoroutine()
     {
-        yield return new WaitForSeconds(15.0f);
-
+        Attack = true;
+        yield return new WaitForSeconds(8.0f);
         while (true)
         {
-            // Create a list of function indices
-            List<int> functionIndices = new List<int>();
-            for (int i = 0; i < 7; i++)
-            {
-                if (i == 1 || i == 7)
-                {
-                    // Always include tentacle attack
-                    functionIndices.Add(i);
-                }
-                else
-                {
-                    System.Func<IEnumerator> function = null;
-                    switch (i)
-                    {
-                        case 0:
-                            function = WaveLasers;
-                            break;
-                        case 2:
-                            function = LazerBurstPeriodic_2;
-                            break;
-                        case 3:
-                            function = LazerBurstWave;
-                            break;
-                        case 4:
-                            function = StarLazer;
-                            break;
-                        case 5:
-                            function = ScanPlayground;
-                            break;
-                        case 6:
-                            function = SweepLazers_5;
-                            break;
-                        default: tentacleAnimator.SetTrigger("Attack");
-                            break;
-                    }
+            int patternIndex = Random.Range(0, 7); // Select a random pattern index
 
-                    if (function != null)
-                    {
-                        // Add function index to list according to its probability
-                        int functionCalls = functionCallCounts.ContainsKey(function) ? functionCallCounts[function] : 0;
-                        float probability = Mathf.Pow(0.5f, functionCalls);
-                        int numIndicesToAdd = Mathf.FloorToInt(probability * 100.0f);
-                        for (int j = 0; j < numIndicesToAdd; j++)
-                        {
-                            functionIndices.Add(i);
-                        }
-                    }
-                }
-            }
-
-            // Select a random function index from the list
-            int randomIndex = Random.Range(0, functionIndices.Count);
-            int patternIndex = functionIndices[randomIndex];
-
-            // Call the selected function
             switch (patternIndex)
             {
                 case 0:
@@ -176,48 +122,9 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
                 default:
                     break;
             }
-
-            // Update function call counts
-            System.Func<IEnumerator> calledFunction = null;
-            switch (patternIndex)
-            {
-                case 0:
-                    calledFunction = WaveLasers;
-                    break;
-                case 2:
-                    calledFunction = LazerBurstPeriodic_2;
-                    break;
-                case 3:
-                    calledFunction = LazerBurstWave;
-                    break;
-                case 4:
-                    calledFunction = StarLazer;
-                    break;
-                case 5:
-                    calledFunction = ScanPlayground;
-                    break;
-                case 6:
-                    calledFunction = SweepLazers_5;
-                    break;
-                default:
-                    break;
-            }
-            if (calledFunction != null)
-            {
-                totalFunctionCalls++;
-                if (!functionCallCounts.ContainsKey(calledFunction))
-                {
-                    functionCallCounts[calledFunction] = 1;
-                }
-                else
-                {
-                    functionCallCounts[calledFunction]++;
-                }
-            }
-            yield return new WaitForSeconds(Random.Range(3 + attackFrequency, 6 + attackFrequency));
+            yield return new WaitForSeconds(Random.Range(3.0f + attackFrequency, 6.0f + attackFrequency)); // Wait for a random amount of time before selecting a new pattern
         }
     }
-
 
     IEnumerator Shield(float shieldTime)
     {
@@ -252,17 +159,22 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         yield return new WaitForSeconds(lazerChargeTime);
         lazer1.GetComponentInChildren<LazerBeamCollider>().ActivateCollider();
         lazer2.GetComponentInChildren<LazerBeamCollider>().ActivateCollider();
+        vibration.SoftVibration();
+        cameraShake.StandardCameraShake(1.0f, 0.5f, 0.5f, 0);
+        yield return new WaitForSeconds(200);
+        cameraShake.StopCameraShake();
         lazer1.SendEvent("OnLazerStart");
         lazer2.SendEvent("OnLazerStart");
         yield return new WaitForSeconds(lazerbeamDuration);
         lazer1.SendEvent("OnLazerStop");
         lazer2.SendEvent("OnLazerStop");
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(1.5f);
         Destroy(lazer1.gameObject);
         Destroy(lazer2.gameObject);
     }
     IEnumerator SpawnOneLazer(Vector3 position, float lazerChargeTime, float lazerbeamDuration)
     {
+
         var obj_1 = Instantiate(lazerPrefab);
         obj_1.transform.position = position;
         obj_1.transform.Rotate(0f, 180f, 0f);
@@ -271,9 +183,13 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         yield return new WaitForSeconds(lazerChargeTime);
         lazer1.GetComponentInChildren<LazerBeamCollider>().ActivateCollider();
         lazer1.SendEvent("OnLazerStart");
+        cameraShake.StandardCameraShake(1.0f, 0.5f, 0.5f, 0);
+        yield return new WaitForSeconds(200);
+        cameraShake.StopCameraShake();
+        vibration.SoftVibration();
         yield return new WaitForSeconds(lazerbeamDuration);
         lazer1.SendEvent("OnLazerStop");
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(1.5f);
         Destroy(lazer1.gameObject);
     }
     IEnumerator AwakeLazer(GameObject lazer, float lazerChargeTime, float lazerbeamDuration)
@@ -283,9 +199,13 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         yield return new WaitForSeconds(lazerChargeTime);
         lazer1.GetComponentInChildren<LazerBeamCollider>().ActivateCollider();
         lazer1.SendEvent("OnLazerStart");
+        cameraShake.StandardCameraShake(1.0f, 0.5f, 0.5f, 0);
+        yield return new WaitForSeconds(200);
+        cameraShake.StopCameraShake();
+        vibration.SoftVibration();
         yield return new WaitForSeconds(lazerbeamDuration);
         lazer1.SendEvent("OnLazerStop");
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(1.5f);
         Destroy(lazer1.gameObject);
     }
 
@@ -308,7 +228,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     {
         float waveTime = 8.0f;
         Vector3 center = new Vector3(playGround.transform.position.x,
-           playGround.transform.position.y + 2.0f, playGround.transform.position.z);
+           playGround.transform.position.y + 5.0f, playGround.transform.position.z);
 
         while (waveTime > 0)
         {
@@ -346,7 +266,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         }
         lazer1.SendEvent("OnLazerStop");
         lazer2.SendEvent("OnLazerStop");
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(1.5f);
         Destroy(lazer1.gameObject);
         Destroy(lazer2.gameObject);
     }

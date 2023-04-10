@@ -18,15 +18,6 @@ public class DeathRenderer : MonoBehaviour
     private Gun1 gun1;
     private Gun gun;
 
-    private void Awake()
-    {
-        transform.root.TryGetComponent<NavMeshAgent>(out agent);
-        transform.root.TryGetComponent<Gun>(out gun);
-        transform.root.TryGetComponent<Gun1>(out gun1);
-        transform.root.TryGetComponent<Enemy>(out enemy);
-        transform.root.TryGetComponent<EnemyAI>(out ai);
-    }
-
     public void OnDeathRender()
     {
         FreezeOnCurrentState();
@@ -59,6 +50,11 @@ public class DeathRenderer : MonoBehaviour
 
     private void FreezeOnCurrentState()
     {
+        transform.root.TryGetComponent<NavMeshAgent>(out agent);
+        transform.root.TryGetComponent<Gun>(out gun);
+        transform.root.TryGetComponent<Gun1>(out gun1);
+        transform.root.TryGetComponent<Enemy>(out enemy);
+        transform.root.TryGetComponent<EnemyAI>(out ai);
         if (gun) gun.enabled = false;
         if (gun1) gun1.enabled = false;
         if (ai) ai.enabled = false;

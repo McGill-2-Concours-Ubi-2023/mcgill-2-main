@@ -55,9 +55,15 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     [SerializeField]
     private Material gunMat;
     [SerializeField]
+    public Material invincibleMat;
+    [SerializeField]
     private Material desintegrateMat;
     public bool desintegrate = false;
     private bool isDead;
+    private bool isBossScene;
+    [Range(0, 2.0f)]
+    public float dashInvincibleCooldown = 1.0f;
+    private bool canDash;
 
 
     public ISimpleInventory<SimpleCollectible> SimpleCollectibleInventory;
@@ -69,6 +75,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     
     public ClickSound cs;
     public AudioClip dashSound;
+    public AudioClip dashSoundInvincible;
     private bool m_Awake = true;
     
     private volatile int m_LockCount;
@@ -76,9 +83,11 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
 
     private async void Awake()
     {
+        canDash = true;
         gunRend.material = gunMat;
         bodyRend.material = defaultMat;
         hairRend.material = hairMat;
+        isBossScene = SceneManager.GetActiveScene() == SceneManager.GetSceneByName("BossScene");
        
         m_Awake = true;
 
@@ -306,6 +315,23 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         if(onDeath) SceneManager.LoadScene("Menu");
     }
 
+    IEnumerator OnDashInvincible()
+    {
+        canDash = false;
+        hairRend.material = invincibleMat;
+        bodyRend.material = invincibleMat;
+        gunRend.material = invincibleMat;
+        {
+            using HLockGuard guard = health.Lock();
+            yield return new WaitForSeconds(dashDuration);
+        }
+        gunRend.material = gunMat;
+        bodyRend.material = defaultMat;
+        hairRend.material = hairMat;
+        yield return new WaitForSeconds(dashInvincibleCooldown);
+        canDash = true;
+    }
+
     public void StopTrail()
     {
         desintegrateEffect.SendEvent("OnStopTrail");
@@ -315,13 +341,15 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     {
         //gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnDashIntention));
         GetComponent<DashMeshTrail>().ActivateTrail();
-        if (!isDashing)
+        if (!isDashing && canDash)
         {
             cs.Click(dashSound);
             animator.SetTrigger("MovementToDash");
             StartCoroutine(Dash());
-        }
-        vibration.SoftVibration();
+            vibration.SoftVibration();
+            if (isBossScene) 
+                StartCoroutine(OnDashInvincible());
+        }      
     }
 
     public void StopDash() //triggered as an animation event at the last keyframe
@@ -331,8 +359,8 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
 
     IEnumerator Dash()
     {
-
         isDashing = true;
+        canDash = false;
         float3 dashDirection = m_MovementDirection;
         float timer = 0f;
         while (timer < dashDuration)
@@ -343,7 +371,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         }
         rb.velocity = rb.velocity / 5;
         isDashing = false;
-
+        canDash = true;
     }
 
     public CinemachineVirtualCameraBase GetActiveCamera()

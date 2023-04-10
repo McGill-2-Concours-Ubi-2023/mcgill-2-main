@@ -308,17 +308,6 @@ public class DungeonRoom : MonoBehaviour
         return type;
     }
 
-    public void Delete() //Delete this room and all its links with other rooms
-    {
-        adjacentRooms.ForEach(room =>
-        {
-            if (room.adjacentRooms.Contains(this))
-                room.adjacentRooms.Remove(this);
-        });
-        //Use Destroy if at runtime
-        DungeonData.SafeDestroy(this.gameObject);
-    }
-
     public Vector3 GetPosition()
     {
         return transform.position;

@@ -727,9 +727,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7dba94c852890574eb6b5ade06e26b1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cameraShake: {fileID: 0}
+  vibration: {fileID: 0}
   attackFrequency: 5
   topRightCorner: {fileID: 0}
-  cameraShake: {fileID: 0}
   topLeftCorner: {fileID: 0}
   playGround: {fileID: 0}
   Attack: 0
@@ -738,6 +739,8 @@ MonoBehaviour:
   lazerPrefab: {fileID: 76157801830837168, guid: 4ea91579480dec641925a4005cd6af6e,
     type: 3}
   health: {fileID: 0}
+  shakeCamera: 0
+  stopCameraShake: 0
 --- !u!114 &7584181254099608211
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2174,6 +2177,7 @@ MonoBehaviour:
   dissolveTime: 6
   animator: {fileID: 3545684373689158200}
   deathParticles: {fileID: 2478940477021653583}
+  rootObj: {fileID: 3545684372846306584}
 --- !u!1001 &3545684373689158204
 PrefabInstance:
   m_ObjectHideFlags: 0
