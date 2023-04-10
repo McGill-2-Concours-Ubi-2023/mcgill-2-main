@@ -20,8 +20,12 @@ MonoBehaviour:
     - Double fire rate
     - fefefe
     - '1.5x current fire rate '
-    - Change the bullet type
-    values: d007000088130000d0070000a00f0000050d0000d0070000d0070000
+    - 'Switch to shotgun bullets '
+    - Increase the max number of grenade by one
+    - Increase the max number of grenades by two
+    - Increase the max number of crates by five
+    - 'Switch to big bullets '
+    values: d007000088130000d0070000a00f0000050d0000d0070000d0070000e8030000e8030000e8030000d0070000
   merchantMethods:
     keys:
     - Gain one health
@@ -30,7 +34,11 @@ MonoBehaviour:
     - Double fire rate
     - fefefe
     - '1.5x current fire rate '
-    - Change the bullet type
+    - 'Switch to shotgun bullets '
+    - Increase the max number of grenade by one
+    - Increase the max number of grenades by two
+    - Increase the max number of crates by five
+    - 'Switch to big bullets '
     values:
     - GainOneHealth
     - GainOneMaxHealth
@@ -38,21 +46,34 @@ MonoBehaviour:
     - IncraseFireRateDouble
     - ece
     - IncraseFireOnePointFive
-    - ChangeBullet
+    - ChangeBulletShotGun
+    - GainOneMaxGrenade
+    - GainTwoMaxGrenade
+    - GainFiveMaxCrate
+    - ChangeBulletBig
   descriptions:
-    keys: 0000000001000000030000000200000004000000
+    keys: 0000000001000000030000000200000004000000050000000600000007000000
     values:
     - Gain one health
     - Gain one  maximum health
     - Double fire rate
     - '1.5x current fire rate '
-    - Change the bullet type
+    - 'Switch to shotgun bullets '
+    - Increase the max number of grenades by two
+    - Increase the max number of crates by five
+    - 'Switch to big bullets '
   holograms:
     keys:
-    - Change the bullet type
+    - 'Switch to shotgun bullets '
     - '1.5x current fire rate '
     - Double fire rate
+    - Increase the max number of grenade by one
+    - Increase the max number of grenades by two
+    - 'Switch to big bullets '
     values:
     - {fileID: 3405183217678696997, guid: a0e2716eb5b80ec48a8521202a44dbd0, type: 3}
     - {fileID: 3405183217678696997, guid: a0e2716eb5b80ec48a8521202a44dbd0, type: 3}
+    - {fileID: 3405183217678696997, guid: a0e2716eb5b80ec48a8521202a44dbd0, type: 3}
+    - {fileID: 6039972143628214040, guid: 15b5fd7c64c7aff4c97f03b0097a0714, type: 3}
+    - {fileID: 6039972143628214040, guid: 15b5fd7c64c7aff4c97f03b0097a0714, type: 3}
     - {fileID: 3405183217678696997, guid: a0e2716eb5b80ec48a8521202a44dbd0, type: 3}

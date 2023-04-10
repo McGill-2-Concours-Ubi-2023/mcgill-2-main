@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Cinemachine;
 using JetBrains.Annotations;
 using Unity.Mathematics;
@@ -36,10 +38,27 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     private bool m_GamePaused;
     [CanBeNull]
     private GameObject m_PauseMenu;
-    public VisualEffect trailFollowEffect;
+    public VisualEffect desintegrateEffect;
     private Health health;
     public bool startFight;
     private int m_RoomClearedCount;
+    [SerializeField]
+    private Renderer bodyRend;
+    [SerializeField]
+    private Renderer hairRend;
+    [SerializeField]
+    private Renderer gunRend;
+    [SerializeField]
+    private Material defaultMat;
+    [SerializeField]
+    private Material hairMat;
+    [SerializeField]
+    private Material gunMat;
+    [SerializeField]
+    private Material desintegrateMat;
+    public bool desintegrate = false;
+    private bool isDead;
+
 
     public ISimpleInventory<SimpleCollectible> SimpleCollectibleInventory;
     
@@ -50,29 +69,45 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     
     public ClickSound cs;
     public AudioClip dashSound;
-    private void Awake()
+    private bool m_Awake = true;
+    
+    private volatile int m_LockCount;
+    private readonly object m_Lock = new object();
+
+    private async void Awake()
     {
-        Transform cameraRoot = transform.Find("CameraRoot");
-        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName("BossScene"))
-        {
-            this.Camera.Follow = cameraRoot;
-            this.Camera.LookAt = cameraRoot;
-            this.Camera.m_Lens.FieldOfView = 25.0f;
-        }
+        gunRend.material = gunMat;
+        bodyRend.material = defaultMat;
+        hairRend.material = hairMat;
+       
+        m_Awake = true;
+
         vibration = GameObject.Find("GamepadVib").GetComponent<Vibration>();
             rb = GetComponent<Rigidbody>();
-        SimpleCollectibleInventory = new SimpleInventory<SimpleCollectible>();
-        m_InputActionAsset = GetComponent<PlayerInput>().actions;
-        animator = GetComponent<Animator>();
-        m_PauseMenu = GameObject.FindWithTag("PauseMenu");
-        health = GetComponent<Health>();
-        health.OnDeath += OnPlayerDeath;
-        if (m_PauseMenu)
+        SimpleCollectibleInventory = new SimpleInventory<SimpleCollectible>(new Dictionary<SimpleCollectible, int>
         {
-            m_PauseMenu.SetActive(false);
+            { SimpleCollectible.Grenade, 8 },
+            { SimpleCollectible.CratePoint, 20 }
+        });
+        {
+            using HSimpleInventoryLockGuard inventoryLockGuard = SimpleCollectibleInventory.Lock();
+            m_InputActionAsset = GetComponent<PlayerInput>().actions;
+            animator = GetComponent<Animator>();
+            m_PauseMenu = GameObject.FindWithTag("PauseMenu");
+            health = GetComponent<Health>();
+            //health.OnDeath += OnPlayerDeath;
+            if (m_PauseMenu)
+            {
+                m_PauseMenu.SetActive(false);
+            }
+            gcUI = GameObject.FindObjectOfType<GrenadeCrateUI>();
+            cs = GetComponent<ClickSound>();
+            while (GameManager.isLoading)
+            {
+                await Task.Yield();
+            }
         }
-        gcUI = GameObject.FindObjectOfType<GrenadeCrateUI>();
-        cs = GetComponent<ClickSound>();
+        m_Awake = false;
     }
 
     public void StartFight()
@@ -83,17 +118,33 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         this.Camera.m_Lens.FieldOfView = 47.0f;
     }
 
-
-    private void OnPlayerDeath()
+    public void OnPlayerDeath()
     {
-        SceneManager.LoadScene("Menu");
+        if (!isDead)
+        {
+            desintegrateEffect.SendEvent("OnDesintegrate");
+            FreezeOnCurrentState();
+            animator.enabled = false;
+            GetComponent<Collider>().enabled = false;
+            StartCoroutine(Desintegrate(3.0f, true));
+            isDead = true;
+        }
     }
 
-    private void Start()
+    private async void Start()
     {
         StartCoroutine(RandomDance());
-        gcUI.UpdateCrateUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint));
-        gcUI.UpdateGrenadeUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade));
+        while (GameManager.isLoading)
+        {
+            await Task.Yield();
+        }
+        while (m_Awake)
+        {
+            await Task.Yield();
+        }
+        SimpleCollectibleInventory.AddInBulk(SimpleCollectible.Grenade, 2);
+        SimpleCollectibleInventory.AddInBulk(SimpleCollectible.CratePoint, 5);
+        UpdateInventoryUI();
     }
 
     IEnumerator RandomDance()
@@ -135,8 +186,13 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
 
     private void Update()
     {
+        if (desintegrate)
+        {
+            Teleport();
+            desintegrate = false;
+        }
         //gcUI.UpdateGrenadeUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade));
-        gcUI.UpdateCrateUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint));
+        gcUI.UpdateCrateUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint), SimpleCollectibleInventory.GetMax(SimpleCollectible.CratePoint));
         if (startFight) StartFight();
         float2 input = m_InputActionAsset["Movement"].ReadValue<Vector2>();
         gameObject.Trigger<IMainCharacterTriggers, float2>(nameof(IMainCharacterTriggers.OnInput), input);
@@ -227,14 +283,32 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         outData.Value = m_NavActionData;
     }
 
-    public void ActivateTrail()
+    public void Teleport()
     {
-        trailFollowEffect.SendEvent("OnFollowTrail");
+        desintegrateEffect.SendEvent("OnDesintegrate");
+        StartCoroutine(Desintegrate(2.0f, false));
+    }
+
+    IEnumerator Desintegrate(float timer, bool onDeath)
+    {
+        hairRend.material = desintegrateMat;
+        bodyRend.material = desintegrateMat;
+        gunRend.material = desintegrateMat;
+        float elapsedTime = 0;
+        while (elapsedTime < timer)
+        {
+            float t = elapsedTime / timer;
+            float threshold = Mathf.Lerp(0, 1.5f, t);
+            desintegrateMat.SetFloat("_Dissolve_threshold", threshold);
+            elapsedTime += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        if(onDeath) SceneManager.LoadScene("Menu");
     }
 
     public void StopTrail()
     {
-        trailFollowEffect.SendEvent("OnStopTrail");
+        desintegrateEffect.SendEvent("OnStopTrail");
     }
 
     public void OnDash()
@@ -299,7 +373,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         }
         int grenadeNum = SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade); 
         Debug.Log($"{grenadeNum} grenades left");
-        gcUI.UpdateGrenadeUI(grenadeNum);
+        gcUI.UpdateGrenadeUI(grenadeNum, SimpleCollectibleInventory.GetMax(SimpleCollectible.Grenade));
         int randomNumber = UnityEngine.Random.Range(1, 3);
         animator.SetTrigger("ThrowGrenade_" + randomNumber);
         GameObject grenade = Instantiate(GravityGrenadePrefab);
@@ -315,14 +389,29 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     {
         SimpleCollectibleInventory.AddItem(SimpleCollectible.CratePoint);
         int crateNum = SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint);
-        gcUI.UpdateCrateUI(crateNum);
+        gcUI.UpdateCrateUI(crateNum, SimpleCollectibleInventory.GetMax(SimpleCollectible.CratePoint));
     }
 
     public void OnSpawnCrate()
     {
         gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnSpawnCrateIntention));
         int crateNum = SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint);
-        gcUI.UpdateCrateUI(crateNum);
+        gcUI.UpdateCrateUI(crateNum, SimpleCollectibleInventory.GetMax(SimpleCollectible.CratePoint));
+    }
+
+    public void FreezeOnCurrentState()
+    {
+        //Freeze player
+        rb.constraints = RigidbodyConstraints.FreezeAll;
+        GetComponent<PlayerInput>().DeactivateInput();
+    }
+
+    public void UnFreeze()
+    {
+        //Unfreeze player
+        rb.constraints = RigidbodyConstraints.None;
+        rb.constraints = RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationX;
+        GetComponent<PlayerInput>().ActivateInput();
     }
 
     public void HasFaceDirectionInput(Ref<bool> hasInput)
@@ -410,7 +499,6 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     public void OnShootPress()
     {
         gameObject.TriggerDown<IGunTriggers>(nameof(IGunTriggers.OnShootStartIntention));
-        
     }
     
     public void OnShootRelease()
@@ -425,18 +513,97 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
 
     public void OnRoomCleared()
     {
-        gcUI.UpdateCrateUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint));
+        gcUI.UpdateCrateUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint), SimpleCollectibleInventory.GetMax(SimpleCollectible.CratePoint));
         m_RoomClearedCount++;
         if (m_RoomClearedCount % 2 == 0)
         {
             SimpleCollectibleInventory.AddItem(SimpleCollectible.Grenade);
-            gcUI.UpdateGrenadeUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade));
+            SimpleCollectibleInventory.AddInBulk(SimpleCollectible.CratePoint, 5);
+            UpdateInventoryUI();
         }
+    }
+
+    private void UpdateInventoryUI()
+    {
+        gcUI.UpdateGrenadeUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade), SimpleCollectibleInventory.GetMax(SimpleCollectible.Grenade));
+        gcUI.UpdateCrateUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint), SimpleCollectibleInventory.GetMax(SimpleCollectible.CratePoint));
     }
 
     public void ResetInventory()
     {
         SimpleCollectibleInventory.ResetAll();
+    }
+
+    private void InternalLock()
+    {
+        lock (m_Lock)
+        {
+            if (m_LockCount == 0)
+            {
+                FreezeOnCurrentState();
+            }
+            Interlocked.Increment(ref m_LockCount);
+        }
+    }
+    
+    private void InternalUnlock()
+    {
+        lock (m_Lock)
+        {
+            Interlocked.Decrement(ref m_LockCount);
+            if (m_LockCount == 0)
+            {
+                UnFreeze();
+            }
+        }
+    }
+    
+    private bool MovementsOverriden()
+    {
+        lock (m_Lock)
+        {
+            return m_LockCount > 0;
+        }
+    }
+
+    private class MainCharacterLockGuard : HLockGuard
+    {
+        private readonly MainCharacterController m_MainCharacter;
+        
+        internal MainCharacterLockGuard(MainCharacterController mainCharacter)
+        {
+            m_MainCharacter = mainCharacter;
+            m_MainCharacter.InternalLock();
+        }
+        
+        ~MainCharacterLockGuard()
+        {
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+            m_MainCharacter.InternalUnlock();
+        }
+    }
+    
+    public HLockGuard Lock()
+    {
+        return new MainCharacterLockGuard(this);
+    }
+    public void IncreaseMaxGrenade()
+    {
+        SimpleCollectibleInventory.ChangeMaximum(SimpleCollectible.Grenade, SimpleCollectibleInventory.GetMax(SimpleCollectible.Grenade) + 2);
+        Debug.Log("grenade max:" + SimpleCollectibleInventory.GetMax(SimpleCollectible.Grenade));
+        UpdateInventoryUI();
+    }
+
+    public void IncreaseMaxCrate()
+    {
+        SimpleCollectibleInventory.ChangeMaximum(SimpleCollectible.CratePoint, SimpleCollectibleInventory.GetMax(SimpleCollectible.CratePoint) + 5);
+        Debug.Log("crate max:" + SimpleCollectibleInventory.GetMax(SimpleCollectible.CratePoint));
+        UpdateInventoryUI();
     }
 }
 

@@ -128,6 +128,7 @@ MonoBehaviour:
   - {x: 5, y: 0, z: -5}
   - {x: -5, y: 0, z: 5}
   - {x: -5, y: 0, z: -5}
+  volumeFog: {fileID: 6097116260062858164}
 --- !u!1001 &128712470528515402
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1185,6 +1186,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3072551004009803874}
     m_Modifications:
+    - target: {fileID: 1525890172079998905, guid: f6f3ab36ee128454484562a81b0f88a7,
+        type: 3}
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[0].m_Value
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 4217292524305056385, guid: f6f3ab36ee128454484562a81b0f88a7,
         type: 3}
       propertyPath: m_Name
@@ -1247,6 +1253,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f6f3ab36ee128454484562a81b0f88a7, type: 3}
+--- !u!2083052967 &6097116260062858164 stripped
+VisualEffect:
+  m_CorrespondingSourceObject: {fileID: 1525890172079998905, guid: f6f3ab36ee128454484562a81b0f88a7,
+    type: 3}
+  m_PrefabInstance: {fileID: 4733357879230761997}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8878449592468082312 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4217292524305056389, guid: f6f3ab36ee128454484562a81b0f88a7,

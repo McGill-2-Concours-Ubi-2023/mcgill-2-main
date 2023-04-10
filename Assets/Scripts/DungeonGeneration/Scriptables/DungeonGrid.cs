@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using UnityEditor;
 using UnityEngine;
-using Debug = UnityEngine.Debug;
 
 [CreateAssetMenu(fileName = "New grid", menuName = "Dungeon grid")]
 public class DungeonGrid : DataContainer<RoomData>
@@ -117,10 +117,18 @@ public class DungeonGrid : DataContainer<RoomData>
     public void PlaceMerchant ()
     {
         int randomIndex = UnityEngine.Random.Range(0, data.AllRooms().Count);
-        var randomRoom = data.AllRooms()[randomIndex];
-        var merchant = DungeonDrawer.ReplaceRoom(randomRoom,data,
-            data.GetRoomOverrides()[0], RoomTypes.RoomType.Special,false);
-        //merchant.SetActive(false);
+        DungeonRoom randomRoom = data.AllRooms()[randomIndex];
+        List<DungeonRoom> adjacentRooms = randomRoom.GetConnectedRooms();
+        foreach(DungeonRoom room in adjacentRooms)
+        {
+            if(room.GetRoomType() == RoomTypes.RoomType.Special || randomRoom.GetRoomType() == RoomTypes.RoomType.Start)
+            {
+                //if you did not find a spot, recursively try again
+                PlaceMerchant();
+                return;
+            }
+        }
+        DungeonDrawer.ReplaceRoom(randomRoom, data, data.GetRoomOverrides()[0], RoomTypes.RoomType.Special, false);
     }
 
     public int RoomSize()

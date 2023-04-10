@@ -28,13 +28,14 @@ public class GravityAgent : MonoBehaviour
     private float massCompression;
     public GravityField currentField;
     [SerializeField]
-    private bool isBound = false;
+    private bool readyToDestroy = false;
     private Animator animator;
+    private Coroutine destroyCoroutine;
 
     public IEnumerator OnWaitDestroy(float timer)
     {
         yield return new WaitForSeconds(timer);
-        if (isBound)
+        if (readyToDestroy && currentField != null)
         {
             TryGetComponent<Animator>(out animator);
             if (animator)
@@ -63,9 +64,9 @@ public class GravityAgent : MonoBehaviour
         if(other.CompareTag("DestructionBounds") 
             && gameObject.layer == Destructible.desctructibleMask)
         {
-            isBound = true;
+            readyToDestroy = true;
             GravitationalGrenade grenade = other.gameObject.GetComponentInParent<GravitationalGrenade>();
-            StartCoroutine(OnWaitDestroy(grenade.GetDestructionTimer()));       
+            destroyCoroutine = StartCoroutine(OnWaitDestroy(grenade.GetDestructionTimer()));       
         }
     }
 
@@ -94,6 +95,11 @@ public class GravityAgent : MonoBehaviour
         if (!currentField) Release();
     }
 
+    public void TryStopDestroy()
+    {
+        readyToDestroy = false;
+    }
+
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.name.Equals("DestructionBounds") 
@@ -101,8 +107,9 @@ public class GravityAgent : MonoBehaviour
         {
             if (other.GetComponentInParent<GravityField>() == currentField)
             {
-                isBound = false;
-                StopAllCoroutines();
+                readyToDestroy = false;
+                if(destroyCoroutine != null)
+                StopCoroutine(destroyCoroutine);
             }
         }
     }

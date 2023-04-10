@@ -20,19 +20,17 @@ public class DungeonGenerator : MonoBehaviour
         if (newDungeonOnPlay)
         {
             await data.GenerateDungeon();
+            data.PlaceMerchant();
         } else
         {
             await data.LoadData();
         }
-        //StartCoroutine(PlaceRandomMerchant());
-        
         GameManager.isLoading = false;
         GameObject.FindWithTag("Player").Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.ResetInventory));
     }
 
     IEnumerator PlaceRandomMerchant()
     {
-        yield return new WaitForEndOfFrame();
-        data.PlaceMerchant();
+        yield return new WaitForEndOfFrame();      
     }
 }

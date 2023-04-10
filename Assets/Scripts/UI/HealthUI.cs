@@ -13,6 +13,7 @@ public class HealthUI : MonoBehaviour
 
     private void Start()
     {
+        playerHealth = GameObject.FindObjectOfType<MainCharacterController>().GetComponent<Health>();
         playerHealth.OnHealthChange += HealthChange;
         playerHealth.OnDeath += Death;
     }
@@ -21,6 +22,7 @@ public class HealthUI : MonoBehaviour
         {
             GameObject heart = GameObject.Instantiate(heartPrefab);
             heart.transform.SetParent(transform);
+            heart.transform.localScale = new Vector3(1,1,1);
             hearts.Add(heart);
         }
     }

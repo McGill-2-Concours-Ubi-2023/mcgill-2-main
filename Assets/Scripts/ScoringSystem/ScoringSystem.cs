@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine; 
+using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public interface IScoringSystemTriggers : ITrigger
 {
@@ -103,6 +104,8 @@ public class ScoringSystem : MonoBehaviour, IScoringSystemTriggers
 
     private void Start()
     {
+        DontDestroyOnLoad(gameObject);
+        scoreText = GameObject.Find("Points").GetComponent<TextMeshProUGUI>();
         // Initializes dictionary with the given params
         scoringFields = new Dictionary<string, ScoringField>()
         {
@@ -115,9 +118,26 @@ public class ScoringSystem : MonoBehaviour, IScoringSystemTriggers
 
 
     // Recomputes the score whenever a field is updated and updates the TextMeshProGUI element displaying the score
-    private void UpdateScore()
+    public void UpdateScore()
     {
         currScore = ComputeScore();
         scoreText.text = "SCORE\n" + currScore.ToString().PadLeft(6, '0');
+    }
+
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "BossScene") {
+            scoreText = GameObject.Find("Points").GetComponent<TextMeshProUGUI>();
+        }
     }
 }

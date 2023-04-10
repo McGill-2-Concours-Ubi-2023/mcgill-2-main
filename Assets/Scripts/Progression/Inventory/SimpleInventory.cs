@@ -1,5 +1,13 @@
+using System;
 using System.Collections.Generic;
+using System.Threading;
+using JetBrains.Annotations;
 using UnityEngine;
+
+public interface HSimpleInventoryLockGuard : HLockGuard
+{
+    
+}
 
 public interface ISimpleInventory<in TKey>
 {
@@ -10,6 +18,8 @@ public interface ISimpleInventory<in TKey>
     public int GetCount(TKey key);
     public int GetMax(TKey key);
     public void ResetAll();
+    public HSimpleInventoryLockGuard Lock();
+    public void ChangeMaximum(TKey key, int max);
 }
 
 public class InventoryFullException<T> : System.Exception
@@ -29,9 +39,32 @@ public class InventoryEmptyException<T> : System.Exception
 public class SimpleInventory<TKey> : ISimpleInventory<TKey>
 {
     private readonly IDictionary<TKey, int> m_InventoryCounts;
-    private readonly IReadOnlyDictionary<TKey, int> m_InventoryMaximums;
-    
-    public SimpleInventory(IReadOnlyDictionary<TKey, int> inventoryMaximums)
+    private readonly IDictionary<TKey, int> m_InventoryMaximums;
+    private volatile int m_LockCount = 0;
+
+    private class SimpleInventoryLockGuard : HSimpleInventoryLockGuard
+    {
+        private readonly SimpleInventory<TKey> m_Inventory;
+
+        internal SimpleInventoryLockGuard([NotNull] SimpleInventory<TKey> inventory)
+        {
+            m_Inventory = inventory;
+            m_Inventory.InternalLock();
+        }
+        
+        ~SimpleInventoryLockGuard()
+        {
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            m_Inventory.InternalUnlock();
+            GC.SuppressFinalize(this);
+        }
+    }
+
+    public SimpleInventory(IDictionary<TKey, int> inventoryMaximums)
     {
         m_InventoryCounts = new Dictionary<TKey, int>();
         m_InventoryMaximums = inventoryMaximums;
@@ -45,6 +78,10 @@ public class SimpleInventory<TKey> : ISimpleInventory<TKey>
 
     public void AddItem(TKey key)
     {
+        if (IsLocked())
+        {
+            return;
+        }
         EnsureKeyExists(key);
         if (m_InventoryCounts[key] >= GetMax(key))
         {
@@ -55,6 +92,10 @@ public class SimpleInventory<TKey> : ISimpleInventory<TKey>
 
     public void RemoveItem(TKey key)
     {
+        if (IsLocked())
+        {
+            return;
+        }
         EnsureKeyExists(key);
         if (m_InventoryCounts[key] <= 0)
         {
@@ -65,6 +106,10 @@ public class SimpleInventory<TKey> : ISimpleInventory<TKey>
 
     public void AddInBulk(TKey key, int count)
     {
+        if (IsLocked())
+        {
+            return;
+        }
         EnsureKeyExists(key);
         if (m_InventoryCounts[key] + count > GetMax(key))
         {
@@ -106,7 +151,36 @@ public class SimpleInventory<TKey> : ISimpleInventory<TKey>
 
     public void ResetAll()
     {
+        if (IsLocked())
+        {
+            return;
+        }
         m_InventoryCounts.Clear();
+    }
+
+    public HSimpleInventoryLockGuard Lock()
+    {
+        return new SimpleInventoryLockGuard(this);
+    }
+
+    public void ChangeMaximum(TKey key, int max)
+    {
+        m_InventoryMaximums[key] = max;
+    }
+
+    private void InternalLock()
+    {
+        Interlocked.Increment(ref m_LockCount);
+    }
+
+    private void InternalUnlock()
+    {
+        Interlocked.Decrement(ref m_LockCount);
+    }
+    
+    private bool IsLocked()
+    {
+        return m_LockCount > 0;
     }
 }
 

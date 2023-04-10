@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.VFX;
 
 public class EnemySpawn1 : MonoBehaviour
 {
     public GameObject[] enemies;
     public Vector3[] spawnpoints;
+    private GameObject player;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,9 +24,4 @@ public class EnemySpawn1 : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 }

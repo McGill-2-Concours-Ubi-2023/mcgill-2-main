@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class RoomTypes : MonoBehaviour
 {
-    public static float NormalSpawnProb = 70.0f;
+    public static float NormalSpawnProb = 75.0f;
     public static float TreasureSpawnProb = 20.0f;
-    public static float SpecialSpawnProb = 10.0f;
+    public static float SpecialSpawnProb = 5.0f;
     public static float[] SpawnProbabilities = { NormalSpawnProb, TreasureSpawnProb, SpecialSpawnProb };
 
     public enum RoomType {

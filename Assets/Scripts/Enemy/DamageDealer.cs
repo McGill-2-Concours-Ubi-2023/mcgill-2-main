@@ -15,4 +15,13 @@ public class DamageDealer : MonoBehaviour
             target.Trigger<IHealthTriggers, float>(nameof(IHealthTriggers.TakeDamage), 1);
         }
     }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.CompareTag("Player")) //if arm hits the player
+        {
+            //Unlucky, get better and dodge, stop blaming the developers for your lack of skills
+            target.Trigger<IHealthTriggers, float>(nameof(IHealthTriggers.TakeDamage), 1);
+        }
+    }
 }

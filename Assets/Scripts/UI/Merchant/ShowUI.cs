@@ -30,7 +30,9 @@ public class ShowUI : MonoBehaviour
     [SerializeField]
     ClickSound cs;
     [SerializeField]
-    TMP_Text descriptionUI; 
+    TMP_Text descriptionUI;
+    [SerializeField]
+    ScoringSystem scoreSys; 
 
     private void Start()
     {
@@ -43,7 +45,8 @@ public class ShowUI : MonoBehaviour
         gun = GameObject.FindGameObjectWithTag("Gun");
         m_InputActionAsset = player.GetComponent<PlayerInput>().actions;
         m_InputActionAsset["Interact"].performed += ctx => SelectCurrentItem();
-        //descriptionUI = self.transform.GetChild(0).GetComponentInChildren<TMP_Text>();
+        scoreSys = GameObject.FindObjectOfType<ScoringSystem>();
+
     }
 
     private void OnTriggerEnter(Collider other)
@@ -129,11 +132,12 @@ public class ShowUI : MonoBehaviour
         if (startFloat && data.merchantPrices.ContainsKey(description) && !soldout)
         {
             {
+                int price = data.merchantPrices[description];
                 //TODO: check if player has enough points 
-                if (points > data.merchantPrices[description]) {
+                if (scoreSys.TryPurchase(price)) {
                     cs = GetComponent<ClickSound>();
                     cs.Click();
-                    points = points -= data.merchantPrices[description];
+                    scoreSys.UpdateScore();
                     PickMethod(data.merchantMethods[description]);
                     soldout = true;
                     SetText("SOLD OUT!");
@@ -142,6 +146,7 @@ public class ShowUI : MonoBehaviour
             }
         }
     }
+
     public void SetText(string description)
     {// set the description of the config 
         if (description == "SOLD OUT!") {
@@ -186,10 +191,19 @@ public class ShowUI : MonoBehaviour
     public void IncraseFireOnePointFive() {
         gun.Trigger<IGunTriggers, float>(nameof(IGunTriggers.IncreaseFireRate), 1.5f);
     }
-    public void ChangeBullet() {
-        gun.Trigger<IGunTriggers>(nameof(IGunTriggers.ChangeBullet));
+    public void ChangeBulletShotGun() {
+        gun.Trigger<IGunTriggers>(nameof(IGunTriggers.ChangeBulletShotGun));
     }
-  /*  private void GainOneMaxGrenade() {
-        this.gameObject.Trigger<IGrenadeTriggers, int>(nameof(IGrenadeTriggers.IncreaseMaxGrenade), 1);
-    }*/
+
+    public void ChangeBulletBig() {
+        gun.Trigger<IGunTriggers>(nameof(IGunTriggers.ChangeBulletBig));
+    }
+    public void GainTwoMaxGrenade()
+    {
+        player.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.IncreaseMaxGrenade));
+    }
+
+    public void GainFiveMaxCrate() {
+        player.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.IncreaseMaxCrate));
+    }
 }
