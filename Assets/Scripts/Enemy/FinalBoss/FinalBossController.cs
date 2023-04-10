@@ -1,9 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.VFX;
+using Random = UnityEngine.Random;
 
 public interface IBossFightTriggers : ITrigger
 {
@@ -41,6 +44,18 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     public Canvas bossHealthCanvas;
     public Image fillBar;
 
+    private void Awake()
+    {
+        if (MainCharacterController.s_InventoryPersistenceSynchronizationMechanism != null)
+        {
+            lock (MainCharacterController.s_InventoryPersistenceSynchronizationMechanism.Lock)
+            {
+                MainCharacterController.s_InventoryPersistenceSynchronizationMechanism.Cond = true;
+                Monitor.Pulse(MainCharacterController.s_InventoryPersistenceSynchronizationMechanism.Lock);
+            }
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -67,7 +82,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     {
         // send to UI
         Debug.Log($"Boss health change : {change} to : {currentHealth}");
-        fillBar.fillAmount = currentHealth;
+        fillBar.fillAmount = Mathf.Clamp01(currentHealth / 300);
     }
 
     public async void OnDeath()
@@ -278,7 +293,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         yield return new WaitForSeconds(lazerbeamDuration);
         lazer1.SendEvent("OnLazerStop");
         lazer2.SendEvent("OnLazerStop");
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1.0f);
         Destroy(lazer1.gameObject);
         Destroy(lazer2.gameObject);
     }
@@ -299,7 +314,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         vibration.SoftVibration();
         yield return new WaitForSeconds(lazerbeamDuration);
         lazer1.SendEvent("OnLazerStop");
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1.0f);
         Destroy(lazer1.gameObject);
     }
     IEnumerator AwakeLazer(GameObject lazer, float lazerChargeTime, float lazerbeamDuration)
@@ -315,7 +330,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         vibration.SoftVibration();
         yield return new WaitForSeconds(lazerbeamDuration);
         lazer1.SendEvent("OnLazerStop");
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1.0f);
         Destroy(lazer1.gameObject);
     }
 
@@ -376,7 +391,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         }
         lazer1.SendEvent("OnLazerStop");
         lazer2.SendEvent("OnLazerStop");
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1.0f);
         Destroy(lazer1.gameObject);
         Destroy(lazer2.gameObject);
     }
