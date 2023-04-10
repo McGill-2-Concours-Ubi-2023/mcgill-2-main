@@ -7,10 +7,11 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: PlayerTeleportMat
-  m_Shader: {fileID: -6465566751694194690, guid: 298245ab906e6f5488db4254a4ff318c,
+  m_Name: GrassBattleGround
+  m_Shader: {fileID: -6465566751694194690, guid: 854fe0c5e8cb22f459a3cec037716f45,
     type: 3}
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - BOOLEAN_9EFAFD8F30434BF5AEB3D3E4E08FEB76_ON
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -79,57 +80,59 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - Vector1_0db1a2d5c39440b9a41161981822fd8f: 1.2
-    - Vector1_17c541835ddb4b679c09fc9eaef44a59: 31
-    - Vector1_b1a72c4adaa5466e8361356a01b59685: 0
-    - Vector1_eddb10148baf428da2168ae557de7ce7: 0.0235
+    - BOOLEAN_6A96DA7D53044CD087EBAF293FECFE3C: 0
+    - BOOLEAN_9EFAFD8F30434BF5AEB3D3E4E08FEB76: 1
+    - Vector1_2c3ef261fdea4fecaaf8c3b0866bb23f: 0.3
+    - Vector1_307112231aa94f2cbdb9c5ef55c2accd: 0
+    - Vector1_425b28274b5647ea909e43c5e0b0de4c: 0.2
+    - Vector1_4e0207aad98e44039728554f5fe1a121: 7
+    - Vector1_6d11a87d9b8c412ead003becaa7d5ff9: -0.859
+    - Vector1_7c09054c36994f008a333049b0906d32: 4
+    - Vector1_ad268a30d9664ca79fda2446278b1490: 1
+    - _Agitation_X_strength: 0.5
+    - _Agitation_Z_strength: 0.3
+    - _Agitation_noise_scale: 1.34
+    - _Agitation_speed: 3.65
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
-    - _CastShadows: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
-    - _Cull: 0
+    - _Cull: 2
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
-    - _Dissolve_threshold: 1.4982538
-    - _DstBlend: 10
+    - _DstBlend: 0
     - _EnvironmentReflections: 1
-    - _Erosion_power: 2
+    - _Fluorescency: 6
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _ISHOLLOGRAM: 0
+    - _GradientPower: 3.86
     - _Metallic: 0
-    - _Noise_Scale: 40
     - _OcclusionStrength: 1
-    - _Outline_width: 0.015
     - _Parallax: 0.005
-    - _QueueControl: 1
+    - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
-    - _SrcBlend: 5
-    - _Surface: 1
+    - _Spread_smoothness: 5
+    - _SrcBlend: 1
+    - _Surface: 0
     - _WorkflowMode: 1
-    - _ZTest: 4
     - _ZWrite: 1
-    - _ZWriteControl: 1
     m_Colors:
-    - Color_9dca30c8daf14c8eb78b33db99ea5ec6: {r: 0.5946853, g: 0.17680134, b: 0,
-        a: 1}
-    - Vector3_5d75f9cb519745828ee3d4521a72fc81: {r: 1, g: 1, b: 1, a: 0}
-    - _BaseColor: {r: 0, g: 2.4293191, b: 7.999999, a: 1}
+    - Color_1: {r: 1.7672473, g: 5.9156294, b: 4.581234, a: 0}
+    - Color_57c7306742fc4e6196a9eddb49f608e6: {r: 0.4213836, g: 0.6320754, b: 0.44847256,
+        a: 0}
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _Erosion_direction_local: {r: 0, g: 1, b: 0, a: 0}
-    - _OutlineColor: {r: 0, g: 54.432213, b: 36.76312, a: 0}
-    - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   m_BuildTextureStacks: []
---- !u!114 &7268370229459851393
+--- !u!114 &2585864180082946152
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
