@@ -210,7 +210,6 @@ public class Gun : MonoBehaviour, IGunTriggers
     
     public void OnShootStopIntention()
     {
-        Assert.IsNotNull(m_ShootCoroutine);
         m_ShootCoroutinePaused = true;
     }
 
