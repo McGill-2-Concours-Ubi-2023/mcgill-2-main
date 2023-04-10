@@ -67,7 +67,7 @@ public class MapManager : MonoBehaviour, IDungeonMapTrigger
 
     public void Update()
     {
-        if (Input.GetKeyDown(KeyCode.M)) {
+        /*if (Input.GetKeyDown(KeyCode.M)) {
             if (transform.localScale.x == 1)
             {
                 RectTransform rect = this.gameObject.GetComponent<RectTransform>();
@@ -75,7 +75,7 @@ public class MapManager : MonoBehaviour, IDungeonMapTrigger
             }
             else transform.localScale = Vector3.one;
             
-        }
+        }*/
     }
 
     public int GetGridSize() {
