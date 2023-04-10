@@ -49,7 +49,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemies: []
   spawnpoints: []
-  volumeFog: {fileID: 4765677542194210874}
 --- !u!1 &8882659143894227135
 GameObject:
   m_ObjectHideFlags: 0
@@ -1298,10 +1297,20 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5534338763506668889}
     m_Modifications:
+    - target: {fileID: 1525890172079998904, guid: f6f3ab36ee128454484562a81b0f88a7,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1525890172079998905, guid: f6f3ab36ee128454484562a81b0f88a7,
         type: 3}
       propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[0].m_Value
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1525890172079998907, guid: f6f3ab36ee128454484562a81b0f88a7,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4217292524305056385, guid: f6f3ab36ee128454484562a81b0f88a7,
         type: 3}
@@ -1365,12 +1374,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f6f3ab36ee128454484562a81b0f88a7, type: 3}
---- !u!2083052967 &4765677542194210874 stripped
-VisualEffect:
-  m_CorrespondingSourceObject: {fileID: 1525890172079998905, guid: f6f3ab36ee128454484562a81b0f88a7,
-    type: 3}
-  m_PrefabInstance: {fileID: 6272981565154553731}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7892785171043282182 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4217292524305056389, guid: f6f3ab36ee128454484562a81b0f88a7,

@@ -22,6 +22,7 @@ public class HealthUI : MonoBehaviour
         {
             GameObject heart = GameObject.Instantiate(heartPrefab);
             heart.transform.SetParent(transform);
+            heart.transform.localScale = new Vector3(1,1,1);
             hearts.Add(heart);
         }
     }

@@ -191,8 +191,12 @@ public class ShowUI : MonoBehaviour
     public void IncraseFireOnePointFive() {
         gun.Trigger<IGunTriggers, float>(nameof(IGunTriggers.IncreaseFireRate), 1.5f);
     }
-    public void ChangeBullet() {
-        gun.Trigger<IGunTriggers>(nameof(IGunTriggers.ChangeBullet));
+    public void ChangeBulletShotGun() {
+        gun.Trigger<IGunTriggers>(nameof(IGunTriggers.ChangeBulletShotGun));
+    }
+
+    public void ChangeBulletBig() {
+        gun.Trigger<IGunTriggers>(nameof(IGunTriggers.ChangeBulletBig));
     }
     public void GainTwoMaxGrenade()
     {

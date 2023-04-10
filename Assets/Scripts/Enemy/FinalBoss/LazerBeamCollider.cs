@@ -12,10 +12,16 @@ public class LazerBeamCollider : MonoBehaviour
     public VisualEffect beamVFX;
     public List<GameObject> obstacles;
     private bool hasCollided;
+    private CinemachineCameraShake cameraShake;
+    private Vibration vibration;
+    private FinalBossController bossController;
 
     private void OnEnable()
     {       
         if (obstacles == null) obstacles = new List<GameObject>();
+        bossController = FindObjectOfType<FinalBossController>();
+        cameraShake = bossController.cameraShake;
+        vibration = bossController.vibration;
     }
 
     public async void ActivateCollider()
@@ -35,7 +41,7 @@ public class LazerBeamCollider : MonoBehaviour
         _collider.enabled = true;
     }
 
-    private void OnTriggerEnter(Collider other)
+    private async void OnTriggerEnter(Collider other)
     {
         if (!obstacles.Contains(other.gameObject))
         {
@@ -45,7 +51,14 @@ public class LazerBeamCollider : MonoBehaviour
         if (other.gameObject.layer == Destructible.desctructibleMask && !hasCollided)
         {
             hasCollided = true;
-        }       
+        }
+        if (other.CompareTag("Player"))
+        {
+            vibration.SharpVibration();
+            cameraShake.StandardCameraShake(1.0f, 0.5f, 0.5f, 0);
+            await Task.Delay(500);
+            cameraShake.StopCameraShake();
+        }
     }
 
     private void OnTriggerStay(Collider other)

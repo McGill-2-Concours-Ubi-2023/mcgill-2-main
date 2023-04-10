@@ -45,6 +45,7 @@ public class DungeonRoom : MonoBehaviour
     public static int clearedRoomsCount;
     private List<DungeonLight> cachedLights;
     private static bool spawnPortal;
+    public RoomFog fog;
 
     private async Task OnDistanceRender()
     {
@@ -72,7 +73,7 @@ public class DungeonRoom : MonoBehaviour
             await Task.Yield();
         }
     }
-
+    
 
     private void Update()
     {
@@ -142,9 +143,8 @@ public class DungeonRoom : MonoBehaviour
         clearedRoomsCount = 0;
     }
 
-    public void SpawnEnemies()
+    public async void SpawnEnemies()
     {
-        GetComponent<EnemySpawn1>().DissipateAmbientFog();
         if (enemies == null)
         enemies = new List<Enemy>();
         bool isValidRoom = type != RoomTypes.RoomType.Special && type != RoomTypes.RoomType.Start
@@ -166,14 +166,29 @@ public class DungeonRoom : MonoBehaviour
         portalVFX.SendEvent("OnPortalAppear");
     }
 
+    private async Task TryUpdateFog()
+    {
+        while(fog == null)
+        {
+           fog = transform.Find(DungeonDrawer.persistentFogPath)
+                .GetComponent<RoomFog>();
+            await Task.Yield();
+        }
+        DissipateFog();
+    }
+
+    private async void DissipateFog()
+    {
+        while (!fog.isDissipated)
+        {
+            fog.DissipateAmbientFog();
+            await Task.Delay(500);
+        }
+    }
+
     public async Task UpdateRoomsLayout()
     {
-        if (type == RoomTypes.RoomType.Start)
-            GetComponent<EnemySpawn1>().volumeFog.enabled = false;
-        if (type == RoomTypes.RoomType.Special || type == RoomTypes.RoomType.Boss)
-        {
-            GetComponent<EnemySpawn1>().DissipateAmbientFog();
-        }
+        await TryUpdateFog();
         if (type == RoomTypes.RoomType.Boss)
         {
             OpenBossPortal();
@@ -196,10 +211,8 @@ public class DungeonRoom : MonoBehaviour
             if (wall != null && wall.gameObject.activeInHierarchy) wall.ChangeRenderQueue(2998);
             await Task.Yield();
         }
-
-
     }
-    
+
     public void TryRemoveEnemy(Enemy enemy)
     {
         if (enemies.Contains(enemy)) enemies.Remove(enemy);
