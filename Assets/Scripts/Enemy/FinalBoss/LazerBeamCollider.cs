@@ -54,6 +54,7 @@ public class LazerBeamCollider : MonoBehaviour
         }
         if (other.CompareTag("Player"))
         {
+            if(!other.GetComponent<Health>().IsInvincible())
             vibration.SharpVibration();
             cameraShake.StandardCameraShake(1.0f, 0.5f, 0.5f, 0);
             await Task.Delay(500);
@@ -95,6 +96,7 @@ public class LazerBeamCollider : MonoBehaviour
         {
             hasCollided = false;
             await Task.Delay(100);
+            if(isActiveAndEnabled && this != null)
             transform.position = transform.parent.position;
             beamVFX.SetFloat("ObstacleDistance", 0);
         }
