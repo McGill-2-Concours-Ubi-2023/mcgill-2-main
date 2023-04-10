@@ -37,6 +37,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     private bool hasShieldedOnce;
     private bool hasShieldedTwice;
     private bool isLockedShield;
+    public Canvas bossHealthCanvas;
 
     // Start is called before the first frame update
     void Start()
@@ -90,6 +91,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
 
     public void StartFight()
     {
+        bossHealthCanvas.enabled = true;
         LazerSweepAttack(topRightCorner.position, topLeftCorner.position);
         StartCoroutine(FightCoroutine());
     }
