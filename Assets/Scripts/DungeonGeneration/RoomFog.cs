@@ -7,6 +7,7 @@ public class RoomFog : MonoBehaviour
 {
     public VisualEffect volumeFog;
     private GameObject player;
+    public bool isDissipated;
     // Start is called before the first frame update
     private void OnEnable()
     {
@@ -22,7 +23,7 @@ public class RoomFog : MonoBehaviour
     public void DissipateAmbientFog()
     {
         if(isActiveAndEnabled)
-        StartCoroutine(TryDisableFog());
+        StartCoroutine(DissipateFog(0.4f));
     }
 
     IEnumerator DissipateFog(float timer)
@@ -40,17 +41,6 @@ public class RoomFog : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
         yield return new WaitForSeconds(1.0f);
-        volumeFog.enabled = false;
-    }
-
-    IEnumerator TryDisableFog()
-    {
-        bool fogEnabled = volumeFog.enabled;
-        while (fogEnabled)
-        {
-            StartCoroutine(DissipateFog(0.5f));
-            yield return new WaitForSeconds(0.5f);
-        }
-        StopAllCoroutines();
+        isDissipated = true;
     }
 }
