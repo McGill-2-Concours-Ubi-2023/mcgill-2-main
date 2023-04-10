@@ -52,9 +52,9 @@ public class Revive : MonoBehaviour
         scoreSys.UpdateScore();
         MainCharacterController mcc = GetComponent<MainCharacterController>();
         mcc.ResetInventory();
-        mcc.SimpleCollectibleInventory.AddInBulk(SimpleCollectible.CratePoint, 5);
-        mcc.SimpleCollectibleInventory.AddInBulk(SimpleCollectible.Grenade, 2);
-        gcUI.UpdateGrenadeUI(mcc.SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade), +mcc.SimpleCollectibleInventory.GetMax(SimpleCollectible.Grenade)); ;
+        MainCharacterController.SimpleCollectibleInventory.AddInBulk(SimpleCollectible.CratePoint, 5);
+        MainCharacterController.SimpleCollectibleInventory.AddInBulk(SimpleCollectible.Grenade, 2);
+        gcUI.UpdateGrenadeUI(MainCharacterController.SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade), +MainCharacterController.SimpleCollectibleInventory.GetMax(SimpleCollectible.Grenade)); ;
         gameObject.Trigger<IHealthTriggers, float>(nameof(IHealthTriggers.GainHealth), 100);
         revivePanel.SetActive(false);
         EventSystem.current.SetSelectedGameObject(null);

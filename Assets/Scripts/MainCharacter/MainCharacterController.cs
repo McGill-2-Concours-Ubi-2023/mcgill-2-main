@@ -64,9 +64,8 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     [Range(0, 2.0f)]
     public float dashInvincibleCooldown = 1.0f;
     private bool canDash;
-
-
-    public ISimpleInventory<SimpleCollectible> SimpleCollectibleInventory;
+    
+    public static ISimpleInventory<SimpleCollectible> SimpleCollectibleInventory;
     
     private InputActionAsset m_InputActionAsset;
     private static readonly int InDebugMode = Animator.StringToHash("InDebugMode");
@@ -92,8 +91,9 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         m_Awake = true;
 
         vibration = GameObject.Find("GamepadVib").GetComponent<Vibration>();
-            rb = GetComponent<Rigidbody>();
-        SimpleCollectibleInventory = new SimpleInventory<SimpleCollectible>(new Dictionary<SimpleCollectible, int>
+        rb = GetComponent<Rigidbody>();
+
+        SimpleCollectibleInventory ??= new SimpleInventory<SimpleCollectible>(new Dictionary<SimpleCollectible, int>
         {
             { SimpleCollectible.Grenade, 8 },
             { SimpleCollectible.CratePoint, 20 }

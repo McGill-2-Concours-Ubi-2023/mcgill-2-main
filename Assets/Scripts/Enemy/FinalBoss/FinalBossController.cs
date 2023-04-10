@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.VFX;
 
 public interface IBossFightTriggers : ITrigger
@@ -38,6 +39,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     private bool hasShieldedTwice;
     private bool isLockedShield;
     public Canvas bossHealthCanvas;
+    public Image fillBar;
 
     // Start is called before the first frame update
     void Start()
@@ -65,6 +67,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     {
         // send to UI
         Debug.Log($"Boss health change : {change} to : {currentHealth}");
+        fillBar.fillAmount = currentHealth;
     }
 
     public async void OnDeath()
