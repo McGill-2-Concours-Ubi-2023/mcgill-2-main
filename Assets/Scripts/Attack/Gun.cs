@@ -16,6 +16,13 @@ public interface IGunTriggers : ITrigger
     void ChangeBulletBig();
 }
 
+public struct GunState
+{
+    public GameObject bulletPrefab;
+    public float speed;
+    public float bulletInterval;
+}
+
 public class Gun : MonoBehaviour, IGunTriggers
 {
     [SerializeField]
@@ -38,7 +45,6 @@ public class Gun : MonoBehaviour, IGunTriggers
     private GameObject shotGunBullet, bigBullet; 
     private MainCharacterController playerController;
     private Vibration vibration;
-
 
     private void Start()
     {
@@ -220,6 +226,18 @@ public class Gun : MonoBehaviour, IGunTriggers
         this.bulletPrefab = bigBullet;
     }
 
+    public GunState ToSerializable()
+        => new GunState
+        {
+            bulletPrefab = bulletPrefab,
+            speed = speed,
+            bulletInterval = bulletInterval
+        };
 
-
+    public void FromSerializable(GunState state)
+    {
+        bulletPrefab = state.bulletPrefab;
+        speed = state.speed;
+        bulletInterval = state.bulletInterval;
+    }
 }

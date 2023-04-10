@@ -172,6 +172,11 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
                 // ignored
             }
         }
+        if (s_GunState != null)
+        {
+            GetComponentInChildren<Gun>().FromSerializable(s_GunState.Value);
+            s_GunState = null;
+        }
     }
 
     IEnumerator RandomDance()
@@ -319,11 +324,13 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
 
     public static InventoryPersistenceSynchronizationMechanism s_InventoryPersistenceSynchronizationMechanism;
     private static HealthState? s_HealthState;
+    private static GunState? s_GunState;
 
     public void Teleport()
     {
         s_InventoryPersistenceSynchronizationMechanism = new InventoryPersistenceSynchronizationMechanism();
         s_HealthState = health.ToSerializable();
+        s_GunState = GetComponentInChildren<Gun>().ToSerializable();
         Thread inventoryPersistenceThread = new Thread(() =>
         {
             Debug.Log("Inventory persistence thread started");
