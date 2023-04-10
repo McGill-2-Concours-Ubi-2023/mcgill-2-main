@@ -152,9 +152,26 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         {
             await Task.Yield();
         }
-        SimpleCollectibleInventory.AddInBulk(SimpleCollectible.Grenade, 2);
-        SimpleCollectibleInventory.AddInBulk(SimpleCollectible.CratePoint, 5);
         UpdateInventoryUI();
+        await Task.Delay(TimeSpan.FromSeconds(1));
+        if (s_HealthState != null)
+        {
+            health.FromSerializable(s_HealthState.Value);
+            s_HealthState = null;
+            Debug.Log("Restored health state");
+        }
+        else
+        {
+            try
+            {
+                SimpleCollectibleInventory.AddInBulk(SimpleCollectible.Grenade, 2);
+                SimpleCollectibleInventory.AddInBulk(SimpleCollectible.CratePoint, 5);
+            }
+            catch (Exception _)
+            {
+                // ignored
+            }
+        }
     }
 
     IEnumerator RandomDance()
@@ -300,10 +317,12 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     }
 
     public static InventoryPersistenceSynchronizationMechanism s_InventoryPersistenceSynchronizationMechanism;
+    private static HealthState? s_HealthState;
 
     public void Teleport()
     {
         s_InventoryPersistenceSynchronizationMechanism = new InventoryPersistenceSynchronizationMechanism();
+        s_HealthState = health.ToSerializable();
         Thread inventoryPersistenceThread = new Thread(() =>
         {
             Debug.Log("Inventory persistence thread started");

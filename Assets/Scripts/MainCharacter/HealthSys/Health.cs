@@ -12,6 +12,12 @@ public interface IHealthTriggers : ITrigger
     void IncreaseMaxHealth(float amount);
 }
 
+public struct HealthState
+{
+    public float currentHealth;
+    public float maxHealth;
+}
+
 public class Health : MonoBehaviour, IHealthTriggers, IGravityGrenadeHealthAdaptor
 {
     public event Action<float, float> OnHealthChange;
@@ -131,6 +137,21 @@ public class Health : MonoBehaviour, IHealthTriggers, IGravityGrenadeHealthAdapt
     private void InternalUnLock()
     {
         Interlocked.Decrement(ref m_LockCount);
+    }
+    
+    public HealthState ToSerializable()
+    {
+        return new HealthState
+        {
+            currentHealth = currentHealth,
+            maxHealth = MaxHealth
+        };
+    }
+    
+    public void FromSerializable(HealthState state)
+    {
+        currentHealth = state.currentHealth;
+        MaxHealth = state.maxHealth;
     }
 }
 
