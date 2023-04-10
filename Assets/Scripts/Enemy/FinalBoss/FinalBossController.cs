@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.VFX;
 using Random = UnityEngine.Random;
@@ -57,14 +58,16 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         }
     }
 
-    public void PushPlayer(float forceMagnitude)
+    public async void PushPlayer(float forceMagnitude)
     {
         Vector3 diff = playGround.transform.position - playerTransform.position;
         Rigidbody rb;
         rb = playerTransform.GetComponent<Rigidbody>();
-        playerTransform.GetComponent<MainCharacterController>().FreezeOnCurrentState();
+        playerTransform.GetComponent<PlayerInput>().DeactivateInput();
         Vector3 force = diff.normalized * forceMagnitude; 
         rb.AddForce(force, ForceMode.Impulse);
+        await Task.Delay(1000);
+        playerTransform.GetComponent<PlayerInput>().ActivateInput();
     }
 
     // Start is called before the first frame update
