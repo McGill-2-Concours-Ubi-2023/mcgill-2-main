@@ -57,7 +57,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         }
     }
 
-    public void PushPlayer( float forceMagnitude)
+    public void PushPlayer(float forceMagnitude)
     {
         Vector3 diff = playGround.transform.position - playerTransform.position;
         Rigidbody rb;
