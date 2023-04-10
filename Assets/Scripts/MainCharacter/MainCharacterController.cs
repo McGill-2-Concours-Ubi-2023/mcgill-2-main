@@ -619,6 +619,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         {
             if (m_LockCount == 0)
             {
+                gameObject.TriggerDown<IGunTriggers>(nameof(IGunTriggers.OnShootStopIntention));
                 FreezeOnCurrentState();
             }
             Interlocked.Increment(ref m_LockCount);
