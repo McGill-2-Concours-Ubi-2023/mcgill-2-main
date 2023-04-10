@@ -220,6 +220,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         }
         //gcUI.UpdateGrenadeUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.Grenade));
         gcUI.UpdateCrateUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint), SimpleCollectibleInventory.GetMax(SimpleCollectible.CratePoint));
+        UpdateInventoryUI();
         if (startFight) StartFight();
         float2 input = m_InputActionAsset["Movement"].ReadValue<Vector2>();
         gameObject.Trigger<IMainCharacterTriggers, float2>(nameof(IMainCharacterTriggers.OnInput), input);
