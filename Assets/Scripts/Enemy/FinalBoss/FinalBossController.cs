@@ -11,6 +11,7 @@ using Random = UnityEngine.Random;
 public interface IBossFightTriggers : ITrigger
 {
     void StartBossFight() { }
+    void EndBossFight() { }
 }
 
 public interface IBossTriggers : ITrigger
@@ -88,6 +89,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     public async void OnDeath()
     {
         StopAllCoroutines();
+        GameObject.FindWithTag("Player").Trigger<IBossFightTriggers>(nameof(IBossFightTriggers.EndBossFight));
         cameraShake.StandardCameraShake(1.0f, 1.0f, 0.8f, 0);
         var lasers = FindObjectsOfType<LazerBeamCollider>();
         foreach(var laser in lasers)
