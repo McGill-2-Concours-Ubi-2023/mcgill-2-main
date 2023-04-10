@@ -117,6 +117,11 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
             }
         }
         UpdateInventoryUI();
+        if (s_HealthState != null)
+        {
+            health.FromSerializable(s_HealthState.Value);
+            s_HealthState = null;
+        }
         m_Awake = false;
     }
 
@@ -300,10 +305,12 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     }
 
     public static InventoryPersistenceSynchronizationMechanism s_InventoryPersistenceSynchronizationMechanism;
+    private static HealthState? s_HealthState;
 
     public void Teleport()
     {
         s_InventoryPersistenceSynchronizationMechanism = new InventoryPersistenceSynchronizationMechanism();
+        s_HealthState = health.ToSerializable();
         Thread inventoryPersistenceThread = new Thread(() =>
         {
             Debug.Log("Inventory persistence thread started");
