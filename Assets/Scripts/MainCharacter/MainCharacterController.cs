@@ -117,11 +117,6 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
             }
         }
         UpdateInventoryUI();
-        if (s_HealthState != null)
-        {
-            health.FromSerializable(s_HealthState.Value);
-            s_HealthState = null;
-        }
         m_Awake = false;
     }
 
@@ -157,9 +152,26 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         {
             await Task.Yield();
         }
-        SimpleCollectibleInventory.AddInBulk(SimpleCollectible.Grenade, 2);
-        SimpleCollectibleInventory.AddInBulk(SimpleCollectible.CratePoint, 5);
         UpdateInventoryUI();
+        await Task.Delay(TimeSpan.FromSeconds(1));
+        if (s_HealthState != null)
+        {
+            health.FromSerializable(s_HealthState.Value);
+            s_HealthState = null;
+            Debug.Log("Restored health state");
+        }
+        else
+        {
+            try
+            {
+                SimpleCollectibleInventory.AddInBulk(SimpleCollectible.Grenade, 2);
+                SimpleCollectibleInventory.AddInBulk(SimpleCollectible.CratePoint, 5);
+            }
+            catch (Exception _)
+            {
+                // ignored
+            }
+        }
     }
 
     IEnumerator RandomDance()
