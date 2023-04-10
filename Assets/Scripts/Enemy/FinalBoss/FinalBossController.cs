@@ -36,6 +36,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     public bool stopCameraShake;
     private bool hasShieldedOnce;
     private bool hasShieldedTwice;
+    private bool isLockedShield;
 
     // Start is called before the first frame update
     void Start()
@@ -52,12 +53,12 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
             hasShieldedOnce = true;
             StartCoroutine(Shield(10.0f));
         }
-        if(health.currentHealth < 20 && !hasShieldedTwice)
+        if(health.currentHealth < 50 && !hasShieldedTwice)
         {
             hasShieldedTwice = true;
             StartCoroutine(Shield(20.0f));
         }
-    }
+    } 
 
     public void OnHealthChange(float change, float currentHealth)
     {
@@ -68,6 +69,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     public async void OnDeath()
     {
         StopAllCoroutines();
+        cameraShake.StandardCameraShake(1.0f, 1.0f, 0.8f, 0);
         var lasers = FindObjectsOfType<LazerBeamCollider>();
         foreach(var laser in lasers)
         {
@@ -81,28 +83,92 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         health.deathRenderer.OnDeathRender();
     }
 
+    private void OnDestroy()
+    {
+        cameraShake.StopCameraShake();
+    }
+
     public void StartFight()
     {
         LazerSweepAttack(topRightCorner.position, topLeftCorner.position);
         StartCoroutine(FightCoroutine());
     }
 
+    private Dictionary<System.Func<IEnumerator>, int> functionCallCounts = new Dictionary<System.Func<IEnumerator>, int>();
+    private int totalFunctionCalls = 0;
+    private bool shouldAttack = false;
     IEnumerator FightCoroutine()
     {
-        Attack = true;
-        yield return new WaitForSeconds(8.0f);
+        yield return new WaitForSeconds(15.0f);
+
         while (true)
         {
-            int patternIndex = Random.Range(0, 7); // Select a random pattern index
+            // Create a list of function indices
+            List<int> functionIndices = new List<int>();
+            for (int i = 0; i < 7; i++)
+            {
+                if (i == 1 || i == 7 || shouldAttack)
+                {
+                    // Always include tentacle attack
+                    functionIndices.Add(i);
+                }
+                else
+                {
+                    System.Func<IEnumerator> function = null;
+                    switch (i)
+                    {
+                        case 0:
+                            function = WaveLasers;
+                            break;
+                        case 2:
+                            function = LazerBurstPeriodic_2;
+                            break;
+                        case 3:
+                            function = LazerBurstWave;
+                            break;
+                        case 4:
+                            function = StarLazer;
+                            break;
+                        case 5:
+                            function = ScanPlayground;
+                            break;
+                        case 6:
+                            function = SweepLazers_5;
+                            break;
+                        default: tentacleAnimator.SetTrigger("Attack");
+                            break;
+                    }
 
+                    if (function != null)
+                    {
+                        // Add function index to list according to its probability
+                        int functionCalls = functionCallCounts.ContainsKey(function) ? functionCallCounts[function] : 0;
+                        float probability = Mathf.Pow(0.5f, functionCalls);
+                        int numIndicesToAdd = Mathf.FloorToInt(probability * 100.0f);
+                        for (int j = 0; j < numIndicesToAdd; j++)
+                        {
+                            functionIndices.Add(i);
+                        }
+                    }
+                }
+            }
+
+            // Select a random function index from the list
+            int randomIndex = Random.Range(0, functionIndices.Count);
+            int patternIndex = functionIndices[randomIndex];
+
+            // Call the selected function
             switch (patternIndex)
             {
                 case 0:
                     StartCoroutine(WaveLasers());
                     break;
                 case 1:
-                case 7:
+                    shouldAttack = true;
                     tentacleAnimator.SetTrigger("Attack");
+                    break;
+                case 7:
+                    shouldAttack = false;
                     break;
                 case 2:
                     StartCoroutine(LazerBurstPeriodic_2());
@@ -122,9 +188,48 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
                 default:
                     break;
             }
-            yield return new WaitForSeconds(Random.Range(3.0f + attackFrequency, 6.0f + attackFrequency)); // Wait for a random amount of time before selecting a new pattern
+
+            // Update function call counts
+            System.Func<IEnumerator> calledFunction = null;
+            switch (patternIndex)
+            {
+                case 0:
+                    calledFunction = WaveLasers;
+                    break;
+                case 2:
+                    calledFunction = LazerBurstPeriodic_2;
+                    break;
+                case 3:
+                    calledFunction = LazerBurstWave;
+                    break;
+                case 4:
+                    calledFunction = StarLazer;
+                    break;
+                case 5:
+                    calledFunction = ScanPlayground;
+                    break;
+                case 6:
+                    calledFunction = SweepLazers_5;
+                    break;
+                default:
+                    break;
+            }
+            if (calledFunction != null)
+            {
+                totalFunctionCalls++;
+                if (!functionCallCounts.ContainsKey(calledFunction))
+                {
+                    functionCallCounts[calledFunction] = 1;
+                }
+                else
+                {
+                    functionCallCounts[calledFunction]++;
+                }
+            }
+            yield return new WaitForSeconds(Random.Range(3 + attackFrequency, 6 + attackFrequency));
         }
     }
+
 
     IEnumerator Shield(float shieldTime)
     {
@@ -161,7 +266,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         lazer2.GetComponentInChildren<LazerBeamCollider>().ActivateCollider();
         vibration.SoftVibration();
         cameraShake.StandardCameraShake(1.0f, 0.5f, 0.5f, 0);
-        yield return new WaitForSeconds(200);
+        yield return new WaitForSeconds(0.2f);
         cameraShake.StopCameraShake();
         lazer1.SendEvent("OnLazerStart");
         lazer2.SendEvent("OnLazerStart");
@@ -184,7 +289,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         lazer1.GetComponentInChildren<LazerBeamCollider>().ActivateCollider();
         lazer1.SendEvent("OnLazerStart");
         cameraShake.StandardCameraShake(1.0f, 0.5f, 0.5f, 0);
-        yield return new WaitForSeconds(200);
+        yield return new WaitForSeconds(0.2f);
         cameraShake.StopCameraShake();
         vibration.SoftVibration();
         yield return new WaitForSeconds(lazerbeamDuration);
@@ -200,7 +305,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         lazer1.GetComponentInChildren<LazerBeamCollider>().ActivateCollider();
         lazer1.SendEvent("OnLazerStart");
         cameraShake.StandardCameraShake(1.0f, 0.5f, 0.5f, 0);
-        yield return new WaitForSeconds(200);
+        yield return new WaitForSeconds(0.2f);
         cameraShake.StopCameraShake();
         vibration.SoftVibration();
         yield return new WaitForSeconds(lazerbeamDuration);
