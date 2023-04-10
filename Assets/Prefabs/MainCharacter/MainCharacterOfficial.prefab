@@ -385,7 +385,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHealth: 5
   ui: {fileID: 0}
-  invulnerable: 0
   deathRenderer: {fileID: 0}
   deathSound: {fileID: 8300000, guid: 68699618dbaa39d439f4117f3d357130, type: 3}
   scoringSystem: {fileID: 0}
@@ -544,6 +543,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   revivePanel: {fileID: 0}
   scoreSys: {fileID: 0}
+  button1: {fileID: 0}
+  button2: {fileID: 0}
+  gcUI: {fileID: 0}
 --- !u!1001 &2616147798799365750
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -629,12 +631,12 @@ PrefabInstance:
     - target: {fileID: 6351373347666087230, guid: 136e04102ca6e724b8fce6a7e46a4fdd,
         type: 3}
       propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[1].m_Value.x
-      value: 75
+      value: 45.000004
       objectReference: {fileID: 0}
     - target: {fileID: 6351373347666087230, guid: 136e04102ca6e724b8fce6a7e46a4fdd,
         type: 3}
       propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[1].m_Value.y
-      value: 1.0671208
+      value: 0.5141208
       objectReference: {fileID: 0}
     - target: {fileID: 6351373347666087230, guid: 136e04102ca6e724b8fce6a7e46a4fdd,
         type: 3}
@@ -849,7 +851,7 @@ PrefabInstance:
     - target: {fileID: 3164982295968437048, guid: 0a93e9d4454ffb647834281bb6ad5303,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.9651575
+      value: 0.96515745
       objectReference: {fileID: 0}
     - target: {fileID: 3164982295968437048, guid: 0a93e9d4454ffb647834281bb6ad5303,
         type: 3}
@@ -978,7 +980,7 @@ PrefabInstance:
     - target: {fileID: 2435986675446788178, guid: b5d03294d62926645bd790817082b95a,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.77921224
+      value: 0.7792123
       objectReference: {fileID: 0}
     - target: {fileID: 2435986675446788178, guid: b5d03294d62926645bd790817082b95a,
         type: 3}
@@ -1038,9 +1040,21 @@ PrefabInstance:
         type: 3}
     - target: {fileID: 2435986675446788181, guid: b5d03294d62926645bd790817082b95a,
         type: 3}
+      propertyPath: bigBullet
+      value: 
+      objectReference: {fileID: 3231657277267066154, guid: 87e0c6c3702711b4792a145fd6bbc3d9,
+        type: 3}
+    - target: {fileID: 2435986675446788181, guid: b5d03294d62926645bd790817082b95a,
+        type: 3}
       propertyPath: playerGun
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2435986675446788181, guid: b5d03294d62926645bd790817082b95a,
+        type: 3}
+      propertyPath: shotGunBullet
+      value: 
+      objectReference: {fileID: 1607138812389393978, guid: 028625875f8961b41bd589ce2199581f,
+        type: 3}
     - target: {fileID: 2435986675446788182, guid: b5d03294d62926645bd790817082b95a,
         type: 3}
       propertyPath: m_Mesh

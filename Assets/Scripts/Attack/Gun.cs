@@ -12,7 +12,8 @@ public interface IGunTriggers : ITrigger
     void OnShootStartIntention();
     void OnShootStopIntention();
     void IncreaseFireRate(float amount);
-    void ChangeBullet();
+    void ChangeBulletShotGun();
+    void ChangeBulletBig();
 }
 
 public class Gun : MonoBehaviour, IGunTriggers
@@ -34,7 +35,7 @@ public class Gun : MonoBehaviour, IGunTriggers
     [SerializeField] bool overrideVel = true;
     [SerializeField] bool playerGun;
     [SerializeField]
-    private GameObject altBullet; 
+    private GameObject shotGunBullet, bigBullet; 
     private MainCharacterController playerController;
     private Vibration vibration;
 
@@ -151,13 +152,13 @@ public class Gun : MonoBehaviour, IGunTriggers
             {
                 vel = transform.root.forward * speed;
             }
-            if (bulletPrefab != altBullet)
+            if (bulletPrefab != shotGunBullet)
             {
                 bullet.GetComponent<Bullet>().SetDirectionAndSpeed(normalize(vel), length(vel));
             }
             else
             {
-                Debug.Log("Alt bullet");
+                Debug.Log("shotgun bullet");
             }
             playerController.GetComponent<Animator>().SetTrigger("Shoot");
         }
@@ -211,8 +212,12 @@ public class Gun : MonoBehaviour, IGunTriggers
         this.bulletInterval = this.bulletInterval / amount;
     }
 
-    public void ChangeBullet() {
-        this.bulletPrefab = altBullet;
+    public void ChangeBulletShotGun() {
+        this.bulletPrefab = shotGunBullet;
+    }
+
+    public void ChangeBulletBig() {
+        this.bulletPrefab = bigBullet;
     }
 
 
