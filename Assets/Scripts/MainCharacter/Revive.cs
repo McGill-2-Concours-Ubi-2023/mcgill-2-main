@@ -20,7 +20,15 @@ public class Revive : MonoBehaviour
 
     private void Start()
     {
-        revivePanel = GameObject.FindObjectOfType<Canvas>().transform.Find("RevivePanel").gameObject;
+        if (!revivePanel)
+        {
+            revivePanel = GameObject.FindObjectOfType<Canvas>()?.transform.Find("RevivePanel")?.gameObject;
+        }
+        if (!revivePanel)
+        {
+            Debug.LogError("RevivePanel not found");
+            UnityEngine.Diagnostics.Utils.ForceCrash(UnityEngine.Diagnostics.ForcedCrashCategory.FatalError);
+        }
         gcUI = GameObject.FindObjectOfType<GrenadeCrateUI>();
         gameObject.GetComponent<Health>().OnDeath += RevivePlayerPromt;
         scoreSys = GameObject.FindObjectOfType<ScoringSystem>();
