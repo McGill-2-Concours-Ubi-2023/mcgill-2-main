@@ -17,7 +17,7 @@ public class CinemachineCameraShake : MonoBehaviour
         perlinChannel.m_AmplitudeGain = 0;
     }
 
-    public void SantardCameraShake(float intensity, float timer, float frequencyGain, int noiseSettingsId)
+    public void StandardCameraShake(float intensity, float timer, float frequencyGain, int noiseSettingsId)
     {
         SetNoiseSettings(noiseSettingsId);
         perlinChannel.m_AmplitudeGain = intensity;
@@ -58,7 +58,7 @@ public class CinemachineCameraShake : MonoBehaviour
         if(FindObjectOfType<CursorController>().IsClickSourceUnique())
         {
             Debug.Log("SHAKING!");
-            SantardCameraShake(4.0f, 3.0f, 1, 0);
+            StandardCameraShake(4.0f, 3.0f, 1, 0);
         }       
     }
 }

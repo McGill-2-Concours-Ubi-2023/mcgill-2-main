@@ -473,7 +473,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
 
     public void OnCameraStandardShake(float intensity, float timer, float frequencyGain)
     {
-        Camera.GetComponent<CinemachineCameraShake>().SantardCameraShake(intensity, timer, 1, 0);
+        Camera.GetComponent<CinemachineCameraShake>().StandardCameraShake(intensity, timer, 1, 0);
     }
 
     public void OnCameraWobbleShakeManualDecrement(float intensity, float frequencyGain)

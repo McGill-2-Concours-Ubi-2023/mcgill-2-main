@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.VFX;
 
@@ -16,11 +17,12 @@ public interface IBossTriggers : ITrigger
 public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
 {
 
+    public CinemachineCameraShake cameraShake;
+    public Vibration vibration;
     [Header("Playground Properties")]
     [Range(1.0f, 10.0f)]
     public float attackFrequency = 5.0f;
     public Transform topRightCorner;
-    public CinemachineCameraShake cameraShake;
     public Transform topLeftCorner;
     public Transform playGround;
     public bool Attack = false;
@@ -30,6 +32,10 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     public GameObject lazerPrefab;
     public Health health;
     private HealthObserverAdapter m_HealthObserverAdapter;
+    public bool shakeCamera;
+    public bool stopCameraShake;
+    private bool hasShieldedOnce;
+    private bool hasShieldedTwice;
 
     // Start is called before the first frame update
     void Start()
@@ -38,23 +44,47 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         m_HealthObserverAdapter = gameObject.AddComponent<HealthObserverAdapter>();
         m_HealthObserverAdapter.ConcreteObserver = this;
     }
-    
+
+    private void Update()
+    {
+        if(health.currentHealth < 200 && !hasShieldedOnce)
+        {
+            hasShieldedOnce = true;
+            StartCoroutine(Shield(10.0f));
+        }
+        if(health.currentHealth < 20 && !hasShieldedTwice)
+        {
+            hasShieldedTwice = true;
+            StartCoroutine(Shield(20.0f));
+        }
+    }
+
     public void OnHealthChange(float change, float currentHealth)
     {
         // send to UI
         Debug.Log($"Boss health change : {change} to : {currentHealth}");
     }
 
-    public void OnDeath()
+    public async void OnDeath()
     {
+        StopAllCoroutines();
+        var lasers = FindObjectsOfType<LazerBeamCollider>();
+        foreach(var laser in lasers)
+        {
+            laser.GetComponentInParent<VisualEffect>()
+                .SendEvent("OnLazerStop");
+            Destroy(laser.transform.parent.gameObject);
+        }
+        await Task.Delay(3000);
         health.deathRenderer.OnDeathRender();
     }
+
+
 
 
     public void StartFight()
     {
         LazerSweepAttack(topRightCorner.position, topLeftCorner.position);
-        //tentacleAnimator.SetTrigger("Shield");
         StartCoroutine(FightCoroutine());
     }
 
@@ -98,7 +128,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
                         case 6:
                             function = SweepLazers_5;
                             break;
-                        default:
+                        default: tentacleAnimator.SetTrigger("Attack");
                             break;
                     }
 
@@ -439,14 +469,13 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         Vector3 point1 = topRightCorner.position;
         Vector3 point2 = topLeftCorner.position;
         LazerSweepAttack(point1, point2);
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(2.0f);
         LazerSweepAttack(point1, point2);
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(2.0f);
         LazerSweepAttack(point1, point2);
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(2.0f);
         LazerSweepAttack(point1, point2);
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(2.0f);
         LazerSweepAttack(point1, point2);
-        yield return new WaitForSeconds(1.0f);
     }
 }
