@@ -150,8 +150,11 @@ public class Health : MonoBehaviour, IHealthTriggers, IGravityGrenadeHealthAdapt
     
     public void FromSerializable(HealthState state)
     {
+        HealthState oldState = ToSerializable();
         currentHealth = state.currentHealth;
         MaxHealth = state.maxHealth;
+        // health change message
+        OnHealthChange?.Invoke(currentHealth - oldState.currentHealth, currentHealth);
     }
 }
 
