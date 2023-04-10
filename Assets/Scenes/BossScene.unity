@@ -2631,6 +2631,7 @@ GameObject:
   - component: {fileID: 155643881}
   - component: {fileID: 155643880}
   - component: {fileID: 155643879}
+  - component: {fileID: 155643882}
   m_Layer: 7
   m_Name: SM_BossRoomCube_geometry (310)
   m_TagString: Untagged
@@ -2717,6 +2718,22 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 155643877}
   m_Mesh: {fileID: 7278755977722012699, guid: 75ae91e1cfc47f840b064f7a8f785284, type: 3}
+--- !u!54 &155643882
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 155643877}
+  serializedVersion: 2
+  m_Mass: 1000
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 1
 --- !u!65 &168665252
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3498,6 +3515,7 @@ GameObject:
   - component: {fileID: 230686294}
   - component: {fileID: 230686293}
   - component: {fileID: 230686292}
+  - component: {fileID: 230686295}
   m_Layer: 7
   m_Name: SM_BossRoomCube_geometry (322)
   m_TagString: Untagged
@@ -3583,6 +3601,22 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 230686290}
   m_Mesh: {fileID: 7278755977722012699, guid: 75ae91e1cfc47f840b064f7a8f785284, type: 3}
+--- !u!54 &230686295
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 230686290}
+  serializedVersion: 2
+  m_Mass: 1000
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 1
 --- !u!1 &230796914
 GameObject:
   m_ObjectHideFlags: 0
@@ -6680,6 +6714,7 @@ GameObject:
   - component: {fileID: 436357916}
   - component: {fileID: 436357915}
   - component: {fileID: 436357914}
+  - component: {fileID: 436357917}
   m_Layer: 0
   m_Name: SM_BossRoomCube_geometry (308)
   m_TagString: Untagged
@@ -6766,6 +6801,22 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 436357912}
   m_Mesh: {fileID: 7278755977722012699, guid: 75ae91e1cfc47f840b064f7a8f785284, type: 3}
+--- !u!54 &436357917
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 436357912}
+  serializedVersion: 2
+  m_Mass: 1000
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 1
 --- !u!1001 &436606091
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8592,6 +8643,7 @@ GameObject:
   - component: {fileID: 571535343}
   - component: {fileID: 571535342}
   - component: {fileID: 571535341}
+  - component: {fileID: 571535344}
   m_Layer: 7
   m_Name: SM_BossRoomCube_geometry (311)
   m_TagString: Untagged
@@ -8678,6 +8730,22 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 571535339}
   m_Mesh: {fileID: 7278755977722012699, guid: 75ae91e1cfc47f840b064f7a8f785284, type: 3}
+--- !u!54 &571535344
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 571535339}
+  serializedVersion: 2
+  m_Mass: 1000
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 1
 --- !u!1 &579927979
 GameObject:
   m_ObjectHideFlags: 0
@@ -11606,6 +11674,7 @@ GameObject:
   - component: {fileID: 793625456}
   - component: {fileID: 793625455}
   - component: {fileID: 793625454}
+  - component: {fileID: 793625457}
   m_Layer: 7
   m_Name: SM_BossRoomCube_geometry (314)
   m_TagString: Untagged
@@ -11692,6 +11761,22 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 793625452}
   m_Mesh: {fileID: 7278755977722012699, guid: 75ae91e1cfc47f840b064f7a8f785284, type: 3}
+--- !u!54 &793625457
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 793625452}
+  serializedVersion: 2
+  m_Mass: 1000
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 1
 --- !u!1 &795142006
 GameObject:
   m_ObjectHideFlags: 0
@@ -12138,11 +12223,11 @@ Rigidbody:
   m_Mass: 1000
   m_Drag: 0
   m_AngularDrag: 0.05
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!1 &817584700
 GameObject:
   m_ObjectHideFlags: 0
@@ -13466,6 +13551,7 @@ GameObject:
   - component: {fileID: 907867412}
   - component: {fileID: 907867411}
   - component: {fileID: 907867410}
+  - component: {fileID: 907867413}
   m_Layer: 7
   m_Name: SM_BossRoomCube_geometry (317)
   m_TagString: Untagged
@@ -13551,6 +13637,22 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 907867408}
   m_Mesh: {fileID: 7278755977722012699, guid: 75ae91e1cfc47f840b064f7a8f785284, type: 3}
+--- !u!54 &907867413
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 907867408}
+  serializedVersion: 2
+  m_Mass: 1000
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 1
 --- !u!1 &915584281
 GameObject:
   m_ObjectHideFlags: 0
@@ -15148,6 +15250,7 @@ GameObject:
   - component: {fileID: 1030933694}
   - component: {fileID: 1030933693}
   - component: {fileID: 1030933692}
+  - component: {fileID: 1030933695}
   m_Layer: 7
   m_Name: SM_BossRoomCube_geometry (318)
   m_TagString: Untagged
@@ -15233,6 +15336,22 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1030933690}
   m_Mesh: {fileID: 7278755977722012699, guid: 75ae91e1cfc47f840b064f7a8f785284, type: 3}
+--- !u!54 &1030933695
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1030933690}
+  serializedVersion: 2
+  m_Mass: 1000
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 1
 --- !u!1 &1036572222
 GameObject:
   m_ObjectHideFlags: 0
@@ -15607,7 +15726,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!54 &1060011280
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -15623,7 +15742,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!54 &1060011281
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -15639,7 +15758,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!54 &1060011282
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -15655,7 +15774,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!1001 &1067751621
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17064,6 +17183,7 @@ GameObject:
   - component: {fileID: 1168949022}
   - component: {fileID: 1168949021}
   - component: {fileID: 1168949020}
+  - component: {fileID: 1168949023}
   m_Layer: 7
   m_Name: SM_BossRoomCube_geometry (322)
   m_TagString: Untagged
@@ -17149,6 +17269,22 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1168949018}
   m_Mesh: {fileID: 7278755977722012699, guid: 75ae91e1cfc47f840b064f7a8f785284, type: 3}
+--- !u!54 &1168949023
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1168949018}
+  serializedVersion: 2
+  m_Mass: 1000
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 1
 --- !u!1 &1174748727
 GameObject:
   m_ObjectHideFlags: 0
@@ -17586,7 +17722,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!1 &1220787416
 GameObject:
   m_ObjectHideFlags: 0
@@ -22936,7 +23072,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!54 &1647432231
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -22952,7 +23088,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!54 &1647432232
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -22968,7 +23104,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!1001 &1649654329
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -26644,7 +26780,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!65 &1824799998
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -28224,6 +28360,7 @@ GameObject:
   - component: {fileID: 1975006172}
   - component: {fileID: 1975006171}
   - component: {fileID: 1975006170}
+  - component: {fileID: 1975006173}
   m_Layer: 7
   m_Name: SM_BossRoomCube_geometry (320)
   m_TagString: Untagged
@@ -28309,6 +28446,22 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1975006168}
   m_Mesh: {fileID: 7278755977722012699, guid: 75ae91e1cfc47f840b064f7a8f785284, type: 3}
+--- !u!54 &1975006173
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1975006168}
+  serializedVersion: 2
+  m_Mass: 1000
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 1
 --- !u!1 &1979024912
 GameObject:
   m_ObjectHideFlags: 0
@@ -28614,11 +28767,11 @@ Rigidbody:
   m_Mass: 1000
   m_Drag: 0
   m_AngularDrag: 0.05
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!1001 &2035632138
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -31737,6 +31890,7 @@ GameObject:
   - component: {fileID: 2127541489}
   - component: {fileID: 2127541488}
   - component: {fileID: 2127541487}
+  - component: {fileID: 2127541490}
   m_Layer: 7
   m_Name: SM_BossRoomCube_geometry (319)
   m_TagString: Untagged
@@ -31822,6 +31976,22 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2127541485}
   m_Mesh: {fileID: 7278755977722012699, guid: 75ae91e1cfc47f840b064f7a8f785284, type: 3}
+--- !u!54 &2127541490
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2127541485}
+  serializedVersion: 2
+  m_Mass: 1000
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 1
 --- !u!1 &2135560262
 GameObject:
   m_ObjectHideFlags: 0
@@ -48035,11 +48205,11 @@ Rigidbody:
   m_Mass: 1000
   m_Drag: 0
   m_AngularDrag: 0.05
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!54 &7595644400891022194
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -48051,11 +48221,11 @@ Rigidbody:
   m_Mass: 1000
   m_Drag: 0
   m_AngularDrag: 0.05
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!54 &7595644400891022195
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -48067,11 +48237,11 @@ Rigidbody:
   m_Mass: 1000
   m_Drag: 0
   m_AngularDrag: 0.05
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!54 &7595644400891022196
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -48083,11 +48253,11 @@ Rigidbody:
   m_Mass: 1000
   m_Drag: 0
   m_AngularDrag: 0.05
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!54 &7595644400891022197
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -48099,11 +48269,11 @@ Rigidbody:
   m_Mass: 1000
   m_Drag: 0
   m_AngularDrag: 0.05
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!33 &8125158141834464756
 MeshFilter:
   m_ObjectHideFlags: 0
