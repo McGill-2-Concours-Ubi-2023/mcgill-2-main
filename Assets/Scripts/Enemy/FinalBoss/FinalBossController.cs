@@ -50,6 +50,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         {
             lock (MainCharacterController.s_InventoryPersistenceSynchronizationMechanism.Lock)
             {
+                MainCharacterController.s_InventoryPersistenceSynchronizationMechanism.Cond = true;
                 Monitor.Pulse(MainCharacterController.s_InventoryPersistenceSynchronizationMechanism.Lock);
             }
         }
