@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 8144264148901805161}
   - component: {fileID: 3005841202951295963}
   - component: {fileID: 4000225654670989716}
-  - component: {fileID: 810776907}
+  - component: {fileID: 739172276664018177}
   m_Layer: 19
   m_Name: BigBullet
   m_TagString: PlayerBullet
@@ -32,7 +32,7 @@ Transform:
   m_GameObject: {fileID: 3231657277267066154}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
+  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2463833493445802484}
@@ -148,7 +148,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &810776907
+--- !u!114 &739172276664018177
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -157,19 +157,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 3231657277267066154}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 12d21a40b2dac374abab9c335b1b4059, type: 3}
+  m_Script: {fileID: 11500000, guid: 4102ba1ee54920d44805e5d30aa1d7d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deformSpeed: 0.2
-  deform: 0
-  basedOnXYpos: 0
-  deformRange: {x: -0.5, y: 0.5}
-  distortUVs: 0
-  uvDistancementAmount: {x: 1, y: 1}
-  deformNoisinessIfXYpos: 10
-  scrollTexture: 1
-  horizontalScrollSpeed: 1
-  verticalScrollSpeed: 1
+  electricEffect: {fileID: 6094198297801617348, guid: 7862f8c8456644f44b5fd2d01e15b336,
+    type: 3}
 --- !u!1 &7742893660278327409
 GameObject:
   m_ObjectHideFlags: 0
