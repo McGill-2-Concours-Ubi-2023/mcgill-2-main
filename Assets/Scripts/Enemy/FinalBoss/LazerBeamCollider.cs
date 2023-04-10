@@ -7,6 +7,7 @@ using UnityEngine.VFX;
 public class LazerBeamCollider : MonoBehaviour
 {
     public Collider _collider;
+    public Collider playerDamageCollider;
     public Transform beamEnd;
     public Transform colliderEnd;
     public VisualEffect beamVFX;
@@ -15,6 +16,7 @@ public class LazerBeamCollider : MonoBehaviour
     private CinemachineCameraShake cameraShake;
     private Vibration vibration;
     private FinalBossController bossController;
+    private GameObject currentObstacle;
 
     private void OnEnable()
     {       
@@ -39,6 +41,7 @@ public class LazerBeamCollider : MonoBehaviour
         }
         await Task.Delay(100);
         _collider.enabled = true;
+        playerDamageCollider.enabled = true;
     }
 
     private async void OnTriggerEnter(Collider other)
@@ -48,15 +51,17 @@ public class LazerBeamCollider : MonoBehaviour
             obstacles.Add(other.gameObject);
         }
 
-        if (other.gameObject.layer == Destructible.desctructibleMask && !hasCollided)
+        if (other.gameObject.layer == Destructible.desctructibleMask)
         {
+            currentObstacle = other.gameObject;         
             hasCollided = true;
         }
+
         if (other.CompareTag("Player"))
         {
             if(!other.GetComponent<Health>().IsInvincible())
             vibration.SharpVibration();
-            cameraShake.StandardCameraShake(1.0f, 0.5f, 0.5f, 0);
+            cameraShake.StandardCameraShake(1.0f, 0.5f, 1.0f, 0);
             await Task.Delay(500);
             cameraShake.StopCameraShake();
         }
@@ -64,15 +69,11 @@ public class LazerBeamCollider : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.CompareTag("Player"))
-        {
-            other.GetComponent<Health>().TakeDamage(1);
-        }
         if (!obstacles.Contains(other.gameObject))
         {
             obstacles.Add(other.gameObject);
         }
-        if (other.gameObject.layer == Destructible.desctructibleMask && hasCollided)
+        if (other.gameObject == currentObstacle && hasCollided)
         {
             UpdateLazer(other);
         }
@@ -98,8 +99,15 @@ public class LazerBeamCollider : MonoBehaviour
             {
                 hasCollided = false;
                 await Task.Delay(100);
-                transform.position = transform.parent.position;
-                beamVFX.SetFloat("ObstacleDistance", 0);
+                try
+                {
+                    transform.position = transform.parent.position;
+                    beamVFX.SetFloat("ObstacleDistance", 0);
+                }
+                catch
+                {
+                    //Ignore
+                }           
             }
         }       
     }        
