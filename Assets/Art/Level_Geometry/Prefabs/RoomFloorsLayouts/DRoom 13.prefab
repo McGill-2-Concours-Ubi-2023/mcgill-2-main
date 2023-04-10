@@ -80,21 +80,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemies:
-  - {fileID: 7109587307864313100, guid: 432d0f2c4699c34418d4daafde6208c7, type: 3}
-  - {fileID: 4840177572134145595, guid: 47f7c1bc48393dc4b9d67d8205a02c07, type: 3}
-  - {fileID: 6948398992708779284, guid: 624f5f28fa941bf4b870c00a03bb8ebf, type: 3}
-  - {fileID: 8914186942331497745, guid: 7174c74e59d10c6488943b28dfd299c3, type: 3}
+  - {fileID: 1200583790595271696, guid: ddde25de47c1e404e8ee764f28398d64, type: 3}
+  - {fileID: 434891381926203677, guid: 55e4bf0c6a75d9f42b6a4e8ced7de525, type: 3}
+  - {fileID: 2117610501956947537, guid: ff61f7a44c60e8a43b3c32d3a1c260b9, type: 3}
+  - {fileID: 4824702381023164634, guid: a36c05795f26c9a418f518259bc1628a, type: 3}
+  - {fileID: 3281374076645122049, guid: 84be8e0a4a5d97047a8793ab756983f2, type: 3}
+  - {fileID: 7446159505855215015, guid: 29f19e5a785463c4c9373d68a389a052, type: 3}
+  - {fileID: 3021476068938077322, guid: c5675b1da9bd5ec48b664f6c91048d69, type: 3}
   spawnpoints:
   - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: -5}
-  - {x: 0, y: 0, z: 5}
-  - {x: -5, y: 0, z: 0}
-  - {x: 5, y: 0, z: 0}
-  - {x: 5, y: 0, z: 5}
-  - {x: 5, y: 0, z: -5}
-  - {x: -5, y: 0, z: 5}
-  - {x: -5, y: 0, z: -5}
   volumeFog: {fileID: 6095180553414177285}
+  debugSpawn: 0
+  doubleSpawn: 0
 --- !u!1 &4797761233925650963
 GameObject:
   m_ObjectHideFlags: 0
