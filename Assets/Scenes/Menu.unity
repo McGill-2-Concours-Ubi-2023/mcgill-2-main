@@ -38,7 +38,8 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.0001969922, g: 0.00020001567, b: 0.00019682485, a: 1}
+  m_IndirectSpecularColor: {r: 0.00019565951, g: 0.00019707058, b: 0.00019549018,
+    a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -7861,10 +7862,30 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2594689786688464400, guid: 8f609bf9b6f748d4da0d717813246ab1,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2594689787147033031, guid: 8f609bf9b6f748d4da0d717813246ab1,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2594689788289606648, guid: 8f609bf9b6f748d4da0d717813246ab1,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2594689788317148167, guid: 8f609bf9b6f748d4da0d717813246ab1,
         type: 3}
       propertyPath: m_Name
       value: LoadingCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 2594689788317148167, guid: 8f609bf9b6f748d4da0d717813246ab1,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2594689788317148415, guid: 8f609bf9b6f748d4da0d717813246ab1,
         type: 3}
