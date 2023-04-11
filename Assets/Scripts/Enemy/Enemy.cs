@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -32,6 +33,7 @@ public class Enemy : MonoBehaviour, I_AI_Trigger
     private SkinnedMeshRenderer mr;
     [SerializeField]
     private MeshRenderer mr2;
+    private bool isTargetable;
     private void OnEnable()
     {
         //TryGetComponent<EnemyAI>(out ai);
@@ -108,17 +110,44 @@ public class Enemy : MonoBehaviour, I_AI_Trigger
         agent.acceleration = 0;      
     }
 
-    public void FreezeOnCurrentState()
+    public async void FreezeOnCurrentState()
     {
-        enemyHealth.deathRenderer.ComponentsFreeze();
-        DisableAgent();
-        if (agent.isActiveAndEnabled) agent.isStopped = true;
+        isTargetable = false;
+        {
+            using HLockGuard healthLock = enemyHealth.Lock();
+            DeathRenderer rend = enemyHealth.deathRenderer;
+            if (rend != null) enemyHealth.deathRenderer.ComponentsFreeze();
+            DisableAgent();
+            if (agent.isActiveAndEnabled) agent.isStopped = true;
+            try
+            {
+                GetComponentInChildren<DBufferController>().FreezeOnCurrentState();
+            }
+            catch
+            {
+                //ignore
+            }
+            while (!isTargetable)
+            {
+                await Task.Yield();
+            }
+        }
     }
 
     public void UnFreeze()
     {
-        enemyHealth.deathRenderer.EnableComponents();
+        isTargetable = true;
+        DeathRenderer rend = enemyHealth.deathRenderer;
+        if(rend != null) enemyHealth.deathRenderer.EnableComponents();
         EnableAgent();
+        try
+        {
+            GetComponentInChildren<DBufferController>().UnFreeze();
+        }
+        catch
+        {
+            //ignore
+        }
         if (agent.isActiveAndEnabled) agent.isStopped = false;
     }
 
