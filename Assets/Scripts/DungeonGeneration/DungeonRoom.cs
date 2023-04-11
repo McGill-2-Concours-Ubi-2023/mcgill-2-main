@@ -194,12 +194,6 @@ public class DungeonRoom : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmos()
-    {
-        if(isActiveAndEnabled)
-        Gizmos.DrawCube(transform.position, transform.Find("RoomCollider").GetComponent<BoxCollider>().size);
-    }
-
     public async Task UpdateRoomsLayout()
     {
         adjacentRooms.ForEach(room => room.SpawnEnemies());
@@ -233,7 +227,11 @@ public class DungeonRoom : MonoBehaviour
         while (areEnemiesPresent)
         {
             yield return new WaitForSeconds(1.0f);
-            enemies.RemoveAll(enemy => enemy == null);
+            foreach(EnemyAI enemy in enemies)
+            {
+                if (enemy == null) enemies.Remove(enemy);
+                if (enemy.GetComponent<Enemy>().isDying) enemies.Remove(enemy);
+            }
             areEnemiesPresent = enemies.Count > 0;
         }
         // room cleared
