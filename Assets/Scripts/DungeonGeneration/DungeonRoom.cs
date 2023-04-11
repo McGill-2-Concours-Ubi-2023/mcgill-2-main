@@ -227,11 +227,7 @@ public class DungeonRoom : MonoBehaviour
         while (areEnemiesPresent)
         {
             yield return new WaitForSeconds(1.0f);
-            foreach(EnemyAI enemy in enemies)
-            {
-                if (enemy == null) enemies.Remove(enemy);
-                if (enemy.GetComponent<Enemy>().isDying) enemies.Remove(enemy);
-            }
+            enemies.RemoveAll(enemy => enemy == null || enemy.GetComponent<Enemy>().isDying);
             areEnemiesPresent = enemies.Count > 0;
         }
         // room cleared
@@ -340,17 +336,20 @@ public class DungeonRoom : MonoBehaviour
 
     public void Isolate()
     {
-        StartCoroutine(CheckForEnemies());
-        foreach(DungeonDoor door in doors)
+        if (!cleared) 
         {
-            var lights = door.GetLights();
-            foreach(DoorLight light in lights)
+            StartCoroutine(CheckForEnemies());
+            foreach (DungeonDoor door in doors)
             {
-                light.TurnRed();
-                light.UpdateLight(transform.position);
+                var lights = door.GetLights();
+                foreach (DoorLight light in lights)
+                {
+                    light.TurnRed();
+                    light.UpdateLight(transform.position);
+                }
+                door.Block();
             }
-            door.Block();
-        }
+        }     
     }
 
     //FBI ???

@@ -55,6 +55,7 @@ public class Enemy : MonoBehaviour, I_AI_Trigger
     }
 
     public void OnEnemyDeath() {
+
         isDying = true;
         enemyHealth.deathRenderer.OnDeathRender();
         if (agent)

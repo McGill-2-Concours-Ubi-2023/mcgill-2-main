@@ -161,13 +161,19 @@ public class DungeonDoor : MonoBehaviour
         if (sharedRoom1 == currentRoom)
         {
             Vector2Int pos = sharedRoom2.GridPosition();
-            sharedRoom1.Isolate();
+            bool condition = sharedRoom1.GetRoomType() != RoomTypes.RoomType.Special 
+                && sharedRoom1.GetRoomType() != RoomTypes.RoomType.Boss
+                && sharedRoom1.GetRoomType() != RoomTypes.RoomType.Start;
+            if (condition)sharedRoom1.Isolate();
             sharedRoom2.StopSpawnEnemies();
             map.LeaveRoom(pos.x * gridSize + pos.y);
         }
         else {
             Vector2Int pos = sharedRoom1.GridPosition();
-            sharedRoom2.Isolate();
+            bool condition = sharedRoom2.GetRoomType() != RoomTypes.RoomType.Special
+                && sharedRoom2.GetRoomType() != RoomTypes.RoomType.Boss
+                && sharedRoom2.GetRoomType() != RoomTypes.RoomType.Start;
+            if(condition)sharedRoom2.Isolate();
             sharedRoom1.StopSpawnEnemies();
             map.LeaveRoom(pos.x * gridSize + pos.y);
         }
