@@ -36,8 +36,8 @@ public class Enemy : MonoBehaviour, I_AI_Trigger
     private bool isTargetable;
     private void OnEnable()
     {
-        TryGetComponent<NavMeshAgent>(out agent);
-        rb = GetComponent<Rigidbody>();
+        TryGetComponent(out agent);
+        TryGetComponent(out rb);
         enemyHealth.OnDeath += OnEnemyDeath;
         if (mr != null)
         {
@@ -153,6 +153,7 @@ public class Enemy : MonoBehaviour, I_AI_Trigger
 
     public void EnableAgent()
     {
+        Debug.Assert(rb != null && agent != null);
         rb.isKinematic = true;
         agent.speed = cachedSpeed;
         agent.acceleration = cachedAcceleration;

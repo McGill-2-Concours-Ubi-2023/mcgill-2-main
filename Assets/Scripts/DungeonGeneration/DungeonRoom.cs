@@ -353,7 +353,15 @@ public class DungeonRoom : MonoBehaviour
     {
         foreach(Enemy enemy in enemies)
         {
-            if (enemy != null) enemy.gameObject.SetActive(true);
+            if (enemy != null)
+            {
+                enemy.gameObject.SetActive(true);
+                if (type == RoomTypes.RoomType.Boss)
+                {
+                    enemies.Remove(enemy);
+                    Destroy(enemy.gameObject);
+                }
+            }
         }
     }
 
