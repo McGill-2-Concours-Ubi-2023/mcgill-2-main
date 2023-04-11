@@ -7,12 +7,14 @@ public class LazerPlayerCollider : MonoBehaviour
 {
     private CinemachineCameraShake cameraShake;
     private Vibration vibration;
+    private LazerBeamCollider parentCollider;
     // Start is called before the first frame update
 
     private void OnEnable()
     {
-        cameraShake = GetComponentInParent<CinemachineCameraShake>();
-        vibration = GetComponentInParent<Vibration>();
+        parentCollider = GetComponentInParent<LazerBeamCollider>();
+        cameraShake = parentCollider.cameraShake;
+        vibration = parentCollider.vibration;
     }
     private async void OnTriggerStay(Collider other)
     {

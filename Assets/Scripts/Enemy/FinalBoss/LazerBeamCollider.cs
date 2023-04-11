@@ -13,8 +13,8 @@ public class LazerBeamCollider : MonoBehaviour
     public VisualEffect beamVFX;
     public List<GameObject> obstacles;
     private bool hasCollided;
-    private CinemachineCameraShake cameraShake;
-    private Vibration vibration;
+    public CinemachineCameraShake cameraShake;
+    public Vibration vibration;
     private FinalBossController bossController;
     private GameObject currentObstacle;
 

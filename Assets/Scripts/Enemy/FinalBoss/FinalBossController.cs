@@ -66,7 +66,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         playerTransform.GetComponent<PlayerInput>().DeactivateInput();
         Vector3 force = diff.normalized * forceMagnitude; 
         rb.AddForce(force, ForceMode.Impulse);
-        await Task.Delay(1000);
+        await Task.Delay(2000);
         playerTransform.GetComponent<PlayerInput>().ActivateInput();
     }
 
@@ -270,7 +270,9 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
 
     IEnumerator Shield(float shieldTime)
     {
-        PushPlayer(4.0f);
+
+        PushPlayer(5.0f);
+        yield return new WaitForSeconds(2.0f);
         tentacleAnimator.SetTrigger("Shield");
         {
             using HLockGuard guard = health.Lock();
