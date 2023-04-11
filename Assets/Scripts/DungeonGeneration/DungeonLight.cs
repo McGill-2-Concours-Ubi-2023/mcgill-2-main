@@ -16,7 +16,7 @@ public abstract class DungeonLight : MonoBehaviour
 
     public void UpdateLight(Vector3 position)
     {
-        if (_light == null) _light = GetComponent<Light>();
+        if (_light == null) TryGetComponent(out _light);
         float distance = (transform.position - position).magnitude;
         Debug.Log(distance);
         if (distance > maxRenderDistance)

@@ -12,15 +12,15 @@ public class DeathRenderer : MonoBehaviour
     public float dissolveTime = 2.0f;
     public Animator animator;
     public VisualEffect deathParticles;
-    private NavMeshAgent agent;
-    private EnemyAI ai;
-    private Enemy enemy;
-    private Gun1 gun1;
-    private Gun gun;
+    public NavMeshAgent agent;
+    public EnemyAI ai;
+    public Enemy enemy;
+    public Gun1 gun1;
+    public Gun gun;
 
     private void Awake()
     {
-        TryGetComponents();
+        //TryGetComponents();
     }
 
     public void OnDeathRender()
@@ -78,7 +78,7 @@ public class DeathRenderer : MonoBehaviour
 
     public void EnableComponents()
     {
-        TryGetComponents();
+        //TryGetComponents();
         if (gun) gun.enabled = true;
         if (gun1) gun1.enabled = true;
         if (ai) ai.enabled = true;
@@ -87,7 +87,7 @@ public class DeathRenderer : MonoBehaviour
 
     public void ComponentsFreeze()
     {
-        TryGetComponents();
+        //TryGetComponents();
         if (gun) gun.enabled = false;
         if (gun1) gun1.enabled = false;
         if (ai) ai.enabled = false;
