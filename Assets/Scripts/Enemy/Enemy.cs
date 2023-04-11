@@ -59,8 +59,8 @@ public class Enemy : MonoBehaviour, I_AI_Trigger
     public void OnEnemyDeath() 
     {
         isDying = true;
+        FreezeOnCurrentState();
         enemyHealth.deathRenderer.OnDeathRender();
-        if (agent.isActiveAndEnabled) agent.isStopped = true;
         scoringSystem.Trigger<IScoringSystemTriggers>(nameof(IScoringSystemTriggers.OnEnemyDeath));
     }
 
