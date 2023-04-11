@@ -59,7 +59,7 @@ public class Enemy : MonoBehaviour, I_AI_Trigger
         TryGetComponent<EnemyAI>(out ai);
         isDying = true;
         if(attachedRoom != null)
-        attachedRoom.TryRemoveEnemy(this);
+        //attachedRoom.TryRemoveEnemy(this);
         //if (ai) ai.GetAttachedRoom().RemoveEnemy(ai);
         enemyHealth.deathRenderer.OnDeathRender();
         if (agent)

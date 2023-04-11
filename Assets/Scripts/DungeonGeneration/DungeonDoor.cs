@@ -161,13 +161,13 @@ public class DungeonDoor : MonoBehaviour
         if (sharedRoom1 == currentRoom)
         {
             Vector2Int pos = sharedRoom2.GridPosition();
-            sharedRoom1.SpawnEnemies();
+            sharedRoom1.Isolate();
             sharedRoom2.StopSpawnEnemies();
             map.LeaveRoom(pos.x * gridSize + pos.y);
         }
         else {
             Vector2Int pos = sharedRoom1.GridPosition();
-            sharedRoom2.SpawnEnemies();
+            sharedRoom2.Isolate();
             sharedRoom1.StopSpawnEnemies();
             map.LeaveRoom(pos.x * gridSize + pos.y);
         }

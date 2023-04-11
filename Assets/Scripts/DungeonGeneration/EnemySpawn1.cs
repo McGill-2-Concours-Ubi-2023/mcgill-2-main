@@ -11,7 +11,8 @@ public class EnemySpawn1 : MonoBehaviour
     public bool debugSpawn=false;
     public bool doubleSpawn = true;
     // Start is called before the first frame update
-    void OnEnable()
+
+    public void SpawnEnemies(DungeonRoom room)
     {
         if (debugSpawn)
         {
@@ -23,7 +24,13 @@ public class EnemySpawn1 : MonoBehaviour
                     for (int i = 0; i <= rand; i++)
                     {
                         var composite = GameObject.Instantiate(enemies[Random.Range(0, enemies.Length)], transform.position + sp + new Vector3(0, 0.5f), Quaternion.identity);
+                        var ais = composite.GetComponentsInChildren<EnemyAI>();
+                        foreach (var ai in ais)
+                        {
+                            room.AddEnemy(ai);
+                        }
                         composite.transform.DetachChildren();
+
                     }
                 }
             }
@@ -35,10 +42,20 @@ public class EnemySpawn1 : MonoBehaviour
 
                 int rand = Random.Range(0, 5);
                 var composite = GameObject.Instantiate(enemies[Random.Range(0, enemies.Length)], transform.position + sp + new Vector3(0, 0.5f), Quaternion.identity);
+                var ais = composite.GetComponentsInChildren<EnemyAI>();
+                foreach (var ai in ais)
+                {
+                    room.AddEnemy(ai);
+                }
                 composite.transform.DetachChildren();
-                if (rand == 4 && doubleSpawn) 
+                if (rand == 4 && doubleSpawn)
                 {
                     GameObject altComposite = GameObject.Instantiate(enemies[Random.Range(0, enemies.Length)], transform.position + sp + new Vector3(0, 0.5f), Quaternion.identity);
+                    var ais_alt = composite.GetComponentsInChildren<EnemyAI>();
+                    foreach (var ai in ais_alt)
+                    {
+                        room.AddEnemy(ai);
+                    }
                     altComposite.transform.DetachChildren();
                 }
             }

@@ -37,7 +37,7 @@ public class DungeonRoom : MonoBehaviour
     private GameObject walls;
     private bool isIsolated;
     [SerializeField]
-    private List<Enemy> enemies;
+    private List<EnemyAI> enemies;
     private bool areEnemiesPresent;
     private static List<DungeonRoom> allRooms;
     private List<DungeonRoom> roomsBuffer;
@@ -46,6 +46,13 @@ public class DungeonRoom : MonoBehaviour
     private List<DungeonLight> cachedLights;
     private static bool spawnPortal;
     public RoomFog fog;
+    private bool hasSpawned = false;
+
+    internal void AddEnemy(EnemyAI ai)
+    {
+        if (ai != null && !enemies.Contains(ai)) 
+            enemies.Add(ai);
+    }
 
     private async Task OnDistanceRender()
     {
@@ -143,20 +150,21 @@ public class DungeonRoom : MonoBehaviour
         clearedRoomsCount = 0;
     }
 
-    public async void SpawnEnemies()
+    public void SpawnEnemies()
     {
-        if (enemies == null)
-        enemies = new List<Enemy>();
-        bool isValidRoom = type != RoomTypes.RoomType.Special && type != RoomTypes.RoomType.Start
-            && type != RoomTypes.RoomType.Boss;
-        if (isValidRoom && !cleared)
+        if (!hasSpawned)
         {
-            GetComponent<EnemySpawn1>().enabled = true;
-            areEnemiesPresent = true;
-            Vector3 detectionRange = transform.Find("RoomCollider").GetComponent<BoxCollider>().size;
-            StartCoroutine(CheckForEnemies(detectionRange));
-            Isolate();
-        }   
+            hasSpawned = true;
+            if (enemies == null)
+                enemies = new List<EnemyAI>();
+            bool isValidRoom = type != RoomTypes.RoomType.Special && type != RoomTypes.RoomType.Start
+                && type != RoomTypes.RoomType.Boss;
+            if (isValidRoom && !cleared)
+            {
+                GetComponent<EnemySpawn1>().SpawnEnemies(this); 
+                areEnemiesPresent = true;
+            }
+        }          
     }
 
     private void OpenBossPortal()
@@ -186,8 +194,15 @@ public class DungeonRoom : MonoBehaviour
         }
     }
 
+    private void OnDrawGizmos()
+    {
+        if(isActiveAndEnabled)
+        Gizmos.DrawCube(transform.position, transform.Find("RoomCollider").GetComponent<BoxCollider>().size);
+    }
+
     public async Task UpdateRoomsLayout()
     {
+        adjacentRooms.ForEach(room => room.SpawnEnemies());
         await TryUpdateFog();
         if (type == RoomTypes.RoomType.Boss)
         {
@@ -213,33 +228,18 @@ public class DungeonRoom : MonoBehaviour
         }
     }
 
-    public void TryRemoveEnemy(Enemy enemy)
+    public void TryRemoveEnemy(EnemyAI enemy)
     {
         if (enemies.Contains(enemy)) enemies.Remove(enemy);
     }
 
-    IEnumerator CheckForEnemies(Vector3 detectionRange)
+    IEnumerator CheckForEnemies()
     {
-        Collider[] colliders;
         while (areEnemiesPresent)
         {
-            yield return new WaitForSeconds(2.0f);
-            colliders = Physics.OverlapBox(transform.position, detectionRange);
-            foreach (Collider collider in colliders)
-            {
-                if (collider.CompareTag("Enemy"))
-                {
-                    var enemy = collider.GetComponent<Enemy>();
-                    if (!enemies.Contains(enemy) && enemy != null)
-                    {
-                        enemies.Add(enemy);
-                        enemy.attachedRoom = this;
-                    }
-                }
-            }
+            yield return new WaitForSeconds(1.0f);
             enemies.RemoveAll(enemy => enemy == null);
             areEnemiesPresent = enemies.Count > 0;
-            //check every one second for enemies in the room
         }
         // room cleared
         try
