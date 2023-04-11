@@ -65,10 +65,13 @@ public class DeathRenderer : MonoBehaviour
 
     public void EnableComponents()
     {
-        if (gun) gun.enabled = true;
-        if (gun1) gun1.enabled = true;
-        if (ai) ai.enabled = true;
-        if (enemy) enemy.enabled = true;
+        if (!enemy.isDying)
+        {
+            if (gun != null) gun.enabled = true;
+            if (gun1) gun1.enabled = true;
+            if (ai) ai.enabled = true;
+            if (enemy) enemy.enabled = true;
+        }       
     }
 
     public void ComponentsFreeze()
@@ -82,8 +85,8 @@ public class DeathRenderer : MonoBehaviour
     private void DisableColliders()
     {
         //if the object has a rigidBody attached to it, disable gravity before disable colliders
-        rb.constraints = RigidbodyConstraints.FreezeAll;
-        foreach(var collider in colliders)
+        if(rb) rb.constraints = RigidbodyConstraints.FreezeAll;
+        foreach (var collider in colliders)
         {
             collider.enabled = false;
         }
