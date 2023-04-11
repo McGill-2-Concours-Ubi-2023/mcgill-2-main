@@ -111,7 +111,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
             laser.GetComponentInParent<VisualEffect>()
                 .SendEvent("OnLazerStop");
             laser.GetComponentInChildren<Collider>().enabled = false;
-            await Task.Delay(2000);
+            await Task.Delay(1000);
             if(laser != null)
             Destroy(laser.transform.parent.gameObject);
         }
@@ -271,7 +271,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     IEnumerator Shield(float shieldTime)
     {
 
-        PushPlayer(5.0f);
+        PushPlayer(20.0f);
         yield return new WaitForSeconds(2.0f);
         tentacleAnimator.SetTrigger("Shield");
         {
@@ -314,11 +314,18 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         lazer1.SendEvent("OnLazerStop");
         lazer2.SendEvent("OnLazerStop");
         yield return new WaitForSeconds(1.0f);
-        lazer1.GetComponentInChildren<Collider>().enabled = false;
-        lazer2.GetComponentInChildren<Collider>().enabled = false;
+        HandleCollider(lazer1);
+        HandleCollider(lazer2);
         yield return new WaitForSeconds(1.0f);
         Destroy(lazer1.gameObject);
         Destroy(lazer2.gameObject);
+    }
+
+    private void HandleCollider(VisualEffect laser)
+    {
+        LazerBeamCollider laserBeamCollider = laser.GetComponentInChildren<LazerBeamCollider>();
+        Collider collider = laserBeamCollider.playerDamageCollider;
+        collider.enabled = false;
     }
     IEnumerator SpawnOneLazer(Vector3 position, float lazerChargeTime, float lazerbeamDuration)
     {
@@ -338,7 +345,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         yield return new WaitForSeconds(lazerbeamDuration);
         lazer1.SendEvent("OnLazerStop");
         yield return new WaitForSeconds(1.0f);
-        lazer1.GetComponentInChildren<Collider>().enabled = false;
+        HandleCollider(lazer1);
         yield return new WaitForSeconds(1.0f);
         Destroy(lazer1.gameObject);
     }
@@ -356,7 +363,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         yield return new WaitForSeconds(lazerbeamDuration);
         lazer1.SendEvent("OnLazerStop");
         yield return new WaitForSeconds(1.0f);
-        lazer1.GetComponentInChildren<Collider>().enabled = false;
+        HandleCollider(lazer1);
         yield return new WaitForSeconds(1.0f);
         Destroy(lazer1.gameObject);
     }
@@ -419,8 +426,8 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         lazer1.SendEvent("OnLazerStop");
         lazer2.SendEvent("OnLazerStop");
         yield return new WaitForSeconds(1.0f);
-        lazer1.GetComponentInChildren<Collider>().enabled = false;
-        lazer2.GetComponentInChildren<Collider>().enabled = false;
+        HandleCollider(lazer1);
+        HandleCollider(lazer2);
         yield return new WaitForSeconds(1.0f);
         Destroy(lazer1.gameObject);
         Destroy(lazer2.gameObject);
