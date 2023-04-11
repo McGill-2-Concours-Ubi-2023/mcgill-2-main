@@ -460,6 +460,11 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     {
         return DebugCamera.gameObject.activeSelf ? DebugCamera : Camera;
     }
+
+    public void OnDamageCameraShake()
+    {
+        OnCameraStandardShake(1.0f, 0.3f, 1.0f);
+    }
     
     private IEnumerator GrenadeDelayedExplode(GameObject grenade)
     {
@@ -624,13 +629,19 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            health.TakeDamage(1);
+            if (!health.IsInvincible())
+            {
+                OnCameraStandardShake(1.0f, 0.3f, 1.0f);
+                health.TakeDamage(1);
+            }
         }
     }
 
-    public void OnCameraStandardShake(float intensity, float timer, float frequencyGain)
+    public async void OnCameraStandardShake(float intensity, float timer, float frequencyGain)
     {
-        Camera.GetComponent<CinemachineCameraShake>().StandardCameraShake(intensity, timer, 1, 0);
+        Camera.GetComponent<CinemachineCameraShake>().StandardCameraShake(intensity, frequencyGain, 0);
+        await Task.Delay(TimeSpan.FromSeconds(timer));
+        StopCameraShake();
     }
 
     public void OnCameraWobbleShakeManualDecrement(float intensity, float frequencyGain)

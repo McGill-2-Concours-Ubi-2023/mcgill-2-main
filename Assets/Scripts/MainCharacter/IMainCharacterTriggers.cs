@@ -46,4 +46,6 @@ public interface IMainCharacterTriggers : ITrigger
     public void IncreaseMaxGrenade() { }
 
     public void IncreaseMaxCrate() { }
+
+    public void OnDamageCameraShake() { }
 }

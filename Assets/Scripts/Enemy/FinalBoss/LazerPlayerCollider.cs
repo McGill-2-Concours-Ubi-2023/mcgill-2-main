@@ -27,7 +27,7 @@ public class LazerPlayerCollider : MonoBehaviour
             {
                 playerHealth.TakeDamage(1);
                 vibration.SharpVibration();
-                cameraShake.StandardCameraShake(4.0f, 1.0f, 2.0f, 0);
+                cameraShake.StandardCameraShake(4.0f, 2.0f, 0);
                 await Task.Delay(500);
                 cameraShake.StopCameraShake();
             }           

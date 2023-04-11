@@ -17,13 +17,11 @@ public class CinemachineCameraShake : MonoBehaviour
         perlinChannel.m_AmplitudeGain = 0;
     }
 
-    public void StandardCameraShake(float intensity, float timer, float frequencyGain, int noiseSettingsId)
+    public void StandardCameraShake(float intensity, float frequencyGain, int noiseSettingsId)
     {
         SetNoiseSettings(noiseSettingsId);
         perlinChannel.m_AmplitudeGain = intensity;
-        perlinChannel.m_FrequencyGain = frequencyGain;
-        shakeTimer = timer;
-        Shake();
+        perlinChannel.m_FrequencyGain = frequencyGain;;
     }
 
     public void StopCameraShake()
@@ -43,22 +41,12 @@ public class CinemachineCameraShake : MonoBehaviour
         perlinChannel.m_FrequencyGain = frequencyGain;
     }
 
-    private IEnumerator Shake()
-    {
-        while (shakeTimer > 0)
-        {
-            shakeTimer -= Time.deltaTime;
-            yield return new WaitForEndOfFrame();
-        }
-        perlinChannel.m_AmplitudeGain = 0;
-    }
-
     public void OnClickShake()
     {
         if(FindObjectOfType<CursorController>().IsClickSourceUnique())
         {
             Debug.Log("SHAKING!");
-            StandardCameraShake(4.0f, 3.0f, 1, 0);
+            StandardCameraShake(4.0f, 1, 0);
         }       
     }
 }
