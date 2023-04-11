@@ -56,15 +56,6 @@ public class LazerBeamCollider : MonoBehaviour
             currentObstacle = other.gameObject;         
             hasCollided = true;
         }
-
-        if (other.CompareTag("Player"))
-        {
-            if(!other.GetComponent<Health>().IsInvincible())
-            vibration.SharpVibration();
-            cameraShake.StandardCameraShake(1.0f, 0.5f, 1.0f, 0);
-            await Task.Delay(500);
-            cameraShake.StopCameraShake();
-        }
     }
 
     private void OnTriggerStay(Collider other)
