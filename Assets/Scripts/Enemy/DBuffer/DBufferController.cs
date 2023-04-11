@@ -72,6 +72,7 @@ public class DBufferController : MonoBehaviour
     {        
         attackVFX.SendEvent("OnSwingStop");
         attackVFX.SendEvent("OnSlash");
+        m_Player.GetComponent<MainCharacterController>().OnCameraStandardShake(0.5f, 0.3f, 1.2f);
     }
 
     private void FreezeRotation_XZ()

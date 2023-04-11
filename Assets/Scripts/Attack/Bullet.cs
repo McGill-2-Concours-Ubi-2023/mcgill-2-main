@@ -42,8 +42,11 @@ public class Bullet : MonoBehaviour
         {
             if (other.gameObject.CompareTag("Player"))
             {
+                if (!other.GetComponent<Health>().IsInvincible())
+                {
+                    other.gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnDamageCameraShake));
+                }
                 other.gameObject.Trigger<IHealthTriggers, float>(nameof(IHealthTriggers.TakeDamage), damage);
-                other.gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnDamageCameraShake));
             }
         }
         else if (gameObject.CompareTag("PlayerBullet"))
