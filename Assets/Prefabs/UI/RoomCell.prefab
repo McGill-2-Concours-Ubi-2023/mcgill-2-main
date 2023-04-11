@@ -55,8 +55,11 @@ MonoBehaviour:
   visited: {fileID: 21300000, guid: 83e74be94b15b72439651ae7c760991d, type: 3}
   visiting: {fileID: 21300000, guid: 8dcd3dfa503fade4e9868fcef42d641a, type: 3}
   notVisited: {fileID: 21300000, guid: 0877b686546336d43ae5ee06a50f2b04, type: 3}
+  bossIconSprite: {fileID: 21300000, guid: 10e647cd3813d914bba3e0f9d5174d4a, type: 3}
+  merchantIconSprite: {fileID: 21300000, guid: c7a64d043779f3546ac350d41c80db51, type: 3}
   backGround: {fileID: 8655096935500999587}
-  iconImage: {fileID: 0}
+  iconImage: {fileID: 8655096935316643643}
+  attachedRoom: {fileID: 0}
 --- !u!1 &8655096935316643589
 GameObject:
   m_ObjectHideFlags: 0
@@ -116,14 +119,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 7572f3af9684b94489a33b88458d0024, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

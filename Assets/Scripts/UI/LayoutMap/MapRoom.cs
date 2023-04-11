@@ -15,6 +15,10 @@ public class MapRoom : MonoBehaviour
     public Sprite visited;
     public Sprite visiting;
     public Sprite notVisited; 
+
+    public Sprite bossIconSprite;
+    public Sprite merchantIconSprite;
+
     [SerializeField]
     private Image backGround;
     [SerializeField]
@@ -49,6 +53,7 @@ public class MapRoom : MonoBehaviour
             hasVisited = true;
         }
         backGround.sprite = visiting;
+        SetType(attachedRoom.GetRoomType());
     }
 
     public void LeaveRoom() {
@@ -66,7 +71,12 @@ public class MapRoom : MonoBehaviour
             hasVisited = true;
         }
         else if (type != RoomTypes.RoomType.Normal) {
-            //TODO: set room's icon
+            if (type == RoomTypes.RoomType.Boss) {
+                iconImage.sprite = bossIconSprite;
+            } else if (type == RoomTypes.RoomType.Special) {
+                iconImage.sprite = merchantIconSprite;
+            }
+
         }
     }
 }
