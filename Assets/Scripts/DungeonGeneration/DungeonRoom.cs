@@ -64,21 +64,22 @@ public class DungeonRoom : MonoBehaviour
         foreach(DungeonRoom room in adjacentRooms)
         {
             roomsBuffer.Add(room);
-            room.UpdateLights(transform.position);           
+            room.UpdateLights(transform.position);
+            await Task.Yield();
         }
         List<DungeonRoom> inter = allRooms.Except(roomsBuffer).ToList();
         foreach(DungeonRoom room in inter)
         {
-            await Task.Yield();
             if (room.GetRoomType() != RoomTypes.RoomType.Boss)
             room.transform.Find("RoomRoot").gameObject.SetActive(false);
             room.DeactivateEnemies();
-        }
-        foreach(DungeonRoom room in roomsBuffer)
-        {
             await Task.Yield();
+        }
+        foreach (DungeonRoom room in roomsBuffer)
+        {
             room.transform.Find("RoomRoot").gameObject.SetActive(true);
             room.RetrieveDoors();
+            await Task.Yield();
         }
     }
     
