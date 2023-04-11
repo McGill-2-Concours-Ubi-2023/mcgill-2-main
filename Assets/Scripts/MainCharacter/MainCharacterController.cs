@@ -370,27 +370,31 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     
     public async void TeleportToLocation(float timer, Vector3 location)
     {
-        gameObject.TriggerDown<IGunTriggers>(nameof(IGunTriggers.OnShootStopIntention));
-        FreezeOnCurrentState();
-        desintegrateEffect.SendEvent("OnDesintegrate");
-        StartCoroutine(Desintegrate(timer, false));
-        await Task.Delay(TimeSpan.FromSeconds(timer + 0.5f));
-        transform.position = location;
-        await Task.Delay(500);
-        desintegrateEffect.SendEvent("OnDesintegrate");
-        float elapsedTime = 0;
-        while (elapsedTime < timer)
         {
-            float t = elapsedTime / timer;
-            float threshold = Mathf.Lerp(1.5f, 0, t);
-            desintegrateMat.SetFloat("_Dissolve_threshold", threshold);
-            elapsedTime += Time.deltaTime;
-            await Task.Yield();
-        }
-        hairRend.material = hairMat;
-        bodyRend.material = defaultMat;
-        gunRend.material = gunMat;
-        UnFreeze();
+            using HLockGuard guard = health.Lock();
+            gameObject.TriggerDown<IGunTriggers>(nameof(IGunTriggers.OnShootStopIntention));
+            FreezeOnCurrentState();
+            desintegrateEffect.SendEvent("OnDesintegrate");
+            StartCoroutine(Desintegrate(timer, false));
+            await Task.Delay(TimeSpan.FromSeconds(timer + 0.5f));
+            transform.position = location;
+            await Task.Delay(500);
+            desintegrateEffect.SendEvent("OnDesintegrate");
+            float elapsedTime = 0;
+            while (elapsedTime < timer)
+            {
+                float t = elapsedTime / timer;
+                float threshold = Mathf.Lerp(1.5f, 0, t);
+                desintegrateMat.SetFloat("_Dissolve_threshold", threshold);
+                elapsedTime += Time.deltaTime;
+                await Task.Yield();
+            }
+            hairRend.material = hairMat;
+            bodyRend.material = defaultMat;
+            gunRend.material = gunMat;
+            UnFreeze();
+            await Task.Delay(1000);//give player 1 sec of immunity
+        }       
     }
 
     IEnumerator OnDashInvincible()

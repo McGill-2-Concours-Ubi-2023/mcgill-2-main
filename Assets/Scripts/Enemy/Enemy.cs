@@ -134,21 +134,22 @@ public class Enemy : MonoBehaviour, I_AI_Trigger
         }
     }
 
-    public void UnFreeze()
+    public async void UnFreeze()
     {
         isTargetable = true;
         DeathRenderer rend = enemyHealth.deathRenderer;
         if(rend != null) enemyHealth.deathRenderer.EnableComponents();
         EnableAgent();
+        if (agent.isActiveAndEnabled) agent.isStopped = false;
         try
         {
+            await Task.Delay(2000);
             GetComponentInChildren<DBufferController>().UnFreeze();
         }
         catch
         {
             //ignore
         }
-        if (agent.isActiveAndEnabled) agent.isStopped = false;
     }
 
 
