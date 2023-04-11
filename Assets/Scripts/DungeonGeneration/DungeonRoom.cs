@@ -342,6 +342,7 @@ public class DungeonRoom : MonoBehaviour
 
     public void Isolate()
     {
+        StartCoroutine(CheckForEnemies());
         foreach(DungeonDoor door in doors)
         {
             var lights = door.GetLights();
