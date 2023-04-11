@@ -47,6 +47,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     private bool isLockedShield;
     public Canvas bossHealthCanvas;
     public Image fillBar;
+    public Animator protectWallAnimator;
 
     private void Awake()
     {
@@ -93,6 +94,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         {
             hasShieldedTwice = true;
             StartCoroutine(Shield(25.0f));
+            protectWallAnimator.SetTrigger("Wall");
         }
     } 
 
@@ -394,7 +396,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
 
         while (waveTime > 0)
         {
-            Vector3 playerPos = playerTransform.position;
+            Vector3 playerPos = new Vector3(playerTransform.position.x, playerTransform.position.y + 1.0f, playerTransform.position.z);
             GameObject lazer = GetOneLazer(center, 1.0f, 1.0f, 0);
             Quaternion rotation = Quaternion.FromToRotation(lazer.transform.forward,
                 (playerPos - lazer.transform.position).normalized);
