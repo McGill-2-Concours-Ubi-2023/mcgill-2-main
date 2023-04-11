@@ -762,6 +762,11 @@ PrefabInstance:
       objectReference: {fileID: 6948398992708779287}
     - target: {fileID: 6068470348885662261, guid: bc817baf73769194f92b3c69c335167f,
         type: 3}
+      propertyPath: rb
+      value: 
+      objectReference: {fileID: 6948398992708779294}
+    - target: {fileID: 6068470348885662261, guid: bc817baf73769194f92b3c69c335167f,
+        type: 3}
       propertyPath: gun1
       value: 
       objectReference: {fileID: 6148190733883815013}
@@ -797,9 +802,19 @@ PrefabInstance:
       objectReference: {fileID: 6114340791499200587}
     - target: {fileID: 6068470348885662261, guid: bc817baf73769194f92b3c69c335167f,
         type: 3}
+      propertyPath: colliders.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6068470348885662261, guid: bc817baf73769194f92b3c69c335167f,
+        type: 3}
       propertyPath: _renderers.Array.size
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6068470348885662261, guid: bc817baf73769194f92b3c69c335167f,
+        type: 3}
+      propertyPath: colliders.Array.data[0]
+      value: 
+      objectReference: {fileID: 6948398992708779282}
     - target: {fileID: 6068470348885662261, guid: bc817baf73769194f92b3c69c335167f,
         type: 3}
       propertyPath: _renderers.Array.data[0]

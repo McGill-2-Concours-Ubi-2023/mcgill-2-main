@@ -255,8 +255,8 @@ public class DungeonRoom : MonoBehaviour
             {
                 if (enemy != null)
                 {
-                    enemy.gameObject.SetActive(false);
                     enemy.FreezeOnCurrentState();
+                    enemy.gameObject.SetActive(false);
                 }           
             }
         }

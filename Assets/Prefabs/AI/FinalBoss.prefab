@@ -733,6 +733,8 @@ MonoBehaviour:
   topRightCorner: {fileID: 0}
   topLeftCorner: {fileID: 0}
   playGround: {fileID: 0}
+  teleportPosition: {fileID: 0}
+  teleportPosition2: {fileID: 0}
   Attack: 0
   playerTransform: {fileID: 0}
   tentacleAnimator: {fileID: 0}
@@ -741,6 +743,8 @@ MonoBehaviour:
   health: {fileID: 0}
   shakeCamera: 0
   stopCameraShake: 0
+  bossHealthCanvas: {fileID: 0}
+  fillBar: {fileID: 0}
 --- !u!114 &7584181254099608211
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2177,7 +2181,13 @@ MonoBehaviour:
   dissolveTime: 6
   animator: {fileID: 3545684373689158200}
   deathParticles: {fileID: 2478940477021653583}
-  rootObj: {fileID: 3545684372846306584}
+  agent: {fileID: 0}
+  ai: {fileID: 0}
+  enemy: {fileID: 0}
+  gun1: {fileID: 0}
+  gun: {fileID: 0}
+  rb: {fileID: 0}
+  colliders: []
 --- !u!1001 &3545684373689158204
 PrefabInstance:
   m_ObjectHideFlags: 0

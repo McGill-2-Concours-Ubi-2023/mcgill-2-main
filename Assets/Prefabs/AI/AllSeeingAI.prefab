@@ -569,6 +569,11 @@ PrefabInstance:
       objectReference: {fileID: 8914186942331497746}
     - target: {fileID: 8613876467700560571, guid: 9cf48c7a81b55994ab5a4ffaedf612bb,
         type: 3}
+      propertyPath: rb
+      value: 
+      objectReference: {fileID: 8914186942331497755}
+    - target: {fileID: 8613876467700560571, guid: 9cf48c7a81b55994ab5a4ffaedf612bb,
+        type: 3}
       propertyPath: gun1
       value: 
       objectReference: {fileID: 5659585742967448672}
@@ -592,8 +597,29 @@ PrefabInstance:
       propertyPath: deathMaterial
       value: 
       objectReference: {fileID: 2100000, guid: 4b6b3824aa9a4af48a3e3b3224af0a43, type: 2}
+    - target: {fileID: 8613876467700560571, guid: 9cf48c7a81b55994ab5a4ffaedf612bb,
+        type: 3}
+      propertyPath: colliders.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8613876467700560571, guid: 9cf48c7a81b55994ab5a4ffaedf612bb,
+        type: 3}
+      propertyPath: colliders.Array.data[0]
+      value: 
+      objectReference: {fileID: 3264793155462028165}
+    - target: {fileID: 8613876467700560571, guid: 9cf48c7a81b55994ab5a4ffaedf612bb,
+        type: 3}
+      propertyPath: colliders.Array.data[1]
+      value: 
+      objectReference: {fileID: 512617727727050625}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9cf48c7a81b55994ab5a4ffaedf612bb, type: 3}
+--- !u!136 &512617727727050625 stripped
+CapsuleCollider:
+  m_CorrespondingSourceObject: {fileID: 2064429526435084187, guid: 9cf48c7a81b55994ab5a4ffaedf612bb,
+    type: 3}
+  m_PrefabInstance: {fileID: 1998327938184947738}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1431877001910733270 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 604731566684398028, guid: 9cf48c7a81b55994ab5a4ffaedf612bb,

@@ -16,11 +16,13 @@ public class DeathRenderer : MonoBehaviour
     public Enemy enemy;
     public Gun1 gun1;
     public Gun gun;
+    public Rigidbody rb;
+    public Collider[] colliders;
 
     public void OnDeathRender()
     {
-        FreezeOnCurrentState();
         DisableColliders();
+        FreezeOnCurrentState();
         foreach (Renderer renderer in _renderers)
         {
             renderer.material = deathMaterial;
@@ -80,10 +82,8 @@ public class DeathRenderer : MonoBehaviour
     private void DisableColliders()
     {
         //if the object has a rigidBody attached to it, disable gravity before disable colliders
-        Rigidbody rb;
-        transform.root.TryGetComponent<Rigidbody>(out rb);
-        if (rb) rb.constraints = RigidbodyConstraints.FreezeAll;
-        foreach(var collider in transform.root.GetComponentsInChildren<Collider>())
+        rb.constraints = RigidbodyConstraints.FreezeAll;
+        foreach(var collider in colliders)
         {
             collider.enabled = false;
         }
