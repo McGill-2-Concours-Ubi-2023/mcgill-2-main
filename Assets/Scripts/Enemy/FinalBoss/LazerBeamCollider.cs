@@ -44,7 +44,7 @@ public class LazerBeamCollider : MonoBehaviour
         playerDamageCollider.enabled = true;
     }
 
-    private async void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (!obstacles.Contains(other.gameObject))
         {

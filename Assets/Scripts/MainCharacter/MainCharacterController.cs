@@ -64,6 +64,8 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     [Range(0, 2.0f)]
     public float dashInvincibleCooldown = 1.0f;
     private bool canDash;
+
+    private bool canTeleport;
     
     public static ISimpleInventory<SimpleCollectible> SimpleCollectibleInventory;
     
@@ -496,6 +498,31 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     public void HasFaceDirectionInput(Ref<bool> hasInput)
     {
         hasInput.Value = m_InputActionAsset["CameraMove"].ReadValue<Vector2>() != Vector2.zero;
+    }
+
+    public void OnInteract()
+    {
+        if (canTeleport)
+        {
+            canTeleport = false;
+            EnterPortal();
+        }
+    }
+
+    private async void EnterPortal()
+    {
+        FreezeOnCurrentState();
+        Teleport();
+        await Task.Delay(3000);
+        GameManager.Instance.LoadScene(2);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.layer == LayerMask.NameToLayer("Portal"))
+        {
+            canTeleport = true;
+        }
     }
 
     public void AdjustFaceDirection(float3 direction)
