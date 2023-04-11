@@ -17,9 +17,9 @@ public class MapManager : MonoBehaviour, IDungeonMapTrigger
     private int gridSize;
     [SerializeField]
     private List<GameObject> roomsObj = new List<GameObject>(); 
-    public void GenerateMapRoom(Vector2Int pos, RoomTypes.RoomType rt) {
+    public void GenerateMapRoom(Vector2Int pos, RoomTypes.RoomType rt, DungeonRoom room) {
         int index = pos.y + gridSize * pos.x;
-        rooms[index].SetRoom();
+        rooms[index].SetRoom(room);
         rooms[index].SetType(rt);
     }
 

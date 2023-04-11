@@ -19,17 +19,29 @@ public class MapRoom : MonoBehaviour
     private Image backGround;
     [SerializeField]
     private Image iconImage;
-
+    [SerializeField]
+    private DungeonRoom attachedRoom;
     
     public bool IsRoom() {
         return isRoom;
     }
 
-    public void SetRoom() {// set the cell to be a room
+    public void BindRoom(DungeonRoom room)
+    {
+        this.attachedRoom = room;
+    }
+
+    public RoomTypes.RoomType GetRoomType()
+    {
+        return attachedRoom.GetRoomType();
+    }
+
+    public void SetRoom(DungeonRoom room) {// set the cell to be a room
         isRoom = true;
         Color color = backGround.color;
         color.a = 1f;
         backGround.color = color;
+        this.attachedRoom = room;
     }
 
     public void VisitRoom() {

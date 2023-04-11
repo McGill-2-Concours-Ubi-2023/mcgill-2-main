@@ -67,7 +67,7 @@ public class DungeonGrid : DataContainer<RoomData>
         DungeonRoom startingRoom = await DungeonRoom.CreateRandomRoom(data, startingPosition, gridMap,
             data.GetActiveLayout().GetName(), RoomTypes.RoomType.Start); //create starting room
         data.SetStartingRoom(startingRoom);
-        mapM.GenerateMapRoom(startingRoom.GridPosition(), RoomTypes.RoomType.Start);
+        mapM.GenerateMapRoom(startingRoom.GridPosition(), RoomTypes.RoomType.Start, startingRoom);
         //Keep track of already populated grid points
         HashSet<Vector3> visitedPoints = new HashSet<Vector3>();
         visitedPoints.Add(startingPosition);
@@ -87,7 +87,7 @@ public class DungeonGrid : DataContainer<RoomData>
                     var newRoom = await DungeonRoom.CreateRandomRoom(data, selectedPoint, gridMap, data.GetActiveLayout().GetName(), roomType);
                     await Task.Yield();
                     unvisistedRooms.Push(newRoom);
-                    mapM.GenerateMapRoom(newRoom.GridPosition(), RoomTypes.RoomType.Normal);//setting to normal roomtype for all rooms for now, change this when roomtype is implemented 
+                    mapM.GenerateMapRoom(newRoom.GridPosition(), RoomTypes.RoomType.Normal, newRoom);//setting to normal roomtype for all rooms for now, change this when roomtype is implemented 
                 }
             }         
         }
@@ -233,11 +233,11 @@ public class DungeonGrid : DataContainer<RoomData>
         {
             if (data.GetStartingRoom().GetPosition() == room.GetPosition())
             {
-                mapM.GenerateMapRoom(room.GridPosition(), RoomTypes.RoomType.Start);
+                mapM.GenerateMapRoom(room.GridPosition(), RoomTypes.RoomType.Start, room);
             }
             else
             {
-                mapM.GenerateMapRoom(room.GridPosition(), RoomTypes.RoomType.Normal);
+                mapM.GenerateMapRoom(room.GridPosition(), RoomTypes.RoomType.Normal, room);
             }
             await Task.Yield();
         }
