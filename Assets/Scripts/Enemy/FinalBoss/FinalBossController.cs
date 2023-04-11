@@ -396,7 +396,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
 
         while (waveTime > 0)
         {
-            Vector3 playerPos = new Vector3(playerTransform.position.x, playerTransform.position.y + 1.0f, playerTransform.position.z);
+            Vector3 playerPos = new Vector3(playerTransform.position.x, playerTransform.position.y + 0.5f, playerTransform.position.z);
             GameObject lazer = GetOneLazer(center, 1.0f, 1.0f, 0);
             Quaternion rotation = Quaternion.FromToRotation(lazer.transform.forward,
                 (playerPos - lazer.transform.position).normalized);
@@ -449,13 +449,13 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         Vector3 endpoint_6 = endpoint_1 + new Vector3(4 * distance / 7, 0, 0);
         Vector3 endpoint_7 = endpoint_1 + new Vector3(5 * distance / 7, 0, 0);
         Vector3 endpoint_8 = endpoint_1 + new Vector3(6 * distance / 7, 0, 0);
-        StartCoroutine(SpawnTwoLazers(endpoint_1, endpoint_2, 0.8f, 0.5f));
+        StartCoroutine(SpawnTwoLazers(endpoint_1, endpoint_2, 1.5f, 0.5f));
         yield return new WaitForSeconds(0.2f);
-        StartCoroutine(SpawnTwoLazers(endpoint_3, endpoint_8, 0.8f, 0.5f));
+        StartCoroutine(SpawnTwoLazers(endpoint_3, endpoint_8, 1.5f, 0.5f));
         yield return new WaitForSeconds(0.2f);
-        StartCoroutine(SpawnTwoLazers(endpoint_4, endpoint_7, 0.8f, 0.5f));
+        StartCoroutine(SpawnTwoLazers(endpoint_4, endpoint_7, 1.5f, 0.5f));
         yield return new WaitForSeconds(0.2f);
-        StartCoroutine(SpawnTwoLazers(endpoint_5, endpoint_6, 0.8f, 0.5f));
+        StartCoroutine(SpawnTwoLazers(endpoint_5, endpoint_6, 1.5f, 0.5f));
     }
 
     IEnumerator LazerBurstWave()
@@ -479,7 +479,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
             waveStart.x = Mathf.Clamp(waveStart.x, endpoint_1.x, endpoint_2.x);
 
             // Spawn the lasers for this wave
-            StartCoroutine(SpawnOneLazer(waveStart, 0.8f, 1.0f));
+            StartCoroutine(SpawnOneLazer(waveStart, 1.5f, 1.0f));
             yield return new WaitForSeconds(0.2f);
         }
     }
