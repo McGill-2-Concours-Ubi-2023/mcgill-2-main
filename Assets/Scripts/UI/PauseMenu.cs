@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
@@ -12,7 +13,16 @@ public class PauseMenu : MonoBehaviour
     GameObject pauseMenuPanel;
     private InputActionAsset m_InputActionAsset;
     public GameObject button1, button2, button3; 
-    private GameObject selectedButton;  
+    private GameObject selectedButton;
+    private State m_State = State.Playing;
+
+    private enum State
+    {
+        Invalid = 0,
+        Playing = 1,
+        Paused = 2,
+        Count = 3
+    }
 
     private void Start()
     {
@@ -23,12 +33,26 @@ public class PauseMenu : MonoBehaviour
     private void PausePressed() {
         if (pauseMenuPanel != null)
         {
-            if(!pauseMenuPanel.activeSelf)
-            PauseTime();
+            if (!pauseMenuPanel.activeSelf)
+            {
+                m_State = State.Paused;
+                PauseRoutine();
+                PauseTime();
+            }
         }
         else
         {
             Resume();
+        }
+    }
+    
+    private async void PauseRoutine()
+    {
+        using HLockGuard playerLock = GameObject.FindWithTag("Player").GetComponent<MainCharacterController>().Lock();
+        await Task.Yield();
+        if (m_State == State.Paused)
+        {
+            await Task.Yield();
         }
     }
 
@@ -41,9 +65,12 @@ public class PauseMenu : MonoBehaviour
     }
 
     public void Resume() {
+        m_State = State.Playing;
         Time.timeScale = 1f;
-        if(pauseMenuPanel != null)
-        pauseMenuPanel.SetActive(false);
+        if (pauseMenuPanel != null)
+        {
+            pauseMenuPanel.SetActive(false);
+        }
         EventSystem.current.SetSelectedGameObject(null);
     }
 
@@ -52,6 +79,7 @@ public class PauseMenu : MonoBehaviour
     }
 
     public void MainMenu() {
+        m_State = State.Playing;
         Time.timeScale = 1f;
         SceneManager.LoadScene(0);
         EventSystem.current.SetSelectedGameObject(null);
