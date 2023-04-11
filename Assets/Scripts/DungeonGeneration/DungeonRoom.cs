@@ -228,11 +228,6 @@ public class DungeonRoom : MonoBehaviour
         }
     }
 
-    public void TryRemoveEnemy(EnemyAI enemy)
-    {
-        if (enemies.Contains(enemy)) enemies.Remove(enemy);
-    }
-
     IEnumerator CheckForEnemies()
     {
         while (areEnemiesPresent)
