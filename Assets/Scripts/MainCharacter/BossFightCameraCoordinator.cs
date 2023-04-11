@@ -34,6 +34,8 @@ public class BossFightCameraCoordinator : MonoBehaviour, IBossFightTriggers
     private async void Start()
     {
         await Task.Delay(500);
+        ScoringSystem ss = GameObject.FindWithTag("ScoringSystem").GetComponent<ScoringSystem>();
+        ss.UpdateScore();
         m_CinematicDirector.Play();
         await Task.Delay(500);
         CorridorCam.Priority = 10;
