@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 3005841202951295963}
   - component: {fileID: 4000225654670989716}
   - component: {fileID: 739172276664018177}
+  - component: {fileID: 8622738122814107905}
   m_Layer: 19
   m_Name: BigBullet
   m_TagString: PlayerBullet
@@ -162,6 +163,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   electricEffect: {fileID: 6094198297801617348, guid: 7862f8c8456644f44b5fd2d01e15b336,
     type: 3}
+--- !u!114 &8622738122814107905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3231657277267066154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20c7749ad64974944a27d0a109dbd020, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lifeTime: 10
 --- !u!1 &7742893660278327409
 GameObject:
   m_ObjectHideFlags: 0

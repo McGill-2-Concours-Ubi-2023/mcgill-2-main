@@ -1,6 +1,8 @@
 using System;
+using System.Globalization;
 using System.Threading.Tasks;
 using Cinemachine;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Playables;
 
@@ -10,13 +12,16 @@ public class BossFightCameraCoordinator : MonoBehaviour, IBossFightTriggers
     private MainCharacterController m_Controller;
     private PlayableDirector m_CinematicDirector;
     public PlayableDirector EntranceUIDirector;
+    public GameObject EndGameUI;
     private enum State
     {
-        Corridor,
-        PreFightCinematic,
-        Fight,
-        PostFightCinematic,
-        Done
+        Invalid = 0,
+        Corridor = 1,
+        PreFightCinematic = 2,
+        Fight = 3,
+        PostFightCinematic = 4,
+        Done = 5,
+        Count = 6
     }
     private State m_State = State.Corridor;
 
@@ -79,6 +84,23 @@ public class BossFightCameraCoordinator : MonoBehaviour, IBossFightTriggers
                 await Task.Yield();
             }
             m_CinematicDirector.Pause();
+            
+            // final panel for end of game
+            float currentScore = GameObject.FindWithTag("ScoringSystem").GetComponent<ScoringSystem>().currScore;
+            EndGameUI.SetActive(true);
+            foreach (Transform child in EndGameUI.transform)
+            {
+                if (child.name == "FinalScoreText")
+                {
+                    string currentString = child.GetComponent<TextMeshProUGUI>().text;
+                    currentString = currentString.Replace("...", currentScore.ToString(CultureInfo.InvariantCulture));
+                    child.GetComponent<TextMeshProUGUI>().text = currentString;
+                }
+            }
+            while (this != null)
+            {
+                await Task.Yield();
+            }
         }
     }
 
