@@ -32,7 +32,7 @@ public class Enemy : MonoBehaviour, I_AI_Trigger
     private SkinnedMeshRenderer mr;
     [SerializeField]
     private MeshRenderer mr2;
-    private void Start()
+    private void OnEnable()
     {
         //TryGetComponent<EnemyAI>(out ai);
         TryGetComponent<NavMeshAgent>(out agent);
@@ -54,14 +54,11 @@ public class Enemy : MonoBehaviour, I_AI_Trigger
         scoringSystem = GameObject.Find("ScoringSystem");
     }
 
-    public void OnEnemyDeath() {
-
+    public void OnEnemyDeath() 
+    {
         isDying = true;
         enemyHealth.deathRenderer.OnDeathRender();
-        if (agent)
-        {
-            agent.isStopped = true;
-        }
+        if (agent.isActiveAndEnabled) agent.isStopped = true;
         scoringSystem.Trigger<IScoringSystemTriggers>(nameof(IScoringSystemTriggers.OnEnemyDeath));
     }
 
@@ -108,8 +105,23 @@ public class Enemy : MonoBehaviour, I_AI_Trigger
     {
         agent.angularSpeed = 0;
         agent.speed = 0;
-        agent.acceleration = 0;
+        agent.acceleration = 0;      
     }
+
+    public void FreezeOnCurrentState()
+    {
+        enemyHealth.deathRenderer.ComponentsFreeze();
+        DisableAgent();
+        if (agent.isActiveAndEnabled) agent.isStopped = true;
+    }
+
+    public void UnFreeze()
+    {
+        enemyHealth.deathRenderer.EnableComponents();
+        EnableAgent();
+        if (agent.isActiveAndEnabled) agent.isStopped = false;
+    }
+
 
     public void EnableAgent()
     {

@@ -87,10 +87,12 @@ public class DungeonDoor : MonoBehaviour
         {
             if (sharedRoom1 == DungeonRoom.activeRoom) 
             {
+                sharedRoom2.ActivateEnemies();
                 bufferRoom = sharedRoom2;
             }
             else
             {
+                sharedRoom1.ActivateEnemies();
                 bufferRoom = sharedRoom1;
             } 
             openCoroutine = StartCoroutine(Open());
@@ -151,9 +153,9 @@ public class DungeonDoor : MonoBehaviour
         sharedRoom2 = room2;
     }
 
-    public void GoThorouthDoor() {
+    public async void GoThorouthDoor() {
         if(map == null) GameObject.Find("LayoutMap").TryGetComponent(out map);
-        DungeonRoom currentRoom = map.dungeonData.GetActiveRoom();
+        DungeonRoom currentRoom = DungeonRoom.activeRoom;
         Vector2Int position = currentRoom.GridPosition();
         int gridSize = map.dungeonGrid.GridSize(); 
         map.VisitRoom(position.x * gridSize + position.y);
@@ -165,7 +167,8 @@ public class DungeonDoor : MonoBehaviour
                 && sharedRoom1.GetRoomType() != RoomTypes.RoomType.Boss
                 && sharedRoom1.GetRoomType() != RoomTypes.RoomType.Start;
             if (condition)sharedRoom1.Isolate();
-            sharedRoom2.StopSpawnEnemies();
+            await sharedRoom1.TryUpdateFog();
+            sharedRoom2.DeactivateEnemies();
             map.LeaveRoom(pos.x * gridSize + pos.y);
         }
         else {
@@ -174,7 +177,8 @@ public class DungeonDoor : MonoBehaviour
                 && sharedRoom2.GetRoomType() != RoomTypes.RoomType.Boss
                 && sharedRoom2.GetRoomType() != RoomTypes.RoomType.Start;
             if(condition)sharedRoom2.Isolate();
-            sharedRoom1.StopSpawnEnemies();
+            await sharedRoom2.TryUpdateFog();
+            sharedRoom1.DeactivateEnemies();
             map.LeaveRoom(pos.x * gridSize + pos.y);
         }
     }

@@ -81,11 +81,13 @@ public class DBufferController : MonoBehaviour
 
     private void FreezeOnCurrentState()
     {
+        canAttack = false;
         agent.isStopped = true;
     }
 
     public void UnFreeze()
     {
+        canAttack = true;
         agent.isStopped = false;
     }
 }

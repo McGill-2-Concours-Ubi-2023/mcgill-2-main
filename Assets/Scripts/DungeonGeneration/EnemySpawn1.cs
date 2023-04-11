@@ -23,11 +23,11 @@ public class EnemySpawn1 : MonoBehaviour
                     int rand = Random.Range(1, 2);
                     for (int i = 0; i <= rand; i++)
                     {
-                        var composite = GameObject.Instantiate(enemies[Random.Range(0, enemies.Length)], transform.position + sp + new Vector3(0, 0.5f), Quaternion.identity);
-                        var ais = composite.GetComponentsInChildren<EnemyAI>();
-                        foreach (var ai in ais)
+                        var composite = GameObject.Instantiate(this.enemies[Random.Range(0, this.enemies.Length)], transform.position + sp + new Vector3(0, 0.5f), Quaternion.identity);
+                        var enemies = composite.GetComponentsInChildren<Enemy>();
+                        foreach (var enemy in enemies)
                         {
-                            room.AddEnemy(ai);
+                            room.AddEnemy(enemy);
                         }
                         composite.transform.DetachChildren();
 
@@ -41,20 +41,20 @@ public class EnemySpawn1 : MonoBehaviour
             {
 
                 int rand = Random.Range(0, 5);
-                var composite = GameObject.Instantiate(enemies[Random.Range(0, enemies.Length)], transform.position + sp + new Vector3(0, 0.5f), Quaternion.identity);
-                var ais = composite.GetComponentsInChildren<EnemyAI>();
-                foreach (var ai in ais)
+                var composite = GameObject.Instantiate(this.enemies[Random.Range(0, this.enemies.Length)], transform.position + sp + new Vector3(0, 0.5f), Quaternion.identity);
+                var enemies = composite.GetComponentsInChildren<Enemy>();
+                foreach (var enemy in enemies)
                 {
-                    room.AddEnemy(ai);
+                    room.AddEnemy(enemy);
                 }
                 composite.transform.DetachChildren();
                 if (rand == 4 && doubleSpawn)
                 {
-                    GameObject altComposite = GameObject.Instantiate(enemies[Random.Range(0, enemies.Length)], transform.position + sp + new Vector3(0, 0.5f), Quaternion.identity);
-                    var ais_alt = composite.GetComponentsInChildren<EnemyAI>();
-                    foreach (var ai in ais_alt)
+                    GameObject altComposite = GameObject.Instantiate(this.enemies[Random.Range(0, this.enemies.Length)], transform.position + sp + new Vector3(0, 0.5f), Quaternion.identity);
+                    var enemies_alt = composite.GetComponentsInChildren<Enemy>();
+                    foreach (var enemy in enemies_alt)
                     {
-                        room.AddEnemy(ai);
+                        room.AddEnemy(enemy);
                     }
                     altComposite.transform.DetachChildren();
                 }
