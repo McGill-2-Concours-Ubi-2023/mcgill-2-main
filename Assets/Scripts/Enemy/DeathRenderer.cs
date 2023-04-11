@@ -18,7 +18,7 @@ public class DeathRenderer : MonoBehaviour
     private Gun1 gun1;
     private Gun gun;
 
-    private void OnEnable()
+    private void Awake()
     {
         TryGetComponents();
     }
@@ -70,6 +70,7 @@ public class DeathRenderer : MonoBehaviour
             agent.speed = 0;
             agent.angularSpeed = 0;
             agent.acceleration = 0;
+            agent.isStopped = true;
         }
         if(animator != null)
         animator.enabled = false;
