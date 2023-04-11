@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.VFX;
 using UnityEngine.AI;
@@ -17,11 +16,6 @@ public class DeathRenderer : MonoBehaviour
     public Enemy enemy;
     public Gun1 gun1;
     public Gun gun;
-
-    private void Awake()
-    {
-        //TryGetComponents();
-    }
 
     public void OnDeathRender()
     {
@@ -53,15 +47,6 @@ public class DeathRenderer : MonoBehaviour
         Destroy(transform.root.gameObject);
     }
 
-    private void TryGetComponents()
-    {
-        transform.root.TryGetComponent<NavMeshAgent>(out agent);
-        transform.root.TryGetComponent<Gun>(out gun);
-        transform.root.TryGetComponent<Gun1>(out gun1);
-        transform.root.TryGetComponent<Enemy>(out enemy);
-        transform.root.TryGetComponent<EnemyAI>(out ai);
-    }
-
     private void FreezeOnCurrentState()
     {
         ComponentsFreeze();
@@ -78,7 +63,6 @@ public class DeathRenderer : MonoBehaviour
 
     public void EnableComponents()
     {
-        //TryGetComponents();
         if (gun) gun.enabled = true;
         if (gun1) gun1.enabled = true;
         if (ai) ai.enabled = true;
@@ -87,7 +71,6 @@ public class DeathRenderer : MonoBehaviour
 
     public void ComponentsFreeze()
     {
-        //TryGetComponents();
         if (gun) gun.enabled = false;
         if (gun1) gun1.enabled = false;
         if (ai) ai.enabled = false;

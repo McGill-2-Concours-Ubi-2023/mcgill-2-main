@@ -36,7 +36,6 @@ public class Enemy : MonoBehaviour, I_AI_Trigger
     private bool isTargetable;
     private void OnEnable()
     {
-        //TryGetComponent<EnemyAI>(out ai);
         TryGetComponent<NavMeshAgent>(out agent);
         rb = GetComponent<Rigidbody>();
         enemyHealth.OnDeath += OnEnemyDeath;
