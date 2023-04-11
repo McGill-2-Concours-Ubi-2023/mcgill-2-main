@@ -50,7 +50,7 @@ public class PauseMenu : MonoBehaviour
     {
         using HLockGuard playerLock = GameObject.FindWithTag("Player").GetComponent<MainCharacterController>().Lock();
         await Task.Yield();
-        if (m_State == State.Paused)
+        while (m_State == State.Paused)
         {
             await Task.Yield();
         }
