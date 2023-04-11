@@ -21,8 +21,9 @@ public class PauseMenu : MonoBehaviour
     }
 
     private void PausePressed() {
-        if (!pauseMenuPanel.activeSelf)
+        if (pauseMenuPanel != null)
         {
+            if(!pauseMenuPanel.activeSelf)
             PauseTime();
         }
         else
@@ -41,6 +42,7 @@ public class PauseMenu : MonoBehaviour
 
     public void Resume() {
         Time.timeScale = 1f;
+        if(pauseMenuPanel != null)
         pauseMenuPanel.SetActive(false);
         EventSystem.current.SetSelectedGameObject(null);
     }
