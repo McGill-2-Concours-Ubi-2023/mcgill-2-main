@@ -202,6 +202,7 @@ public class DungeonRoom : MonoBehaviour
 
     public async Task UpdateRoomsLayout()
     {
+        if (type == RoomTypes.RoomType.Start) await TryUpdateFog();
         adjacentRooms.ForEach(room => room.SpawnEnemies());
         if (type == RoomTypes.RoomType.Boss)
         {

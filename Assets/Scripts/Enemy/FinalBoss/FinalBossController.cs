@@ -31,6 +31,8 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     public Transform topRightCorner;
     public Transform topLeftCorner;
     public Transform playGround;
+    public Transform teleportPosition;
+    public Transform teleportPosition2;
     public bool Attack = false;
     public Transform playerTransform;
     public Animator tentacleAnimator;
@@ -58,16 +60,18 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         }
     }
 
-    public async void PushPlayer(float forceMagnitude)
+    public void TeleportPlayer()
     {
-        Vector3 diff = playGround.transform.position - playerTransform.position;
-        Rigidbody rb;
-        rb = playerTransform.GetComponent<Rigidbody>();
-        playerTransform.GetComponent<PlayerInput>().DeactivateInput();
-        Vector3 force = diff.normalized * forceMagnitude; 
-        rb.AddForce(force, ForceMode.Impulse);
-        await Task.Delay(2000);
-        playerTransform.GetComponent<PlayerInput>().ActivateInput();
+        int randPosition = Random.Range(0, 2);
+        Vector3 location;
+        if (randPosition == 0) 
+        {
+            location = teleportPosition.position;
+        } else
+        {
+            location = teleportPosition2.position;
+        }
+        playerTransform.GetComponent<MainCharacterController>().TeleportToLocation(1.0f, location);
     }
 
     // Start is called before the first frame update
@@ -270,8 +274,8 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     IEnumerator Shield(float shieldTime)
     {
 
-        PushPlayer(20.0f);
-        yield return new WaitForSeconds(2.0f);
+        TeleportPlayer();
+        yield return new WaitForSeconds(3.0f);
         tentacleAnimator.SetTrigger("Shield");
         {
             using HLockGuard guard = health.Lock();
