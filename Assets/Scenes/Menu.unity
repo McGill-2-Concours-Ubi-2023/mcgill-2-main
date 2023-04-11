@@ -1232,6 +1232,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1838318121, guid: 8ec2e42d0d78cc4428ba4c4a4ea46336, type: 3}
+      propertyPath: m_Volume
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 568814263930457244, guid: 8ec2e42d0d78cc4428ba4c4a4ea46336,
         type: 3}
       propertyPath: m_Enabled
@@ -8431,7 +8435,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.015
+  m_Volume: 0.2
   m_Pitch: 1
   Loop: 0
   Mute: 0

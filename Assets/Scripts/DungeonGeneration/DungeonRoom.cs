@@ -60,7 +60,6 @@ public class DungeonRoom : MonoBehaviour
         if (roomsBuffer == null) roomsBuffer = new List<DungeonRoom>();
         allRooms = dungeonGenerator.data.AllRooms();
         roomsBuffer.Clear();
-        await Task.Yield();
         roomsBuffer.Add(this);
         foreach(DungeonRoom room in adjacentRooms)
         {
@@ -70,16 +69,16 @@ public class DungeonRoom : MonoBehaviour
         List<DungeonRoom> inter = allRooms.Except(roomsBuffer).ToList();
         foreach(DungeonRoom room in inter)
         {
-            if(room.GetRoomType() != RoomTypes.RoomType.Boss)
+            await Task.Yield();
+            if (room.GetRoomType() != RoomTypes.RoomType.Boss)
             room.transform.Find("RoomRoot").gameObject.SetActive(false);
             room.DeactivateEnemies();
-            await Task.Yield();
         }
         foreach(DungeonRoom room in roomsBuffer)
         {
+            await Task.Yield();
             room.transform.Find("RoomRoot").gameObject.SetActive(true);
             room.RetrieveDoors();
-            await Task.Yield();
         }
     }
     

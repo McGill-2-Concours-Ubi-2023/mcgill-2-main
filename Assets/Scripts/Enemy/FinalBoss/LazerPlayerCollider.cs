@@ -23,7 +23,7 @@ public class LazerPlayerCollider : MonoBehaviour
             other.GetComponent<Health>().TakeDamage(1);
             if (!other.GetComponent<Health>().IsInvincible())
             vibration.SharpVibration();
-            cameraShake.StandardCameraShake(1.0f, 1.0f, 1.0f, 0);
+            cameraShake.StandardCameraShake(4.0f, 1.0f, 2.0f, 0);
             await Task.Delay(500);
             cameraShake.StopCameraShake();
         }

@@ -521,9 +521,16 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     public void UnFreeze()
     {
         //Unfreeze player
-        rb.constraints = RigidbodyConstraints.None;
-        rb.constraints = RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationX;
-        GetComponent<PlayerInput>().ActivateInput();
+        try
+        {
+            rb.constraints = RigidbodyConstraints.None;
+            rb.constraints = RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezeRotationX;
+            GetComponent<PlayerInput>().ActivateInput();
+        } catch
+        {
+            //ignore
+        }
+       
     }
 
     public void HasFaceDirectionInput(Ref<bool> hasInput)
