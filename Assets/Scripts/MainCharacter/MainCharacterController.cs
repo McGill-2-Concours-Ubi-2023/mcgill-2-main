@@ -561,6 +561,11 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         {
             canTeleport = true;
         }
+        if(other.gameObject.layer == LayerMask.NameToLayer("PickupGrenade"))
+        {
+            SimpleCollectibleInventory.AddItem(SimpleCollectible.Grenade);
+            Destroy(other.gameObject);
+        }
     }
 
     private void OnTriggerExit(Collider other)
