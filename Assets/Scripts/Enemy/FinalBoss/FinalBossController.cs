@@ -101,6 +101,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
 
     public async void OnDeath()
     {
+        bossHealthCanvas.enabled = false;
         StopAllCoroutines();
         GameObject.FindWithTag("Player").Trigger<IBossFightTriggers>(nameof(IBossFightTriggers.EndBossFight));
         cameraShake.StandardCameraShake(1.0f, 1.0f, 0.8f, 0);
@@ -269,7 +270,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
 
     IEnumerator Shield(float shieldTime)
     {
-        PushPlayer(2.0f);
+        PushPlayer(4.0f);
         tentacleAnimator.SetTrigger("Shield");
         {
             using HLockGuard guard = health.Lock();
