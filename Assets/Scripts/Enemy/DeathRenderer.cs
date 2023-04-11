@@ -18,6 +18,11 @@ public class DeathRenderer : MonoBehaviour
     private Gun1 gun1;
     private Gun gun;
 
+    private void OnEnable()
+    {
+        TryGetComponents();
+    }
+
     public void OnDeathRender()
     {
         FreezeOnCurrentState();

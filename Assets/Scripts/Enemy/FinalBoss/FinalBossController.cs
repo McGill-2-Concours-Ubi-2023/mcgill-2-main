@@ -108,7 +108,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         bossHealthCanvas.enabled = false;
         StopAllCoroutines();
         GameObject.FindWithTag("Player").Trigger<IBossFightTriggers>(nameof(IBossFightTriggers.EndBossFight));
-        cameraShake.StandardCameraShake(2.0f, 1.0f, 1f, 0);
+        cameraShake.StandardCameraShake(3.0f, 1.0f, 1.5f, 0);
         var lasers = FindObjectsOfType<LazerBeamCollider>();
         foreach(var laser in lasers)
         {
@@ -308,8 +308,8 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         lazer1.GetComponentInChildren<LazerBeamCollider>().ActivateCollider();
         lazer2.GetComponentInChildren<LazerBeamCollider>().ActivateCollider();
         vibration.SoftVibration();
-        cameraShake.StandardCameraShake(1.0f, 0.5f, 0.5f, 0);
-        yield return new WaitForSeconds(0.2f);
+        cameraShake.StandardCameraShake(3.0f, 0.5f, 1.0f, 0);
+        yield return new WaitForSeconds(0.3f);
         cameraShake.StopCameraShake();
         lazer1.SendEvent("OnLazerStart");
         lazer2.SendEvent("OnLazerStart");
@@ -331,8 +331,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         collider.enabled = false;
     }
     IEnumerator SpawnOneLazer(Vector3 position, float lazerChargeTime, float lazerbeamDuration)
-    {
-
+    {       
         var obj_1 = Instantiate(lazerPrefab);
         obj_1.transform.position = position;
         obj_1.transform.Rotate(0f, 180f, 0f);
@@ -342,7 +341,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         lazer1.GetComponentInChildren<LazerBeamCollider>().ActivateCollider();
         lazer1.SendEvent("OnLazerStart");
         cameraShake.StandardCameraShake(3.0f, 0.5f, 1f, 0);
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.3f);
         cameraShake.StopCameraShake();
         vibration.SoftVibration();
         yield return new WaitForSeconds(lazerbeamDuration);
@@ -354,13 +353,14 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     }
     IEnumerator AwakeLazer(GameObject lazer, float lazerChargeTime, float lazerbeamDuration)
     {
+
         VisualEffect lazer1 = lazer.GetComponent<VisualEffect>();
         lazer1.SendEvent("OnLazerCharge");
         yield return new WaitForSeconds(lazerChargeTime);
         lazer1.GetComponentInChildren<LazerBeamCollider>().ActivateCollider();
         lazer1.SendEvent("OnLazerStart");
-        cameraShake.StandardCameraShake(2.0f, 1f, 0.5f, 0);
-        yield return new WaitForSeconds(0.2f);
+        cameraShake.StandardCameraShake(2.5f, 1f, 1.5f, 0);
+        yield return new WaitForSeconds(0.3f);
         cameraShake.StopCameraShake();
         vibration.SoftVibration();
         yield return new WaitForSeconds(lazerbeamDuration);

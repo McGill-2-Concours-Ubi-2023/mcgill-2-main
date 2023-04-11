@@ -28,6 +28,7 @@ public class LazerBeamCollider : MonoBehaviour
 
     public async void ActivateCollider()
     {
+        GetComponent<AudioSource>().Play();
         int obstacleLayerMask = 1 << Destructible.desctructibleMask;
         RaycastHit hit;
         if (Physics.Raycast(transform.position, transform.forward, out hit, 100, obstacleLayerMask))
