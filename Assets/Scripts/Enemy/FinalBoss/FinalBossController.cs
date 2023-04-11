@@ -87,12 +87,12 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         if(health.currentHealth < 200 && !hasShieldedOnce)
         {
             hasShieldedOnce = true;
-            StartCoroutine(Shield(10.0f));
+            StartCoroutine(Shield(15.0f));
         }
         if(health.currentHealth < 50 && !hasShieldedTwice)
         {
             hasShieldedTwice = true;
-            StartCoroutine(Shield(20.0f));
+            StartCoroutine(Shield(25.0f));
         }
     } 
 
