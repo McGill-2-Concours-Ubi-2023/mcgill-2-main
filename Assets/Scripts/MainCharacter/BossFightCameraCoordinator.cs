@@ -5,6 +5,7 @@ using Cinemachine;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Playables;
+using UnityEngine.EventSystems;
 
 public class BossFightCameraCoordinator : MonoBehaviour, IBossFightTriggers
 {
@@ -97,6 +98,8 @@ public class BossFightCameraCoordinator : MonoBehaviour, IBossFightTriggers
                     string currentString = child.GetComponent<TextMeshProUGUI>().text;
                     currentString = currentString.Replace("...", currentScore.ToString(CultureInfo.InvariantCulture));
                     child.GetComponent<TextMeshProUGUI>().text = currentString;
+                } else if (child.name == "ButtonReturn") {
+                    EventSystem.current.SetSelectedGameObject(child.gameObject); // for controller
                 }
             }
             while (this != null)
