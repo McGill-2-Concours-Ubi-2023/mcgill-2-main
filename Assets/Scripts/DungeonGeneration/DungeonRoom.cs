@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Unity.Collections;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.VFX;
 
 [System.Serializable]
@@ -46,6 +47,13 @@ public class DungeonRoom : MonoBehaviour
     private List<DungeonLight> cachedLights;
     private static bool spawnPortal;
     public RoomFog fog;
+    private bool hasSpawned = false;
+
+    internal void AddEnemy(Enemy enemy)
+    {
+        if (enemy != null && !enemies.Contains(enemy)) 
+            enemies.Add(enemy);
+    }
 
     private async Task OnDistanceRender()
     {
@@ -64,6 +72,7 @@ public class DungeonRoom : MonoBehaviour
         {
             if(room.GetRoomType() != RoomTypes.RoomType.Boss)
             room.transform.Find("RoomRoot").gameObject.SetActive(false);
+            room.DeactivateEnemies();
             await Task.Yield();
         }
         foreach(DungeonRoom room in roomsBuffer)
@@ -143,20 +152,25 @@ public class DungeonRoom : MonoBehaviour
         clearedRoomsCount = 0;
     }
 
-    public async void SpawnEnemies()
+    public void SpawnEnemies()
     {
-        if (enemies == null)
-        enemies = new List<Enemy>();
-        bool isValidRoom = type != RoomTypes.RoomType.Special && type != RoomTypes.RoomType.Start
-            && type != RoomTypes.RoomType.Boss;
-        if (isValidRoom && !cleared)
+        if (!hasSpawned)
         {
-            GetComponent<EnemySpawn1>().enabled = true;
-            areEnemiesPresent = true;
-            Vector3 detectionRange = transform.Find("RoomCollider").GetComponent<BoxCollider>().size;
-            StartCoroutine(CheckForEnemies(detectionRange));
-            Isolate();
-        }   
+            hasSpawned = true;
+            if (enemies == null)
+                enemies = new List<Enemy>();
+            bool isValidRoom = type != RoomTypes.RoomType.Special && type != RoomTypes.RoomType.Start
+                && type != RoomTypes.RoomType.Boss;
+            if (isValidRoom && !cleared)
+            {
+                GetComponent<EnemySpawn1>().SpawnEnemies(this);
+                foreach(Enemy enemy in enemies)
+                {
+                    if (enemy != null) enemy.FreezeOnCurrentState();
+                }
+                areEnemiesPresent = true;
+            }
+        }          
     }
 
     private void OpenBossPortal()
@@ -166,7 +180,7 @@ public class DungeonRoom : MonoBehaviour
         portalVFX.SendEvent("OnPortalAppear");
     }
 
-    private async Task TryUpdateFog()
+    public async Task TryUpdateFog()
     {
         while(fog == null)
         {
@@ -188,7 +202,7 @@ public class DungeonRoom : MonoBehaviour
 
     public async Task UpdateRoomsLayout()
     {
-        await TryUpdateFog();
+        adjacentRooms.ForEach(room => room.SpawnEnemies());
         if (type == RoomTypes.RoomType.Boss)
         {
             OpenBossPortal();
@@ -213,33 +227,13 @@ public class DungeonRoom : MonoBehaviour
         }
     }
 
-    public void TryRemoveEnemy(Enemy enemy)
+    IEnumerator CheckForEnemies()
     {
-        if (enemies.Contains(enemy)) enemies.Remove(enemy);
-    }
-
-    IEnumerator CheckForEnemies(Vector3 detectionRange)
-    {
-        Collider[] colliders;
         while (areEnemiesPresent)
         {
-            yield return new WaitForSeconds(2.0f);
-            colliders = Physics.OverlapBox(transform.position, detectionRange);
-            foreach (Collider collider in colliders)
-            {
-                if (collider.CompareTag("Enemy"))
-                {
-                    var enemy = collider.GetComponent<Enemy>();
-                    if (!enemies.Contains(enemy) && enemy != null)
-                    {
-                        enemies.Add(enemy);
-                        enemy.attachedRoom = this;
-                    }
-                }
-            }
-            enemies.RemoveAll(enemy => enemy == null);
+            yield return new WaitForSeconds(1.0f);
+            enemies.RemoveAll(enemy => enemy == null || enemy.isDying);
             areEnemiesPresent = enemies.Count > 0;
-            //check every one second for enemies in the room
         }
         // room cleared
         try
@@ -253,9 +247,19 @@ public class DungeonRoom : MonoBehaviour
         OpenUp();
     }
 
-    public void StopSpawnEnemies()
+    public void DeactivateEnemies()
     {
-        GetComponent<EnemySpawn1>().enabled = false;
+        if(enemies != null)
+        {
+            foreach(Enemy enemy in enemies)
+            {
+                if (enemy != null)
+                {
+                    enemy.gameObject.SetActive(false);
+                    enemy.FreezeOnCurrentState();
+                }           
+            }
+        }
     }
 
     public void FindBottomRoomNorthWalls()
@@ -345,18 +349,32 @@ public class DungeonRoom : MonoBehaviour
         BindWalls(walls);
     }
 
-    public void Isolate()
+    public void ActivateEnemies()
     {
-        foreach(DungeonDoor door in doors)
+        foreach(Enemy enemy in enemies)
         {
-            var lights = door.GetLights();
-            foreach(DoorLight light in lights)
-            {
-                light.TurnRed();
-                light.UpdateLight(transform.position);
-            }
-            door.Block();
+            if (enemy != null) enemy.gameObject.SetActive(true);
         }
+    }
+
+    public async void Isolate()
+    {
+        if (!cleared) 
+        {
+            enemies.ForEach(enemy => enemy.UnFreeze());
+            await TryUpdateFog();
+            StartCoroutine(CheckForEnemies());
+            foreach (DungeonDoor door in doors)
+            {
+                var lights = door.GetLights();
+                foreach (DoorLight light in lights)
+                {
+                    light.TurnRed();
+                    light.UpdateLight(transform.position);
+                }
+                door.Block();
+            }
+        }     
     }
 
     //FBI ???

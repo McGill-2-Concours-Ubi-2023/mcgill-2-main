@@ -525,6 +525,14 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         }
     }
 
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Portal"))
+        {
+            canTeleport = false;
+        }
+    }
+
     public void AdjustFaceDirection(float3 direction)
     {
         if (all(direction == float3.zero))

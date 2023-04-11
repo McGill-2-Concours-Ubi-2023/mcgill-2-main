@@ -79,13 +79,15 @@ public class DBufferController : MonoBehaviour
         transform.rotation = new Quaternion(0, transform.rotation.y, 0,transform.rotation.w);
     }
 
-    private void FreezeOnCurrentState()
+    public void FreezeOnCurrentState()
     {
-        agent.isStopped = true;
+        canAttack = false;
+        if(agent.isActiveAndEnabled)agent.isStopped = true;
     }
 
     public void UnFreeze()
     {
-        agent.isStopped = false;
+        canAttack = true;
+        if (agent.isActiveAndEnabled) agent.isStopped = false;
     }
 }

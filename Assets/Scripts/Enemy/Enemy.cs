@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -32,7 +33,8 @@ public class Enemy : MonoBehaviour, I_AI_Trigger
     private SkinnedMeshRenderer mr;
     [SerializeField]
     private MeshRenderer mr2;
-    private void Start()
+    private bool isTargetable;
+    private void OnEnable()
     {
         //TryGetComponent<EnemyAI>(out ai);
         TryGetComponent<NavMeshAgent>(out agent);
@@ -54,18 +56,11 @@ public class Enemy : MonoBehaviour, I_AI_Trigger
         scoringSystem = GameObject.Find("ScoringSystem");
     }
 
-    public void OnEnemyDeath() {
-        EnemyAI ai;
-        TryGetComponent<EnemyAI>(out ai);
+    public void OnEnemyDeath() 
+    {
         isDying = true;
-        if(attachedRoom != null)
-        attachedRoom.TryRemoveEnemy(this);
-        //if (ai) ai.GetAttachedRoom().RemoveEnemy(ai);
         enemyHealth.deathRenderer.OnDeathRender();
-        if (agent)
-        {
-            agent.isStopped = true;
-        }
+        if (agent.isActiveAndEnabled) agent.isStopped = true;
         scoringSystem.Trigger<IScoringSystemTriggers>(nameof(IScoringSystemTriggers.OnEnemyDeath));
     }
 
@@ -112,8 +107,50 @@ public class Enemy : MonoBehaviour, I_AI_Trigger
     {
         agent.angularSpeed = 0;
         agent.speed = 0;
-        agent.acceleration = 0;
+        agent.acceleration = 0;      
     }
+
+    public async void FreezeOnCurrentState()
+    {
+        isTargetable = false;
+        {
+            using HLockGuard healthLock = enemyHealth.Lock();
+            DeathRenderer rend = enemyHealth.deathRenderer;
+            if (rend != null) enemyHealth.deathRenderer.ComponentsFreeze();
+            DisableAgent();
+            if (agent.isActiveAndEnabled) agent.isStopped = true;
+            try
+            {
+                GetComponentInChildren<DBufferController>().FreezeOnCurrentState();
+            }
+            catch
+            {
+                //ignore
+            }
+            while (!isTargetable)
+            {
+                await Task.Yield();
+            }
+        }
+    }
+
+    public void UnFreeze()
+    {
+        isTargetable = true;
+        DeathRenderer rend = enemyHealth.deathRenderer;
+        if(rend != null) enemyHealth.deathRenderer.EnableComponents();
+        EnableAgent();
+        try
+        {
+            GetComponentInChildren<DBufferController>().UnFreeze();
+        }
+        catch
+        {
+            //ignore
+        }
+        if (agent.isActiveAndEnabled) agent.isStopped = false;
+    }
+
 
     public void EnableAgent()
     {
