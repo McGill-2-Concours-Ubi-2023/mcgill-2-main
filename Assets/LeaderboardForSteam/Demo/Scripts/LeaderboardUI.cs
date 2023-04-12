@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using LeastSquares;
+#if !UNITY_STANDALONE_OSX && !UNITY_EDITOR_OSX && !PLATFORM_STANDALONE_OSX
 using Steamworks.Data;
+#endif
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,6 +17,7 @@ namespace LeastSquares
     /// </summary>
     public class LeaderboardUI : MonoBehaviour
     {
+#if !UNITY_STANDALONE_OSX && !UNITY_EDITOR_OSX && !PLATFORM_STANDALONE_OSX
         public int EntriesToShowAtOnce = 100;
         public GameObject EntryPrefab;
         public TMP_InputField Input;
@@ -121,7 +124,7 @@ namespace LeastSquares
         }
 
        
-        
+        #endif
     }
 
     [Serializable]

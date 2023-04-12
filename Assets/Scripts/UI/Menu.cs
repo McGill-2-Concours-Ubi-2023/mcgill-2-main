@@ -27,6 +27,7 @@ public class Menu : MonoBehaviour
 
     private async void UpdateLeaderboard()
     {
+#if !UNITY_STANDALONE_OSX && !UNITY_EDITOR_OSX && !PLATFORM_STANDALONE_OSX
         try
         {
             while(leaderboard == null)
@@ -40,6 +41,7 @@ public class Menu : MonoBehaviour
         {
             Debug.Log("Leaderboard not found");
         }
+#endif
     }
 
     public void Shut()

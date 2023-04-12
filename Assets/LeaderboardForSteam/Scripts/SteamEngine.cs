@@ -2,7 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if !UNITY_STANDALONE_OSX && !UNITY_EDITOR_OSX && !PLATFORM_STANDALONE_OSX
 using Steamworks;
+#endif
 using UnityEngine.Serialization;
 
 namespace LeastSquares
@@ -12,6 +14,7 @@ namespace LeastSquares
     /// </summary>
     public class SteamEngine : MonoBehaviour
     {
+#if !UNITY_STANDALONE_OSX && !UNITY_EDITOR_OSX && !PLATFORM_STANDALONE_OSX
         private static bool _initialized;
         private static uint _initializedId;
         public uint appId = 480;
@@ -57,5 +60,7 @@ namespace LeastSquares
         {
             SteamClient.Shutdown();
         }
+
+#endif
     }
 }

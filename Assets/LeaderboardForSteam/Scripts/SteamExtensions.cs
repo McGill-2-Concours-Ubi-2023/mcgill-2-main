@@ -1,11 +1,13 @@
+#if !UNITY_STANDALONE_OSX && !UNITY_EDITOR_OSX && !PLATFORM_STANDALONE_OSX
 using Steamworks.Data;
+#endif
 using UnityEngine;
 
 namespace LeastSquares
 {
     public static class SteamExtensions
     {
-        
+#if !UNITY_STANDALONE_OSX && !UNITY_EDITOR_OSX && !PLATFORM_STANDALONE_OSX
         /// <summary>
         /// Converts a Steam image into a Unity compatible texture
         /// </summary>
@@ -27,5 +29,6 @@ namespace LeastSquares
             avatar.Apply();
             return avatar;
         }
+#endif
     }
 }

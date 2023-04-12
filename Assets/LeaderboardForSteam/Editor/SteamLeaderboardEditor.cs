@@ -9,6 +9,7 @@ namespace LeastSquares
     [CanEditMultipleObjects]
     public class SteamLeaderboardEditor : Editor
     {
+#if !UNITY_STANDALONE_OSX && !UNITY_EDITOR_OSX && !PLATFORM_STANDALONE_OSX
         private SerializedProperty _sortType;
         private SerializedProperty _displayType;
         
@@ -42,5 +43,6 @@ namespace LeastSquares
             serializedObject.ApplyModifiedProperties();
             EditorGUI.indentLevel--;
         }
+#endif
     }
 }

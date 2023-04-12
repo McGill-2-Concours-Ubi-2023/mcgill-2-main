@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
+#if !UNITY_STANDALONE_OSX && !UNITY_EDITOR_OSX && !PLATFORM_STANDALONE_OSX
 using Steamworks;
 using Steamworks.Data;
+#endif
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -15,6 +17,7 @@ namespace LeastSquares
     /// </summary>
     public class SteamLeaderboard : MonoBehaviour
     {
+#if !UNITY_STANDALONE_OSX && !UNITY_EDITOR_OSX && !PLATFORM_STANDALONE_OSX
         public static SteamLeaderboard Instance;
 
         private void Awake()
@@ -118,6 +121,8 @@ namespace LeastSquares
                 return result[0];
             return null;
         }
+
+#endif
     }
 
     /// <summary>

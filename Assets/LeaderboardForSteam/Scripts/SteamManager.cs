@@ -6,7 +6,7 @@ using LeastSquares;
 
 public class SteamManager : MonoBehaviour
 {
-
+#if !UNITY_STANDALONE_OSX && !UNITY_EDITOR_OSX && !PLATFORM_STANDALONE_OSX
     [SerializeField] GameObject steamLeaderboard;
     [SerializeField] GameObject steamEngine;
 
@@ -21,6 +21,6 @@ public class SteamManager : MonoBehaviour
             
         }
     }
-
+#endif
     
 }
