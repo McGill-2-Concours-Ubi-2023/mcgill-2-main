@@ -25,6 +25,14 @@ namespace LeastSquares
 
         void Start()
         {
+            try
+            {
+                Leaderboard.SubmitScore(GameManager.score);
+            }
+            catch
+            {
+                //ignore
+            }
             RefreshScores();
         }
 

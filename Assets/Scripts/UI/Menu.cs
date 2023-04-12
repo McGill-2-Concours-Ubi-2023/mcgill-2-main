@@ -22,7 +22,7 @@ public class Menu : MonoBehaviour
          }
          else
              Cursor.visible = true;*/
-        UpdateLeaderboard();
+        //UpdateLeaderboard();
     }
 
     private async void UpdateLeaderboard()
