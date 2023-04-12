@@ -406,7 +406,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
 
         while (waveTime > 0)
         {
-            Vector3 playerPos = new Vector3(playerTransform.position.x, playerTransform.position.y + 0.5f, playerTransform.position.z);
+            Vector3 playerPos = new Vector3(playerTransform.position.x, playerTransform.position.y + 0.7f, playerTransform.position.z);
             GameObject lazer = GetOneLazer(center, 1.0f, 1.0f, 0);
             Quaternion rotation = Quaternion.FromToRotation(lazer.transform.forward,
                 (playerPos - lazer.transform.position).normalized);
