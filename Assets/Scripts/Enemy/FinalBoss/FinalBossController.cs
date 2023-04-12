@@ -103,7 +103,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     {
         await Task.Delay(2000);
         protectWallAnimator.gameObject.GetComponent<AudioSource>().Play();
-        cameraShake.StandardCameraShake(4.0f, 2.0f, 0);
+        cameraShake.StandardCameraShake(5.0f, 3.0f, 0);
         await Task.Delay(2000);
         cameraShake.StopCameraShake();
     }

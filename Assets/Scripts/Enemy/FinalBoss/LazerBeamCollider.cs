@@ -45,19 +45,13 @@ public class LazerBeamCollider : MonoBehaviour
         playerDamageCollider.enabled = true;
     }
 
-    private async void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (!obstacles.Contains(other.gameObject))
         {
             obstacles.Add(other.gameObject);
         }
 
-        if (other.CompareTag("Player")) //will always collide the player before since deadzone
-        {
-            playerDamageCollider.enabled = false;
-            await Task.Yield();//Wait for next frame
-            playerDamageCollider.enabled = true;
-        }
 
         if (other.gameObject.layer == Destructible.desctructibleMask)
         {

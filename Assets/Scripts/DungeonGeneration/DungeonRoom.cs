@@ -55,7 +55,7 @@ public class DungeonRoom : MonoBehaviour
             enemies.Add(enemy);
     }
 
-    private async Task OnDistanceRender()
+    private void OnDistanceRender()
     {
         if (roomsBuffer == null) roomsBuffer = new List<DungeonRoom>();
         allRooms = dungeonGenerator.data.AllRooms();
@@ -66,7 +66,6 @@ public class DungeonRoom : MonoBehaviour
             roomsBuffer.Add(room);
             room.UpdateLights(transform.position);
         }
-        await Task.Yield();
         List<DungeonRoom> inter = allRooms.Except(roomsBuffer).ToList();
         foreach(DungeonRoom room in inter)
         {
@@ -74,7 +73,6 @@ public class DungeonRoom : MonoBehaviour
             room.transform.Find("RoomRoot").gameObject.SetActive(false);
             room.DeactivateEnemies();
         }
-        await Task.Yield();
         foreach (DungeonRoom room in roomsBuffer)
         {
             room.transform.Find("RoomRoot").gameObject.SetActive(true);
@@ -207,23 +205,21 @@ public class DungeonRoom : MonoBehaviour
         {
             OpenBossPortal();
         }    
-        await OnDistanceRender();
+        OnDistanceRender();
+        await Task.Yield();
         foreach (OccludableWall wall in occludableWalls)
         {
             if (wall != null && wall.gameObject.activeInHierarchy)
             {
                 wall.Hide();
                 wall.ChangeRenderQueue(3001);
-                await Task.Yield();
+                
             }
         }
-
         if (northWalls == null) FindNorthWalls();
-        await Task.Yield();
         foreach (OccludableWall wall in northWalls)
         {
             if (wall != null && wall.gameObject.activeInHierarchy) wall.ChangeRenderQueue(2998);
-            await Task.Yield();
         }
     }
 
