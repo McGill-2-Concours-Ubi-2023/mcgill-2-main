@@ -29,10 +29,7 @@ namespace LeastSquares
         /// </summary>
         private async Task CreateOrFindLeaderboard()
         {
-            if (_leaderboard != null || !SteamClient.IsValid) {
-                Debug.Log("?");
-                return;
-            }
+            if (_leaderboard != null || !SteamClient.IsValid) return;
             _leaderboard = await SteamUserStats.FindOrCreateLeaderboardAsync(Name, (LeaderboardSort) SortType, (LeaderboardDisplay) DisplayType);
         }
 
@@ -42,11 +39,10 @@ namespace LeastSquares
         /// <param name="newScore">The new score for the user</param>
         public async void SubmitScore(int newScore)
         { 
-            Debug.Log($"!SteamClient Valid? {!SteamClient.IsValid}");
+            Debug.Log($"SteamClient Valid? {SteamClient.IsValid}");
             await CreateOrFindLeaderboard();
             if (_leaderboard != null)
             {
-                Debug.Log("yeah");
                 await _leaderboard.Value.SubmitScoreAsync(newScore);
                 Debug.Log($"Sent score {newScore}");
             }
