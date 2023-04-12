@@ -27,7 +27,7 @@ public class Menu : MonoBehaviour
 
     private async void UpdateLeaderboard()
     {
-#if !UNITY_STANDALONE_OSX && !UNITY_EDITOR_OSX && !PLATFORM_STANDALONE_OSX
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
         try
         {
             while(leaderboard == null)
