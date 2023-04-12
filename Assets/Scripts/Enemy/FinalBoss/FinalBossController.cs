@@ -112,7 +112,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     {
         // send to UI
         Debug.Log($"Boss health change : {change} to : {currentHealth}");
-        fillBar.fillAmount = Mathf.Clamp01(currentHealth / 300);
+        fillBar.fillAmount = Mathf.Clamp01(currentHealth / 500);
     }
 
     public async void OnDeath()
