@@ -109,6 +109,9 @@ public class LazerBeamCollider : MonoBehaviour
         }
         playerDamageCollider.enabled = false;
         await Task.Delay(100);
-        playerDamageCollider.enabled = true;
+        if(playerDamageCollider != null)
+        {
+            playerDamageCollider.enabled = true;
+        }
     }        
 }
