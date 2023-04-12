@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.EventSystems;
+using LeastSquares;
 
 public class BossFightCameraCoordinator : MonoBehaviour, IBossFightTriggers
 {
@@ -14,6 +15,7 @@ public class BossFightCameraCoordinator : MonoBehaviour, IBossFightTriggers
     private PlayableDirector m_CinematicDirector;
     public PlayableDirector EntranceUIDirector;
     public GameObject EndGameUI;
+    public SteamLeaderboard lb;
     private enum State
     {
         Invalid = 0,
@@ -90,6 +92,8 @@ public class BossFightCameraCoordinator : MonoBehaviour, IBossFightTriggers
             
             // final panel for end of game
             float currentScore = GameObject.FindWithTag("ScoringSystem").GetComponent<ScoringSystem>().currScore;
+            lb.SubmitScore((int)currentScore);
+            Debug.Log("Submitted!!!!! " + ((int)currentScore).ToString());
             EndGameUI.SetActive(true);
             foreach (Transform child in EndGameUI.transform)
             {
