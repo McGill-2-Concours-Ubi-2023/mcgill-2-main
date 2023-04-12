@@ -39,7 +39,7 @@ public class Revive : MonoBehaviour
         revivePanel.SetActive(true);
         TMP_Text text = revivePanel.GetComponentInChildren<TMP_Text>();
         halfScore = (int)scoreSys.currScore / 2;
-        text.text = "Do you want to revive with half of your points?\n\n" + "cost: "+ halfScore + "pts";
+        text.text = "cost: "+ halfScore + "pts";
         EventSystem.current.SetSelectedGameObject(button1);
     }
 
