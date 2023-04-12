@@ -221,6 +221,7 @@ public class DungeonRoom : MonoBehaviour
         {
             if (wall != null && wall.gameObject.activeInHierarchy) wall.ChangeRenderQueue(2998);
         }
+        await Task.Yield();
         bool condition = type != RoomTypes.RoomType.Special
                && type != RoomTypes.RoomType.Boss
                && type != RoomTypes.RoomType.Start;
@@ -370,23 +371,30 @@ public class DungeonRoom : MonoBehaviour
 
     public async void Isolate()
     {
-        if (!cleared) 
+        try
         {
-            DungeonRoom.lastEnteredDoor.CloseDoor();
-            enemies.ForEach(enemy => enemy.UnFreeze());
-            await TryUpdateFog();
-            StartCoroutine(CheckForEnemies());
-            foreach (DungeonDoor door in doors)
+            if (!cleared)
             {
-                var lights = door.GetLights();
-                foreach (DoorLight light in lights)
+                DungeonRoom.lastEnteredDoor.CloseDoor();
+                enemies.ForEach(enemy => enemy.UnFreeze());
+                await TryUpdateFog();
+                StartCoroutine(CheckForEnemies());
+                foreach (DungeonDoor door in doors)
                 {
-                    light.TurnRed();
-                    light.UpdateLight(transform.position);
+                    var lights = door.GetLights();
+                    foreach (DoorLight light in lights)
+                    {
+                        light.TurnRed();
+                        light.UpdateLight(transform.position);
+                    }
+                    door.Block();
                 }
-                door.Block();
             }
-        }     
+        }
+        catch
+        {
+            //ignore
+        }      
     }
 
     //FBI ???
