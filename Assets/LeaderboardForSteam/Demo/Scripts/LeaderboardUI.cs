@@ -40,6 +40,10 @@ namespace LeastSquares
             RefreshScores();
         }
 
+        private void FixedUpdate() {
+            RefreshScores();
+        }
+
         /// <summary>
         /// Fill the leaderboardUI with new scores
         /// </summary>
