@@ -25,14 +25,18 @@ namespace LeastSquares
 
         void Start()
         {
-            try
-            {
-                Leaderboard.SubmitScore(GameManager.score);
-            }
-            catch
-            {
-                //ignore
-            }
+
+            if (Leaderboard == null)
+                Leaderboard = SteamLeaderboard.Instance;
+
+            // try
+            // {
+            //     Leaderboard.SubmitScore(GameManager.score);
+            // }
+            // catch
+            // {
+            //     //ignore
+            // }
             RefreshScores();
         }
 

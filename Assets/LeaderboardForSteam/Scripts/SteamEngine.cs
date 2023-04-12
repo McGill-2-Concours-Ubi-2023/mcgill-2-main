@@ -46,7 +46,7 @@ namespace LeastSquares
         /// </summary>
         void Update()
         {
-            Debug.Log($"{SteamClient.IsValid}");
+            // Debug.Log($"{SteamClient.IsValid}");
             SteamClient.RunCallbacks();
         }
 
