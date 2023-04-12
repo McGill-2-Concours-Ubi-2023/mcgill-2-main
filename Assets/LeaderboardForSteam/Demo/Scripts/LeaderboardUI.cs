@@ -33,6 +33,8 @@ namespace LeastSquares
         /// </summary>
         async void RefreshScores()
         {
+            Debug.Log($"isvalid?{Leaderboard.isSteamClientValid()}");
+
             LeaderboardEntry[] scores;
             switch (Type)
             {

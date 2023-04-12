@@ -87,7 +87,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2409774580532564502}
-  - component: {fileID: 2409774580532564503}
   - component: {fileID: 2409774580532564496}
   m_Layer: 0
   m_Name: steamer L
@@ -111,19 +110,6 @@ Transform:
   m_Father: {fileID: 1352026286292754356}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2409774580532564503
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2409774580532564497}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 44ae9a0ea5cf17573ac24ff1dac26b17, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  appId: 2387350
 --- !u!114 &2409774580532564496
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -20,12 +20,19 @@ namespace LeastSquares
         public SteamLeaderboardDisplay DisplayType = SteamLeaderboardDisplay.Numeric;
         private Leaderboard? _leaderboard;
 
+        private void FixedUpdate() {
+            SubmitScore(PlayerPrefs.GetInt("HighScore", 0));
+        }
+
         /// <summary>
         /// Creates or finds the leaderboard if it doesnt exist. Does not do anything if Steam has not been loaded first.
         /// </summary>
         private async Task CreateOrFindLeaderboard()
         {
-            if (_leaderboard != null || !SteamClient.IsValid) return;
+            if (_leaderboard != null || !SteamClient.IsValid) {
+                Debug.Log("?");
+                return;
+            }
             _leaderboard = await SteamUserStats.FindOrCreateLeaderboardAsync(Name, (LeaderboardSort) SortType, (LeaderboardDisplay) DisplayType);
         }
 
@@ -35,14 +42,20 @@ namespace LeastSquares
         /// <param name="newScore">The new score for the user</param>
         public async void SubmitScore(int newScore)
         { 
+            Debug.Log($"!SteamClient Valid? {!SteamClient.IsValid}");
             await CreateOrFindLeaderboard();
             if (_leaderboard != null)
             {
+                Debug.Log("yeah");
                 await _leaderboard.Value.SubmitScoreAsync(newScore);
                 Debug.Log($"Sent score {newScore}");
             }
         }
         
+        public bool isSteamClientValid() {
+            return SteamClient.IsValid;
+        }
+
         /// <summary>
         /// Replaces the user's score, even if its lower, with a new one
         /// </summary>

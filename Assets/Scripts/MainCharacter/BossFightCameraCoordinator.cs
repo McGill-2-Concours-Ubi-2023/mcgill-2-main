@@ -92,8 +92,13 @@ public class BossFightCameraCoordinator : MonoBehaviour, IBossFightTriggers
             
             // final panel for end of game
             float currentScore = GameObject.FindWithTag("ScoringSystem").GetComponent<ScoringSystem>().currScore;
-            lb.SubmitScore((int)currentScore);
-            Debug.Log("Submitted!!!!! " + ((int)currentScore).ToString());
+            // lb.SubmitScore((int)currentScore);
+
+            if (currentScore>PlayerPrefs.GetInt("HighScore"))
+                PlayerPrefs.SetInt("HighScore", (int)currentScore);
+
+
+            Debug.Log("BFC: Submitting!!!!! " + ((int)currentScore).ToString());
             EndGameUI.SetActive(true);
             foreach (Transform child in EndGameUI.transform)
             {
