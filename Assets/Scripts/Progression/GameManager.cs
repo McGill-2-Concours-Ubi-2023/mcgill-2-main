@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using LeastSquares;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -23,6 +24,7 @@ public enum GameAssistLevel : int
 
 public class GameManager : MonoBehaviour
 {
+    public GameObject leaderboard; 
     public static GameManager Instance;
     public GameObject loadingScreen;
     public Image loadingFillBar;
@@ -33,6 +35,7 @@ public class GameManager : MonoBehaviour
     public GameObject coverUpScreen;
     public GameAssistLevel assistLevel = GameAssistLevel.Default;
     public event Action<GameAssistLevel> onDifficultyChanged;
+    public static int score = 0;
     
     public static bool isLoading
     {
@@ -45,6 +48,7 @@ public class GameManager : MonoBehaviour
             }
             m_IsLoading = value;
         }
+        
     }
     
     public void ReportProgress(float progress, float nextProgress)
@@ -60,6 +64,7 @@ public class GameManager : MonoBehaviour
         {
             DontDestroyOnLoad(LoadingCanvas);
             DontDestroyOnLoad(gameObject); // Keep the GameObject, this component is attached to, across different scenes
+            DontDestroyOnLoad(leaderboard);
             Instance = this;
         }
         else if (Instance != this) // If there is already an instance and it's not `this` instance

@@ -31,7 +31,7 @@ namespace LeastSquares
         /// <summary>
         /// Fill the leaderboardUI with new scores
         /// </summary>
-        async void RefreshScores()
+        public async void RefreshScores()
         {
             LeaderboardEntry[] scores;
             switch (Type)
@@ -103,6 +103,8 @@ namespace LeastSquares
             Leaderboard.SubmitScore(int.Parse(text));
             RefreshScores();
         }
+
+       
         
     }
 
