@@ -144,6 +144,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     {
         bossHealthCanvas.enabled = true;
         LazerSweepAttack(topRightCorner.position, topLeftCorner.position);
+        Shield(20);
         StartCoroutine(FightCoroutine());
     }
 
