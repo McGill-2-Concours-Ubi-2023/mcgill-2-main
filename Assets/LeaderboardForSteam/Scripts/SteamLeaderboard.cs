@@ -19,15 +19,16 @@ namespace LeastSquares
 
         private void Awake()
         {
+            Debug.Log("Awakening");
             //DontDestroyOnLoad(this);
 
-            if (Instance != null)
-            {
-                Destroy(this);
-            }
-            else
+            if (Instance == null)
             {
                 Instance = this;
+            }
+            else if (Instance != this)
+            {
+                Destroy(this);
             }
         }
 
