@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using LeastSquares;
 using System.Threading.Tasks;
+using UnityEngine.InputSystem;
 
 #if UNITY_EDITOR
 using UnityEditor.SceneManagement;
@@ -11,36 +12,20 @@ using UnityEditor.SceneManagement;
 public class Menu : MonoBehaviour
 {
     public bool cursor;
-    private SteamLeaderboard leaderboard;
     
     void Start()
     {
-        /* if (!cursor)
+        if (!cursor)
          {
              Cursor.lockState = CursorLockMode.Locked;
              Cursor.visible = false;
          }
          else
-             Cursor.visible = true;*/
-        //UpdateLeaderboard();
+             Cursor.visible = true;
     }
 
-    private async void UpdateLeaderboard()
-    {
-        try
-        {
-            while(leaderboard == null)
-            {
-                leaderboard = FindObjectOfType<SteamLeaderboard>();
-                await Task.Yield();              
-            }
-            leaderboard.SubmitScore(GameManager.score);
-        } 
-        catch
-        {
-            Debug.Log("Leaderboard not found");
-        }
-    }
+
+
 
     public void Shut()
     {

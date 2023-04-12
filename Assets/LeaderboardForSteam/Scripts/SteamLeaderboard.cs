@@ -50,7 +50,7 @@ namespace LeastSquares
         /// Submits a new score to the steam leaderboard. Only updates it if its better than the previous one
         /// </summary>
         /// <param name="newScore">The new score for the user</param>
-        public async void SubmitScore(int newScore)
+        public async Task SubmitScore(int newScore)
         { 
             await CreateOrFindLeaderboard();
             if (_leaderboard != null)
