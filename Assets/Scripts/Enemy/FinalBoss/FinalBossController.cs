@@ -95,8 +95,18 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
             hasShieldedTwice = true;
             StartCoroutine(Shield(25.0f));
             protectWallAnimator.SetTrigger("Wall");
+            OnWallRiseShake();
         }
     } 
+
+    private async void OnWallRiseShake()
+    {
+        await Task.Delay(3000);
+        protectWallAnimator.gameObject.GetComponent<AudioSource>().Play();
+        cameraShake.StandardCameraShake(4.0f, 2.0f, 0);
+        await Task.Delay(1000);
+        cameraShake.StopCameraShake();
+    }
 
     public void OnHealthChange(float change, float currentHealth)
     {
