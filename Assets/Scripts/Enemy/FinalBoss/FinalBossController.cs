@@ -31,7 +31,6 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     public Transform topRightCorner;
     public Transform topLeftCorner;
     public Transform playGround;
-    public Transform bossEyeTransform;
     public Transform teleportPosition;
     public Transform teleportPosition2;
     public bool Attack = false;
@@ -403,8 +402,8 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     IEnumerator WaveLasers()
     {
         float waveTime = 8.0f;
-        Vector3 center = new Vector3(bossEyeTransform.transform.position.x,
-           bossEyeTransform.transform.position.y + 5.0f, bossEyeTransform.transform.position.z);
+        Vector3 center = new Vector3(playGround.transform.position.x,
+           playGround.transform.position.y + 5.0f, playGround.transform.position.z);
 
         while (waveTime > 0)
         {
