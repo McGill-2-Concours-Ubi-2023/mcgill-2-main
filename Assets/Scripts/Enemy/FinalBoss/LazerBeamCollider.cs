@@ -18,7 +18,7 @@ public class LazerBeamCollider : MonoBehaviour
     private LayerMask obstacleMask;
 
     private void OnEnable()
-    {       
+    {
         if (obstacles == null) obstacles = new List<Collider>();
         bossController = FindObjectOfType<FinalBossController>();
         cameraShake = bossController.cameraShake;
@@ -26,25 +26,29 @@ public class LazerBeamCollider : MonoBehaviour
         obstacleMask = Destructible.desctructibleMask;
     }
 
-    public async void ActivateCollider()
+    public void ActivateCollider()
     {
         GetComponent<AudioSource>().Play();
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, transform.forward, out hit, 100, obstacleMask))
-        {
-            Vector3 diff = hit.transform.position - colliderEnd.transform.position;
-            transform.position = transform.parent.position - transform.forward * diff.magnitude;
-            beamVFX.SetVector3("ObstaclePosition", hit.transform.position);
-            beamVFX.SetFloat("ColliderSize", hit.collider.bounds.size.magnitude);
-            Vector3 diff2 = hit.transform.position - beamEnd.transform.position;
-            beamVFX.SetFloat("ObstacleDistance", diff2.magnitude);
-        }
-        await Task.Delay(1000);
+        StartCoroutine(OnActivationWait());      
+    }
+
+    IEnumerator OnActivationWait()
+    {
         _collider.enabled = true;
+        yield return new WaitForSeconds(0.1f);
         playerDamageCollider.enabled = true;
     }
 
     private void OnTriggerEnter(Collider other)
+    {
+        bool isMask = other.gameObject.layer == obstacleMask;
+        if (!obstacles.Contains(other) && isMask)
+        {
+            obstacles.Add(other);
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
     {
         bool isMask = other.gameObject.layer == obstacleMask;
         if (!obstacles.Contains(other) && isMask)
@@ -64,7 +68,7 @@ public class LazerBeamCollider : MonoBehaviour
         if(closestCollider != null)
         {
             beamVFX.SetVector3("ObstaclePosition", closestCollider.transform.position);
-            beamVFX.SetFloat("ColliderSize", closestCollider.bounds.size.magnitude);
+            beamVFX.SetFloat("ColliderSize", closestCollider.transform.lossyScale.magnitude);
             Vector3 diff = closestCollider.transform.position - colliderEnd.transform.position;
             Vector3 diff2 = closestCollider.transform.position - beamEnd.transform.position;
             beamVFX.SetFloat("ObstacleDistance", diff2.magnitude);
@@ -93,7 +97,7 @@ public class LazerBeamCollider : MonoBehaviour
         return closestCollider;
     }
 
-    private void OnTriggerExit(Collider other)
+    private async void OnTriggerExit(Collider other)
     {
         try
         {
@@ -102,6 +106,12 @@ public class LazerBeamCollider : MonoBehaviour
         catch
         {
             Debug.Log("Collider not found!");
+        }
+        playerDamageCollider.enabled = false;
+        await Task.Delay(100);
+        if(playerDamageCollider != null)
+        {
+            playerDamageCollider.enabled = true;
         }
     }        
 }
