@@ -93,11 +93,10 @@ public class BossFightCameraCoordinator : MonoBehaviour, IBossFightTriggers
             
             // final panel for end of game
             float currentScore = GameObject.FindWithTag("ScoringSystem").GetComponent<ScoringSystem>().currScore;
-            GameManager.score = (int) currentScore;
+            //GameManager.score = (int) currentScore;
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
             lb.SubmitScore((int)currentScore);
 #endif
-            
             Debug.Log("Submitted!!!!! " + ((int)currentScore).ToString());
             EndGameUI.SetActive(true);
             foreach (Transform child in EndGameUI.transform)

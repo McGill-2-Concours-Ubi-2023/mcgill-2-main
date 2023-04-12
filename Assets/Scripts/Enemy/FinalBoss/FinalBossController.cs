@@ -89,11 +89,13 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         if(health.currentHealth < 200 && !hasShieldedOnce)
         {
             hasShieldedOnce = true;
+            TeleportPlayer();
             StartCoroutine(Shield(15.0f));
         }
         if(health.currentHealth < 50 && !hasShieldedTwice)
         {
             hasShieldedTwice = true;
+            TeleportPlayer();
             StartCoroutine(Shield(25.0f));
             protectWallAnimator.SetTrigger("Wall");
             OnWallRiseShake();
@@ -287,8 +289,6 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
 
     IEnumerator Shield(float shieldTime)
     {
-
-        TeleportPlayer();
         yield return new WaitForSeconds(3.0f);
         tentacleAnimator.SetTrigger("Shield");
         {

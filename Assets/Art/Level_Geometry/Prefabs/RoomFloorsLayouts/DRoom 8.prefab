@@ -549,6 +549,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_barrel_Explosive (11)
       objectReference: {fileID: 0}
+    - target: {fileID: 9189408778174511201, guid: 0ef850b08acf4ca47a6ef062613d49d1,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ef850b08acf4ca47a6ef062613d49d1, type: 3}
 --- !u!4 &6095783579999658617 stripped
@@ -1003,6 +1008,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SM_barrel_Explosive (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 9189408778174511201, guid: 0ef850b08acf4ca47a6ef062613d49d1,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ef850b08acf4ca47a6ef062613d49d1, type: 3}
@@ -1758,6 +1768,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SM_barrel_Explosive (7)
+      objectReference: {fileID: 0}
+    - target: {fileID: 9189408778174511201, guid: 0ef850b08acf4ca47a6ef062613d49d1,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ef850b08acf4ca47a6ef062613d49d1, type: 3}
@@ -2519,6 +2534,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_barrel_Explosive (8)
       objectReference: {fileID: 0}
+    - target: {fileID: 9189408778174511201, guid: 0ef850b08acf4ca47a6ef062613d49d1,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ef850b08acf4ca47a6ef062613d49d1, type: 3}
 --- !u!4 &6095783581787798541 stripped
@@ -2909,10 +2929,20 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5225174855615431417}
     m_Modifications:
+    - target: {fileID: 1525890172079998904, guid: f6f3ab36ee128454484562a81b0f88a7,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1525890172079998905, guid: f6f3ab36ee128454484562a81b0f88a7,
         type: 3}
       propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[0].m_Value
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1525890172079998907, guid: f6f3ab36ee128454484562a81b0f88a7,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4217292524305056385, guid: f6f3ab36ee128454484562a81b0f88a7,
         type: 3}
