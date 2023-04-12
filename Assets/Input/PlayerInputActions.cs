@@ -142,7 +142,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""id"": ""3844ca7c-4aff-41a1-ab2a-1055743eb4c5"",
                     ""path"": ""2DVector(mode=2)"",
                     ""interactions"": """",
-                    ""processors"": """",
+                    ""processors"": ""StickDeadzone(min=0.1,max=0.9)"",
                     ""groups"": """",
                     ""action"": ""Movement"",
                     ""isComposite"": true,

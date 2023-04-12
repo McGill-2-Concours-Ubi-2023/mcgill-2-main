@@ -221,6 +221,13 @@ public class DungeonRoom : MonoBehaviour
         {
             if (wall != null && wall.gameObject.activeInHierarchy) wall.ChangeRenderQueue(2998);
         }
+        bool condition = type != RoomTypes.RoomType.Special
+               && type != RoomTypes.RoomType.Boss
+               && type != RoomTypes.RoomType.Start;
+        if (condition)
+        {
+            Isolate();
+        }
     }
 
     IEnumerator CheckForEnemies()
@@ -365,6 +372,7 @@ public class DungeonRoom : MonoBehaviour
     {
         if (!cleared) 
         {
+            DungeonRoom.lastEnteredDoor.CloseDoor();
             enemies.ForEach(enemy => enemy.UnFreeze());
             await TryUpdateFog();
             StartCoroutine(CheckForEnemies());
