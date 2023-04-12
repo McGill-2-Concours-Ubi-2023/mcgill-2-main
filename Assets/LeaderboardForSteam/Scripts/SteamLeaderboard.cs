@@ -15,6 +15,23 @@ namespace LeastSquares
     /// </summary>
     public class SteamLeaderboard : MonoBehaviour
     {
+        public static SteamLeaderboard Instance;
+
+        private void Awake()
+        {
+            Debug.Log("Awakening");
+            //DontDestroyOnLoad(this);
+
+            if (Instance == null)
+            {
+                Instance = this;
+            }
+            else if (Instance != this)
+            {
+                Destroy(this);
+            }
+        }
+
         public string Name;
         public SteamLeaderboardSort SortType = SteamLeaderboardSort.Descending;
         public SteamLeaderboardDisplay DisplayType = SteamLeaderboardDisplay.Numeric;

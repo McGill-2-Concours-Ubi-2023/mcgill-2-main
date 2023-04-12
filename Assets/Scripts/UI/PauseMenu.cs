@@ -38,6 +38,8 @@ public class PauseMenu : MonoBehaviour
                 m_State = State.Paused;
                 PauseRoutine();
                 PauseTime();
+            } else {
+                Resume();
             }
         }
         else

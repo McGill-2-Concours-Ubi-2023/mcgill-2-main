@@ -45,7 +45,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     private bool hasShieldedOnce;
     private bool hasShieldedTwice;
     private bool isLockedShield;
-    public Canvas bossHealthCanvas;
+    public GameObject bossHealthCanvas;
     public Image fillBar;
     public Animator protectWallAnimator;
 
@@ -112,12 +112,12 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     {
         // send to UI
         Debug.Log($"Boss health change : {change} to : {currentHealth}");
-        fillBar.fillAmount = Mathf.Clamp01(currentHealth / 300);
+        fillBar.fillAmount = Mathf.Clamp01(currentHealth / 500);
     }
 
     public async void OnDeath()
     {
-        bossHealthCanvas.enabled = false;
+        bossHealthCanvas.SetActive(false);
         StopAllCoroutines();
         GameObject.FindWithTag("Player").Trigger<IBossFightTriggers>(nameof(IBossFightTriggers.EndBossFight));
         cameraShake.StandardCameraShake(3.0f, 1.5f, 0);
@@ -142,9 +142,8 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
 
     public void StartFight()
     {
-        bossHealthCanvas.enabled = true;
         LazerSweepAttack(topRightCorner.position, topLeftCorner.position);
-        Shield(20);
+        StartCoroutine(Shield(20));
         StartCoroutine(FightCoroutine());
     }
 
@@ -153,7 +152,8 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     private bool shouldAttack = false;
     IEnumerator FightCoroutine()
     {
-        yield return new WaitForSeconds(15.0f);
+        yield return new WaitForSeconds(14.0f);
+        bossHealthCanvas.SetActive(true);
 
         while (true)
         {

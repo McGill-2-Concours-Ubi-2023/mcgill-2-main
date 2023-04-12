@@ -25,13 +25,29 @@ namespace LeastSquares
 
         void Start()
         {
+
+            if (Leaderboard == null)
+                Leaderboard = SteamLeaderboard.Instance;
+
+            // try
+            // {
+            //     Leaderboard.SubmitScore(GameManager.score);
+            // }
+            // catch
+            // {
+            //     //ignore
+            // }
+            RefreshScores();
+        }
+
+        private void FixedUpdate() {
             RefreshScores();
         }
 
         /// <summary>
         /// Fill the leaderboardUI with new scores
         /// </summary>
-        async void RefreshScores()
+        public async void RefreshScores()
         {
             LeaderboardEntry[] scores;
             switch (Type)
@@ -103,6 +119,8 @@ namespace LeastSquares
             Leaderboard.SubmitScore(int.Parse(text));
             RefreshScores();
         }
+
+       
         
     }
 
