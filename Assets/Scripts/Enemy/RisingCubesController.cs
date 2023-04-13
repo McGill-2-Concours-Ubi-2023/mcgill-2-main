@@ -6,7 +6,13 @@ using UnityEngine;
 public class RisingCubesController : MonoBehaviour
 {
     // Start is called before the first frame update
-    public CinemachineCameraShake cameraShake;
+    private CinemachineCameraShake cameraShake;
+    public GameObject gravityGrenadePickup;
+
+    private void Awake()
+    {
+        cameraShake = FindObjectOfType<FinalBossController>().cameraShake;
+    }
 
     public async void OnCubeDescendCameraShake()
     {
@@ -21,6 +27,22 @@ public class RisingCubesController : MonoBehaviour
         await Task.Delay(500);
         cameraShake.StopCameraShake();
     }
+
+    public void UpdateCubes()
+    {
+        var agents = GetComponentsInChildren<GravityAgent>();
+        foreach(var agent in agents)
+        {
+            agent.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+        }
+    }
+
+    public void SpawnGravityGrenades()
+    {
+
+    }
+
+
 
 
 }

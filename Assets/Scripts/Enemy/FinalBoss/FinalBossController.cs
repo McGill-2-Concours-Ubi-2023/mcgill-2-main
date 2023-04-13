@@ -49,6 +49,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     public GameObject bossHealthCanvas;
     public Image fillBar;
     public Animator protectWallAnimator;
+    public Animator risingCubesAnimator;
 
     private void Awake()
     {
@@ -88,6 +89,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     {
         if(health.currentHealth < 200 && !hasShieldedOnce)
         {
+            risingCubesAnimator.enabled = true;
             hasShieldedOnce = true;
             TeleportPlayer();
             StartCoroutine(Shield(15.0f));
