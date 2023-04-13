@@ -304,11 +304,14 @@ MonoBehaviour:
   gunMat: {fileID: 2100000, guid: 8c2af5a374c10204eb861378c2475c11, type: 2}
   invincibleMat: {fileID: 2100000, guid: 6ae9ca97de198a8498dc1d741dfb2a93, type: 2}
   desintegrateMat: {fileID: 2100000, guid: d5752366032ed434ea554d940125eb38, type: 2}
+  pickupDissolveMaterial: {fileID: 2100000, guid: 90fd773afc58ca349bf83c1ff5ec9b47,
+    type: 2}
   desintegrate: 0
   dashInvincibleCooldown: 1
   cs: {fileID: 0}
   dashSound: {fileID: 8300000, guid: 8a4ff076692a85d44a9b1c20f9f7b66e, type: 3}
-  dashSoundInvincible: {fileID: 8300000, guid: afc396f148bc71f45846c8a6ff9ad533, type: 3}
+  pickupAudio: {fileID: 8300000, guid: 5450eb2c4c3e87d4180d8334e7687442, type: 3}
+  scoringSystem: {fileID: 0}
 --- !u!54 &5632912686277809512
 Rigidbody:
   m_ObjectHideFlags: 0

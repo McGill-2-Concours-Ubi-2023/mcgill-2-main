@@ -58,12 +58,14 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     public Material invincibleMat;
     [SerializeField]
     private Material desintegrateMat;
+    public Material pickupDissolveMaterial;
     public bool desintegrate = false;
     private bool isDead;
     private bool isBossScene;
     [Range(0, 2.0f)]
     public float dashInvincibleCooldown = 1.0f;
     private bool canDash;
+
 
     private bool canTeleport;
     
@@ -76,7 +78,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     
     public ClickSound cs;
     public AudioClip dashSound;
-    public AudioClip dashSoundInvincible;
+    public AudioClip pickupAudio;
     private bool m_Awake = true;
     private Collider _collider;
     
@@ -578,9 +580,32 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         }
         if(other.gameObject.layer == LayerMask.NameToLayer("PickupGrenade"))
         {
-            SimpleCollectibleInventory.AddItem(SimpleCollectible.Grenade);
-            Destroy(other.gameObject);
+            cs.Click(pickupAudio);
+            try
+            {
+                SimpleCollectibleInventory.AddItem(SimpleCollectible.Grenade);
+                StartCoroutine(DissolvePickup(0.5f, other.GetComponent<Renderer>()));
+            }
+            catch
+            {
+                //ignore
+            }
         }
+    }
+
+    IEnumerator DissolvePickup(float dissolveTime, Renderer renderer)
+    {
+        renderer.material = pickupDissolveMaterial;
+        float elapsedTime = 0;
+        while (elapsedTime < dissolveTime)
+        {
+            float t = elapsedTime / dissolveTime;
+            float threshold = Mathf.Lerp(0, 1.5f, t);
+            renderer.material.SetFloat("_Dissolve_threshold", threshold);
+            elapsedTime += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        Destroy(renderer.gameObject);
     }
 
     private void OnTriggerExit(Collider other)
