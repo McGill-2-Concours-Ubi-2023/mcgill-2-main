@@ -34,20 +34,31 @@ public class RisingCubesController : MonoBehaviour
         var agents = GetComponentsInChildren<GravityAgent>();
         foreach(var agent in agents)
         {
-            agent.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+            Rigidbody rb = agent.GetComponent<Rigidbody>();
+            rb.constraints = RigidbodyConstraints.None;
+            rb.isKinematic = false;
+            rb.useGravity = true;
         }
     }
 
     public async void SpawnGravityGrenades()
     {
-        while (true)
+        /*while (true)
         {
             int randIndex = UnityEngine.Random.Range(0, spawnPoints.Count);
-            Vector3 spawnPosition = spawnPoints[randIndex].position;
-            GameObject pickup = Instantiate(gravityGrenadePickup);
-            pickup.transform.position = spawnPosition;
-            await Task.Delay(TimeSpan.FromSeconds(5));
-        }
+            try
+            {
+                Vector3 spawnPosition = spawnPoints[randIndex].position;
+                GameObject pickup = Instantiate(gravityGrenadePickup);
+                pickup.transform.position = spawnPosition;
+                await Task.Delay(TimeSpan.FromSeconds(5));
+            }
+            catch
+            {
+                Debug.Log("Transform already disposed!");
+            }
+           
+        }*/
     }
 
     

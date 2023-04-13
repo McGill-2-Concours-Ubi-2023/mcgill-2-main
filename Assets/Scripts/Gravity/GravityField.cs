@@ -59,11 +59,12 @@ public abstract class GravityField : MonoBehaviour
 
     public void UpdateCollisionMask()
     {
+        int cubesMask = 1 << LayerMask.NameToLayer("BossCubes");
         int playerLayer = 1 << GlobalAgent.playerMask;
         int playerBulletLayer = 1 << GlobalAgent.playerBulletMask;
         int enemyBulletLayer = 1 << GlobalAgent.enemyBulletMask;
         int destructibleLayer = 1 << Destructible.desctructibleMask;
-        collisionMask = playerLayer | playerBulletLayer | enemyBulletLayer | destructibleLayer;
+        collisionMask = playerLayer | playerBulletLayer | enemyBulletLayer | destructibleLayer | cubesMask;
     }
 
     public void SetMassCompressionForce(float compressionForce)
