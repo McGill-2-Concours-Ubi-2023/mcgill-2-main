@@ -49,6 +49,8 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     public GameObject bossHealthCanvas;
     public Image fillBar;
     public Animator protectWallAnimator;
+    public Animator risingCubesAnimator;
+    private Coroutine fightCoroutine;
 
     private void Awake()
     {
@@ -88,6 +90,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     {
         if(health.currentHealth < 200 && !hasShieldedOnce)
         {
+            risingCubesAnimator.enabled = true;
             hasShieldedOnce = true;
             TeleportPlayer();
             StartCoroutine(Shield(15.0f));
@@ -147,7 +150,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     {
         LazerSweepAttack(topRightCorner.position, topLeftCorner.position);
         StartCoroutine(Shield(20));
-        StartCoroutine(FightCoroutine());
+        fightCoroutine = StartCoroutine(FightCoroutine());
     }
 
     private Dictionary<System.Func<IEnumerator>, int> functionCallCounts = new Dictionary<System.Func<IEnumerator>, int>();
