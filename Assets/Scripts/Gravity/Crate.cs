@@ -10,6 +10,9 @@ public interface ICrateTriggers : ITrigger
 
 public class Crate : MonoBehaviour, ICrateTriggers
 {
+    [SerializeField]
+    public GameObject scoringSystem;
+
     private void OnDestroy()
     {
         try

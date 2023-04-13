@@ -82,6 +82,9 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     private volatile int m_LockCount;
     private readonly object m_Lock = new object();
 
+    [SerializeField]
+    public GameObject scoringSystem;
+
     private async void Awake()
     {
         canDash = true;
@@ -120,6 +123,8 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         }
         UpdateInventoryUI();
         m_Awake = false;
+
+        scoringSystem = GameObject.Find("ScoringSystem");
     }
 
     public void StartFight()
@@ -505,6 +510,8 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         SimpleCollectibleInventory.AddItem(SimpleCollectible.CratePoint);
         int crateNum = SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint);
         gcUI.UpdateCrateUI(crateNum, SimpleCollectibleInventory.GetMax(SimpleCollectible.CratePoint));
+
+        scoringSystem.Trigger<IScoringSystemTriggers>(nameof(IScoringSystemTriggers.OnCrateCollect));
     }
 
     public void OnSpawnCrate()
@@ -512,6 +519,8 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         gameObject.Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.OnSpawnCrateIntention));
         int crateNum = SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint);
         gcUI.UpdateCrateUI(crateNum, SimpleCollectibleInventory.GetMax(SimpleCollectible.CratePoint));
+
+        scoringSystem.Trigger<IScoringSystemTriggers>(nameof(IScoringSystemTriggers.OnCrateSpawn));
     }
 
     public void FreezeOnCurrentState()
