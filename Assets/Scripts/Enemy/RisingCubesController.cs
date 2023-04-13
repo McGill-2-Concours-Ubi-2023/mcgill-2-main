@@ -76,9 +76,10 @@ public class RisingCubesController : MonoBehaviour
         var agents = GetComponentsInChildren<GravityAgent>();
         foreach(var agent in agents)
         {
+            int randIndex = UnityEngine.Random.Range(0, 2);
             Rigidbody rb = agent.GetComponent<Rigidbody>();
-            rb.useGravity = false;
-            rb.velocity = Vector3.up;
+            if (randIndex == 0) rb.AddForce(new Vector3(1, 1, 0) * 10);
+            if (randIndex == 1) rb.AddForce(new Vector3(-1, -1, 0) * 10);
         }
     }
 
