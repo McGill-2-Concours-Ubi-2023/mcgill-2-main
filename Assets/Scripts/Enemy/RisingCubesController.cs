@@ -10,6 +10,7 @@ public class RisingCubesController : MonoBehaviour
     private CinemachineCameraShake cameraShake;
     public GameObject gravityGrenadePickup;
     public List<Transform> spawnPoints;
+    private bool cubesActive;
     private void Awake()
     {
         cameraShake = FindObjectOfType<FinalBossController>().cameraShake;
@@ -44,11 +45,13 @@ public class RisingCubesController : MonoBehaviour
     public void FreeCubes()
     {
         GetComponent<Animator>().enabled = false;
+        
     }
 
     public async void SpawnGravityGrenades()
     {
-        /*while (true)
+        cubesActive = true;
+        /*while (cubesActive)
         {
             int randIndex = UnityEngine.Random.Range(0, spawnPoints.Count);
             try
@@ -68,12 +71,14 @@ public class RisingCubesController : MonoBehaviour
 
     public void ReleaseCubes()
     {
+        cubesActive = false;
+        Debug.Log("RISING");
         var agents = GetComponentsInChildren<GravityAgent>();
         foreach(var agent in agents)
         {
             Rigidbody rb = agent.GetComponent<Rigidbody>();
             rb.useGravity = false;
-            rb.AddForce(Vector3.up, ForceMode.Impulse);
+            rb.velocity = Vector3.up;
         }
     }
 
