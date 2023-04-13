@@ -6,7 +6,7 @@ using LeastSquares;
 
 public class SteamManager : MonoBehaviour
 {
-
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
     [SerializeField] GameObject steamLeaderboard;
     [SerializeField] GameObject steamEngine;
 
@@ -21,6 +21,6 @@ public class SteamManager : MonoBehaviour
             
         }
     }
-
+#endif
     
 }

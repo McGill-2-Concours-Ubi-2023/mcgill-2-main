@@ -1,11 +1,13 @@
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
 using Steamworks.Data;
+#endif
 using UnityEngine;
 
 namespace LeastSquares
 {
     public static class SteamExtensions
     {
-        
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
         /// <summary>
         /// Converts a Steam image into a Unity compatible texture
         /// </summary>
@@ -27,5 +29,6 @@ namespace LeastSquares
             avatar.Apply();
             return avatar;
         }
+#endif
     }
 }
