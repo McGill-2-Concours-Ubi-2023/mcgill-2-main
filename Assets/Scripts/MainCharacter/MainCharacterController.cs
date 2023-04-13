@@ -78,12 +78,14 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     public AudioClip dashSound;
     public AudioClip dashSoundInvincible;
     private bool m_Awake = true;
+    private Collider _collider;
     
     private volatile int m_LockCount;
     private readonly object m_Lock = new object();
 
     private async void Awake()
     {
+        _collider = GetComponent<Collider>();
         canDash = true;
         gunRend.material = gunMat;
         bodyRend.material = defaultMat;
@@ -137,7 +139,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
             desintegrateEffect.SendEvent("OnDesintegrate");
             FreezeOnCurrentState();
             animator.enabled = false;
-            GetComponent<Collider>().enabled = false;
+            _collider.enabled = false;
             StartCoroutine(Desintegrate(3.0f, true));
             isDead = true;
         }
@@ -429,8 +431,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
             animator.SetTrigger("MovementToDash");
             StartCoroutine(Dash());
             vibration.SoftVibration();
-            if (isBossScene) 
-                StartCoroutine(OnDashInvincible());
+            StartCoroutine(OnDashInvincible());
         }      
     }
 
@@ -633,8 +634,11 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
             {
                 OnCameraStandardShake(1.0f, 0.3f, 1.0f);
                 health.TakeDamage(1);
+            } else
+            {
+                Physics.IgnoreCollision(_collider, collision.collider);
             }
-        }
+        } 
     }
 
     public async void OnCameraStandardShake(float intensity, float timer, float frequencyGain)

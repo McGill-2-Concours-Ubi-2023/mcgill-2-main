@@ -39,12 +39,19 @@ public class LazerBeamCollider : MonoBehaviour
         playerDamageCollider.enabled = true;
     }
 
-    private void OnTriggerEnter(Collider other)
+    private async void OnTriggerEnter(Collider other)
     {
         bool isMask = other.gameObject.layer == obstacleMask;
         if (!obstacles.Contains(other) && isMask)
         {
             obstacles.Add(other);
+        }
+        if (other.CompareTag("Player"))
+        {
+            Health health = other.GetComponent<Health>();
+            if (health.IsInvincible()) obstacles.Add(other);
+            await Task.Delay(200);
+            obstacles.Remove(other);
         }
     }
 

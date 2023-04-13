@@ -362,11 +362,11 @@ public class DungeonRoom : MonoBehaviour
                 enemy.gameObject.SetActive(true);
                 if (type == RoomTypes.RoomType.Boss)
                 {
-                    enemies.Remove(enemy);
                     Destroy(enemy.gameObject);
                 }
             }
         }
+        enemies.RemoveAll(enemy => enemy == null);
     }
 
     public async void Isolate()
