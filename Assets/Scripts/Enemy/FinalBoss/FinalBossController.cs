@@ -50,6 +50,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     public Image fillBar;
     public Animator protectWallAnimator;
     public Animator risingCubesAnimator;
+    private Coroutine fightCoroutine;
 
     private void Awake()
     {
@@ -149,7 +150,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     {
         LazerSweepAttack(topRightCorner.position, topLeftCorner.position);
         StartCoroutine(Shield(20));
-        StartCoroutine(FightCoroutine());
+        fightCoroutine = StartCoroutine(FightCoroutine());
     }
 
     private Dictionary<System.Func<IEnumerator>, int> functionCallCounts = new Dictionary<System.Func<IEnumerator>, int>();

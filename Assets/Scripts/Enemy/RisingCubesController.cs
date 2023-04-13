@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,7 +9,7 @@ public class RisingCubesController : MonoBehaviour
     // Start is called before the first frame update
     private CinemachineCameraShake cameraShake;
     public GameObject gravityGrenadePickup;
-
+    public List<Transform> spawnPoints;
     private void Awake()
     {
         cameraShake = FindObjectOfType<FinalBossController>().cameraShake;
@@ -37,10 +38,19 @@ public class RisingCubesController : MonoBehaviour
         }
     }
 
-    public void SpawnGravityGrenades()
+    public async void SpawnGravityGrenades()
     {
-
+        while (true)
+        {
+            int randIndex = UnityEngine.Random.Range(0, spawnPoints.Count);
+            Vector3 spawnPosition = spawnPoints[randIndex].position;
+            GameObject pickup = Instantiate(gravityGrenadePickup);
+            pickup.transform.position = spawnPosition;
+            await Task.Delay(TimeSpan.FromSeconds(5));
+        }
     }
+
+    
 
 
 
