@@ -41,6 +41,11 @@ public class RisingCubesController : MonoBehaviour
         }
     }
 
+    public void FreeCubes()
+    {
+        GetComponent<Animator>().enabled = false;
+    }
+
     public async void SpawnGravityGrenades()
     {
         /*while (true)
@@ -59,6 +64,17 @@ public class RisingCubesController : MonoBehaviour
             }
            
         }*/
+    }
+
+    public void ReleaseCubes()
+    {
+        var agents = GetComponentsInChildren<GravityAgent>();
+        foreach(var agent in agents)
+        {
+            Rigidbody rb = agent.GetComponent<Rigidbody>();
+            rb.useGravity = false;
+            rb.AddForce(Vector3.up, ForceMode.Impulse);
+        }
     }
 
     

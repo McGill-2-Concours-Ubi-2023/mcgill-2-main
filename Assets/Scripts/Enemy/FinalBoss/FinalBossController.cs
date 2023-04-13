@@ -101,6 +101,8 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
             TeleportPlayer();
             StartCoroutine(Shield(25.0f));
             protectWallAnimator.SetTrigger("Wall");
+            FindObjectOfType<RisingCubesController>().ReleaseCubes();
+            StopCoroutine(fightCoroutine);
             OnWallRiseShake();
         }
     } 
@@ -150,15 +152,15 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     {
         LazerSweepAttack(topRightCorner.position, topLeftCorner.position);
         StartCoroutine(Shield(20));
-        fightCoroutine = StartCoroutine(FightCoroutine());
+        fightCoroutine = StartCoroutine(FightCoroutine(true));
     }
 
     private Dictionary<System.Func<IEnumerator>, int> functionCallCounts = new Dictionary<System.Func<IEnumerator>, int>();
     private int totalFunctionCalls = 0;
     private bool shouldAttack = false;
-    IEnumerator FightCoroutine()
+    IEnumerator FightCoroutine(bool begining)
     {
-        yield return new WaitForSeconds(14.0f);
+        if(begining) yield return new WaitForSeconds(14.0f);
         bossHealthCanvas.SetActive(true);
 
         while (true)
