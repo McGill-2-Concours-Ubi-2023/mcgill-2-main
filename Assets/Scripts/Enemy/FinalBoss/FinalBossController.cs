@@ -93,19 +93,25 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
             risingCubesAnimator.enabled = true;
             hasShieldedOnce = true;
             TeleportPlayer();
-            StartCoroutine(Shield(15.0f));
+            StartCoroutine(Shield(15.0f, false));
         }
         if(health.currentHealth < 50 && !hasShieldedTwice)
         {
             hasShieldedTwice = true;
             TeleportPlayer();
-            StartCoroutine(Shield(25.0f));
+            StartCoroutine(Shield(25.0f, true));
+            PulveriseCubes();
             protectWallAnimator.SetTrigger("Wall");
-            FindObjectOfType<RisingCubesController>().ReleaseCubes();
             StopCoroutine(fightCoroutine);
             OnWallRiseShake();
         }
     } 
+
+    private async void PulveriseCubes()
+    {
+        await Task.Delay(2000);
+        FindObjectOfType<RisingCubesController>().ReleaseCubes();
+    }
 
     private async void OnWallRiseShake()
     {
@@ -151,7 +157,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     public void StartFight()
     {
         LazerSweepAttack(topRightCorner.position, topLeftCorner.position);
-        StartCoroutine(Shield(20));
+        StartCoroutine(Shield(20, false));
         fightCoroutine = StartCoroutine(FightCoroutine(true));
     }
 
@@ -292,7 +298,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         }
     }
 
-    IEnumerator Shield(float shieldTime)
+    IEnumerator Shield(float shieldTime, bool isSecondStage)
     {
         yield return new WaitForSeconds(3.0f);
         tentacleAnimator.SetTrigger("Shield");
@@ -301,6 +307,10 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
             yield return new WaitForSeconds(shieldTime);
         }
         tentacleAnimator.SetTrigger("StopShield");
+        if (isSecondStage)
+        {
+
+        }
     }
 
     private GameObject GetOneLazer(Vector3 position, float lazerChargeTime, float lazerbeamDuration, float YRotation)
