@@ -78,8 +78,8 @@ public class RisingCubesController : MonoBehaviour
         {
             int randIndex = UnityEngine.Random.Range(0, 2);
             Rigidbody rb = agent.GetComponent<Rigidbody>();
-            if (randIndex == 0) rb.AddForce(new Vector3(1, 1, 0) * 10);
-            if (randIndex == 1) rb.AddForce(new Vector3(-1, -1, 0) * 10);
+            if (randIndex == 0) rb.velocity = (new Vector3(1, 1, 0) * 100);
+            if (randIndex == 1) rb.velocity = (new Vector3(-1, -1, 0) * 100);
         }
     }
 
