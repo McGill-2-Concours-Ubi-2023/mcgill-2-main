@@ -6,9 +6,13 @@ using UnityEngine.SceneManagement;
 
 public interface IScoringSystemTriggers : ITrigger
 {
+    public void OnEnemyDeath() { }
+
     public void OnDamageTaken(float damage) { }
 
-    public void OnEnemyDeath() { }
+    public void OnCrateCollect() { }
+
+    public void OnCrateSpawn() { }
 }
 
 public class ScoringSystem : MonoBehaviour, IScoringSystemTriggers
@@ -26,30 +30,31 @@ public class ScoringSystem : MonoBehaviour, IScoringSystemTriggers
 
     private float scoreSpent;
 
-    // Returns the data value of a scoring field
-    public float GetScoringFieldData(string name)
+    public ScoringField GetScoringField(string name)
     {
-        return scoringFields[name].data;
+        return scoringFields[name];
     }
 
-    // Returns the weight of a scoring field
-    public float GetScoringFieldWeight(string name)
-    {
-        return scoringFields[name].weight;
-    }
-
-    // Sets the data and weight values of a scoring field
     public void SetScoringField(string name, float data, float weight)
     {
         scoringFields[name].data = data;
         scoringFields[name].weight = weight;
     }
 
+    public void UpdateScore()
+    {
+        currScore = ComputeScore();
+        if (scoreText)
+        {
+            scoreText.text = "SCORE\n" + currScore.ToString().PadLeft(6, '0');
+        }
+    }
+    
     // Computes the current score based on the data and weight values of the scoring fields
     public float ComputeScore()
-    { 
+    {
         float score = 0;
-        foreach (var field in this.scoringFields.Values)
+        foreach (var field in scoringFields.Values)
         {
             score += field.Value();
         }
@@ -61,14 +66,11 @@ public class ScoringSystem : MonoBehaviour, IScoringSystemTriggers
         else if (score > maxScore)
         {
             return maxScore;
-        } 
-        else 
-        {
-            return score;
         }
+        return score;
     }
 
-    // Attempts to make a purchase of the specified cost, returning true (and updating the score accordingly) if the purchase could be made and false otherwise
+    // Attempts to resolve a purchase of the specified cost, returning true (and updating the score accordingly) if the purchase could be completed and false otherwise
     public bool TryPurchase(float amount)
     {
         if (currScore < amount)
@@ -79,17 +81,6 @@ public class ScoringSystem : MonoBehaviour, IScoringSystemTriggers
         return true;
     }
 
-    public void UpdateMatchTime()
-    {
-        // TODO: Pending level system completion
-    }
-
-    public void UpdateLevelTime()
-    {
-        // TODO: Pending level system completion
-    }
-
-    // TODO: Implement enum parameter in enemy script and corresponding checks in this function to allow for enemy type discrimination in scoring
     public void OnEnemyDeath()
     {
         scoringFields["EnemiesKilled"].data += 1;
@@ -102,29 +93,31 @@ public class ScoringSystem : MonoBehaviour, IScoringSystemTriggers
         UpdateScore();
     }
 
+    public void OnCrateCollect()
+    {
+        scoringFields["CratesDestroyed"].data += 1;
+        UpdateScore();
+    }
+
+    public void OnCrateSpawn()
+    {
+        scoringFields["CratesSpawned"].data += 1;
+        UpdateScore();
+    }
+
     private void Start()
     {
         DontDestroyOnLoad(gameObject);
         scoreText = GameObject.Find("Points").GetComponent<TextMeshProUGUI>();
-        // Initializes dictionary with the given params
         scoringFields = new Dictionary<string, ScoringField>()
         {
-            { "MatchTime", new ScoringField(0, -1) },
-            { "LevelTime", new ScoringField(0, -1) },
-            { "DamageTaken", new ScoringField(0, -10) },
-            { "EnemiesKilled", new ScoringField(0, 100) },
+            { "ClearTime", new ScoringField(0, 0) }, // Should be negatively weighted for desired behavior, currently disabled so weight set to 0
+            { "EnemiesKilled", new ScoringField(0, 50) },
+            { "DamageTaken", new ScoringField(0, 0) }, // Should be negatively weighted for desired behavior, currently disabled so weight set to 0
+            { "CratesDestroyed", new ScoringField(0, 25) },
+            { "CratesSpawned", new ScoringField(0, 25) }
         };
-    }
 
-
-    // Recomputes the score whenever a field is updated and updates the TextMeshProGUI element displaying the score
-    public void UpdateScore()
-    {
-        currScore = ComputeScore();
-        if (scoreText)
-        {
-            scoreText.text = "SCORE\n" + currScore.ToString().PadLeft(6, '0');
-        }
     }
 
     void OnEnable()
