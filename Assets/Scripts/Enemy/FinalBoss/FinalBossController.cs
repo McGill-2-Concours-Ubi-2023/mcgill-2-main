@@ -311,18 +311,18 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     IEnumerator Shield(float shieldTime, bool isLastStage)
     {
         this.isLastStage = isLastStage;
+        if (isLastStage)
+        {
+            StopCoroutine(fightCoroutine);
+            StartCoroutine(LastStageFight());
+        }       
         yield return new WaitForSeconds(3.0f);
         tentacleAnimator.SetTrigger("Shield");
         {
             using HLockGuard guard = health.Lock();
             yield return new WaitForSeconds(shieldTime);
         }
-        tentacleAnimator.SetTrigger("StopShield");
-        if (isLastStage)
-        {
-            StopCoroutine(fightCoroutine);
-            StartCoroutine(LastStageFight());   
-        }
+        tentacleAnimator.SetTrigger("StopShield");      
     }
 
     private GameObject GetOneLazer(Vector3 position, float lazerChargeTime, float lazerbeamDuration, float YRotation)
