@@ -51,6 +51,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
     public Animator protectWallAnimator;
     public Animator risingCubesAnimator;
     private Coroutine fightCoroutine;
+    private bool isLastStage;
 
     private void Awake()
     {
@@ -102,14 +103,13 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
             StartCoroutine(Shield(25.0f, true));
             PulveriseCubes();
             protectWallAnimator.SetTrigger("Wall");
-            StopCoroutine(fightCoroutine);
             OnWallRiseShake();
         }
     } 
 
     private async void PulveriseCubes()
     {
-        await Task.Delay(2000);
+        await Task.Delay(3000);
         FindObjectOfType<RisingCubesController>().ReleaseCubes();
     }
 
@@ -154,6 +154,16 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         cameraShake.StopCameraShake();
     }
 
+    IEnumerator LastStageFight()
+    {
+        while (true)
+        {          
+            StartCoroutine(WaveLasers());
+            int randomWaitingTime = UnityEngine.Random.Range(10, 15);
+            yield return new WaitForSeconds(randomWaitingTime);
+        }
+    }
+
     public void StartFight()
     {
         LazerSweepAttack(topRightCorner.position, topLeftCorner.position);
@@ -169,7 +179,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         if(begining) yield return new WaitForSeconds(14.0f);
         bossHealthCanvas.SetActive(true);
 
-        while (true)
+        while (!isLastStage)
         {
             // Create a list of function indices
             List<int> functionIndices = new List<int>();
@@ -294,12 +304,13 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
                     functionCallCounts[calledFunction]++;
                 }
             }
-            yield return new WaitForSeconds(Random.Range(3 + attackFrequency, 6 + attackFrequency));
+            yield return new WaitForSeconds(Random.Range(6 + attackFrequency, 8 + attackFrequency));
         }
     }
 
-    IEnumerator Shield(float shieldTime, bool isSecondStage)
+    IEnumerator Shield(float shieldTime, bool isLastStage)
     {
+        this.isLastStage = isLastStage;
         yield return new WaitForSeconds(3.0f);
         tentacleAnimator.SetTrigger("Shield");
         {
@@ -307,9 +318,10 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
             yield return new WaitForSeconds(shieldTime);
         }
         tentacleAnimator.SetTrigger("StopShield");
-        if (isSecondStage)
+        if (isLastStage)
         {
-
+            StopCoroutine(fightCoroutine);
+            StartCoroutine(LastStageFight());   
         }
     }
 

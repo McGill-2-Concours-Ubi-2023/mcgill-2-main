@@ -7,17 +7,22 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: PlayerTeleportMat
-  m_Shader: {fileID: -6465566751694194690, guid: 298245ab906e6f5488db4254a4ff318c,
+  m_Name: PickupDissolve
+  m_Shader: {fileID: -6465566751694194690, guid: 54c62c0fdb633c748bc8230f24c09690,
     type: 3}
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _RECEIVE_SHADOWS_OFF
+  - _SURFACE_TYPE_TRANSPARENT
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
+  stringTagMap:
+    RenderType: Transparent
+  disabledShaderPasses:
+  - SHADOWCASTER
+  - DepthOnly
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -83,17 +88,18 @@ Material:
     - Vector1_17c541835ddb4b679c09fc9eaef44a59: 31
     - Vector1_b1a72c4adaa5466e8361356a01b59685: 0
     - Vector1_eddb10148baf428da2168ae557de7ce7: 0.0235
+    - _Alpha: 0.25
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
-    - _CastShadows: 1
+    - _CastShadows: 0
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 0
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
-    - _Dissolve_threshold: 0.0038401186
+    - _Dissolve_threshold: 0
     - _DstBlend: 10
     - _EnvironmentReflections: 1
     - _Erosion_power: 2
@@ -102,13 +108,13 @@ Material:
     - _GlossyReflections: 0
     - _ISHOLLOGRAM: 0
     - _Metallic: 0
-    - _Noise_Scale: 40
+    - _Noise_Scale: 30
     - _OcclusionStrength: 1
     - _Outline_width: 0.015
     - _Parallax: 0.005
     - _QueueControl: 1
     - _QueueOffset: 0
-    - _ReceiveShadows: 1
+    - _ReceiveShadows: 0
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -116,17 +122,17 @@ Material:
     - _Surface: 1
     - _WorkflowMode: 1
     - _ZTest: 4
-    - _ZWrite: 1
-    - _ZWriteControl: 1
+    - _ZWrite: 0
+    - _ZWriteControl: 0
     m_Colors:
     - Color_9dca30c8daf14c8eb78b33db99ea5ec6: {r: 0.5946853, g: 0.17680134, b: 0,
         a: 1}
     - Vector3_5d75f9cb519745828ee3d4521a72fc81: {r: 1, g: 1, b: 1, a: 0}
-    - _BaseColor: {r: 0, g: 2.4293191, b: 7.999999, a: 1}
+    - _BaseColor: {r: 0.1378884, g: 0.4160023, b: 0.4463845, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Erosion_direction_local: {r: 0, g: 1, b: 0, a: 0}
-    - _OutlineColor: {r: 0, g: 54.432213, b: 36.76312, a: 0}
+    - _OutlineColor: {r: 0, g: 3.4153552, b: 0.7121273, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &7268370229459851393

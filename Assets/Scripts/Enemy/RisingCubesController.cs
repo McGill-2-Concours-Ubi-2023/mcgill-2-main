@@ -51,35 +51,25 @@ public class RisingCubesController : MonoBehaviour
     public async void SpawnGravityGrenades()
     {
         cubesActive = true;
-        /*while (cubesActive)
+        while (cubesActive)
         {
             int randIndex = UnityEngine.Random.Range(0, spawnPoints.Count);
-            try
-            {
-                Vector3 spawnPosition = spawnPoints[randIndex].position;
-                GameObject pickup = Instantiate(gravityGrenadePickup);
-                pickup.transform.position = spawnPosition;
-                await Task.Delay(TimeSpan.FromSeconds(5));
-            }
-            catch
-            {
-                Debug.Log("Transform already disposed!");
-            }
-           
-        }*/
+            Vector3 spawnPosition = spawnPoints[randIndex].position;
+            GameObject pickup = Instantiate(gravityGrenadePickup);
+            pickup.transform.position = spawnPosition;
+            await Task.Delay(TimeSpan.FromSeconds(5));                     
+        }
     }
 
     public void ReleaseCubes()
     {
         cubesActive = false;
-        Debug.Log("RISING");
         var agents = GetComponentsInChildren<GravityAgent>();
         foreach(var agent in agents)
         {
-            int randIndex = UnityEngine.Random.Range(0, 2);
             Rigidbody rb = agent.GetComponent<Rigidbody>();
-            if (randIndex == 0) rb.velocity = (new Vector3(1, 1, 0) * 100);
-            if (randIndex == 1) rb.velocity = (new Vector3(-1, -1, 0) * 100);
+            //rb.useGravity = false;
+            rb.GetComponent<Collider>().enabled = false;
         }
     }
 
