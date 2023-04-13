@@ -16,20 +16,23 @@ public abstract class DungeonLight : MonoBehaviour
 
     public void UpdateLight(Vector3 position)
     {
-        TryGetComponent(out _light);
-        if (_light)
+        if (isActiveAndEnabled)
         {
-            float distance = (transform.position - position).magnitude;
-            Debug.Log(distance);
-            if (distance > maxRenderDistance)
+            TryGetComponent(out _light);
+            if (_light)
             {
-                _light.enabled = false;
+                float distance = (transform.position - position).magnitude;
+                Debug.Log(distance);
+                if (distance > maxRenderDistance)
+                {
+                    _light.enabled = false;
+                }
+                else
+                {
+                    _light.enabled = true;
+                }
             }
-            else
-            {
-                _light.enabled = true;
-            }
-        }     
+        }          
     }
 
     public abstract void Flicker();

@@ -10,6 +10,7 @@ public class RisingCubesController : MonoBehaviour
     private CinemachineCameraShake cameraShake;
     public GameObject gravityGrenadePickup;
     public List<Transform> spawnPoints;
+    private bool cubesActive;
     private void Awake()
     {
         cameraShake = FindObjectOfType<FinalBossController>().cameraShake;
@@ -34,19 +35,51 @@ public class RisingCubesController : MonoBehaviour
         var agents = GetComponentsInChildren<GravityAgent>();
         foreach(var agent in agents)
         {
-            agent.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+            Rigidbody rb = agent.GetComponent<Rigidbody>();
+            rb.constraints = RigidbodyConstraints.None;
+            rb.isKinematic = false;
+            rb.useGravity = true;
         }
+    }
+
+    public void FreeCubes()
+    {
+        GetComponent<Animator>().enabled = false;
+        
     }
 
     public async void SpawnGravityGrenades()
     {
-        while (true)
+        cubesActive = true;
+        /*while (cubesActive)
         {
             int randIndex = UnityEngine.Random.Range(0, spawnPoints.Count);
-            Vector3 spawnPosition = spawnPoints[randIndex].position;
-            GameObject pickup = Instantiate(gravityGrenadePickup);
-            pickup.transform.position = spawnPosition;
-            await Task.Delay(TimeSpan.FromSeconds(5));
+            try
+            {
+                Vector3 spawnPosition = spawnPoints[randIndex].position;
+                GameObject pickup = Instantiate(gravityGrenadePickup);
+                pickup.transform.position = spawnPosition;
+                await Task.Delay(TimeSpan.FromSeconds(5));
+            }
+            catch
+            {
+                Debug.Log("Transform already disposed!");
+            }
+           
+        }*/
+    }
+
+    public void ReleaseCubes()
+    {
+        cubesActive = false;
+        Debug.Log("RISING");
+        var agents = GetComponentsInChildren<GravityAgent>();
+        foreach(var agent in agents)
+        {
+            int randIndex = UnityEngine.Random.Range(0, 2);
+            Rigidbody rb = agent.GetComponent<Rigidbody>();
+            if (randIndex == 0) rb.velocity = (new Vector3(1, 1, 0) * 100);
+            if (randIndex == 1) rb.velocity = (new Vector3(-1, -1, 0) * 100);
         }
     }
 
