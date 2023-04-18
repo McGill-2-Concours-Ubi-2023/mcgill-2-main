@@ -15,7 +15,7 @@ public class OccludableWall : MonoBehaviour
 
     public void Hide()
     {
-        Debug.Log("HIDE");
+        //Debug.Log("HIDE");
         if (animator != null)
         {
             animator.SetBool("Hide", true);
@@ -25,7 +25,7 @@ public class OccludableWall : MonoBehaviour
 
     public void Occlude()
     {
-        Debug.Log("SHOW");
+        //Debug.Log("SHOW");
         if (animator != null) 
         {
             animator.SetBool("Hide", false);

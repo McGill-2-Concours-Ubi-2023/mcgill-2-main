@@ -9,6 +9,7 @@ using UnityEngine.UI;
 using UnityEngine.VFX;
 using Random = UnityEngine.Random;
 
+
 public interface IBossFightTriggers : ITrigger
 {
     void StartBossFight() { }
@@ -357,7 +358,7 @@ public class FinalBossController : MonoBehaviour, IBossTriggers, IHealthObserver
         yield return new WaitForSeconds(lazerbeamDuration);
         lazer1.SendEvent("OnLazerStop");
         lazer2.SendEvent("OnLazerStop");
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(1.2f);
         HandleCollider(lazer1);
         HandleCollider(lazer2);
         yield return new WaitForSeconds(1.0f);

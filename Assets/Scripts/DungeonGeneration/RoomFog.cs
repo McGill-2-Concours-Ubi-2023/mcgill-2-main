@@ -22,7 +22,6 @@ public class RoomFog : MonoBehaviour
 
     public void DissipateAmbientFog()
     {
-        if(isActiveAndEnabled)
         StartCoroutine(DissipateFog(0.3f));
     }
 

@@ -103,7 +103,7 @@ public class DungeonRoom : MonoBehaviour
                 int shortesPathLength = DungeonRoom.ShortestPath(activeRoom, choosenRoom);
                 if ( shortesPathLength > 2 && shortesPathLength < 5 && choosenRoom.GetRoomType() != RoomTypes.RoomType.Special)
                 {
-                    Debug.Log("Shortest path to portal: " + shortesPathLength);
+                    //Debug.Log("Shortest path to portal: " + shortesPathLength);
                     DungeonDrawer.ReplaceRoom(choosenRoom, dungeonGenerator.data,
                     dungeonGenerator.data.GetPortalPrefab(), RoomTypes.RoomType.Boss, false);
                     isPlaced = true;
@@ -120,11 +120,16 @@ public class DungeonRoom : MonoBehaviour
         {
             cachedLights = new List<DungeonLight>();
             doors.ForEach(door => cachedLights.AddRange(door.GetLights()));
-            walls.GetComponent<DungeonWallAggregate>().neons
-                .ToList()
-                .ForEach(neon => cachedLights.Add(neon));          
+            List<DungeonLight> neons = walls.GetComponents<DungeonLight>().ToList();
+            foreach(DungeonLight neon in neons)
+            {
+                if (neon != null) cachedLights.Add(neon);
+            }        
         }
-        cachedLights.ForEach(light => light.UpdateLight(position));
+        foreach(DungeonLight light in cachedLights)
+        {
+            if (light != null) light.UpdateLight(position);
+        }
     }
 
     private void RetrieveDoors()
@@ -179,7 +184,7 @@ public class DungeonRoom : MonoBehaviour
 
     public async Task TryUpdateFog()
     {
-        while(fog == null)
+        if(fog == null)
         {
            fog = transform.Find(DungeonDrawer.persistentFogPath)
                 .GetComponent<RoomFog>();
@@ -188,13 +193,9 @@ public class DungeonRoom : MonoBehaviour
         DissipateFog();
     }
 
-    private async void DissipateFog()
+    private void DissipateFog()
     {
-        while (!fog.isDissipated)
-        {
-            fog.DissipateAmbientFog();
-            await Task.Delay(500);
-        }
+        fog.DissipateAmbientFog();
     }
 
     public async Task UpdateRoomsLayout()

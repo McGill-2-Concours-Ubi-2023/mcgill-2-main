@@ -114,7 +114,7 @@ public class Gun : MonoBehaviour, IGunTriggers
             }
         }
             
-        Debug.Log($"Closest enemy count: {enemies.Count}");
+        //Debug.Log($"Closest enemy count: {enemies.Count}");
 
         return closestEnemy;
     }
