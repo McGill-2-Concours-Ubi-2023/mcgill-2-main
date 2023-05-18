@@ -664,14 +664,14 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            if (!health.IsInvincible())
+            if (!health.IsInvincible() && collision.gameObject.GetComponentInParent<EnemyAI>().move != EnemyAI.moveType.ASLEEP)
             {
                 OnCameraStandardShake(1.0f, 0.3f, 1.0f);
                 health.TakeDamage(1);
-            } else
-            {
-                Physics.IgnoreCollision(_collider, collision.collider);
-            }
+            } //else
+            //{
+            //    Physics.IgnoreCollision(_collider, collision.collider);
+            //}
         } 
     }
 
