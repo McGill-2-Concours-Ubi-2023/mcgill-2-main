@@ -114,7 +114,7 @@ public class ScoringSystem : MonoBehaviour, IScoringSystemTriggers
             { "ClearTime", new ScoringField(0, 0) }, // Should be negatively weighted for desired behavior, currently disabled so weight set to 0
             { "EnemiesKilled", new ScoringField(0, 100) },
             { "DamageTaken", new ScoringField(0, 0) }, // Should be negatively weighted for desired behavior, currently disabled so weight set to 0
-            { "CratesDestroyed", new ScoringField(0, 25) },
+            { "CratesDestroyed", new ScoringField(0, 0) },
             { "CratesSpawned", new ScoringField(0, 0) }
         };
 
