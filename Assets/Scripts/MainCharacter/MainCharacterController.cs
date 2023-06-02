@@ -65,6 +65,11 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     [Range(0, 2.0f)]
     public float dashInvincibleCooldown = 1.0f;
     private bool canDash;
+    private PlayerInput playerInput;
+    private Camera mainCamera;
+    [SerializeField][Range(0.01f, 1f)]
+    private float sensitivity = 1.0f;
+    private Vector2 mouseStartPosition;
 
 
     private bool canTeleport;
@@ -90,6 +95,9 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
 
     private async void Awake()
     {
+        mouseStartPosition = Mouse.current.position.ReadValue();
+        mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+        playerInput = GetComponent<PlayerInput>();
         _collider = GetComponent<Collider>();
         canDash = true;
         gunRend.material = gunMat;
@@ -238,6 +246,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         gcUI.UpdateCrateUI(SimpleCollectibleInventory.GetCount(SimpleCollectible.CratePoint), SimpleCollectibleInventory.GetMax(SimpleCollectible.CratePoint));
         UpdateInventoryUI();
         if (startFight) StartFight();
+        string currentScheme = playerInput.currentControlScheme;
         float2 input = m_InputActionAsset["Movement"].ReadValue<Vector2>();
         gameObject.Trigger<IMainCharacterTriggers, float2>(nameof(IMainCharacterTriggers.OnInput), input);
         float3 adjustedInput;
@@ -256,7 +265,6 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         if (inputState) animator.SetBool("IsFloating", false);
 
         CinemachineVirtualCameraBase cam = GetActiveCamera();
-
         float3 cameraForward = Vector3.ProjectOnPlane(cam.transform.forward, Vector3.up);
         float3 cameraRight = cam.transform.right;
         float3 adjustedDirection = adjustedInput.x * cameraRight + adjustedInput.z * cameraForward;
@@ -264,17 +272,28 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         gameObject.Trigger<IMainCharacterTriggers, float3>(nameof(IMainCharacterTriggers.OnMovementIntention), adjustedDirection);
 
         float2 rightStick = m_InputActionAsset["CameraMove"].ReadValue<Vector2>();
-        #if DEBUG
+        float3 playerScreenPos = mainCamera.WorldToScreenPoint(transform.position);
+        float2 mouseDelta = (float2(Mouse.current.position.ReadValue()) - playerScreenPos.xy) * sensitivity;
+#if DEBUG
         gameObject.Trigger<IMainCharacterTriggers, float2>(nameof(IMainCharacterTriggers.OnDebugCameraRotation), rightStick);
-        #endif
-
-        float3 adjustedFaceInput = new float3
+#endif
+        float3 adjustedFaceInput;
+        if (currentScheme.Equals("Keyboard&Mouse"))
         {
-            xz = rightStick.xy
-        };
-        float3 adjustedFaceDirection = adjustedFaceInput.x * cameraRight + adjustedFaceInput.z * cameraForward;
-        gameObject.Trigger<IMainCharacterTriggers, float3>(nameof(IMainCharacterTriggers.OnPlayerFaceIntention), adjustedFaceDirection);
-
+            Vector3 direction = new Vector3(mouseDelta.x, 0f, mouseDelta.y);
+            Quaternion rotation = Quaternion.LookRotation(direction, Vector3.up);
+            transform.rotation = rotation;
+        }
+        else
+        {
+            adjustedFaceInput = new float3
+            {
+                xz = rightStick.xy
+            };
+            float3 adjustedFaceDirection = adjustedFaceInput.x * cameraRight + adjustedFaceInput.z * cameraForward;
+            gameObject.Trigger<IMainCharacterTriggers, float3>(nameof(IMainCharacterTriggers.OnPlayerFaceIntention), adjustedFaceDirection);
+        } 
+        
         m_MovementDirection = normalize(all(adjustedInput.xz == float2.zero) ? transform.forward : adjustedDirection);
         Debug.DrawRay(transform.position + Vector3.up * 3, m_MovementDirection, Color.magenta);
         Debug.DrawRay(transform.position + Vector3.up, m_MovementDirection, Color.green);
@@ -530,9 +549,9 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     {
         //Freeze player
         rb.constraints = RigidbodyConstraints.FreezeAll;
-        PlayerInput input = GetComponent<PlayerInput>();
-        input.CancelInvoke();
-        input.DeactivateInput();
+        if(playerInput == null) playerInput = GetComponent<PlayerInput>();
+        playerInput.CancelInvoke();
+        playerInput.DeactivateInput();
     }
 
     public void UnFreeze()
