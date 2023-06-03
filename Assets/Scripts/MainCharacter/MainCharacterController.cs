@@ -280,12 +280,14 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         float3 adjustedFaceInput;
         if (currentScheme.Equals("Keyboard&Mouse"))
         {
+            Cursor.visible = true;
             Vector3 direction = new Vector3(mouseDelta.x, 0f, mouseDelta.y);
             Quaternion rotation = Quaternion.LookRotation(direction, Vector3.up);
             transform.rotation = rotation;
         }
         else
         {
+            Cursor.visible = false;
             adjustedFaceInput = new float3
             {
                 xz = rightStick.xy
