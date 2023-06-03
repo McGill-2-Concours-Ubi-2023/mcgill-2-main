@@ -1,5 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.VFX;
 
@@ -13,6 +13,8 @@ public class Bullet : MonoBehaviour
     int gravityLayer;
     [SerializeField]
     public VisualEffect shieldImpactVFX;
+    [SerializeField]
+    public VisualEffect baseImpactVFX;
 
 
     private void Update()
@@ -38,7 +40,7 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(gameObject.CompareTag("EnemyBullet"))
+        if (gameObject.CompareTag("EnemyBullet"))
         {
             if (other.gameObject.CompareTag("Player"))
             {
@@ -69,11 +71,12 @@ public class Bullet : MonoBehaviour
             StartCoroutine(OnShieldImpact(shieldVFX));
         }
 
-        if (!(other.gameObject.CompareTag("EnemyBullet") 
-            && other.gameObject.CompareTag("PlayerBullet"))
-            && other.gameObject.layer != gravityLayer) {
+        if (other.gameObject.layer != gravityLayer) {
+            VisualEffect impactVFX = Instantiate(baseImpactVFX);
+            impactVFX.transform.position = transform.position;
+            impactVFX.transform.Translate(-transform.forward * 0.5f);
             Destroy(gameObject);
-        }       
+        }
     }
 
     IEnumerator OnShieldImpact(VisualEffect vfx)

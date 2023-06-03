@@ -158,7 +158,7 @@ public class DungeonDoor : MonoBehaviour
         sharedRoom2 = room2;
     }
 
-    public async void GoThorouthDoor() {
+    public  void GoThorouthDoor() {
         if(map == null) GameObject.Find("LayoutMap").TryGetComponent(out map);
         DungeonRoom currentRoom = DungeonRoom.activeRoom;
         Vector2Int position = currentRoom.GridPosition();
@@ -168,21 +168,11 @@ public class DungeonDoor : MonoBehaviour
         if (sharedRoom1 == currentRoom)
         {
             Vector2Int pos = sharedRoom2.GridPosition();
-            /*bool condition = sharedRoom1.GetRoomType() != RoomTypes.RoomType.Special 
-                && sharedRoom1.GetRoomType() != RoomTypes.RoomType.Boss
-                && sharedRoom1.GetRoomType() != RoomTypes.RoomType.Start;
-            if (condition)sharedRoom1.Isolate();*/
-            await sharedRoom1.TryUpdateFog();
             sharedRoom2.DeactivateEnemies();
             map.LeaveRoom(pos.x * gridSize + pos.y);
         }
         else {
             Vector2Int pos = sharedRoom1.GridPosition();
-            /*bool condition = sharedRoom2.GetRoomType() != RoomTypes.RoomType.Special
-                && sharedRoom2.GetRoomType() != RoomTypes.RoomType.Boss
-                && sharedRoom2.GetRoomType() != RoomTypes.RoomType.Start;
-            if(condition)sharedRoom2.Isolate();*/
-            await sharedRoom2.TryUpdateFog();
             sharedRoom1.DeactivateEnemies();
             map.LeaveRoom(pos.x * gridSize + pos.y);
         }

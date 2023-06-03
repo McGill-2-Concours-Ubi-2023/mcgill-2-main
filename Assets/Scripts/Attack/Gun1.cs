@@ -17,10 +17,12 @@ public class Gun1 : MonoBehaviour
     private float nextshot=0;
     [SerializeField] ClickSound cs;
     [SerializeField] bool dontFire;
+    public static int ghostBulletLayer;
 
 
     private void Start()
     {
+        ghostBulletLayer = LayerMask.NameToLayer("GhostBullet");
         if(cs==null)
         cs= GetComponent<ClickSound>();
     }

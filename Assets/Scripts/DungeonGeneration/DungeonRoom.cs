@@ -182,25 +182,21 @@ public class DungeonRoom : MonoBehaviour
         portalVFX.SendEvent("OnPortalAppear");
     }
 
-    public async Task TryUpdateFog()
+    public void DissipateFog()
     {
-        if(fog == null)
+        if (fog == null)
         {
-           fog = transform.Find(DungeonDrawer.persistentFogPath)
-                .GetComponent<RoomFog>();
-            await Task.Yield();
+            fog = transform.Find(DungeonDrawer.persistentFogPath)
+                 .GetComponent<RoomFog>();
         }
-        DissipateFog();
-    }
-
-    private void DissipateFog()
-    {
-        fog.DissipateAmbientFog();
+        if (!fog.isDissipated)
+        {
+            fog.DissipateAmbientFog();
+        }
     }
 
     public async Task UpdateRoomsLayout()
     {
-        if (type == RoomTypes.RoomType.Start) await TryUpdateFog();
         adjacentRooms.ForEach(room => room.SpawnEnemies());
         if (type == RoomTypes.RoomType.Boss)
         {
@@ -230,6 +226,7 @@ public class DungeonRoom : MonoBehaviour
         {
             Isolate();
         }
+        DissipateFog();
     }
 
     IEnumerator CheckForEnemies()
@@ -378,7 +375,6 @@ public class DungeonRoom : MonoBehaviour
             {
                 DungeonRoom.lastEnteredDoor.CloseDoor();
                 enemies.ForEach(enemy => enemy.UnFreeze());
-                await TryUpdateFog();
                 StartCoroutine(CheckForEnemies());
                 foreach (DungeonDoor door in doors)
                 {

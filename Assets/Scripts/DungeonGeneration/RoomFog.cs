@@ -22,7 +22,14 @@ public class RoomFog : MonoBehaviour
 
     public void DissipateAmbientFog()
     {
-        StartCoroutine(DissipateFog(0.3f));
+        try
+        {
+            StartCoroutine(DissipateFog(0.3f));
+        }
+        catch
+        {
+            //ignore
+        }
     }
 
     IEnumerator DissipateFog(float timer)

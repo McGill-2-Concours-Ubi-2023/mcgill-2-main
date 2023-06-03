@@ -103,6 +103,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   damage: 1
+  shieldImpactVFX: {fileID: 0}
+  baseImpactVFX: {fileID: 2984154407359496305, guid: 8b4e0121e16313645bf6bdf5dbc1d12b,
+    type: 3}
 --- !u!135 &3231657277267066155
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -266,4 +269,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentField: {fileID: 0}
-  isBound: 0
+  readyToDestroy: 0

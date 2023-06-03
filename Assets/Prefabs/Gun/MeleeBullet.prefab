@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 8144264148901805161}
   - component: {fileID: 3920019637681594626}
   - component: {fileID: 4908351726762525714}
-  m_Layer: 15
+  m_Layer: 28
   m_Name: MeleeBullet
   m_TagString: EnemyBullet
   m_Icon: {fileID: 0}
@@ -32,7 +32,7 @@ Transform:
   m_GameObject: {fileID: 3231657277267066154}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.5408708, z: -2.0299845}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -66,7 +66,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d76591b5178e5264d85c11d745b4a5c8, type: 2}
+  - {fileID: 2100000, guid: 634f69098a2895e4f92aa057d937bc39, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -100,8 +100,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 497051ba689f55e42ba8425c8871fac8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 20
+  speed: 10
   damage: 1
+  shieldImpactVFX: {fileID: 0}
+  baseImpactVFX: {fileID: 2984154407359496305, guid: f2bc1877b8844fd4db90d4e8b6d14088,
+    type: 3}
 --- !u!135 &3231657277267066155
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -157,4 +160,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentField: {fileID: 0}
-  isBound: 0
+  readyToDestroy: 0

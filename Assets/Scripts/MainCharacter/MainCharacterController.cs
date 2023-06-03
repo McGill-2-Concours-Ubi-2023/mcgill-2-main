@@ -70,6 +70,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     [SerializeField][Range(0.01f, 1f)]
     private float sensitivity = 1.0f;
     private Vector2 mouseStartPosition;
+    private List<Collider> obstacles;
 
 
     private bool canTeleport;
@@ -95,6 +96,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
 
     private async void Awake()
     {
+        if (obstacles == null) obstacles = new List<Collider>();
         mouseStartPosition = Mouse.current.position.ReadValue();
         mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
         playerInput = GetComponent<PlayerInput>();
@@ -472,6 +474,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     {
         isDashing = true;
         canDash = false;
+        Physics.IgnoreLayerCollision(Destructible.desctructibleMask, LayerMask.NameToLayer("Player"), true);
         float3 dashDirection = m_MovementDirection;
         float timer = 0f;
         while (timer < dashDuration)
@@ -483,6 +486,8 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         rb.velocity = rb.velocity / 5;
         isDashing = false;
         canDash = true;
+        Physics.IgnoreLayerCollision(Destructible.desctructibleMask, LayerMask.NameToLayer("Player"), false);
+
     }
 
     public CinemachineVirtualCameraBase GetActiveCamera()
@@ -689,11 +694,8 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
             {
                 OnCameraStandardShake(1.0f, 0.3f, 1.0f);
                 health.TakeDamage(1);
-            } //else
-            //{
-            //    Physics.IgnoreCollision(_collider, collision.collider);
-            //}
-        } 
+            }
+        }
     }
 
     public async void OnCameraStandardShake(float intensity, float timer, float frequencyGain)
