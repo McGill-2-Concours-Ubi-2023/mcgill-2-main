@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6094198297801617351}
   - component: {fileID: 6094198297801617346}
   - component: {fileID: 6094198297801617347}
+  - component: {fileID: 7661825261824177105}
   m_Layer: 0
   m_Name: Electricity
   m_TagString: Untagged
@@ -161,3 +162,16 @@ MonoBehaviour:
   m_Property:
     m_Name: Transform
   Target: {fileID: 6094198297801617349}
+--- !u!114 &7661825261824177105
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6094198297801617350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20c7749ad64974944a27d0a109dbd020, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lifeTime: 10

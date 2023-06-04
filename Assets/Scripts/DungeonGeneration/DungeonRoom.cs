@@ -12,6 +12,7 @@ using UnityEngine.VFX;
 [System.Serializable]
 public class DungeonRoom : MonoBehaviour
 {
+    private bool fogDissipated = false;
     public static DungeonGenerator dungeonGenerator;
     [SerializeField]
     private List<DungeonRoom> adjacentRooms = new List<DungeonRoom>();
@@ -134,7 +135,10 @@ public class DungeonRoom : MonoBehaviour
 
     private void RetrieveDoors()
     {
-        doors.ForEach(door => door.transform.parent = transform.Find("RoomRoot"));
+        doors.ForEach(door => 
+        {
+            if (door != null) door.transform.parent = transform.Find("RoomRoot");
+        });
     }
 
     public static DungeonRoom GetActiveRoom()
@@ -184,14 +188,15 @@ public class DungeonRoom : MonoBehaviour
 
     public void DissipateFog()
     {
-        if (fog == null)
+        if (!fogDissipated)
         {
-            fog = transform.Find(DungeonDrawer.persistentFogPath)
-                 .GetComponent<RoomFog>();
-        }
-        if (!fog.isDissipated)
-        {
+            if (fog == null)
+            {
+                fog = transform.Find(DungeonDrawer.persistentFogPath)
+                     .GetComponent<RoomFog>();
+            }
             fog.DissipateAmbientFog();
+            fogDissipated = true;
         }
     }
 
@@ -425,7 +430,7 @@ public class DungeonRoom : MonoBehaviour
     {
         foreach (var door in doors)
         {
-            door.transform.parent = transform; //move doors upwards
+            door.transform.parent = transform.root; //move doors upwards
         }
     }
 

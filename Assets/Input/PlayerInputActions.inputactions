@@ -538,7 +538,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Click",
+                    "name": "ExitWindow",
                     "type": "PassThrough",
                     "id": "f136b696-5f84-45cb-9281-7aaf8109c649",
                     "expectedControlType": "Button",
@@ -561,12 +561,23 @@
                 },
                 {
                     "name": "",
-                    "id": "2926acb9-b212-44e8-9ecf-54805ec0f1e6",
-                    "path": "<VirtualMouse>/leftButton",
+                    "id": "171e07ac-9e5e-4fc5-9d13-4bdeae6f97bc",
+                    "path": "<Gamepad>/buttonEast",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "Click",
+                    "action": "ExitWindow",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4c05b5b9-4a04-4fa0-9f3a-83fa0dd54344",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "ExitWindow",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

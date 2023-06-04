@@ -48,12 +48,12 @@ public static class DungeonDrawer
     {
         room.MoveDoorsUp();
         room.GetWalls().transform.parent = room.transform; //Move walls upwards
-        DungeonData.SafeDestroy(room.transform.Find("RoomRoot").gameObject);//delete the root
         RoomData roomData = dungeonData.GetActiveLayout().GetRoomData(room);
         GameObject obj = GameObject.Instantiate(roomPrefab);
-        GameObject roomRoot = obj.transform.Find("RoomRoot").gameObject;
-        roomRoot.transform.position = room.GetPosition();
-        roomRoot.transform.parent = room.transform;
+        GameObject rootToDelete = room.transform.Find("RoomRoot").gameObject;//delete the root
+        GameObject newRoot = obj.transform.Find("RoomRoot").gameObject;
+        newRoot.transform.position = room.GetPosition();
+        newRoot.transform.parent = room.transform;
         DungeonData.SafeDestroy(obj);
         roomData.SetRoomType(type);
         roomData.SetIsolated(isolate);//Serialize it
@@ -72,10 +72,17 @@ public static class DungeonDrawer
         if(isolate) room.Isolate();
         foreach (var door in room.GetDoors())
         {
-            door.transform.parent = roomRoot.transform; //move doors upwards
+            door.transform.parent = newRoot.transform; //move doors upwards
         }
-        room.GetWalls().transform.parent = roomRoot.transform;
-        return roomRoot;
+        room.GetWalls().transform.parent = newRoot.transform;
+        OnNextFrameDestroy(rootToDelete);
+        return newRoot;
+    }
+
+    private async static void OnNextFrameDestroy(GameObject go)
+    {
+        await Task.Yield();
+        DungeonData.SafeDestroy(go);
     }
 
     public static GameObject DrawRoomFromData(RoomData roomData, DungeonData dungeonData)

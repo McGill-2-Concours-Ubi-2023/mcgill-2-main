@@ -242,12 +242,6 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
         await InitializeNavMesh();
     }
 
-    public void PlaceMerchantRoom()
-    {
-        int randIndex = UnityEngine.Random.Range(0, AllRooms().Count);
-
-    }
-
     private void FindStartingRoom()
     {
         var startRoomdata = GetActiveLayout()

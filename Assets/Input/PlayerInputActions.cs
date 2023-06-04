@@ -560,7 +560,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Click"",
+                    ""name"": ""ExitWindow"",
                     ""type"": ""PassThrough"",
                     ""id"": ""f136b696-5f84-45cb-9281-7aaf8109c649"",
                     ""expectedControlType"": ""Button"",
@@ -583,12 +583,23 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""2926acb9-b212-44e8-9ecf-54805ec0f1e6"",
-                    ""path"": ""<VirtualMouse>/leftButton"",
+                    ""id"": ""171e07ac-9e5e-4fc5-9d13-4bdeae6f97bc"",
+                    ""path"": ""<Gamepad>/buttonEast"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""Click"",
+                    ""action"": ""ExitWindow"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4c05b5b9-4a04-4fa0-9f3a-83fa0dd54344"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""ExitWindow"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -831,7 +842,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Point = m_UI.FindAction("Point", throwIfNotFound: true);
-        m_UI_Click = m_UI.FindAction("Click", throwIfNotFound: true);
+        m_UI_ExitWindow = m_UI.FindAction("ExitWindow", throwIfNotFound: true);
         // Gameplay
         m_Gameplay = asset.FindActionMap("Gameplay", throwIfNotFound: true);
         m_Gameplay_Attack = m_Gameplay.FindAction("Attack", throwIfNotFound: true);
@@ -1018,13 +1029,13 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
     private readonly InputActionMap m_UI;
     private IUIActions m_UIActionsCallbackInterface;
     private readonly InputAction m_UI_Point;
-    private readonly InputAction m_UI_Click;
+    private readonly InputAction m_UI_ExitWindow;
     public struct UIActions
     {
         private @PlayerInputActions m_Wrapper;
         public UIActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Point => m_Wrapper.m_UI_Point;
-        public InputAction @Click => m_Wrapper.m_UI_Click;
+        public InputAction @ExitWindow => m_Wrapper.m_UI_ExitWindow;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1037,9 +1048,9 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @Point.started -= m_Wrapper.m_UIActionsCallbackInterface.OnPoint;
                 @Point.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnPoint;
                 @Point.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnPoint;
-                @Click.started -= m_Wrapper.m_UIActionsCallbackInterface.OnClick;
-                @Click.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnClick;
-                @Click.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnClick;
+                @ExitWindow.started -= m_Wrapper.m_UIActionsCallbackInterface.OnExitWindow;
+                @ExitWindow.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnExitWindow;
+                @ExitWindow.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnExitWindow;
             }
             m_Wrapper.m_UIActionsCallbackInterface = instance;
             if (instance != null)
@@ -1047,9 +1058,9 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @Point.started += instance.OnPoint;
                 @Point.performed += instance.OnPoint;
                 @Point.canceled += instance.OnPoint;
-                @Click.started += instance.OnClick;
-                @Click.performed += instance.OnClick;
-                @Click.canceled += instance.OnClick;
+                @ExitWindow.started += instance.OnExitWindow;
+                @ExitWindow.performed += instance.OnExitWindow;
+                @ExitWindow.canceled += instance.OnExitWindow;
             }
         }
     }
@@ -1139,7 +1150,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
     public interface IUIActions
     {
         void OnPoint(InputAction.CallbackContext context);
-        void OnClick(InputAction.CallbackContext context);
+        void OnExitWindow(InputAction.CallbackContext context);
     }
     public interface IGameplayActions
     {

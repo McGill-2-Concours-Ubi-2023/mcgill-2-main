@@ -22,13 +22,10 @@ public class RoomFog : MonoBehaviour
 
     public void DissipateAmbientFog()
     {
-        try
+
+        if (this.gameObject.activeInHierarchy)
         {
             StartCoroutine(DissipateFog(0.3f));
-        }
-        catch
-        {
-            //ignore
         }
     }
 
@@ -48,5 +45,6 @@ public class RoomFog : MonoBehaviour
         }
         yield return new WaitForSeconds(1.0f);
         isDissipated = true;
+        DungeonData.SafeDestroy(this.gameObject);
     }
 }
