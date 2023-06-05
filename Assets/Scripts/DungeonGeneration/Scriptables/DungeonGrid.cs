@@ -114,16 +114,19 @@ public class DungeonGrid : DataContainer<RoomData>
         data.AllRooms().ForEach(room => room.GenerateDoors(data));
     }
 
-    public void PlaceMerchant ()
+    public async void PlaceMerchant ()
     {
         int randomIndex = UnityEngine.Random.Range(0, data.AllRooms().Count);
         DungeonRoom randomRoom = data.AllRooms()[randomIndex];
         List<DungeonRoom> adjacentRooms = randomRoom.GetConnectedRooms();
         foreach(DungeonRoom room in adjacentRooms)
         {
-            if(room.GetRoomType() == RoomTypes.RoomType.Special || randomRoom.GetRoomType() == RoomTypes.RoomType.Start)
+            if(room.GetRoomType() == RoomTypes.RoomType.Special 
+                || randomRoom.GetRoomType() == RoomTypes.RoomType.Start
+                || !randomRoom.HasValidNeighbor())
             {
                 //if you did not find a spot, recursively try again
+                await Task.Yield();
                 PlaceMerchant();
                 return;
             }

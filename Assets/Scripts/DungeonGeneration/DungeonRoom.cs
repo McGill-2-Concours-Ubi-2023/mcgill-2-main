@@ -426,12 +426,25 @@ public class DungeonRoom : MonoBehaviour
         return doors;
     }
 
-    public void MoveDoorsUp()
+    public void ReleaseDoors()
     {
         foreach (var door in doors)
         {
-            door.transform.parent = transform.root; //move doors upwards
+            door.transform.parent = transform.parent; //move doors upwards
         }
+    }
+
+    public bool HasValidNeighbor()
+    {
+        foreach (var room in adjacentRooms)
+        {
+            if (room.type == RoomTypes.RoomType.Special 
+                || room.type == RoomTypes.RoomType.Start)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     public void ReassignRoom(RoomTypes.RoomType type)

@@ -46,7 +46,7 @@ public static class DungeonDrawer
     public static GameObject ReplaceRoom(DungeonRoom room, DungeonData dungeonData,
         GameObject roomPrefab, RoomTypes.RoomType type, bool isolate)
     {
-        room.MoveDoorsUp();
+        room.ReleaseDoors();
         room.GetWalls().transform.parent = room.transform; //Move walls upwards
         RoomData roomData = dungeonData.GetActiveLayout().GetRoomData(room);
         GameObject obj = GameObject.Instantiate(roomPrefab);
@@ -69,21 +69,13 @@ public static class DungeonDrawer
         }
         roomData.SetOverride(true, newPrefabIndex);
         room.ReassignRoom( type);
-        if(isolate) room.Isolate();
-        foreach (var door in room.GetDoors())
-        {
-            door.transform.parent = newRoot.transform; //move doors upwards
-        }
+        if(isolate) room.Isolate();       
         room.GetWalls().transform.parent = newRoot.transform;
-        OnNextFrameDestroy(rootToDelete);
+        Debug.Log("REPLACING ROOM" + room.name);
+        rootToDelete.SetActive(false);
         return newRoot;
     }
 
-    private async static void OnNextFrameDestroy(GameObject go)
-    {
-        await Task.Yield();
-        DungeonData.SafeDestroy(go);
-    }
 
     public static GameObject DrawRoomFromData(RoomData roomData, DungeonData dungeonData)
     {      
