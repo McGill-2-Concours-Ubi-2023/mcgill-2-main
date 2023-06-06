@@ -33,6 +33,7 @@ public class BossFightCameraCoordinator : MonoBehaviour, IBossFightTriggers
         lb = FindObjectOfType<SteamLeaderboard>();
         m_Controller = GetComponent<MainCharacterController>()!;
         m_CinematicDirector = GameObject.FindWithTag("MainCamera").GetComponent<PlayableDirector>()!;
+        //Application.targetFrameRate = 30;
     }
 
     private async void Start()
@@ -68,11 +69,11 @@ public class BossFightCameraCoordinator : MonoBehaviour, IBossFightTriggers
             GameObject.FindWithTag("FinalBoss").Trigger<IBossTriggers>(nameof(IBossTriggers.StartFight));
             await Task.Yield();
             FightCam.Priority = 15;
-            m_Controller.Camera = FightCam;
             while (m_State == State.PreFightCinematic)
             {
                 await Task.Yield();
             }
+            m_Controller.Camera = FightCam;
             m_CinematicDirector.Pause();
         }
         
