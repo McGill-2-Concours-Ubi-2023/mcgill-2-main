@@ -17,7 +17,7 @@ public class DungeonGenerator : MonoBehaviour
     private async void Awake()
     {
         //PLEASE DON'T LEAVE IT THERE, FOR DEBUG PURPOSES ONLY
-        Application.targetFrameRate = 30;
+        //Application.targetFrameRate = 30;
         data.SetMonoInstance(this);
         if (newDungeonOnPlay)
         {
