@@ -474,7 +474,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     {
         isDashing = true;
         canDash = false;
-        Physics.IgnoreLayerCollision(Destructible.desctructibleMask, LayerMask.NameToLayer("Player"), true);
+        //Physics.IgnoreLayerCollision(Destructible.desctructibleMask, LayerMask.NameToLayer("Player"), true);
         float3 dashDirection = m_MovementDirection;
         float timer = 0f;
         while (timer < dashDuration)
@@ -486,7 +486,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         rb.velocity = rb.velocity / 5;
         isDashing = false;
         canDash = true;
-        Physics.IgnoreLayerCollision(Destructible.desctructibleMask, LayerMask.NameToLayer("Player"), false);
+        //Physics.IgnoreLayerCollision(Destructible.desctructibleMask, LayerMask.NameToLayer("Player"), false);
 
     }
 

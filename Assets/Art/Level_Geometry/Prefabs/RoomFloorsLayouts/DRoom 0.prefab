@@ -126,7 +126,6 @@ MonoBehaviour:
   - {fileID: 3021476068938077322, guid: c5675b1da9bd5ec48b664f6c91048d69, type: 3}
   spawnpoints:
   - {x: 0, y: 0, z: 0}
-  volumeFog: {fileID: 8005255275162226419}
   debugSpawn: 0
   doubleSpawn: 0
 --- !u!1001 &45627309299230204
@@ -206,7 +205,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_crate_large (29)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2991773900549815928, guid: 6c8358d1fc62e7f4aadf35a0adf732a8, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 6c8358d1fc62e7f4aadf35a0adf732a8, type: 3}
 --- !u!4 &7488883044409815655 stripped
 Transform:
@@ -461,7 +461,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_crate_large (20)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2991773900549815928, guid: 6c8358d1fc62e7f4aadf35a0adf732a8, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 6c8358d1fc62e7f4aadf35a0adf732a8, type: 3}
 --- !u!4 &8432736663362653430 stripped
 Transform:
@@ -1121,7 +1122,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_crate_large (17)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2991773900549815928, guid: 6c8358d1fc62e7f4aadf35a0adf732a8, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 6c8358d1fc62e7f4aadf35a0adf732a8, type: 3}
 --- !u!4 &5502332017393593678 stripped
 Transform:
@@ -1781,7 +1783,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_crate_large (8)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2991773900549815928, guid: 6c8358d1fc62e7f4aadf35a0adf732a8, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 6c8358d1fc62e7f4aadf35a0adf732a8, type: 3}
 --- !u!4 &6752586859390851564 stripped
 Transform:
@@ -3391,12 +3394,6 @@ PrefabInstance:
 --- !u!4 &4662273931361012687 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4217292524305056389, guid: f6f3ab36ee128454484562a81b0f88a7,
-    type: 3}
-  m_PrefabInstance: {fileID: 8806063688882276682}
-  m_PrefabAsset: {fileID: 0}
---- !u!2083052967 &8005255275162226419 stripped
-VisualEffect:
-  m_CorrespondingSourceObject: {fileID: 1525890172079998905, guid: f6f3ab36ee128454484562a81b0f88a7,
     type: 3}
   m_PrefabInstance: {fileID: 8806063688882276682}
   m_PrefabAsset: {fileID: 0}
