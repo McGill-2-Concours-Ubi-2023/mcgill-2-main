@@ -16,11 +16,13 @@ public class DungeonGenerator : MonoBehaviour
 
     private async void Awake()
     {
+        //PLEASE DON'T LEAVE IT THERE, FOR DEBUG PURPOSES ONLY
+        Application.targetFrameRate = 30;
         data.SetMonoInstance(this);
         if (newDungeonOnPlay)
         {
             await data.GenerateDungeon();
-            data.PlaceMerchant();
+            PlaceRandomMerchant();
         } else
         {
             await data.LoadData();
@@ -29,8 +31,9 @@ public class DungeonGenerator : MonoBehaviour
         GameObject.FindWithTag("Player").Trigger<IMainCharacterTriggers>(nameof(IMainCharacterTriggers.ResetInventory));
     }
 
-    IEnumerator PlaceRandomMerchant()
+    private async void PlaceRandomMerchant()
     {
-        yield return new WaitForEndOfFrame();      
+       await Task.Yield();         
+       data.PlaceMerchant();
     }
 }

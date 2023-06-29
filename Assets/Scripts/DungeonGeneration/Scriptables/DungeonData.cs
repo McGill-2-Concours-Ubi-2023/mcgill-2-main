@@ -64,6 +64,9 @@ public class DungeonData : ScriptableObject, DungeonRoomPrefabsContainer
         await Cleanup();
         await GetGrid().ReloadMiniMap(this);
         manager.ReportProgress(1.0f, 1.0f);
+        //Sets the static array of rooms accessed every frame to update the dungeon's layout
+        //Too expensive otherwise
+        DungeonRoom.PopulateRooms(rooms);
     }
 
     public GameObject GetPortalPrefab()

@@ -47,16 +47,17 @@ public static class DungeonDrawer
         GameObject roomPrefab, RoomTypes.RoomType type, bool isolate)
     {
         room.ReleaseDoors();
-        room.GetWalls().transform.parent = room.transform; //Move walls upwards
+        room.GetWalls().transform.parent = room.transform; //Move walls upwards in hierarchy
         RoomData roomData = dungeonData.GetActiveLayout().GetRoomData(room);
         GameObject obj = GameObject.Instantiate(roomPrefab);
-        GameObject rootToDelete = room.transform.Find("RoomRoot").gameObject;//delete the root
+        GameObject rootToDelete = room.transform.Find("RoomRoot").gameObject;
         GameObject newRoot = obj.transform.Find("RoomRoot").gameObject;
         newRoot.transform.position = room.GetPosition();
         newRoot.transform.parent = room.transform;
-        DungeonData.SafeDestroy(obj);
+        room.SetDoorsParent(newRoot);
+        DungeonData.SafeDestroy(rootToDelete);
         roomData.SetRoomType(type);
-        roomData.SetIsolated(isolate);//Serialize it
+        roomData.SetIsolated(isolate);
         GameObject[] roomOptions = dungeonData.GetRoomOverrides();
         int newPrefabIndex = 0;
         for(int i = 0; i<roomOptions.Length; i++)

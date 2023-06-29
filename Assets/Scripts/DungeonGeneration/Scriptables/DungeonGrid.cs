@@ -116,7 +116,7 @@ public class DungeonGrid : DataContainer<RoomData>
 
     public async void PlaceMerchant ()
     {
-        int randomIndex = UnityEngine.Random.Range(0, data.AllRooms().Count);
+       /* int randomIndex = UnityEngine.Random.Range(0, data.AllRooms().Count);
         DungeonRoom randomRoom = data.AllRooms()[randomIndex];
         List<DungeonRoom> adjacentRooms = randomRoom.GetConnectedRooms();
         foreach(DungeonRoom room in adjacentRooms)
@@ -131,7 +131,23 @@ public class DungeonGrid : DataContainer<RoomData>
                 return;
             }
         }
-        DungeonDrawer.ReplaceRoom(randomRoom, data, data.GetRoomOverrides()[0], RoomTypes.RoomType.Special, false);
+        DungeonDrawer.ReplaceRoom(randomRoom, data, data.GetRoomOverrides()[0], RoomTypes.RoomType.Special, false);*/
+
+        bool isPlaced = false;
+        while (!isPlaced)
+        {
+            int randInt = UnityEngine.Random.Range(Mathf.FloorToInt(data.AllRooms().Count / 2), data.AllRooms().Count - 1);
+            DungeonRoom choosenRoom = data.AllRooms()[randInt];
+            //if the length from this room to the 
+            int shortesPathLength = DungeonRoom.ShortestPath(DungeonRoom.activeRoom, choosenRoom);
+            if (shortesPathLength > 5 && shortesPathLength < 10 && choosenRoom.GetRoomType() != RoomTypes.RoomType.Special)
+            {
+                //Debug.Log("Shortest path to portal: " + shortesPathLength);
+                DungeonDrawer.ReplaceRoom(choosenRoom, data, data.GetSpecialRoomPrefabs()[0], RoomTypes.RoomType.Special, false);
+                isPlaced = true;
+                await Task.Yield();
+            }
+        }
     }
 
     public int RoomSize()

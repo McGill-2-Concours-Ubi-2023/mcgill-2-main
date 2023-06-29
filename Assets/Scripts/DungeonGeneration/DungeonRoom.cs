@@ -50,28 +50,35 @@ public class DungeonRoom : MonoBehaviour
     public RoomFog fog;
     private bool hasSpawned = false;
 
+    public static void PopulateRooms(List<DungeonRoom> rooms)
+    {
+        if (allRooms == null)
+        {
+            allRooms = rooms;
+        }
+    }
+
     internal void AddEnemy(Enemy enemy)
     {
-        if (enemy != null && !enemies.Contains(enemy)) 
+        if (enemy != null && !enemies.Contains(enemy))
             enemies.Add(enemy);
     }
 
     private void OnDistanceRender()
     {
         if (roomsBuffer == null) roomsBuffer = new List<DungeonRoom>();
-        allRooms = dungeonGenerator.data.AllRooms();
         roomsBuffer.Clear();
         roomsBuffer.Add(this);
-        foreach(DungeonRoom room in adjacentRooms)
+        foreach (DungeonRoom room in adjacentRooms)
         {
             roomsBuffer.Add(room);
             room.UpdateLights(transform.position);
         }
         List<DungeonRoom> inter = allRooms.Except(roomsBuffer).ToList();
-        foreach(DungeonRoom room in inter)
+        foreach (DungeonRoom room in inter)
         {
             if (room.GetRoomType() != RoomTypes.RoomType.Boss)
-            room.transform.Find("RoomRoot").gameObject.SetActive(false);
+                room.transform.Find("RoomRoot").gameObject.SetActive(false);
             room.DeactivateEnemies();
         }
         foreach (DungeonRoom room in roomsBuffer)
@@ -80,14 +87,14 @@ public class DungeonRoom : MonoBehaviour
             room.RetrieveDoors();
         }
     }
-    
+
 
     private void Update()
     {
-        if(clearedRoomsCount >= 7 && spawnPortal == false)
+        if (clearedRoomsCount >= 7 && spawnPortal == false)
         {
             spawnPortal = true;
-           StartCoroutine(PlaceBossRoom());
+            StartCoroutine(PlaceBossRoom());
         }
     }
 
@@ -102,14 +109,14 @@ public class DungeonRoom : MonoBehaviour
             {
                 //if the length from this room to the 
                 int shortesPathLength = DungeonRoom.ShortestPath(activeRoom, choosenRoom);
-                if ( shortesPathLength > 2 && shortesPathLength < 5 && choosenRoom.GetRoomType() != RoomTypes.RoomType.Special)
+                if (shortesPathLength > 2 && shortesPathLength < 5 && choosenRoom.GetRoomType() != RoomTypes.RoomType.Special)
                 {
                     //Debug.Log("Shortest path to portal: " + shortesPathLength);
                     DungeonDrawer.ReplaceRoom(choosenRoom, dungeonGenerator.data,
                     dungeonGenerator.data.GetPortalPrefab(), RoomTypes.RoomType.Boss, false);
                     isPlaced = true;
                 }
-                yield return new WaitForEndOfFrame();              
+                yield return new WaitForEndOfFrame();
             }
             yield return new WaitForEndOfFrame();
         }
@@ -117,17 +124,17 @@ public class DungeonRoom : MonoBehaviour
 
     private void UpdateLights(Vector3 position)
     {
-        if (cachedLights == null) 
+        if (cachedLights == null)
         {
             cachedLights = new List<DungeonLight>();
             doors.ForEach(door => cachedLights.AddRange(door.GetLights()));
             List<DungeonLight> neons = walls.GetComponents<DungeonLight>().ToList();
-            foreach(DungeonLight neon in neons)
+            foreach (DungeonLight neon in neons)
             {
                 if (neon != null) cachedLights.Add(neon);
-            }        
+            }
         }
-        foreach(DungeonLight light in cachedLights)
+        foreach (DungeonLight light in cachedLights)
         {
             if (light != null) light.UpdateLight(position);
         }
@@ -135,7 +142,7 @@ public class DungeonRoom : MonoBehaviour
 
     private void RetrieveDoors()
     {
-        doors.ForEach(door => 
+        doors.ForEach(door =>
         {
             if (door != null) door.transform.parent = transform.Find("RoomRoot");
         });
@@ -170,13 +177,13 @@ public class DungeonRoom : MonoBehaviour
             if (isValidRoom && !cleared)
             {
                 GetComponent<EnemySpawn1>().SpawnEnemies(this);
-                foreach(Enemy enemy in enemies)
+                foreach (Enemy enemy in enemies)
                 {
                     if (enemy != null) enemy.FreezeOnCurrentState();
                 }
                 areEnemiesPresent = true;
             }
-        }          
+        }
     }
 
     private void OpenBossPortal()
@@ -206,7 +213,7 @@ public class DungeonRoom : MonoBehaviour
         if (type == RoomTypes.RoomType.Boss)
         {
             OpenBossPortal();
-        }    
+        }
         OnDistanceRender();
         await Task.Yield();
         foreach (OccludableWall wall in occludableWalls)
@@ -215,7 +222,7 @@ public class DungeonRoom : MonoBehaviour
             {
                 wall.Hide();
                 wall.ChangeRenderQueue(3001);
-                
+
             }
         }
         if (northWalls == null) FindNorthWalls();
@@ -256,22 +263,22 @@ public class DungeonRoom : MonoBehaviour
 
     public void DeactivateEnemies()
     {
-        if(enemies != null)
+        if (enemies != null)
         {
-            foreach(Enemy enemy in enemies)
+            foreach (Enemy enemy in enemies)
             {
                 if (enemy != null)
                 {
                     enemy.FreezeOnCurrentState();
                     enemy.gameObject.SetActive(false);
-                }           
+                }
             }
         }
     }
 
     public void FindBottomRoomNorthWalls()
     {
-        foreach(DungeonRoom room in adjacentRooms)
+        foreach (DungeonRoom room in adjacentRooms)
         {
             if ((room.transform.position - transform.position).normalized == -Vector3.forward)
             {
@@ -333,32 +340,32 @@ public class DungeonRoom : MonoBehaviour
     {
         if (adjacentRooms.Count > 0) return true;
         return false;
-    } 
+    }
 
     public void GenerateDoors(DungeonData data)
     {
         adjacentRooms.ForEach(room =>
-        {     
-            if(room.doors.Count != 0 && !room.HasAccessToRoom(this)
-            || room.doors.Count == 0) 
-            {               
+        {
+            if (room.doors.Count != 0 && !room.HasAccessToRoom(this)
+            || room.doors.Count == 0)
+            {
                 var addedDoor = DungeonDoor.Create(transform.Find("RoomRoot").gameObject, this, room, data);
-                doors.Add(addedDoor);                
+                doors.Add(addedDoor);
             } else if (room.HasAccessToRoom(this))
             {
                 room.doors.Where(door => door.GetSharedRooms().Contains(this))
-                .ToList().ForEach(door => 
+                .ToList().ForEach(door =>
                 {
                     this.doors.Add(door);
                 });
-            }                 
+            }
         });
         BindWalls(walls);
     }
 
     public void ActivateEnemies()
     {
-        foreach(Enemy enemy in enemies)
+        foreach (Enemy enemy in enemies)
         {
             if (enemy != null)
             {
@@ -396,7 +403,7 @@ public class DungeonRoom : MonoBehaviour
         catch
         {
             //ignore
-        }      
+        }
     }
 
     //FBI ???
@@ -430,8 +437,13 @@ public class DungeonRoom : MonoBehaviour
     {
         foreach (var door in doors)
         {
-            door.transform.parent = transform.parent; //move doors upwards
+            door.transform.parent = transform.root; //move doors upwards
         }
+    }
+
+    public void SetDoorsParent(GameObject parent)
+    {
+        doors.ForEach(door => door.transform.parent = parent.transform);
     }
 
     public bool HasValidNeighbor()
@@ -555,7 +567,6 @@ public class DungeonRoom : MonoBehaviour
     {
         Dictionary<DungeonRoom, int> distances = new Dictionary<DungeonRoom, int>();
         HashSet<DungeonRoom> visitedRooms = new HashSet<DungeonRoom>();
-
         foreach (DungeonRoom room in allRooms)
         {
             distances[room] = int.MaxValue;
