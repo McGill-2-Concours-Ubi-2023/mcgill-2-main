@@ -150,6 +150,7 @@ public class ShowUI : MonoBehaviour
     public void SetText(string description)
     {// set the description of the config 
         if (description == "SOLD OUT!") {
+            PlayerPrefs.SetInt("purchase", 1);
             descriptionUI.text = description;
             return;
         }

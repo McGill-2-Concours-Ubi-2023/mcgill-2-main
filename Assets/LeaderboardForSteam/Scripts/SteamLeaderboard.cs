@@ -5,7 +5,9 @@ using System.Runtime.Serialization;
 using System.Threading.Tasks;
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
 using Steamworks;
+
 using Steamworks.Data;
+//using UnityEditor.PackageManager;
 #endif
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -61,8 +63,14 @@ namespace LeastSquares
                 await _leaderboard.Value.SubmitScoreAsync(newScore);
                 Debug.Log($"Sent score {newScore}");
             }
+            foreach (var ach in SteamUserStats.Achievements) {
+                Achievement achiev = ach;
+                if(achiev.Name =="WIN" || (newScore > 25000 && achiev.Name == "WIN25K") || (Time.time - PlayerPrefs.GetFloat("runstart") < 121 && achiev.Name == "SPEEDRUNNER") || (PlayerPrefs.GetInt("mg")>0 && achiev.Name == "MACHINEGUN") || (PlayerPrefs.GetInt("purchase") > 0 && achiev.Name == "ECONOMICAL"))
+                    achiev.Trigger(true);
+                PlayerPrefs.DeleteAll();
+            }
         }
-        
+
         /// <summary>
         /// Replaces the user's score, even if its lower, with a new one
         /// </summary>

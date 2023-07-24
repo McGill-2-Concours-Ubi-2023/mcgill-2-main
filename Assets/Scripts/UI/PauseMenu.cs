@@ -77,10 +77,12 @@ public class PauseMenu : MonoBehaviour
     }
 
     public void Exit() {
+        PlayerPrefs.DeleteAll();
         Application.Quit();
     }
 
     public void MainMenu() {
+        PlayerPrefs.DeleteAll();
         m_State = State.Playing;
         Time.timeScale = 1f;
         SceneManager.LoadScene(0);

@@ -182,6 +182,8 @@ public class Gun : MonoBehaviour, IGunTriggers
         if (sc != null)
             sc.shotsFired();
         vibration.SoftVibration();
+
+        if (bulletInterval <= 0.025) { PlayerPrefs.SetInt("mg", 1); }
     }
     
     private IEnumerator ShootCoroutine()
