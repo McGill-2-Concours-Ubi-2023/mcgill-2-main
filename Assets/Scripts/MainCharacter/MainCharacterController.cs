@@ -25,7 +25,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     public float GravityGrenadeDisappearTime;
     public float GravityGrenadeExplodeTime;
     public GameObject CratePrefab;
-    private DungeonRoom m_LastRoom = null;
+    public DungeonRoom m_LastRoom = null;
     private float3 m_MovementDirection;
     public float doorOpenRate = 1f;
     private Animator animator;
@@ -306,7 +306,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         if (cam.gameObject == Camera.gameObject)
         {
             // update camera follow
-            if (m_LastRoom != DungeonRoom.GetActiveRoom())
+            if (m_LastRoom != DungeonRoom.GetActiveRoom() && DungeonRoom.GetActiveRoom()!=null)
             {
                 m_LastRoom = DungeonRoom.GetActiveRoom();
                 GameObject newCamera = Instantiate(Camera.gameObject);
