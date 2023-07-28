@@ -64,11 +64,10 @@ namespace LeastSquares
                 Debug.Log($"Sent score {newScore}");
             }
             foreach (var ach in SteamUserStats.Achievements) {
-                Achievement achiev = ach;
-                if(achiev.Name =="WIN" || (newScore > 25000 && achiev.Name == "WIN25K") || (Time.time - PlayerPrefs.GetFloat("runstart") < 121 && achiev.Name == "SPEEDRUNNER") || (PlayerPrefs.GetInt("mg")>0 && achiev.Name == "MACHINEGUN") || (PlayerPrefs.GetInt("purchase") > 0 && achiev.Name == "ECONOMICAL"))
-                    achiev.Trigger(true);
-                PlayerPrefs.DeleteAll();
+                if(ach.Name =="WIN" || (newScore > 25000 && ach.Name == "WIN25K") || (Time.time - PlayerPrefs.GetFloat("runstart") < 121 && ach.Name == "SPEEDRUNNER") || (PlayerPrefs.GetInt("mg")>0 && ach.Name == "MACHINEGUN") || (PlayerPrefs.GetInt("purchase")== 0 && ach.Name == "ECONOMICAL"))
+                    ach.Trigger(true);
             }
+            PlayerPrefs.DeleteAll();
         }
 
         /// <summary>
