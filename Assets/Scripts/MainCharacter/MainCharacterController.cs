@@ -305,10 +305,11 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         // update camera focus
         if (cam.gameObject == Camera.gameObject)
         {
+            DungeonRoom curActiveRoom = DungeonRoom.GetActiveRoom();
             // update camera follow
-            if (m_LastRoom != DungeonRoom.GetActiveRoom() && DungeonRoom.GetActiveRoom()!=null)
+            if (m_LastRoom != curActiveRoom && curActiveRoom !=null)
             {
-                m_LastRoom = DungeonRoom.GetActiveRoom();
+                m_LastRoom = curActiveRoom;
                 GameObject newCamera = Instantiate(Camera.gameObject);
                 newCamera.name = $"MainCamera_{Guid.NewGuid()}";
                 newCamera.SetActive(false);
