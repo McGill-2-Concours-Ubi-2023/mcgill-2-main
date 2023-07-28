@@ -35,6 +35,8 @@ public class DungeonRoomCollider : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
+
         DungeonRoom.activeRoom = GetComponentInParent<DungeonRoom>();
+        Debug.Log("active room is: " + transform.parent.name +"set by: " + other.transform.name);
     }
 }
