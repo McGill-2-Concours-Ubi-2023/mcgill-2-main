@@ -64,9 +64,11 @@ namespace LeastSquares
                 Debug.Log($"Sent score {newScore}");
             }
             foreach (var ach in SteamUserStats.Achievements) {
-                if(ach.Name =="WIN" || (newScore > 25000 && ach.Name == "WIN25K") || (Time.time - PlayerPrefs.GetFloat("runstart") < 121 && ach.Name == "SPEEDRUNNER") || (PlayerPrefs.GetInt("mg")>0 && ach.Name == "MACHINEGUN") || (PlayerPrefs.GetInt("purchase")== 0 && ach.Name == "ECONOMICAL"))
+                Debug.Log(ach.Name);
+                if(ach.Name =="DESCENDER" || (newScore > 25000 && ach.Name == "25K") || (Time.time - PlayerPrefs.GetFloat("runstart") < 121 && ach.Name == "SPEEDRUNNER") || (PlayerPrefs.GetInt("mg")>0 && ach.Name == "MACHINEGUN") || (PlayerPrefs.GetInt("purchase")== 0 && ach.Name == "ECONOMICAL"))
                     ach.Trigger(true);
             }
+            
             PlayerPrefs.DeleteAll();
         }
 
