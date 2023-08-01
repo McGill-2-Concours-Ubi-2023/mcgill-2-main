@@ -691,7 +691,9 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            if (!health.IsInvincible() && collision.gameObject.GetComponentInParent<EnemyAI>().move != EnemyAI.moveType.ASLEEP)
+            EnemyAI enemyAI = collision.gameObject.GetComponentInParent<EnemyAI>();
+            if (!health.IsInvincible() && enemyAI.move != EnemyAI.moveType.ASLEEP
+                && enemyAI.isActiveAndEnabled)
             {
                 OnCameraStandardShake(1.0f, 0.3f, 1.0f);
                 health.TakeDamage(1);
