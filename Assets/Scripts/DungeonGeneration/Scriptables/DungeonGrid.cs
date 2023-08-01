@@ -116,25 +116,27 @@ public class DungeonGrid : DataContainer<RoomData>
 
     public async void PlaceMerchant ()
     {
-       /* int randomIndex = UnityEngine.Random.Range(0, data.AllRooms().Count);
-        DungeonRoom randomRoom = data.AllRooms()[randomIndex];
-        List<DungeonRoom> adjacentRooms = randomRoom.GetConnectedRooms();
-        foreach(DungeonRoom room in adjacentRooms)
-        {
-            if(room.GetRoomType() == RoomTypes.RoomType.Special 
-                || randomRoom.GetRoomType() == RoomTypes.RoomType.Start
-                || !randomRoom.HasValidNeighbor())
-            {
-                //if you did not find a spot, recursively try again
-                await Task.Yield();
-                PlaceMerchant();
-                return;
-            }
-        }
-        DungeonDrawer.ReplaceRoom(randomRoom, data, data.GetRoomOverrides()[0], RoomTypes.RoomType.Special, false);*/
+        /* int randomIndex = UnityEngine.Random.Range(0, data.AllRooms().Count);
+         DungeonRoom randomRoom = data.AllRooms()[randomIndex];
+         List<DungeonRoom> adjacentRooms = randomRoom.GetConnectedRooms();
+         foreach(DungeonRoom room in adjacentRooms)
+         {
+             if(room.GetRoomType() == RoomTypes.RoomType.Special 
+                 || randomRoom.GetRoomType() == RoomTypes.RoomType.Start
+                 || !randomRoom.HasValidNeighbor())
+             {
+                 //if you did not find a spot, recursively try again
+                 await Task.Yield();
+                 PlaceMerchant();
+                 return;
+             }
+         }
+         DungeonDrawer.ReplaceRoom(randomRoom, data, data.GetRoomOverrides()[0], RoomTypes.RoomType.Special, false);*/
 
+        int maxNumIteration = 200;
+        int iterationState = 0;
         bool isPlaced = false;
-        while (!isPlaced)
+        while (!isPlaced && iterationState < maxNumIteration)
         {
             int randInt = UnityEngine.Random.Range(Mathf.FloorToInt(data.AllRooms().Count / 2), data.AllRooms().Count - 1);
             DungeonRoom choosenRoom = data.AllRooms()[randInt];
@@ -147,6 +149,8 @@ public class DungeonGrid : DataContainer<RoomData>
                 isPlaced = true;
                 await Task.Yield();
             }
+            iterationState++;
+            await Task.Yield();
         }
     }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -49,13 +50,13 @@ public static class DungeonDrawer
         room.ReleaseDoors();
         room.GetWalls().transform.parent = room.transform; //Move walls upwards in hierarchy
         RoomData roomData = dungeonData.GetActiveLayout().GetRoomData(room);
-        GameObject obj = GameObject.Instantiate(roomPrefab);
-        GameObject rootToDelete = room.transform.Find("RoomRoot").gameObject;
-        GameObject newRoot = obj.transform.Find("RoomRoot").gameObject;
+        GameObject bufferRoomContainer = GameObject.Instantiate(roomPrefab);
+        GameObject oldRoomt = room.transform.Find("RoomRoot").gameObject;
+        GameObject newRoot = bufferRoomContainer.transform.Find("RoomRoot").gameObject;
         newRoot.transform.position = room.GetPosition();
         newRoot.transform.parent = room.transform;
         room.SetDoorsParent(newRoot);
-        DungeonData.SafeDestroy(rootToDelete);
+        DungeonData.SafeDestroy(oldRoomt);
         roomData.SetRoomType(type);
         roomData.SetIsolated(isolate);
         GameObject[] roomOptions = dungeonData.GetRoomOverrides();
@@ -73,7 +74,8 @@ public static class DungeonDrawer
         if(isolate) room.Isolate();       
         room.GetWalls().transform.parent = newRoot.transform;
         Debug.Log("REPLACING ROOM" + room.name);
-        rootToDelete.SetActive(false);
+        DungeonData.SafeDestroy(bufferRoomContainer);
+        oldRoomt.SetActive(false);
         return newRoot;
     }
 
