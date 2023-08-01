@@ -15,11 +15,11 @@ public class TerminalInputHandler : MonoBehaviour
     
     private void OnToggleConsole()
     {
-        m_IsTerminalActive = true;
-        transform.GetChild(0).gameObject.SetActive(m_IsTerminalActive);
+        //m_IsTerminalActive = true;
+        //transform.GetChild(0).gameObject.SetActive(m_IsTerminalActive);
     }
 
-    private async void Update()
+    /*private async void Update()
     {
         if (Input.GetKeyDown(KeyCode.Period))
         {
@@ -34,5 +34,5 @@ public class TerminalInputHandler : MonoBehaviour
                 await t;
             }
         }
-    }
+    }*/
 }

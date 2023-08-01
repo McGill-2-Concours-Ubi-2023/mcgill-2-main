@@ -66,7 +66,7 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
     public float dashInvincibleCooldown = 1.0f;
     private bool canDash;
     private PlayerInput playerInput;
-    private Camera mainCamera;
+    public Camera mainCamera;
     [SerializeField][Range(0.01f, 1f)]
     private float sensitivity = 1.0f;
     private Vector2 mouseStartPosition;
@@ -274,16 +274,18 @@ public class MainCharacterController : MonoBehaviour, IMainCharacterTriggers, IC
         gameObject.Trigger<IMainCharacterTriggers, float3>(nameof(IMainCharacterTriggers.OnMovementIntention), adjustedDirection);
 
         float2 rightStick = m_InputActionAsset["CameraMove"].ReadValue<Vector2>();
-        float3 playerScreenPos = mainCamera.WorldToScreenPoint(transform.position);
-        float2 mouseDelta = (float2(Mouse.current.position.ReadValue()) - playerScreenPos.xy) * sensitivity;
 #if DEBUG
         gameObject.Trigger<IMainCharacterTriggers, float2>(nameof(IMainCharacterTriggers.OnDebugCameraRotation), rightStick);
 #endif
+        float3 playerScreenPos = mainCamera.WorldToScreenPoint(this.transform.position);
+        float cameraAngleDelta = Vector2.SignedAngle(float3(Vector3.forward).xz, float3(mainCamera.transform.forward).xz);
+        // Apply the rotation around the camera's forward axis (x-z plane)
+        float2 mouseDelta = (float2(Mouse.current.position.ReadValue()) - playerScreenPos.xy) * sensitivity;
         float3 adjustedFaceInput;
         if (currentScheme.Equals("Keyboard&Mouse"))
         {
             Cursor.visible = true;
-            Vector3 direction = new Vector3(mouseDelta.x, 0f, mouseDelta.y);
+            Vector3 direction = Quaternion.Euler(0f, -cameraAngleDelta, 0f) * new Vector3(mouseDelta.x, 0f, mouseDelta.y);
             Quaternion rotation = Quaternion.LookRotation(direction, Vector3.up);
             transform.rotation = rotation;
         }
